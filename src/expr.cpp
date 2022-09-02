@@ -55,7 +55,7 @@ ExprVector ExprVector::Plus(ExprVector b) const {
 
 Expr *ExprVector::Dot(ExprVector b) const {
     Expr *r;
-    r =         x->Times(b.x);
+    r = x->Times(b.x);
     r = r->Plus(y->Times(b.y));
     r = r->Plus(z->Times(b.z));
     return r;
@@ -84,7 +84,7 @@ ExprVector ExprVector::WithMagnitude(Expr *s) const {
 
 Expr *ExprVector::Magnitude() const {
     Expr *r;
-    r =         x->Square();
+    r = x->Square();
     r = r->Plus(y->Square());
     r = r->Plus(z->Square());
     return r->Sqrt();
@@ -621,6 +621,9 @@ public:
 
     std::string::const_iterator it, end;
     std::vector<Token> stack;
+    std::set<uint32_t> newParams;
+    IdList<Param, hParam> *params;
+    hConstraint hc;
 
     char ReadChar();
     char PeekChar();
@@ -637,7 +640,7 @@ public:
     bool Reduce(std::string *error);
     bool Parse(std::string *error, size_t reduceUntil = 0);
 
-    static Expr *Parse(const std::string &input, std::string *error);
+    static Expr *Parse(const std::string &input, std::string *error, IdList<Param, hParam> *params = NULL, int *paramsCount = 0, hConstraint hc = {0});
 };
 
 ExprParser::Token ExprParser::Token::From(TokenType type, Expr *expr) {
@@ -735,6 +738,30 @@ ExprParser::Token ExprParser::Lex(std::string *error) {
         } else if(s == "pi") {
             t = Token::From(TokenType::OPERAND, Expr::Op::CONSTANT);
             t.expr->v = PI;
+        } else if (params != NULL) {
+            bool found = false;
+            for (const Param &p : *params) {
+                if (p.name != s) continue;
+                t = Token::From(TokenType::OPERAND, Expr::Op::PARAM);
+                t.expr->parh = p.h;
+                newParams.insert(p.h.v);
+                found = true;
+            }
+            if (!found) {
+                Param p = {};
+                int count = 0;
+
+                while (params->FindByIdNoOops(hc.param(count)) != NULL) {
+                    count++;
+                }
+
+                p.h = hc.param(count);
+                p.name = s;
+                params->Add(&p);
+                newParams.insert(p.h.v);
+                t = Token::From(TokenType::OPERAND, Expr::Op::PARAM);
+                t.expr->parh = p.h;
+            }
         } else {
             *error = "'" + s + "' is not a valid variable, function or constant";
         }
@@ -906,14 +933,19 @@ bool ExprParser::Parse(std::string *error, size_t reduceUntil) {
     return true;
 }
 
-Expr *ExprParser::Parse(const std::string &input, std::string *error) {
+Expr *ExprParser::Parse(const std::string &input, std::string *error, IdList<Param, hParam> *params, int *paramsCount, hConstraint hc) {
     ExprParser parser;
     parser.it  = input.cbegin();
     parser.end = input.cend();
+    parser.params = params;
+    parser.newParams.clear();
+    parser.hc = hc;
+
     if(!parser.Parse(error)) return NULL;
 
     Token r = parser.PopOperand(error);
     if(r.IsError()) return NULL;
+    if(paramsCount != NULL) *paramsCount = parser.newParams.size();
     return r.expr;
 }
 
@@ -921,9 +953,9 @@ Expr *Expr::Parse(const std::string &input, std::string *error) {
     return ExprParser::Parse(input, error);
 }
 
-Expr *Expr::From(const std::string &input, bool popUpError) {
+Expr *Expr::From(const std::string &input, bool popUpError, IdList<Param, hParam> *params, int *paramsCount, hConstraint hc) {
     std::string error;
-    Expr *e = ExprParser::Parse(input, &error);
+    Expr *e = ExprParser::Parse(input, &error, params, paramsCount, hc);
     if(!e) {
         dbp("Parse/lex error: %s", error.c_str());
         if(popUpError) {
