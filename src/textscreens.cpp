@@ -398,11 +398,42 @@ void TextWindow::ShowGroupInfo() {
                     skip ? RADIO_TRUE : RADIO_FALSE);
             }
 
-            int times = (int)(g->valA);
-            Printf(false, "%Bp   %Ftrepeat%E %d time%s %Fl%Ll%D%f[change]%E",
-                (g->subtype == Group::Subtype::ONE_SIDED) ? 'a' : 'd',
-                times, times == 1 ? "" : "s",
-                g->h.v, &TextWindow::ScreenChangeExprA);
+            if (g->valAstr != "") {
+                int usedParams;
+                if (Expr *e = Expr::From(g->valAstr, /*popUpError=*/false, &SK.param, &usedParams)) {
+                    Printf(
+                        false,
+                        "%Bp   %Ftrepeat%E %s times %Fl%Ll%D%f[change]%E",
+                        (g->subtype == Group::Subtype::ONE_SIDED) ? 'a' : 'd',
+                        g->valAstr.c_str(),
+                        g->h.v,
+                        &TextWindow::ScreenChangeExprA
+                    );
+
+                    double ev = e->Eval();
+                    std::cerr << "ev: " << ev << std::endl;
+
+                    if((int)ev < 1) {
+                        Error(_("Can't repeat fewer than 1 time."));
+                    } else if((int)ev > 999) {
+                        Error(_("Can't repeat more than 999 times."));
+                    } else {
+                        g->valA = ev;
+                    }
+                }
+            } else {
+                // TODO: this branch will never run (g->valAstr is always populated in the event handler), consider removing
+                int times = (int)(g->valA);
+                Printf(
+                    false,
+                    "%Bp   %Ftrepeat%E %d time%s %Fl%Ll%D%f[change]%E",
+                    (g->subtype == Group::Subtype::ONE_SIDED) ? 'a' : 'd',
+                    times,
+                    times == 1 ? "" : "s",
+                    g->h.v,
+                    &TextWindow::ScreenChangeExprA
+                );
+            }
         }
     } else if(g->type == Group::Type::LINKED) {
         Printf(true, " %Ftlink geometry from file%E");
@@ -783,10 +814,15 @@ void TextWindow::EditControlDone(std::string s) {
 
     switch(edit.meaning) {
         case Edit::TIMES_REPEATED:
-            if(Expr *e = Expr::From(s, /*popUpError=*/true)) {
+            int usedParams;
+            std::cerr << "s: " << s << std::endl;
+
+            if(Expr *e = Expr::From(s, /*popUpError=*/false, &SK.param, &usedParams)) {
                 SS.UndoRemember();
 
                 double ev = e->Eval();
+                std::cerr << "ev: " << ev << std::endl;
+
                 if((int)ev < 1) {
                     Error(_("Can't repeat fewer than 1 time."));
                     break;
@@ -798,6 +834,7 @@ void TextWindow::EditControlDone(std::string s) {
 
                 Group *g = SK.GetGroup(edit.group);
                 g->valA = ev;
+                g->valAstr = s;
 
                 if(g->type == Group::Type::ROTATE) {
                     // If the group does not contain any constraints, then

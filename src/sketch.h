@@ -185,6 +185,8 @@ public:
     double      valA;
     double      valB;
     double      valC;
+    std::string valAstr;
+
     RgbaColor   color;
 
     struct {

@@ -34,6 +34,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include <iostream>
+#include <csignal>
+
 #define EIGEN_NO_DEBUG
 #undef Success
 #include <Eigen/SparseCore>
