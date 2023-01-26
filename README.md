@@ -346,6 +346,34 @@ make
 [cmakewin]: http://www.cmake.org/download/#latest
 [mingw]: http://www.mingw.org/
 
+### Building and testing on Haiku
+
+To build on Haiku, first install dependencies using HaikuDepot (cairo_devel, Eigen, among others).
+
+(TODO: list all deps here!)
+
+Because SolveSpace currently depends on GTK, pass in these CMake flags to avoid building the GUI:
+
+```sh
+mkdir build
+cd build
+cmake .. -D ENABLE_GUI=NO -D FORCE_VENDORED_Eigen3=YES
+cmake --build .
+```
+
+You probably just want to build the tests anyway as we port this thing into an app with a native Haiku UI. Here's how:
+
+```sh
+cmake .. -D ENABLE_GUI=NO -D ENABLE_TESTS=YES -D FORCE_VENDORED_Eigen3=YES
+make test_solvespace
+```
+
+Here's how to do a clean build using CMake:
+
+```sh
+cmake --build . --clean -first
+```
+
 ## Contributing
 
 See the [guide for contributors](CONTRIBUTING.md) for the best way to file issues, contribute code,

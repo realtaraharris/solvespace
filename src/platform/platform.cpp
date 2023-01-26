@@ -516,6 +516,12 @@ static Platform::Path ResourcePath(const std::string &name) {
     return path;
 }
 
+#elif defined(__HAIKU__)
+
+static Platform::Path ResourcePath(const std::string &name) {
+    return Path::From(Path::CurrentDirectory().raw + "/../res/" + name);
+}
+
 #elif defined(__EMSCRIPTEN__)
 
 static Platform::Path ResourcePath(const std::string &name) {
