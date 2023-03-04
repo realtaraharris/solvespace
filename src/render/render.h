@@ -7,6 +7,11 @@
 #ifndef SOLVESPACE_RENDER_H
 #define SOLVESPACE_RENDER_H
 
+// TODO: move these to the right place
+#include "agg_rendering_buffer.h"
+#include "agg_rasterizer_scanline_aa.h"
+#include "agg_trans_viewport.h"
+
 //-----------------------------------------------------------------------------
 // Interfaces common for all renderers
 //-----------------------------------------------------------------------------
@@ -369,6 +374,53 @@ public:
     std::shared_ptr<Pixmap>  pixmap;
 
     cairo_surface_t         *surface = NULL;
+
+    void Init();
+    void Clear() override;
+
+    std::shared_ptr<Pixmap> ReadFrame() override;
+};
+
+class AggRenderer : public SurfaceRenderer {
+public:
+    agg::rendering_buffer buffer;
+	agg::rasterizer_scanline_aa<> pf;
+
+	agg::trans_affine cameraMatrix;
+
+    // Renderer configuration.
+    bool        antialias = false;
+    // Renderer state.
+    struct {
+        hStroke     hcs;
+    } current = {};
+
+	AggRenderer();
+    void Clear() override;
+
+    void StartFrame() override {}
+    void FlushFrame() override;
+    void FinishFrame() override {}
+    std::shared_ptr<Pixmap> ReadFrame() override;
+
+    void GetIdent(const char **vendor, const char **renderer, const char **version) override;
+
+    void SelectStroke(hStroke hcs);
+    void MoveTo(Vector p);
+    void FinishPath();
+
+    bool CanOutputCurves() const override { return true; }
+    bool CanOutputTriangles() const override { return true; }
+
+    void OutputStart() override;
+    void OutputBezier(const SBezier &b, hStroke hcs) override;
+    void OutputTriangle(const STriangle &tr) override;
+    void OutputEnd() override;
+};
+
+class AggPixmapRenderer final : public AggRenderer {
+public:
+    std::shared_ptr<Pixmap>  pixmap;
 
     void Init();
     void Clear() override;

@@ -270,6 +270,9 @@ if(WIN32 OR APPLE OR EMSCRIPTEN)
     set(CAIRO_LIBRARIES         cairo)
     set(CAIRO_INCLUDE_DIRS      ${CMAKE_SOURCE_DIR}/extlib/cairo/src)
     list(APPEND CAIRO_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extlib/cairo/src)
+
+    list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
+
 else()
     # On Linux and BSDs we're a good citizen and link to system libraries.
     find_package(Backtrace)
@@ -278,6 +281,7 @@ else()
     find_package(PNG REQUIRED)
     find_package(Freetype REQUIRED)
     pkg_check_modules(CAIRO REQUIRED cairo)
+    list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
 endif()
 
 # GUI dependencies

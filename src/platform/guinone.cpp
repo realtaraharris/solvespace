@@ -4,7 +4,6 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
-#include <cairo.h>
 
 namespace SolveSpace {
 
@@ -13,7 +12,7 @@ namespace SolveSpace {
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<ViewportCanvas> CreateRenderer() {
-    return std::make_shared<CairoPixmapRenderer>();
+    return std::make_shared<AggPixmapRenderer>();
 }
 
 namespace Platform {

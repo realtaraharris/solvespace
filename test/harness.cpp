@@ -252,7 +252,7 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
     camera.projRight  = SS.GW.projRight;
     camera.scale      = SS.GW.scale;
 
-    CairoPixmapRenderer pixmapCanvas;
+    AggPixmapRenderer pixmapCanvas;
     pixmapCanvas.SetLighting(SS.GW.GetLighting());
     pixmapCanvas.SetCamera(camera);
     pixmapCanvas.Init();

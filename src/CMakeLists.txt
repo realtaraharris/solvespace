@@ -27,6 +27,7 @@ target_include_directories(slvs_deps INTERFACE SYSTEM
     ${PNG_PNG_INCLUDE_DIR}
     ${FREETYPE_INCLUDE_DIRS}
     ${CAIRO_INCLUDE_DIRS}
+    ${AGG_INCLUDE_DIRS}
     ${MIMALLOC_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIRS})
 target_link_libraries(slvs_deps INTERFACE
@@ -377,17 +378,20 @@ endif()
 add_library(solvespace-headless STATIC EXCLUDE_FROM_ALL
     ${solvespace_core_gl_SOURCES}
     platform/guinone.cpp
-    render/rendercairo.cpp)
+    render/rendercairo.cpp
+    render/renderagg.cpp)
 
 target_compile_definitions(solvespace-headless
     PRIVATE HEADLESS)
 
 target_include_directories(solvespace-headless
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-    PUBLIC ${EIGEN3_INCLUDE_DIRS})
+    PUBLIC ${EIGEN3_INCLUDE_DIRS}
+    ${AGG_INCLUDE_DIRS})
 
 target_link_libraries(solvespace-headless
     PRIVATE
+    agg
     solvespace-core)
 
 # solvespace command-line executable
