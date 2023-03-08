@@ -19,8 +19,12 @@
 
 #include "solvespace.h"
 
+#include <iostream>
+
 namespace SolveSpace {
-	AggRenderer::AggRenderer() {}
+	AggRenderer::AggRenderer() {
+		std::cout << "in constructor" << std::endl;
+	}
 
 	void AggRenderer::Clear() {
 		ssassert(false, "not implemented: AggRenderer::Clear");		
@@ -42,6 +46,8 @@ namespace SolveSpace {
 	}
 
 	void AggRenderer::OutputStart() {
+		std::cout << "in outputstart" << std::endl;
+
 	    typedef agg::pixfmt_bgra32 pixel_format_type;
 	    typedef agg::renderer_base<pixel_format_type> renderer_base;
 
@@ -215,7 +221,7 @@ namespace SolveSpace {
 		agg::render_scanlines_aa_solid(ras, sl, rb, tcolor);
 	}
 
-	void AggPixmapRenderer::Init() {
+	void AggPixmapRenderer::Init(bool standalone) {
 //	    Clear();
 	    
 		pixmap = std::make_shared<Pixmap>();
@@ -224,7 +230,10 @@ namespace SolveSpace {
 		pixmap->height = (size_t)camera.height;
 		pixmap->stride = 32 * camera.width; // TODO: remove hardcoded value
 		pixmap->data   = std::vector<uint8_t>(pixmap->stride * pixmap->height);
-		buffer.attach(pixmap->data.data(), pixmap->width, pixmap->height, pixmap->stride);
+
+		if (standalone) {
+			buffer.attach(pixmap->data.data(), pixmap->width, pixmap->height, pixmap->stride);
+		}
 	}
 
 	void AggPixmapRenderer::Clear() {

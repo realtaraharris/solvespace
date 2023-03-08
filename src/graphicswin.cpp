@@ -403,7 +403,7 @@ void GraphicsWindow::Init() {
     ssassert(!SK.groupOrder.IsEmpty(),
              "Group order can't be empty since we will activate the last group.");
     activeGroup = *SK.groupOrder.Last();
-    SK.GetGroup(activeGroup)->Activate();
+//    SK.GetGroup(activeGroup)->Activate();
 
     showWorkplanes = false;
     showNormals = true;
@@ -456,7 +456,7 @@ void GraphicsWindow::Init() {
     }
 
     // Do this last, so that all the menus get updated correctly.
-    ClearSuper();
+//    ClearSuper();
 }
 
 void GraphicsWindow::AnimateOntoWorkplane() {

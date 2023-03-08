@@ -19,3 +19,7 @@
 out/
 .vs/
 CMakeSettings.json
+
+# Haiku
+.genio
+test/**/*out.png

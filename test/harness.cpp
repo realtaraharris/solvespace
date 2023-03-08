@@ -255,7 +255,7 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
     AggPixmapRenderer pixmapCanvas;
     pixmapCanvas.SetLighting(SS.GW.GetLighting());
     pixmapCanvas.SetCamera(camera);
-    pixmapCanvas.Init();
+    pixmapCanvas.Init(true);
 
     pixmapCanvas.StartFrame();
     SS.GW.Draw(&pixmapCanvas);

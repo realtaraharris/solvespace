@@ -436,6 +436,8 @@ endif()
 
 # application components
 
+add_subdirectory("src/platform/haiku")
+
 add_subdirectory(res)
 add_subdirectory(src)
 add_subdirectory(exposed)

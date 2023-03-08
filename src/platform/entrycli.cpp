@@ -227,7 +227,7 @@ static bool RunCommand(const std::vector<std::string> args) {
             camera.offset     = SS.GW.offset;
             SS.GenerateAll();
 
-            CairoPixmapRenderer pixmapCanvas;
+            CairoPixmapRenderer pixmapCanvas; // TODO: switch to AGG
             pixmapCanvas.antialias = true;
             pixmapCanvas.SetLighting(SS.GW.GetLighting());
             pixmapCanvas.SetCamera(camera);
