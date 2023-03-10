@@ -34,7 +34,6 @@ public:
     void Draw(BRect updateRect);
     void FrameMoved(BPoint newLocation);
     void FrameResized(float width, float height);
-	void ChangePointCount(int delta);
 	void SaveToPng();
 	bool Load(std::string path);
 	
@@ -44,13 +43,10 @@ private:
 
     BRect initialRect;
     BRect currentRect;
-    agg::trans_affine resizeMatrix;
     BBitmap* retainedBitmap;
     agg::rendering_buffer buffer;
 
     void InitBitmapAndBuffer();
-    const agg::trans_affine& GetTransAffineResizingMatrix() const;
-    void SetTransAffineResizingMatrix(unsigned width, unsigned height, bool keepAspectRatio);
 };
 
 #endif // EDITORVIEW_H

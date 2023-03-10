@@ -22,12 +22,19 @@
 #include <iostream>
 
 namespace SolveSpace {
+	typedef agg::pixfmt_bgra32 pixel_format_type;
+	typedef agg::renderer_base<pixel_format_type> renderer_base;
+
 	AggRenderer::AggRenderer() {
 		std::cout << "in constructor" << std::endl;
 	}
 
 	void AggRenderer::Clear() {
-		ssassert(false, "not implemented: AggRenderer::Clear");		
+        SurfaceRenderer::Clear();
+
+        pixel_format_type pixf(buffer);
+	    renderer_base rb(pixf);
+	    rb.clear(agg::rgba(0.0, 0.0, 0.0));
 	}
 
 	void AggRenderer::GetIdent(const char **vendor, const char **renderer, const char **version) {
@@ -46,17 +53,10 @@ namespace SolveSpace {
 	}
 
 	void AggRenderer::OutputStart() {
-		std::cout << "in outputstart" << std::endl;
-
-	    typedef agg::pixfmt_bgra32 pixel_format_type;
-	    typedef agg::renderer_base<pixel_format_type> renderer_base;
-
 		cameraMatrix = agg::trans_affine_translation(camera.width / 2.0, camera.height / 2.0);
 
 	    pixel_format_type pixf(buffer);
 	    renderer_base rb(pixf);
-
-	    rb.clear(agg::rgba(0.0, 0.0, 0.0));
 		
 		pf.reset();
 	}
@@ -222,7 +222,7 @@ namespace SolveSpace {
 	}
 
 	void AggPixmapRenderer::Init(bool standalone) {
-//	    Clear();
+	    Clear();
 	    
 		pixmap = std::make_shared<Pixmap>();
 		pixmap->format = Pixmap::Format::BGRA;
@@ -237,7 +237,7 @@ namespace SolveSpace {
 	}
 
 	void AggPixmapRenderer::Clear() {
-//	    AggRenderer::Clear();
+	    AggRenderer::Clear();
 	}
 
 	std::shared_ptr<Pixmap> AggPixmapRenderer::ReadFrame() {

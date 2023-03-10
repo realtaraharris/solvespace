@@ -584,7 +584,7 @@ Vector Vector::WithMagnitude(double v) const {
     if(EXACT(m == 0)) {
         // We can do a zero vector with zero magnitude, but not any other cases.
         if(fabs(v) > 1e-100) {
-            dbp("Vector::WithMagnitude(%g) of zero vector!", v);
+//            dbp("Vector::WithMagnitude(%g) of zero vector!", v);
         }
         return From(0, 0, 0);
     } else {

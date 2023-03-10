@@ -13,18 +13,12 @@ void attachBufferToBBitmap(agg::rendering_buffer& buffer, BBitmap* bitmap) {
     uint32 height = bitmap->Bounds().IntegerHeight() + 1;
     int32 bpr = bitmap->BytesPerRow();
     buffer.attach(bits, width, height, -bpr);
-
-	std::cout << "attached buffer to bbitmap" << std::endl;
 }
 
 EditorView::EditorView(BRect rect) :
 	BView(rect, "SolveSpace Editor View", B_FOLLOW_ALL_SIDES, B_FRAME_EVENTS | B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE) {
     initialRect = rect;
     currentRect = rect;
-    
-    std::cout << "currentRect.Width(): " << currentRect.Width() << " currentRect.Height(): " << currentRect.Height() << std::endl;
-
-//    SetTransAffineResizingMatrix(rect.Width(), rect.Height(), true);
 
     InitBitmapAndBuffer();
 }
@@ -41,12 +35,7 @@ void EditorView::InitBitmapAndBuffer() {
     }
 }
 
-//void EditorView::AttachedToWindow() {}
-
-//void EditorView::DetachedFromWindow() {}
-
 void EditorView::Draw(BRect updateRect) {
-    SS.GW.Draw(&pixmapCanvas);
     DrawBitmap(retainedBitmap, updateRect, updateRect);
 }
 
@@ -56,14 +45,16 @@ void EditorView::FrameMoved(BPoint newLocation) {
 }
 
 void EditorView::FrameResized(float width, float height) {
-    currentRect.SetRightBottom(initialRect.LeftTop() + BPoint(width, height));
-//    SetTransAffineResizingMatrix(width + 1, height + 1, true);
+    currentRect.SetRightBottom(currentRect.LeftTop() + BPoint(width, height));
+    initialRect = currentRect;
+
     InitBitmapAndBuffer(); // do this before drawing
 
     camera.width = width;
-    camera.height = height + 20;
+    camera.height = height;
     pixmapCanvas.SetCamera(camera);
 
+    pixmapCanvas.Clear();
     pixmapCanvas.StartFrame();
     SS.GW.Draw(&pixmapCanvas);
     pixmapCanvas.FlushFrame();
@@ -71,50 +62,25 @@ void EditorView::FrameResized(float width, float height) {
 
     Draw(currentRect);
 }
-/*
-void EditorView::SetTransAffineResizingMatrix(unsigned width, unsigned height, bool keepAspectRatio) {
-    if (keepAspectRatio) {
-        agg::trans_viewport vp;
-        vp.preserve_aspect_ratio(0.5, 0.5, agg::aspect_ratio_meet);
-        vp.device_viewport(0, 0, width, height);
-        vp.world_viewport(0, 0, initialRect.Width(), initialRect.Height());
-        resizeMatrix = vp.to_affine();
-    } else {
-        resizeMatrix = agg::trans_affine_scaling(
-            width / initialRect.Width(),
-            height / initialRect.Height());
-    }
-}
-
-const agg::trans_affine& EditorView::GetTransAffineResizingMatrix() const {
-    return resizeMatrix;
-}
-*/
 
 bool EditorView::Load(std::string path) {
-//    Platform::Path fixturePath = GetAssetPath(file, fixture);
 	const SolveSpace::Platform::Path fixturePath = SolveSpace::Platform::Path::From(
 		path);
+
+    if (!SS.LoadFromFile(fixturePath)) {
+	    return;
+	}
 	std::cout << "loaded: " << path << std::endl;
 
-    FILE *f = SolveSpace::Platform::OpenFile(fixturePath, "rb");
-
-    if (f) { fclose(f); }
-
-    bool result = SS.LoadFromFile(fixturePath);
-//    if (!RecordCheck(result)) {
-//        return false;
-//    } else {
-        SS.AfterNewFile();
-        SS.GW.offset = {};
-        SS.GW.scale  = 10.0;
- //   }
+	SS.AfterNewFile();
+	SS.GW.offset = {};
+	SS.GW.scale  = 10.0;
  
 	camera = {};
     camera.pixelRatio = 1;
     camera.gridFit    = true;
-    camera.width      = currentRect.Width();
-    camera.height     = currentRect.Height() + 20; // how?!
+    camera.width      = initialRect.Width();
+    camera.height     = initialRect.Height();
     camera.projUp     = SS.GW.projUp;
     camera.projRight  = SS.GW.projRight;
     camera.scale      = SS.GW.scale;
@@ -128,5 +94,5 @@ bool EditorView::Load(std::string path) {
     pixmapCanvas.FlushFrame();
     pixmapCanvas.FinishFrame();
 
-    Draw(currentRect);
+    Draw(initialRect);
 }

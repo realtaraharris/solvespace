@@ -15,9 +15,17 @@
 
 #include <iostream>
 
+#define INIT_X 100
+#define INIT_Y 100
+#define MIN_WIDTH 600
+#define MIN_HEIGHT 600
+#define MENUBAR_HEIGHT 20
+
 MainWindow::MainWindow(void)
-	:	BWindow(BRect(100, 100, 700, 720), "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE) {
+	:	BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH, INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT), "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE) {
 	BRect rect(Bounds());
+
+	SetSizeLimits(MIN_WIDTH, 100000, MIN_HEIGHT + MENUBAR_HEIGHT, 100000); // the Haiku API needs a way to not set any upper bound
 
 	menuBar = new BMenuBar(rect, "menubar");	
 	BMenu *menu = new BMenu("File");
@@ -25,7 +33,7 @@ MainWindow::MainWindow(void)
 	menu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
 	menuBar->AddItem(menu);
 	
-	rect.Set(0, 0, 600, 600);
+	rect.Set(0, 0, MIN_WIDTH, MIN_HEIGHT);
     editorView = new EditorView(rect);
 
     SetLayout(new BGroupLayout(B_VERTICAL));
@@ -42,7 +50,7 @@ MainWindow::MainWindow(void)
 void MainWindow::MessageReceived(BMessage *msg) {
 	switch (msg->what) {
 		case M_QUIT_APP: {
-			FreeAllTemporary(); // vital to call this before posting B_QUIT_REQUESTED to allow the allocator to work
+			FreeAllTemporary();
 			be_app->PostMessage(B_QUIT_REQUESTED);
 			break;
 		}
@@ -64,8 +72,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
 			break;
 		}
 		default: {
-			std::cout << "Message received: " << msg->what << std::endl;
-
 			BWindow::MessageReceived(msg);
 			break;
 		}
@@ -73,8 +79,8 @@ void MainWindow::MessageReceived(BMessage *msg) {
 }
 
 
-bool
-MainWindow::QuitRequested(void) {
+bool MainWindow::QuitRequested(void) {
+	FreeAllTemporary();
 	be_app->PostMessage(B_QUIT_REQUESTED);
 	return true;
 }
