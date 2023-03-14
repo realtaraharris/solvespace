@@ -4,6 +4,7 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "EditorView.h"
+#include "../src/render/render.h"
 
 #include <iostream>
 
@@ -36,6 +37,12 @@ void EditorView::InitBitmapAndBuffer() {
 }
 
 void EditorView::Draw(BRect updateRect) {
+    pixmapCanvas.Clear();
+    pixmapCanvas.StartFrame();
+    SS.GW.Draw(&pixmapCanvas);
+    pixmapCanvas.FlushFrame();
+    pixmapCanvas.FinishFrame();
+
     DrawBitmap(retainedBitmap, updateRect, updateRect);
 }
 
@@ -54,12 +61,6 @@ void EditorView::FrameResized(float width, float height) {
     camera.height = height;
     pixmapCanvas.SetCamera(camera);
 
-    pixmapCanvas.Clear();
-    pixmapCanvas.StartFrame();
-    SS.GW.Draw(&pixmapCanvas);
-    pixmapCanvas.FlushFrame();
-    pixmapCanvas.FinishFrame();
-
     Draw(currentRect);
 }
 
@@ -76,7 +77,7 @@ bool EditorView::Load(std::string path) {
 	SS.GW.offset = {};
 	SS.GW.scale  = 10.0;
  
-	camera = {};
+	camera = SS.GW.GetCamera();
     camera.pixelRatio = 1;
     camera.gridFit    = true;
     camera.width      = initialRect.Width();
@@ -84,15 +85,44 @@ bool EditorView::Load(std::string path) {
     camera.projUp     = SS.GW.projUp;
     camera.projRight  = SS.GW.projRight;
     camera.scale      = SS.GW.scale;
+    camera.offset     = SS.GW.offset;
 
     pixmapCanvas.SetLighting(SS.GW.GetLighting());
     pixmapCanvas.SetCamera(camera);
     pixmapCanvas.Init(false);
 
-    pixmapCanvas.StartFrame();
-    SS.GW.Draw(&pixmapCanvas);
-    pixmapCanvas.FlushFrame();
-    pixmapCanvas.FinishFrame();
-
     Draw(initialRect);
+}
+
+void EditorView::MouseMoved(BPoint point, uint32 transit, const BMessage* message) {
+	currentMousePosition = point;
+}
+
+void EditorView::ZoomToMouse(double zoomMultiplyer) {
+    double offsetRight = camera.offset.Dot(camera.projRight);
+    double offsetUp    = camera.offset.Dot(camera.projUp);
+
+    double righti = currentMousePosition.x / camera.scale - offsetRight;
+    double upi    = currentMousePosition.y / camera.scale - offsetUp;
+
+    // zoomMultiplyer of 1 gives a default zoom factor of 1.2x: zoomMultiplyer * 1.2
+    // zoom = adjusted zoom negative zoomMultiplyer will zoom out, positive will zoom in
+    camera.scale *= exp(0.1823216 * zoomMultiplyer); // ln(1.2) = 0.1823216
+
+    double rightf = currentMousePosition.x / camera.scale - offsetRight;
+    double upf    = currentMousePosition.y / camera.scale - offsetUp;
+
+    camera.offset = camera.offset.Plus(projRight.ScaledBy(rightf - righti));
+    camera.offset = camera.offset.Plus(projUp.ScaledBy(upf - upi));
+
+    pixmapCanvas.SetCamera(camera);
+}
+
+void EditorView::ZoomToFit(bool includingInvisibles, bool useSelection) {
+	 SS.GW.ZoomToFit(camera, false, true); // includingInvisibles = false, useSelection = true
+
+	 camera.offset = SS.GW.offset;
+	 camera.scale = SS.GW.scale;
+
+	 pixmapCanvas.SetCamera(camera);
 }

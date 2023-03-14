@@ -15,7 +15,11 @@ enum {
 
 	READ_FILE='rdfl',
 	M_OPEN_FILE='mof',
-	M_QUIT_APP='mqa'
+	M_QUIT_APP='mqa',
+
+	ZOOM_IN='zin',
+	ZOOM_OUT='zout',
+	ZOOM_TO_FIT='zfit'
 };
 
 #endif

@@ -28,11 +28,17 @@ MainWindow::MainWindow(void)
 	SetSizeLimits(MIN_WIDTH, 100000, MIN_HEIGHT + MENUBAR_HEIGHT, 100000); // the Haiku API needs a way to not set any upper bound
 
 	menuBar = new BMenuBar(rect, "menubar");	
-	BMenu *menu = new BMenu("File");
-	menu->AddItem(new BMenuItem("Open", new BMessage(M_OPEN_FILE), 'O'));
-	menu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
-	menuBar->AddItem(menu);
-	
+	BMenu *fileMenu = new BMenu("File");
+	fileMenu->AddItem(new BMenuItem("Open", new BMessage(M_OPEN_FILE), 'O'));
+	fileMenu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
+	menuBar->AddItem(fileMenu);
+
+	BMenu *viewMenu = new BMenu("View");
+	viewMenu->AddItem(new BMenuItem("Zoom in", new BMessage(ZOOM_IN), '+'));
+	viewMenu->AddItem(new BMenuItem("Zoom out", new BMessage(ZOOM_OUT), '-'));
+	viewMenu->AddItem(new BMenuItem("Zoom to fit", new BMessage(ZOOM_TO_FIT), 'f'));
+	menuBar->AddItem(viewMenu);
+
 	rect.Set(0, 0, MIN_WIDTH, MIN_HEIGHT);
     editorView = new EditorView(rect);
 
@@ -48,7 +54,25 @@ MainWindow::MainWindow(void)
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
-	switch (msg->what) {
+    switch (msg->what) {
+        case ZOOM_IN: {
+            editorView->ZoomToMouse(1);
+            SS.GW.Invalidate();
+            editorView->Invalidate();
+            break;
+        }
+        case ZOOM_OUT: {
+            editorView->ZoomToMouse(-1);
+            SS.GW.Invalidate();
+            editorView->Invalidate();
+            break;
+        }
+        case ZOOM_TO_FIT: {
+            editorView->ZoomToFit(false, true); // includingInvisibles = false, useSelection = true
+            SS.GW.Invalidate();
+            editorView->Invalidate();
+            break;
+        }
 		case M_QUIT_APP: {
 			FreeAllTemporary();
 			be_app->PostMessage(B_QUIT_REQUESTED);
@@ -77,7 +101,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
 		}
 	}
 }
-
 
 bool MainWindow::QuitRequested(void) {
 	FreeAllTemporary();

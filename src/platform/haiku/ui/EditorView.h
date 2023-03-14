@@ -36,15 +36,28 @@ public:
     void FrameResized(float width, float height);
 	void SaveToPng();
 	bool Load(std::string path);
-	
+	void ZoomToMouse(double zoomMultiplyer);
+	void MouseMoved(BPoint point, uint32 transit, const BMessage* message);
+	void ZoomToFit(bool includingInvisibles, bool useSelection);
+
 private:
     AggPixmapRenderer pixmapCanvas;
     Camera camera;
+    Lighting lighting;
+    BPoint currentMousePosition;
 
     BRect initialRect;
     BRect currentRect;
     BBitmap* retainedBitmap;
     agg::rendering_buffer buffer;
+
+    // These parameters define the map from 2d screen coordinates to the
+    // coordinates of the 3d sketch points. We will use an axonometric
+    // projection.
+    Vector offset;
+    Vector  projRight;
+    Vector  projUp;
+    double  scale;
 
     void InitBitmapAndBuffer();
 };
