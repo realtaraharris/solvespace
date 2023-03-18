@@ -37,6 +37,9 @@ MainWindow::MainWindow(void)
 	viewMenu->AddItem(new BMenuItem("Zoom in", new BMessage(ZOOM_IN), '+'));
 	viewMenu->AddItem(new BMenuItem("Zoom out", new BMessage(ZOOM_OUT), '-'));
 	viewMenu->AddItem(new BMenuItem("Zoom to fit", new BMessage(ZOOM_TO_FIT), 'f'));
+	BSeparatorItem* separator = new BSeparatorItem;
+	viewMenu->AddItem(separator);
+	viewMenu->AddItem(new BMenuItem("Show snap grid", new BMessage(TOGGLE_SNAP_GRID), '>'));
 	menuBar->AddItem(viewMenu);
 
 	rect.Set(0, 0, MIN_WIDTH, MIN_HEIGHT);
@@ -73,6 +76,19 @@ void MainWindow::MessageReceived(BMessage *msg) {
             editorView->Invalidate();
             break;
         }
+        case TOGGLE_SNAP_GRID: {
+	        SS.GW.showSnapGrid = !SS.GW.showSnapGrid;
+            SS.GW.EnsureValidActives();
+            SS.GW.Invalidate();
+            editorView->Invalidate();
+            if (SS.GW.showSnapGrid && !SS.GW.LockedInWorkplane()) {
+                BAlert* alert = new BAlert("SolveSpace information dialog", "No workplane is active, so the grid will not appear.",
+                NULL, NULL, "OK", B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
+                alert->SetShortcut(0, B_ESCAPE);
+                alert->Go();
+            }
+	        break;
+	    }
 		case M_QUIT_APP: {
 			FreeAllTemporary();
 			be_app->PostMessage(B_QUIT_REQUESTED);

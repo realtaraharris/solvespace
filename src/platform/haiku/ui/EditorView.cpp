@@ -21,6 +21,9 @@ EditorView::EditorView(BRect rect) :
     initialRect = rect;
     currentRect = rect;
 
+    // choices: SS.GW.canvas.get(), std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
+    SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
+
     InitBitmapAndBuffer();
 }
 
@@ -29,7 +32,7 @@ EditorView::~EditorView() {}
 void EditorView::InitBitmapAndBuffer() {
     retainedBitmap = new BBitmap(currentRect, 0, B_RGBA32);
     if (retainedBitmap->IsValid()) {
-        attachBufferToBBitmap(pixmapCanvas.buffer, retainedBitmap);
+        attachBufferToBBitmap(std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->buffer, retainedBitmap);
     } else {
         delete retainedBitmap;
         retainedBitmap = NULL;
@@ -37,11 +40,11 @@ void EditorView::InitBitmapAndBuffer() {
 }
 
 void EditorView::Draw(BRect updateRect) {
-    pixmapCanvas.Clear();
-    pixmapCanvas.StartFrame();
-    SS.GW.Draw(&pixmapCanvas);
-    pixmapCanvas.FlushFrame();
-    pixmapCanvas.FinishFrame();
+    SS.GW.canvas.get()->Clear();
+    SS.GW.canvas.get()->StartFrame();
+    SS.GW.Draw(SS.GW.canvas.get());
+    SS.GW.canvas.get()->FlushFrame();
+    SS.GW.canvas.get()->FinishFrame();
 
     DrawBitmap(retainedBitmap, updateRect, updateRect);
 }
@@ -59,7 +62,7 @@ void EditorView::FrameResized(float width, float height) {
 
     camera.width = width;
     camera.height = height;
-    pixmapCanvas.SetCamera(camera);
+    std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->SetCamera(camera);
 
     Draw(currentRect);
 }
@@ -74,9 +77,11 @@ bool EditorView::Load(std::string path) {
 	std::cout << "loaded: " << path << std::endl;
 
 	SS.AfterNewFile();
+
+	SS.GW.Init();
 	SS.GW.offset = {};
 	SS.GW.scale  = 10.0;
- 
+
 	camera = SS.GW.GetCamera();
     camera.pixelRatio = 1;
     camera.gridFit    = true;
@@ -84,12 +89,15 @@ bool EditorView::Load(std::string path) {
     camera.height     = initialRect.Height();
     camera.projUp     = SS.GW.projUp;
     camera.projRight  = SS.GW.projRight;
+
+    SS.gridSpacing = 5.0; // TODO: get these from settings file?
+
     camera.scale      = SS.GW.scale;
     camera.offset     = SS.GW.offset;
 
-    pixmapCanvas.SetLighting(SS.GW.GetLighting());
-    pixmapCanvas.SetCamera(camera);
-    pixmapCanvas.Init(false);
+    SS.GW.canvas.get()->SetLighting(SS.GW.GetLighting());
+    SS.GW.canvas.get()->SetCamera(camera);
+    std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);
 
     Draw(initialRect);
 }
@@ -115,7 +123,7 @@ void EditorView::ZoomToMouse(double zoomMultiplyer) {
     camera.offset = camera.offset.Plus(projRight.ScaledBy(rightf - righti));
     camera.offset = camera.offset.Plus(projUp.ScaledBy(upf - upi));
 
-    pixmapCanvas.SetCamera(camera);
+    SS.GW.canvas.get()->SetCamera(camera);
 }
 
 void EditorView::ZoomToFit(bool includingInvisibles, bool useSelection) {
@@ -124,5 +132,5 @@ void EditorView::ZoomToFit(bool includingInvisibles, bool useSelection) {
 	 camera.offset = SS.GW.offset;
 	 camera.scale = SS.GW.scale;
 
-	 pixmapCanvas.SetCamera(camera);
+	 SS.GW.canvas.get()->SetCamera(camera);
 }

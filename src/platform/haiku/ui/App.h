@@ -19,7 +19,8 @@ enum {
 
 	ZOOM_IN='zin',
 	ZOOM_OUT='zout',
-	ZOOM_TO_FIT='zfit'
+	ZOOM_TO_FIT='zfit',
+	TOGGLE_SNAP_GRID='tsng'
 };
 
 #endif
