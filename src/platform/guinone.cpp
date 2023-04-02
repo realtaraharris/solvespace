@@ -86,12 +86,69 @@ MenuBarRef GetOrCreateMainMenu(bool *unique) {
     return std::shared_ptr<MenuBar>();
 }
 
+// Don't do put much functionality in here; just stub this out to aid future removal
+class WindowImplHaiku final : public Window {
+//    HaikuWindow       haikuWindow;
+public:
+    WindowImplHaiku(Window::Kind kind) {}
+
+	virtual double GetPixelDensity() override { return 1.0; }
+    void GetContentSize(double *width, double *height) override {}
+
+    virtual int GetDevicePixelRatio() override { return 1; }
+    // Returns (fractional) font scale, to be applied on top of (integral) device pixel ratio.
+    virtual double GetDeviceFontScale() {
+        return GetPixelDensity() / GetDevicePixelRatio() / 96.0;
+    }
+
+    virtual bool IsVisible() override { return true; }
+    virtual void SetVisible(bool visible) override {}
+    virtual void Focus() override {}
+
+    virtual bool IsFullScreen() override { return false; }
+    virtual void SetFullScreen(bool fullScreen) override {}
+
+    virtual void SetTitle(const std::string &title) override {}
+    virtual bool SetTitleForFilename(const Path &filename) { return false; }
+
+    virtual void SetMenuBar(MenuBarRef menuBar) override {}
+
+//    virtual void GetContentSize(double *width, double *height) override {}
+    virtual void SetMinContentSize(double width, double height) override {}
+
+    virtual void FreezePosition(SettingsRef settings, const std::string &key) override {}
+    virtual void ThawPosition(SettingsRef settings, const std::string &key) override {}
+
+    virtual void SetCursor(Cursor cursor) override {}
+    virtual void SetTooltip(const std::string &text, double x, double y,
+                            double width, double height) override {}
+
+    virtual bool IsEditorVisible() override { return true; }
+    virtual void ShowEditor(double x, double y, double fontHeight, double minWidth,
+                            bool isMonospace, const std::string &text) override {}
+    virtual void HideEditor() override {}
+
+    virtual void SetScrollbarVisible(bool visible) override {}
+    virtual void ConfigureScrollbar(double min, double max, double pageSize) override {}
+    virtual double GetScrollbarPosition() override { return 0; }
+    virtual void SetScrollbarPosition(double pos) override {}
+
+    virtual void Invalidate() override {}
+};
+
 //-----------------------------------------------------------------------------
 // Windows
 //-----------------------------------------------------------------------------
 
 WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
     return std::shared_ptr<Window>();
+
+    auto window = std::make_shared<WindowImplHaiku>(kind);
+/*  if(parentWindow) {
+        window->haikuWindow.set_transient_for(
+            std::static_pointer_cast<WindowImplHaiku>(parentWindow)->haikuWindow);
+    } */
+    return window;
 }
 
 void Request3DConnexionEventsForWindow(WindowRef window) {}

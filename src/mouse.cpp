@@ -83,11 +83,10 @@ void GraphicsWindow::StartDraggingBySelection() {
     }
 }
 
-void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
-            bool middleDown, bool rightDown, bool shiftDown, bool ctrlDown)
-{
-    if(window->IsEditorVisible()) return;
-    if(context.active) return;
+void GraphicsWindow::MouseMoved(double x, double y, bool leftDown, bool middleDown, bool rightDown, bool shiftDown, bool ctrlDown) {
+    if (context.active) {
+	    return;
+	}
 
     SS.extraLine.draw = false;
 
@@ -101,16 +100,6 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
     if(rightDown) {
         middleDown = true;
         shiftDown = !shiftDown;
-    }
-
-    // Not passing right-button and middle-button drags to the toolbar avoids
-    // some cosmetic issues with trackpad pans/rotates implemented with
-    // simulated right-button drag events causing spurious hover events.
-    if(SS.showToolbar && !middleDown) {
-        if(ToolbarMouseMoved((int)x, (int)y)) {
-            hover.Clear();
-            return;
-        }
     }
 
     if(!leftDown && (pending.operation == Pending::DRAGGING_POINTS ||
@@ -174,13 +163,7 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
         orig.mouse.x = x;
         orig.mouse.y = y;
 
-        if(SS.TW.shown.screen == TextWindow::Screen::EDIT_VIEW) {
-            if(havePainted) {
-                SS.ScheduleShowTW();
-            }
-        }
         Invalidate();
-        havePainted = false;
         return;
     }
 
@@ -252,7 +235,7 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
                 // If we haven't painted since last time we highlighted
                 // something, don't hit test again, since this just causes
                 // a lag.
-                if(!havePainted) return;
+//                if(!havePainted) return;
                 HitTestMakeSelection(mp);
             }
         }
@@ -272,14 +255,6 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown,
         SS.extraLine.draw = true;
     }
 
-    // We're currently dragging something; so do that. But if we haven't
-    // painted since the last time we solved, do nothing, because there's
-    // no sense solving a frame and not displaying it.
-    if(!havePainted) {
-        return;
-    }
-
-    havePainted = false;
     switch(pending.operation) {
         case Pending::DRAGGING_CONSTRAINT: {
             Constraint *c = SK.constraint.FindById(pending.constraint);
@@ -596,7 +571,6 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
                 SS.TW.GoToScreen(TextWindow::Screen::GROUP_INFO);
                 SS.TW.shown.group = hg;
                 SS.ScheduleShowTW();
-                ForceTextWindowShown();
             });
         }
         if(gs.n + gs.constraints == 1 && gs.stylables == 1) {
@@ -616,7 +590,6 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
                 SS.TW.GoToScreen(TextWindow::Screen::STYLE_INFO);
                 SS.TW.shown.style = hs;
                 SS.ScheduleShowTW();
-                ForceTextWindowShown();
             });
         }
         if(gs.withEndpoints > 0) {
@@ -874,8 +847,8 @@ bool GraphicsWindow::ConstrainPointByHovered(hEntity pt, const Point2d *projecte
 
 bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
     using Platform::MouseEvent;
-    double width, height;
-    window->GetContentSize(&width, &height);
+    double width = 600, height = 600; // TODO: hook into window size somehow
+//    window->GetContentSize(&width, &height);
 
     event.x = event.x - width / 2;
     event.y = height / 2 - event.y;
@@ -927,18 +900,6 @@ bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
 
 void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ctrlDown) {
     orig.mouseDown = true;
-
-    if(window->IsEditorVisible()) {
-        orig.mouse = Point2d::From(mx, my);
-        orig.mouseOnButtonDown = orig.mouse;
-        window->HideEditor();
-        return;
-    }
-    SS.TW.HideEditControl();
-
-    if(SS.showToolbar) {
-        if(ToolbarMouseDown((int)mx, (int)my)) return;
-    }
 
     // This will be clobbered by MouseMoved below.
     bool hasConstraintSuggestion = pending.hasSuggestion;
@@ -1199,13 +1160,13 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
             }
 
             if(ConstrainPointByHovered(pending.point, &mouse)) {
-                ClearPending();
+	            ClearPending();
                 break;
             }
 
             Entity e;
             if(r->extraPoints >= (int)arraylen(e.point) - 4) {
-                ClearPending();
+	            ClearPending();
                 break;
             }
 
@@ -1510,7 +1471,7 @@ void GraphicsWindow::SixDofEvent(Platform::SixDofEvent event) {
         return;
     }
 
-    if(!havePainted) return;
+//    if(!havePainted) return;
     Vector out = projRight.Cross(projUp);
 
     // rotation vector is axis of rotation, and its magnitude is angle
@@ -1567,6 +1528,6 @@ void GraphicsWindow::SixDofEvent(Platform::SixDofEvent event) {
         }
     }
 
-    havePainted = false;
+//    havePainted = false;
     Invalidate();
 }

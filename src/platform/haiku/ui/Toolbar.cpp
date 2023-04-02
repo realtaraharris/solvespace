@@ -52,31 +52,28 @@ AppToolbar::AppToolbar(void)
 	) {
 	static BBitmap *lineToolIcon = LoadIconFromResource("line-tool", 18);
 	static BBitmap *rectToolIcon = LoadIconFromResource("rect-tool", 18);
+	static BBitmap *circleToolIcon = LoadIconFromResource("circle-tool", 18);
+	static BBitmap *arcToolIcon = LoadIconFromResource("arc-tool", 18);
+	static BBitmap *tangentArcToolIcon = LoadIconFromResource("tangent-arc-tool", 18);
+	static BBitmap *cubicSplineToolIcon = LoadIconFromResource("cubic-spline-tool", 18);
+	static BBitmap *datumPointToolIcon = LoadIconFromResource("datum-point-tool", 18);
 
 	const BSize buttonSize = BSize(30.0, 30.0);
 
 	this->AddButton(BRect(BPoint(0.0, 0.0), buttonSize), lineToolIcon, new BMessage(LINE_TOOL_BTN_CLICKED));
 	this->AddButton(BRect(BPoint(30.0, 0.0), buttonSize), rectToolIcon, new BMessage(RECT_TOOL_BTN_CLICKED));
 
+	this->AddButton(BRect(BPoint(0.0, 30.0), buttonSize), circleToolIcon, new BMessage(CIRCLE_TOOL_BTN_CLICKED));
+	this->AddButton(BRect(BPoint(30.0, 30.0), buttonSize), arcToolIcon, new BMessage(ARC_TOOL_BTN_CLICKED));
+
+	this->AddButton(BRect(BPoint(0.0, 60.0), buttonSize), tangentArcToolIcon, new BMessage(TANGENT_ARC_TOOL_BTN_CLICKED));
+	this->AddButton(BRect(BPoint(30.0, 60.0), buttonSize), cubicSplineToolIcon, new BMessage(CUBIC_SPLINE_TOOL_BTN_CLICKED));
+
+    this->AddButton(BRect(BPoint(0.0, 90.0), buttonSize), datumPointToolIcon, new BMessage(DATUM_POINT_TOOL_BTN_CLICKED));
+
 	this->Show();
 }
 
 void AppToolbar::MessageReceived(BMessage *msg) {
-	switch (msg->what) {
-		case LINE_TOOL_BTN_CLICKED: {
-		 // doIt();
-			std::cout << "LINE_TOOL_BTN" << std::endl;
-			break;
-		}
-		case RECT_TOOL_BTN_CLICKED: {
-			std::cout << "RECT_TOOL_BTN" << std::endl;
-			break;
-		}
-		default: {
-			std::cout << "Message received: " << msg->what << std::endl;
-
-			BWindow::MessageReceived(msg);
-			break;
-		}
-	}
+	be_app->WindowAt(0)->PostMessage(msg);
 }

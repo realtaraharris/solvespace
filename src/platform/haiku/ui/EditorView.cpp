@@ -3,6 +3,8 @@
  * Portions copyright 2002-2006 Maxim Shemanarev
  * All rights reserved. Distributed under the terms of the MIT license.
  */
+
+#include "Window.h"
 #include "EditorView.h"
 #include "../src/render/render.h"
 
@@ -102,8 +104,59 @@ bool EditorView::Load(std::string path) {
     Draw(initialRect);
 }
 
+SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
+	int32 buttons;
+	if (Window()->CurrentMessage()->FindInt32("Buttons", (int32 *)&buttons)) {
+		if (buttons & B_PRIMARY_MOUSE_BUTTON) {
+			return SolveSpace::Platform::MouseEvent::Button::LEFT;
+		}
+		if (buttons & B_SECONDARY_MOUSE_BUTTON) {
+			return SolveSpace::Platform::MouseEvent::Button::MIDDLE;
+		}
+		if (buttons & B_TERTIARY_MOUSE_BUTTON) {
+			return SolveSpace::Platform::MouseEvent::Button::RIGHT;
+		}
+	}
+
+	return SolveSpace::Platform::MouseEvent::Button::LEFT;
+}
+
+void EditorView::MouseDown(BPoint point) {
+	SolveSpace::Platform::MouseEvent event = {};
+	event.type = SolveSpace::Platform::MouseEvent::Type::PRESS;
+	event.button = GetMouseButton();
+	event.x = point.x;
+	event.y = point.y;
+
+	SS.GW.MouseEvent(event);
+	SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
+    Draw(currentRect);
+}
+
 void EditorView::MouseMoved(BPoint point, uint32 transit, const BMessage* message) {
 	currentMousePosition = point;
+
+    SolveSpace::Platform::MouseEvent event = {};
+	event.type = SolveSpace::Platform::MouseEvent::Type::MOTION;
+	event.button = GetMouseButton();
+	event.x = point.x;
+	event.y = point.y;
+
+	SS.GW.MouseEvent(event);
+	SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
+    Draw(currentRect);
+}
+
+void EditorView::MouseUp(BPoint point) {
+    SolveSpace::Platform::MouseEvent event = {};
+	event.type = SolveSpace::Platform::MouseEvent::Type::RELEASE;
+	event.button = GetMouseButton();
+	event.x = point.x;
+	event.y = point.y;
+
+	SS.GW.MouseEvent(event);
+	SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
+    Draw(currentRect);
 }
 
 void EditorView::ZoomToMouse(double zoomMultiplyer) {

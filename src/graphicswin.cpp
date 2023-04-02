@@ -443,7 +443,7 @@ void GraphicsWindow::Init() {
             window->onMouseEvent = std::bind(&GraphicsWindow::MouseEvent, this, _1);
             window->onSixDofEvent = std::bind(&GraphicsWindow::SixDofEvent, this, _1);
             window->onEditingDone = std::bind(&GraphicsWindow::EditControlDone, this, _1);
-            PopulateMainMenu();
+//          PopulateMainMenu();
         }
     }
 

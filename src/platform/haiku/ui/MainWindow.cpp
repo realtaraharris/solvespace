@@ -52,6 +52,9 @@ MainWindow::MainWindow(void)
 		.Add(editorView)
 		.End();
 
+    SS.Init();
+
+
 	toolWindow = new AppToolbar();
 	toolWindow->Show();
 }
@@ -89,6 +92,41 @@ void MainWindow::MessageReceived(BMessage *msg) {
             }
 	        break;
 	    }
+		case LINE_TOOL_BTN_CLICKED: {
+			std::cout << "LINE_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::LINE_SEGMENT);
+			break;
+		}
+		case RECT_TOOL_BTN_CLICKED: {
+			std::cout << "RECT_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::RECTANGLE);
+			break;
+		}
+		case CIRCLE_TOOL_BTN_CLICKED: {
+			std::cout << "CIRCLE_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::CIRCLE);
+			break;
+		}
+		case ARC_TOOL_BTN_CLICKED: {
+			std::cout << "ARC_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::ARC);
+			break;
+		}
+		case TANGENT_ARC_TOOL_BTN_CLICKED: {
+			std::cout << "TANGENT_ARC_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::TANGENT_ARC);
+			break;
+		}
+		case CUBIC_SPLINE_TOOL_BTN_CLICKED: {
+			std::cout << "CUBIC_SPLINE_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::CUBIC);
+			break;
+		}
+		case DATUM_POINT_TOOL_BTN_CLICKED: {
+			std::cout << "DATUM_POINT_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::DATUM_POINT);
+			break;
+		}
 		case M_QUIT_APP: {
 			FreeAllTemporary();
 			be_app->PostMessage(B_QUIT_REQUESTED);

@@ -312,12 +312,12 @@ void SolveSpaceUI::Refresh() {
 
 void SolveSpaceUI::ScheduleGenerateAll() {
     scheduledGenerateAll = true;
-    refreshTimer->RunAfterProcessingEvents();
+//    refreshTimer->RunAfterProcessingEvents();
 }
 
 void SolveSpaceUI::ScheduleShowTW() {
     scheduledShowTW = true;
-    refreshTimer->RunAfterProcessingEvents();
+//    refreshTimer->RunAfterProcessingEvents();
 }
 
 void SolveSpaceUI::ScheduleAutosave() {

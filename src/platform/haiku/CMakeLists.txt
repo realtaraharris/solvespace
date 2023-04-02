@@ -41,6 +41,11 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 	COMMAND xres -o ${CMAKE_BINARY_DIR}/bin/SolveSpace ${CMAKE_BINARY_DIR}/Resources.rsrc
 		-a VICN:1:line-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/line-tool.hvif
 		-a VICN:2:rect-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/rect-tool.hvif
+		-a VICN:3:circle-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/circle-tool.hvif
+		-a VICN:4:arc-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/arc-tool.hvif
+		-a VICN:5:tangent-arc-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/tangent-arc-tool.hvif
+		-a VICN:6:cubic-spline-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/cubic-spline-tool.hvif
+		-a VICN:7:datum-point-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/datum-point-tool.hvif
 	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/bin/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )

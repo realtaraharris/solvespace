@@ -37,7 +37,11 @@ public:
 	void SaveToPng();
 	bool Load(std::string path);
 	void ZoomToMouse(double zoomMultiplyer);
+
+	void MouseDown(BPoint point);
 	void MouseMoved(BPoint point, uint32 transit, const BMessage* message);
+	void MouseUp(BPoint point);
+
 	void ZoomToFit(bool includingInvisibles, bool useSelection);
 
 private:
@@ -60,6 +64,7 @@ private:
     double  scale;
 
     void InitBitmapAndBuffer();
+    SolveSpace::Platform::MouseEvent::Button GetMouseButton();
 };
 
 #endif // EDITORVIEW_H
