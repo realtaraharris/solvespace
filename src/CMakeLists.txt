@@ -387,11 +387,14 @@ target_compile_definitions(solvespace-headless
 target_include_directories(solvespace-headless
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
     PUBLIC ${EIGEN3_INCLUDE_DIRS}
-    ${AGG_INCLUDE_DIRS})
+    ${AGG_INCLUDE_DIRS}
+    "platform/haiku/ui/"
+    )
 
 target_link_libraries(solvespace-headless
     PRIVATE
     agg
+    be
     solvespace-core)
 
 # solvespace command-line executable

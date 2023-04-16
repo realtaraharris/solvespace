@@ -1358,7 +1358,8 @@ void GraphicsWindow::EditConstraint(hConstraint constraint) {
     }
 
     double width, height;
-    window->GetContentSize(&width, &height);
+    //window->GetContentSize(&width, &height);
+    width = 600; height = 600; // TODO: fixme
     hStyle hs = c->disp.style;
     if(hs.v == 0) hs.v = Style::CONSTRAINT;
     double capHeight = Style::TextHeight(hs);

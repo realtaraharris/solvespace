@@ -971,8 +971,8 @@ void GraphicsWindow::EnsureValidActives() {
 
     // And update the checked state for various menus
     bool locked = LockedInWorkplane();
-    in3dMenuItem->SetActive(!locked);
-    inWorkplaneMenuItem->SetActive(locked);
+//    in3dMenuItem->SetActive(!locked);
+//    inWorkplaneMenuItem->SetActive(locked);
 
     SS.UndoEnableMenus();
 
@@ -986,6 +986,7 @@ void GraphicsWindow::EnsureValidActives() {
             SS.viewUnits = Unit::MM;
             break;
     }
+    /*
     unitsMmMenuItem->SetActive(SS.viewUnits == Unit::MM);
     unitsMetersMenuItem->SetActive(SS.viewUnits == Unit::METERS);
     unitsInchesMenuItem->SetActive(SS.viewUnits == Unit::INCHES);
@@ -1000,7 +1001,7 @@ void GraphicsWindow::EnsureValidActives() {
     explodeMenuItem->SetActive(SS.explode);
     showToolbarMenuItem->SetActive(SS.showToolbar);
     fullScreenMenuItem->SetActive(SS.GW.window->IsFullScreen());
-
+*/
     if(change) SS.ScheduleShowTW();
 }
 
@@ -1047,8 +1048,8 @@ void GraphicsWindow::DeleteTaggedRequests() {
 
     // An edit might be in progress for the just-deleted item. So
     // now it's not.
-    window->HideEditor();
-    SS.TW.HideEditControl();
+//    window->HideEditor();
+//    SS.TW.HideEditControl();
     // And clear out the selection, which could contain that item.
     ClearSuper();
     // And regenerate to get rid of what it generates, plus anything

@@ -12,6 +12,7 @@ include_directories("/system/develop/headers/gnu/")
 include_directories("../../../src/")
 
 link_directories("~/config/non-packaged/lib/")
+link_directories("../../../build/bin/")
 
 add_executable(SolveSpace
 	ui/App.cpp
@@ -46,6 +47,8 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:5:tangent-arc-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/tangent-arc-tool.hvif
 		-a VICN:6:cubic-spline-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/cubic-spline-tool.hvif
 		-a VICN:7:datum-point-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/datum-point-tool.hvif
+		-a VICN:8:construction-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/construction-tool.hvif
+		-a VICN:9:split-curves-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/split-curves-tool.hvif
 	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/bin/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )

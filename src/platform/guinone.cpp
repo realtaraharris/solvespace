@@ -4,6 +4,11 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include <Window.h>
+
+#include "App.h"
+
+extern BApplication* be_app;
 
 namespace SolveSpace {
 
@@ -125,7 +130,10 @@ public:
 
     virtual bool IsEditorVisible() override { return true; }
     virtual void ShowEditor(double x, double y, double fontHeight, double minWidth,
-                            bool isMonospace, const std::string &text) override {}
+                            bool isMonospace, const std::string &text) override {
+        dbp("in ShowEditor!");
+        be_app->WindowAt(0)->PostMessage(new BMessage(M_SHOW_EDITOR));
+    }
     virtual void HideEditor() override {}
 
     virtual void SetScrollbarVisible(bool visible) override {}
@@ -141,7 +149,7 @@ public:
 //-----------------------------------------------------------------------------
 
 WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
-    return std::shared_ptr<Window>();
+//    return std::shared_ptr<Window>();
 
     auto window = std::make_shared<WindowImplHaiku>(kind);
 /*  if(parentWindow) {

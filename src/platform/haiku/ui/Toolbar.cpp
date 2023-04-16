@@ -25,7 +25,7 @@ void AppToolbar::AddButton(const BRect &frame, BBitmap *icon, BMessage *message)
 	tempView.BeginPicture(new BPicture());
 	DrawButton(&tempView, frame.OffsetToCopy(0, 0) , false);
 	tempView.SetDrawingMode(B_OP_OVER);
-	tempView.DrawBitmapAsync(icon, BPoint(6, 6));
+	tempView.DrawBitmapAsync(icon, BPoint(5, 5));
 	BPicture *off = tempView.EndPicture();
 
 	// Draw a pressed button
@@ -34,7 +34,7 @@ void AppToolbar::AddButton(const BRect &frame, BBitmap *icon, BMessage *message)
 	tempView.SetDrawingMode(B_OP_ALPHA);
     tempView.SetHighColor(0, 0, 0, 200);
     tempView.SetBlendingMode(B_CONSTANT_ALPHA, B_ALPHA_OVERLAY);
-	tempView.DrawBitmap(icon, BPoint(5, 5));
+	tempView.DrawBitmap(icon, BPoint(4, 4));
 	BPicture *on = tempView.EndPicture();
 
 	this->RemoveChild(&tempView);
@@ -50,13 +50,16 @@ AppToolbar::AppToolbar(void)
 		B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS,
 		B_CURRENT_WORKSPACE
 	) {
-	static BBitmap *lineToolIcon = LoadIconFromResource("line-tool", 18);
-	static BBitmap *rectToolIcon = LoadIconFromResource("rect-tool", 18);
-	static BBitmap *circleToolIcon = LoadIconFromResource("circle-tool", 18);
-	static BBitmap *arcToolIcon = LoadIconFromResource("arc-tool", 18);
-	static BBitmap *tangentArcToolIcon = LoadIconFromResource("tangent-arc-tool", 18);
-	static BBitmap *cubicSplineToolIcon = LoadIconFromResource("cubic-spline-tool", 18);
-	static BBitmap *datumPointToolIcon = LoadIconFromResource("datum-point-tool", 18);
+		const int TOOLBAR_ICON_SIZE = 20;
+	static BBitmap *lineToolIcon = LoadIconFromResource("line-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *rectToolIcon = LoadIconFromResource("rect-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *circleToolIcon = LoadIconFromResource("circle-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *arcToolIcon = LoadIconFromResource("arc-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *tangentArcToolIcon = LoadIconFromResource("tangent-arc-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *cubicSplineToolIcon = LoadIconFromResource("cubic-spline-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *datumPointToolIcon = LoadIconFromResource("datum-point-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *constructionToolIcon = LoadIconFromResource("construction-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *splitCurvesToolIcon = LoadIconFromResource("split-curves-tool", TOOLBAR_ICON_SIZE);
 
 	const BSize buttonSize = BSize(30.0, 30.0);
 
@@ -70,6 +73,13 @@ AppToolbar::AppToolbar(void)
 	this->AddButton(BRect(BPoint(30.0, 60.0), buttonSize), cubicSplineToolIcon, new BMessage(CUBIC_SPLINE_TOOL_BTN_CLICKED));
 
     this->AddButton(BRect(BPoint(0.0, 90.0), buttonSize), datumPointToolIcon, new BMessage(DATUM_POINT_TOOL_BTN_CLICKED));
+    this->AddButton(BRect(BPoint(30.0, 90.0), buttonSize), constructionToolIcon, new BMessage(CONSTRUCTION_TOOL_BTN_CLICKED));
+
+    this->AddButton(BRect(BPoint(0.0, 120.0), buttonSize), splitCurvesToolIcon, new BMessage(SPLIT_CURVES_TOOL_BTN_CLICKED));
+
+    // TODO: add divider
+
+    this->AddButton(BRect(BPoint(0.0, 150.0), buttonSize), datumPointToolIcon, new BMessage(DISTANCE_DIA_TOOL_BTN_CLICKED));
 
 	this->Show();
 }

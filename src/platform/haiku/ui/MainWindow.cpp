@@ -54,7 +54,6 @@ MainWindow::MainWindow(void)
 
     SS.Init();
 
-
 	toolWindow = new AppToolbar();
 	toolWindow->Show();
 }
@@ -125,6 +124,27 @@ void MainWindow::MessageReceived(BMessage *msg) {
 		case DATUM_POINT_TOOL_BTN_CLICKED: {
 			std::cout << "DATUM_POINT_TOOL_BTN" << std::endl;
 			SS.GW.MenuRequest(SolveSpace::Command::DATUM_POINT);
+			break;
+		}
+		case CONSTRUCTION_TOOL_BTN_CLICKED: {
+			std::cout << "CONSTRUCTION_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::CONSTRUCTION);
+			break;
+		}
+		case SPLIT_CURVES_TOOL_BTN_CLICKED: {
+			std::cout << "SPLIT_CURVES_TOOL_BTN" << std::endl;
+			SS.GW.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
+			break;
+		}
+		case DISTANCE_DIA_TOOL_BTN_CLICKED: {
+			std::cout << "DISTANCE_DIA_TOOL_BTN" << std::endl;
+			SS.GW.ActivateCommand(SolveSpace::Command::DISTANCE_DIA);
+			SS.GW.Invalidate();
+			editorView->Invalidate();
+			break;
+		}
+		case M_SHOW_EDITOR: {
+			std::cout << "BOOOOOOM SUCCESS" << std::endl;
 			break;
 		}
 		case M_QUIT_APP: {
