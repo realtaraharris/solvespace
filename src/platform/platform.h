@@ -80,6 +80,7 @@ void DebugPrint(const char *fmt, ...);
 // Temporary arena functions.
 void *AllocTemporary(size_t size);
 void FreeAllTemporary();
+void CleanupForQuitting();
 
 } // namespace Platform
 } // namespace SolveSpace

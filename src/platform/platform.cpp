@@ -723,5 +723,9 @@ void FreeAllTemporary() {
     std::swap(TempArena.heap, temp.heap);
 }
 
+void CleanupForQuitting() {
+    TempArena.~MimallocHeap();
+}
+
 }
 }
