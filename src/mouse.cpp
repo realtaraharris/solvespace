@@ -847,8 +847,8 @@ bool GraphicsWindow::ConstrainPointByHovered(hEntity pt, const Point2d *projecte
 
 bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
     using Platform::MouseEvent;
-    double width = 600, height = 600; // TODO: hook into window size somehow
-//    window->GetContentSize(&width, &height);
+    double width, height;
+    window->GetContentSize(&width, &height);
 
     event.x = event.x - width / 2;
     event.y = height / 2 - event.y;
@@ -1358,8 +1358,7 @@ void GraphicsWindow::EditConstraint(hConstraint constraint) {
     }
 
     double width, height;
-    //window->GetContentSize(&width, &height);
-    width = 600; height = 600; // TODO: fixme
+    window->GetContentSize(&width, &height);
     hStyle hs = c->disp.style;
     if(hs.v == 0) hs.v = Style::CONSTRAINT;
     double capHeight = Style::TextHeight(hs);

@@ -97,8 +97,13 @@ class WindowImplHaiku final : public Window {
 public:
     WindowImplHaiku(Window::Kind kind) {}
 
-	virtual double GetPixelDensity() override { return 1.0; }
-    void GetContentSize(double *width, double *height) override {}
+    virtual double GetPixelDensity() override { return 1.0; }
+
+    virtual void GetContentSize(double *width, double *height) override {
+	const BSize size = be_app->WindowAt(0)->Size();
+	*width = size.Width();
+	*height = size.Height() - MENUBAR_HEIGHT;
+    }
 
     virtual int GetDevicePixelRatio() override { return 1; }
     // Returns (fractional) font scale, to be applied on top of (integral) device pixel ratio.
@@ -117,8 +122,6 @@ public:
     virtual bool SetTitleForFilename(const Path &filename) { return false; }
 
     virtual void SetMenuBar(MenuBarRef menuBar) override {}
-
-//    virtual void GetContentSize(double *width, double *height) override {}
     virtual void SetMinContentSize(double width, double height) override {}
 
     virtual void FreezePosition(SettingsRef settings, const std::string &key) override {}
