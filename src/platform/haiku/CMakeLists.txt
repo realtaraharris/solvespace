@@ -49,6 +49,8 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:7:datum-point-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/datum-point-tool.hvif
 		-a VICN:8:construction-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/construction-tool.hvif
 		-a VICN:9:split-curves-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/split-curves-tool.hvif
+		-a VICN:10:distance-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/distance-tool.hvif
+		-a VICN:11:angle-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/angle-tool.hvif
 	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/bin/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )
