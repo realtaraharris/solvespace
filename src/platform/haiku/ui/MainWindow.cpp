@@ -147,6 +147,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
 			editorView->Invalidate();
 			break;
 		}
+		case HORIZONTAL_TOOL_BTN_CLICKED: {
+			SS.GW.ActivateCommand(SolveSpace::Command::HORIZONTAL);
+			SS.GW.Invalidate();
+			editorView->Invalidate();
+			break;
+		}
 		case M_SHOW_EDITOR: {
 			std::cout << "BOOOOOOM SUCCESS" << std::endl;
 			break;

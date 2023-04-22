@@ -64,6 +64,8 @@ AppToolbar::AppToolbar(void)
 	static BBitmap *distanceToolIcon = LoadIconFromResource("distance-tool", TOOLBAR_ICON_SIZE);
 	static BBitmap *angleToolIcon = LoadIconFromResource("angle-tool", TOOLBAR_ICON_SIZE);
 
+	static BBitmap *horizontalToolIcon = LoadIconFromResource("horizontal-tool", TOOLBAR_ICON_SIZE);
+
 	const BSize buttonSize = BSize(30.0, 30.0);
 
 	this->AddButton(BRect(BPoint(0.0, 0.0), buttonSize), lineToolIcon, new BMessage(LINE_TOOL_BTN_CLICKED));
@@ -84,6 +86,8 @@ AppToolbar::AppToolbar(void)
 
     this->AddButton(BRect(BPoint(0.0, 153.0), buttonSize), distanceToolIcon, new BMessage(DISTANCE_DIA_TOOL_BTN_CLICKED));
     this->AddButton(BRect(BPoint(30.0, 153.0), buttonSize), angleToolIcon, new BMessage(ANGLE_TOOL_BTN_CLICKED));
+
+    this->AddButton(BRect(BPoint(0.0, 183.0), buttonSize), horizontalToolIcon, new BMessage(HORIZONTAL_TOOL_BTN_CLICKED));
 
 	this->Show();
 }

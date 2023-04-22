@@ -38,6 +38,7 @@ target_include_directories(SolveSpace
 target_link_libraries(SolveSpace be agg translation tracker solvespace-headless)
 
 add_custom_command(TARGET SolveSpace POST_BUILD
+	COMMENT "rebuilding icon resources"
 	COMMAND rc -o ${CMAKE_BINARY_DIR}/Resources.rsrc ${CMAKE_SOURCE_DIR}/src/platform/haiku/Resources.rdef
 	COMMAND xres -o ${CMAKE_BINARY_DIR}/bin/SolveSpace ${CMAKE_BINARY_DIR}/Resources.rsrc
 		-a VICN:1:line-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/line-tool.hvif
@@ -51,6 +52,7 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:9:split-curves-tool  ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/split-curves-tool.hvif
 		-a VICN:10:distance-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/distance-tool.hvif
 		-a VICN:11:angle-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/angle-tool.hvif
+		-a VICN:12:horizontal-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/horizontal-tool.hvif
 	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/bin/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )

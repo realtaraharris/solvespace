@@ -27,6 +27,8 @@ enum {
 	DISTANCE_DIA_TOOL_BTN_CLICKED='ddbc',
 	ANGLE_TOOL_BTN_CLICKED='anbc',
 
+	HORIZONTAL_TOOL_BTN_CLICKED='htbc',
+
 	M_SHOW_EDITOR='mshe',
 
 	READ_FILE='rdfl',
