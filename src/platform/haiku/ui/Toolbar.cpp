@@ -46,7 +46,7 @@ AppToolbar::AppToolbar(void)
 		BRect(BPoint(10, 100), BSize(60, 600)),
 		"Tools",
 		B_FLOATING_WINDOW_LOOK,
-		B_FLOATING_APP_WINDOW_FEEL,
+		B_FLOATING_ALL_WINDOW_FEEL,
 		B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS,
 		B_CURRENT_WORKSPACE
 	) {
@@ -60,6 +60,7 @@ AppToolbar::AppToolbar(void)
 	static BBitmap *datumPointToolIcon = LoadIconFromResource("datum-point-tool", TOOLBAR_ICON_SIZE);
 	static BBitmap *constructionToolIcon = LoadIconFromResource("construction-tool", TOOLBAR_ICON_SIZE);
 	static BBitmap *splitCurvesToolIcon = LoadIconFromResource("split-curves-tool", TOOLBAR_ICON_SIZE);
+	static BBitmap *textToolIcon = LoadIconFromResource("text-tool", TOOLBAR_ICON_SIZE);
 
 	static BBitmap *distanceToolIcon = LoadIconFromResource("distance-tool", TOOLBAR_ICON_SIZE);
 	static BBitmap *angleToolIcon = LoadIconFromResource("angle-tool", TOOLBAR_ICON_SIZE);
@@ -82,6 +83,7 @@ AppToolbar::AppToolbar(void)
     this->AddButton(BRect(BPoint(30.0, 90.0), buttonSize), constructionToolIcon, new BMessage(CONSTRUCTION_TOOL_BTN_CLICKED));
 
     this->AddButton(BRect(BPoint(0.0, 120.0), buttonSize), splitCurvesToolIcon, new BMessage(SPLIT_CURVES_TOOL_BTN_CLICKED));
+    this->AddButton(BRect(BPoint(30.0, 120.0), buttonSize), textToolIcon, new BMessage(TEXT_TOOL_BTN_CLICKED));
 
     // TODO: add divider
 

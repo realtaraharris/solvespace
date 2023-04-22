@@ -133,6 +133,10 @@ void MainWindow::MessageReceived(BMessage *msg) {
 			SS.GW.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
 			break;
 		}
+		case TEXT_TOOL_BTN_CLICKED: {
+			SS.GW.MenuRequest(SolveSpace::Command::TTF_TEXT);
+			break;
+		}
 		case DISTANCE_DIA_TOOL_BTN_CLICKED: {
 			std::cout << "DISTANCE_DIA_TOOL_BTN" << std::endl;
 			SS.GW.ActivateCommand(SolveSpace::Command::DISTANCE_DIA);
