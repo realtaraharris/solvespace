@@ -17,9 +17,12 @@ link_directories("../../../build/bin/")
 add_executable(SolveSpace
 	ui/App.cpp
 	ui/MainWindow.cpp
-#	ui/Solver.cpp
 
 	ui/Toolbar.cpp
+	ui/PropertyBrowser.cpp
+	ui/ListView/DragSortableListView.cpp
+	ui/ListView/ThumbListItem.cpp
+
 	ui/HVIFUtil.cpp
 	ui/DrawButton.cpp
 
@@ -56,6 +59,8 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:13:horizontal-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/horizontal-tool.hvif
 		-a VICN:14:vertical-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/vertical-tool.hvif
 		-a VICN:15:parallel-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/parallel-tool.hvif
+		-a VICN:16:open-eye ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/open-eye.hvif
+		-a VICN:17:closed-eye ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/closed-eye.hvif
 	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/bin/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )

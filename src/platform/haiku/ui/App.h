@@ -14,6 +14,12 @@ public:
 };
 
 enum {
+    MAIN_WINDOW=0,
+    TOOLBAR=1,
+    PROPERTY_BROWSER=2
+};
+
+enum {
 	LINE_TOOL_BTN_CLICKED='ltbc',
 	RECT_TOOL_BTN_CLICKED='rtbc',
 	CIRCLE_TOOL_BTN_CLICKED='ctbc',
@@ -33,6 +39,8 @@ enum {
 	PARALLEL_TOOL_BTN_CLICKED='ptbc',
 
 	M_SHOW_EDITOR='mshe',
+
+	SHOW_LIST_OF_GROUPS='slog',
 
 	READ_FILE='rdfl',
 	M_OPEN_FILE='mof',

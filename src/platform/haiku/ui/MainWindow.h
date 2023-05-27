@@ -5,6 +5,7 @@
 #include <MenuBar.h>
 
 #include "EditorView.h"
+#include "PropertyBrowser.h"
 
 class MainWindow : public BWindow {
 public:
@@ -14,6 +15,7 @@ public:
 private:
 	BMenuBar *menuBar;
 	BWindow *toolWindow;
+	PropertyBrowser *propertyBrowser;
 	EditorView *editorView;
 };
 

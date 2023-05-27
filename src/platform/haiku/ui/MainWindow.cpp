@@ -53,6 +53,9 @@ MainWindow::MainWindow(void)
 
 	toolWindow = new AppToolbar();
 	toolWindow->Show();
+
+	propertyBrowser = new PropertyBrowser();
+	propertyBrowser->Show();
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
@@ -191,6 +194,8 @@ void MainWindow::MessageReceived(BMessage *msg) {
 					BPath path;
 					entry.GetPath(&path);
 					editorView->Load(std::string(path.Path()));
+
+					be_app->WindowAt(PROPERTY_BROWSER)->PostMessage(new BMessage(SHOW_LIST_OF_GROUPS));
 				}
 			}
 			break;

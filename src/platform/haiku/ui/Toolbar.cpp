@@ -46,7 +46,7 @@ AppToolbar::AppToolbar(void)
 		BRect(BPoint(10, 100), BSize(60, 600)),
 		"Tools",
 		B_FLOATING_WINDOW_LOOK,
-		B_FLOATING_ALL_WINDOW_FEEL,
+		B_FLOATING_APP_WINDOW_FEEL,
 		B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS,
 		B_CURRENT_WORKSPACE
 	) {
@@ -100,5 +100,5 @@ AppToolbar::AppToolbar(void)
 }
 
 void AppToolbar::MessageReceived(BMessage *msg) {
-	be_app->WindowAt(0)->PostMessage(msg);
+	be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
 }
