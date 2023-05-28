@@ -7,49 +7,44 @@
 #define MIN_HEIGHT 600
 #define MENUBAR_HEIGHT 20
 
-class App : public BApplication
-{
-public:
-	App(void);
+class App : public BApplication {
+  public:
+    App(void);
 };
 
-enum {
-    MAIN_WINDOW=0,
-    TOOLBAR=1,
-    PROPERTY_BROWSER=2
-};
+enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2 };
 
 enum {
-	LINE_TOOL_BTN_CLICKED='ltbc',
-	RECT_TOOL_BTN_CLICKED='rtbc',
-	CIRCLE_TOOL_BTN_CLICKED='ctbc',
-	ARC_TOOL_BTN_CLICKED='atbc',
-	TANGENT_ARC_TOOL_BTN_CLICKED='tabc',
-	CUBIC_SPLINE_TOOL_BTN_CLICKED='csbc',
-	DATUM_POINT_TOOL_BTN_CLICKED='dpbc',
-	CONSTRUCTION_TOOL_BTN_CLICKED='cnbc',
-	SPLIT_CURVES_TOOL_BTN_CLICKED='scbc',
-	TEXT_TOOL_BTN_CLICKED='ttbc',
+    LINE_TOOL_BTN_CLICKED = 'ltbc',
+    RECT_TOOL_BTN_CLICKED = 'rtbc',
+    CIRCLE_TOOL_BTN_CLICKED = 'ctbc',
+    ARC_TOOL_BTN_CLICKED = 'atbc',
+    TANGENT_ARC_TOOL_BTN_CLICKED = 'tabc',
+    CUBIC_SPLINE_TOOL_BTN_CLICKED = 'csbc',
+    DATUM_POINT_TOOL_BTN_CLICKED = 'dpbc',
+    CONSTRUCTION_TOOL_BTN_CLICKED = 'cnbc',
+    SPLIT_CURVES_TOOL_BTN_CLICKED = 'scbc',
+    TEXT_TOOL_BTN_CLICKED = 'ttbc',
 
-	DISTANCE_DIA_TOOL_BTN_CLICKED='ddbc',
-	ANGLE_TOOL_BTN_CLICKED='anbc',
+    DISTANCE_DIA_TOOL_BTN_CLICKED = 'ddbc',
+    ANGLE_TOOL_BTN_CLICKED = 'anbc',
 
-	HORIZONTAL_TOOL_BTN_CLICKED='htbc',
-	VERTICAL_TOOL_BTN_CLICKED='vtbc',
-	PARALLEL_TOOL_BTN_CLICKED='ptbc',
+    HORIZONTAL_TOOL_BTN_CLICKED = 'htbc',
+    VERTICAL_TOOL_BTN_CLICKED = 'vtbc',
+    PARALLEL_TOOL_BTN_CLICKED = 'ptbc',
 
-	M_SHOW_EDITOR='mshe',
+    M_SHOW_EDITOR = 'mshe',
 
-	SHOW_LIST_OF_GROUPS='slog',
+    SHOW_LIST_OF_GROUPS = 'slog',
 
-	READ_FILE='rdfl',
-	M_OPEN_FILE='mof',
-	M_QUIT_APP='mqa',
+    READ_FILE = 'rdfl',
+    M_OPEN_FILE = 'mof',
+    M_QUIT_APP = 'mqa',
 
-	ZOOM_IN='zin',
-	ZOOM_OUT='zout',
-	ZOOM_TO_FIT='zfit',
-	TOGGLE_SNAP_GRID='tsng'
+    ZOOM_IN = 'zin',
+    ZOOM_OUT = 'zout',
+    ZOOM_TO_FIT = 'zfit',
+    TOGGLE_SNAP_GRID = 'tsng'
 };
 
 #endif
