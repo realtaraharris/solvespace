@@ -12,7 +12,7 @@ class PropertyBrowser : public BWindow {
     void ShowListOfGroups();
 
   private:
-    SimpleListView *outline;
+    SimpleListView *groupList;
 };
 
 #endif

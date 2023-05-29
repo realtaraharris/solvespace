@@ -7,6 +7,8 @@
 #include <Roster.h>
 #include <View.h>
 #include <Window.h>
+#include <ScrollView.h>
+#include <LayoutBuilder.h>
 
 #include "HVIFUtil.h"
 
@@ -82,7 +84,7 @@ void PropertyBrowser::ShowListOfGroups() {
         static BBitmap *closedEyeIcon = LoadIconFromResource("closed-eye", 20);
 
         listItem = new ThumbListItem(closedEyeIcon, g->name.c_str(), 20, 0, FALSE);
-        outline->AddItem(listItem);
+        groupList->AddItem(listItem);
 
         if (active) {
             afterActive = true;
@@ -92,19 +94,20 @@ void PropertyBrowser::ShowListOfGroups() {
 }
 
 PropertyBrowser::PropertyBrowser(void)
-    : BWindow(BRect(BPoint(730, 100), BSize(300, 300)), "Property Browser",
+    : BWindow(BRect(BPoint(730, 100), BSize(300, 50)), "Property Browser",
               B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
-              B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS,
+              B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS,
               B_CURRENT_WORKSPACE) {
+    BScrollView* scrollView;
+
+    groupList = new SimpleListView(Bounds(), "groups_list", NULL, B_MULTIPLE_SELECTION_LIST);
+    groupList->SetViewColor(255, 220, 220, 0);
+
+    BLayoutBuilder::Group<>(this, B_VERTICAL, 0.0f)
+        .Add(scrollView = new BScrollView("scroll_view", groupList, 0, false, true, B_PLAIN_BORDER), 0.0f)
+	.End();
 
     this->Show();
-
-    BRect r = Bounds();
-
-    outline = new SimpleListView(r, "groups_list", NULL, B_MULTIPLE_SELECTION_LIST);
-    outline->SetViewColor(255, 220, 220, 0);
-
-    AddChild(outline);
 }
 
 void PropertyBrowser::MessageReceived(BMessage *msg) {
