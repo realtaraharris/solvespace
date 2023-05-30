@@ -50,13 +50,13 @@ void DragSortableListView::AttachedToWindow() {
 
     BListView::AttachedToWindow();
 
-    // work arround a bug in BListView
+    // work around a bug in BListView
     BRect bounds = Bounds();
     BListView::FrameResized(bounds.Width(), bounds.Height());
 }
 
 void DragSortableListView::DetachedFromWindow() {
-    //	Window()->RemoveCommonFilter(fMouseWheelFilter);
+    // Window()->RemoveCommonFilter(fMouseWheelFilter);
 }
 
 void DragSortableListView::FrameResized(float width, float height) {
@@ -87,7 +87,7 @@ void DragSortableListView::Draw(BRect updateRect) {
 
     // drop anticipation indication
     if (fDropRect.IsValid()) {
-        SetHighColor(255, 0, 0, 255);
+        SetHighColor(ui_color(B_NAVIGATION_BASE_COLOR));
         StrokeRect(fDropRect);
     }
 
@@ -123,7 +123,7 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
     bool success = false;
     BListItem *item = ItemAt(CurrentSelection(0));
     if (!item) {
-        // workarround a timing problem
+        // workaround a timing problem
         Select(index);
         item = ItemAt(index);
     }
@@ -165,8 +165,8 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
                     DrawListItem(v, index, itemBounds);
                     itemBounds.top = itemBounds.bottom + 1.0;
                 }
-                // make a black frame arround the edge
-                v->SetHighColor(0, 0, 0, 255);
+                // make a frame around the edge
+                v->SetHighColor(ui_color(B_CONTROL_BORDER_COLOR));
                 v->StrokeRect(v->Bounds());
                 v->Sync();
 
@@ -204,10 +204,13 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
             delete dragBitmap;
             dragBitmap = NULL;
         }
-        if (dragBitmap)
-            DragMessage(&msg, dragBitmap, B_OP_ALPHA, BPoint(0.0, 0.0));
-        else
+        if (dragBitmap) {
+	    BRect itemFrame = ItemFrame(index);
+	    BPoint offset = BPoint(point.x - itemFrame.left, point.y - itemFrame.top);
+            DragMessage(&msg, dragBitmap, B_OP_ALPHA, offset);
+        } else {
             DragMessage(&msg, dragRect.OffsetToCopy(point), this);
+        }
 
         _SetDragMessage(&msg);
         success = true;
