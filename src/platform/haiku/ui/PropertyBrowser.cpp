@@ -13,6 +13,7 @@
 #include "HVIFUtil.h"
 
 #include "App.h" // contains message enums
+#include "ListView/ThumbListItem.h"
 
 #include <Alert.h> // BAlert
 #include <Button.h>
@@ -100,7 +101,8 @@ PropertyBrowser::PropertyBrowser(void)
               B_CURRENT_WORKSPACE) {
     BScrollView* scrollView;
 
-    groupList = new SimpleListView(Bounds(), "groups_list", NULL, B_MULTIPLE_SELECTION_LIST);
+    groupList = new GroupsListView(Bounds(), "groups_list", NULL, B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+
     groupList->SetViewColor(255, 220, 220, 0);
 
     BLayoutBuilder::Group<>(this, B_VERTICAL, 0.0f)

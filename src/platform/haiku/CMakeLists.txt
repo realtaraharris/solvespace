@@ -22,6 +22,7 @@ add_executable(SolveSpace
 	ui/PropertyBrowser.cpp
 	ui/ListView/DragSortableListView.cpp
 	ui/ListView/ThumbListItem.cpp
+	ui/GroupsListView.cpp
 
 	ui/HVIFUtil.cpp
 	ui/DrawButton.cpp

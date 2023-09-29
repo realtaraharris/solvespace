@@ -715,3 +715,7 @@ void SimpleListView::MakeDragMessage(BMessage *message) const {
             message->AddInt32("index", index);
     }
 }
+
+void SimpleListView::MoveItems(BList &items, int32 toIndex) {
+    DragSortableListView::MoveItems(items, toIndex);
+}

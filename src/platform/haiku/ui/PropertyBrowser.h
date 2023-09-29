@@ -1,8 +1,7 @@
 #ifndef PROPERTYBROWSER_H
 #define PROPERTYBROWSER_H
 
-#include "ListView/DragSortableListView.h"
-#include "ListView/ThumbListItem.h"
+#include "GroupsListView.h"
 #include <Window.h>
 
 class PropertyBrowser : public BWindow {
@@ -12,7 +11,7 @@ class PropertyBrowser : public BWindow {
     void ShowListOfGroups();
 
   private:
-    SimpleListView *groupList;
+    GroupsListView *groupList;
 };
 
 #endif

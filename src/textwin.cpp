@@ -299,7 +299,7 @@ void TextWindow::ClearSuper() {
     MakeColorTable(bgColors, bgColorTable);
 
     ClearScreen();
-    Show();
+//    Show();
 }
 
 void TextWindow::HideEditControl() {

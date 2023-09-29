@@ -124,6 +124,7 @@ class SimpleListView : public DragSortableListView {
     virtual BListItem *CloneItem(int32 atIndex) const;
     virtual void DrawListItem(BView *owner, int32 index, BRect itemFrame) const;
     virtual void MakeDragMessage(BMessage *message) const;
+    virtual void MoveItems(BList &items, int32 toIndex);
 
   private:
     BMessage *fSelectionChangeMessage;
