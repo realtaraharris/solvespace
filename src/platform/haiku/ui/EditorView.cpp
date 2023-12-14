@@ -106,7 +106,8 @@ bool EditorView::Load(std::string path) {
     SS.GW.canvas.get()->SetCamera(camera);
     std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);
 
-    FrameResized(camera.width, camera.height);
+    // TODO: figure out why this crashes when run here. something is nulling the rect
+    // FrameResized(camera.width, camera.height);
 }
 
 SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
