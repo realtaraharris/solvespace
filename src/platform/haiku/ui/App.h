@@ -3,9 +3,9 @@
 
 #include <Application.h>
 
-#define MIN_WIDTH 600
-#define MIN_HEIGHT 600
-#define MENUBAR_HEIGHT 20
+#define MIN_WIDTH 600.0f
+#define MIN_HEIGHT 600.0f
+#define MENUBAR_HEIGHT 20.0f
 
 class App : public BApplication {
   public:

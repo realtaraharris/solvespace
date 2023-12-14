@@ -74,7 +74,7 @@ void EditorView::FrameResized(float width, float height) {
     Draw(currentRect);
 }
 
-bool EditorView::Load(std::string path) {
+void EditorView::Load(std::string path) {
     const SolveSpace::Platform::Path fixturePath =
         SolveSpace::Platform::Path::From(path);
 
@@ -106,8 +106,7 @@ bool EditorView::Load(std::string path) {
     SS.GW.canvas.get()->SetCamera(camera);
     std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);
 
-    // TODO: figure out why this crashes when run here. something is nulling the rect
-    // FrameResized(camera.width, camera.height);
+    FrameResized(camera.width, camera.height);
 }
 
 SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
