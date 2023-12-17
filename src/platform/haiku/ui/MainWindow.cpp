@@ -32,6 +32,7 @@ MainWindow::MainWindow(void)
     menuBar = new BMenuBar(rect, "menubar");
     BMenu *fileMenu = new BMenu("File");
     fileMenu->AddItem(new BMenuItem("Open", new BMessage(M_OPEN_FILE), 'O'));
+    fileMenu->AddItem(new BMenuItem("Save", new BMessage(M_SAVE_FILE), 'S'));
     fileMenu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
     menuBar->AddItem(fileMenu);
 
@@ -63,6 +64,8 @@ MainWindow::MainWindow(void)
 
     propertyBrowser = new PropertyBrowser();
     propertyBrowser->Show();
+
+    currentFilePath = new BPath();
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
@@ -199,14 +202,17 @@ void MainWindow::MessageReceived(BMessage *msg) {
         fp->Show();
         break;
     }
+    case M_SAVE_FILE: {
+        SS.SaveToFile(Platform::Path::From(std::string(currentFilePath->Path())));
+        break;
+    }
     case READ_FILE: {
         if (msg->HasRef("refs")) {
             entry_ref ref;
             if (msg->FindRef("refs", 0, &ref) == B_OK) {
                 BEntry entry(&ref, true);
-                BPath path;
-                entry.GetPath(&path);
-                editorView->Load(std::string(path.Path()));
+                entry.GetPath(currentFilePath);
+                editorView->Load(std::string(currentFilePath->Path()));
 
                 be_app->WindowAt(PROPERTY_BROWSER)
                     ->PostMessage(new BMessage(SHOW_LIST_OF_GROUPS));

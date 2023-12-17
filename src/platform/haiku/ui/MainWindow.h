@@ -18,6 +18,7 @@ class MainWindow : public BWindow {
     BWindow *toolWindow;
     PropertyBrowser *propertyBrowser;
     EditorView *editorView;
+    BPath *currentFilePath;
 };
 
 #endif

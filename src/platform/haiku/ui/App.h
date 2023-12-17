@@ -39,6 +39,7 @@ enum {
 
     READ_FILE = 'rdfl',
     M_OPEN_FILE = 'mof',
+    M_SAVE_FILE = 'msf',
     M_QUIT_APP = 'mqa',
 
     ZOOM_IN = 'zin',
