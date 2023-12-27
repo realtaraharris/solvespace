@@ -488,6 +488,13 @@ void GraphicsWindow::AnimateOntoWorkplane() {
 }
 
 void GraphicsWindow::AnimateOnto(Quaternion quatf, Vector offsetf) {
+    // TODO: add animation once the Haiku timer code is added; just skip the animation for now
+    projRight = quatf.RotationU();
+    projUp    = quatf.RotationV();
+    offset    = offsetf;
+    window->Invalidate();
+    return;
+
     // Get our initial orientation and translation.
     Quaternion quat0 = Quaternion::From(projRight, projUp);
     Vector offset0 = offset;
@@ -825,8 +832,9 @@ void GraphicsWindow::MenuView(Command id) {
                     for(negi = 0; negi < 2; negi++) {
                         for(negj = 0; negj < 2; negj++) {
                             Vector ou = ortho[i], ov = ortho[j];
-                            if(negi) ou = ou.ScaledBy(-1);
-                            if(negj) ov = ov.ScaledBy(-1);
+                            // TODO: do this only if we're animating. otherwise these lines flip the camera incorrectly
+                            // if(negi) ou = ou.ScaledBy(-1);
+                            // if(negj) ov = ov.ScaledBy(-1);
                             Vector on = ou.Cross(ov);
 
                             Vector u, v;

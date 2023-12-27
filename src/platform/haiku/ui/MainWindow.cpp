@@ -41,8 +41,20 @@ MainWindow::MainWindow(void)
     viewMenu->AddItem(new BMenuItem("Zoom out", new BMessage(ZOOM_OUT), '-'));
     viewMenu->AddItem(
         new BMenuItem("Zoom to fit", new BMessage(ZOOM_TO_FIT), 'f'));
-    BSeparatorItem *separator = new BSeparatorItem;
-    viewMenu->AddItem(separator);
+    viewMenu->AddSeparatorItem();
+    viewMenu->AddItem(new BMenuItem(
+        "Align view to workplane", new BMessage(ALIGN_VIEW_TO_WORKPLANE), 'W'));
+    viewMenu->AddItem(new BMenuItem(
+        "Nearest ortho view", new BMessage(NEAREST_ORTHO_TOOL_BTN_CLICKED),
+        '2')); // B_F2_KEY
+    viewMenu->AddItem(new BMenuItem("Nearest isometric view",
+                                    new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED),
+                                    '3')); // B_F3_KEY
+    viewMenu->AddItem(new BMenuItem("Center view at point",
+                                    new BMessage(CENTER_VIEW_AT_POINT),
+                                    '4')); // B_F4_KEY
+    viewMenu->AddSeparatorItem();
+
     viewMenu->AddItem(
         new BMenuItem("Show snap grid", new BMessage(TOGGLE_SNAP_GRID), '>'));
     menuBar->AddItem(viewMenu);
@@ -86,6 +98,11 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->ZoomToFit(
             false, true); // includingInvisibles = false, useSelection = true
         SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
+    case CENTER_VIEW_AT_POINT: {
+        SS.GW.MenuView(SolveSpace::Command::CENTER_VIEW);
         editorView->Invalidate();
         break;
     }
@@ -186,6 +203,21 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->Invalidate();
         break;
     }
+
+    case NEAREST_ISO_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        break;
+    }
+    case NEAREST_ORTHO_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ORTHO);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        break;
+    }
     case M_SHOW_EDITOR: {
         std::cout << "BOOOOOOM SUCCESS" << std::endl;
         break;
@@ -203,7 +235,8 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_SAVE_FILE: {
-        SS.SaveToFile(Platform::Path::From(std::string(currentFilePath->Path())));
+        SS.SaveToFile(
+            Platform::Path::From(std::string(currentFilePath->Path())));
         break;
     }
     case READ_FILE: {

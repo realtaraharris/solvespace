@@ -26,6 +26,9 @@ enum {
     SPLIT_CURVES_TOOL_BTN_CLICKED = 'scbc',
     TEXT_TOOL_BTN_CLICKED = 'ttbc',
 
+    NEAREST_ISO_TOOL_BTN_CLICKED = 'nibc',
+    NEAREST_ORTHO_TOOL_BTN_CLICKED = 'nobc',
+
     DISTANCE_DIA_TOOL_BTN_CLICKED = 'ddbc',
     ANGLE_TOOL_BTN_CLICKED = 'anbc',
 
@@ -45,6 +48,9 @@ enum {
     ZOOM_IN = 'zin',
     ZOOM_OUT = 'zout',
     ZOOM_TO_FIT = 'zfit',
+    ALIGN_VIEW_TO_WORKPLANE = 'avtw',
+    CENTER_VIEW_AT_POINT = 'cvap',
+
     TOGGLE_SNAP_GRID = 'tsng'
 };
 

@@ -41,6 +41,7 @@ class EditorView : public BView {
     void MouseDown(BPoint point);
     void MouseMoved(BPoint point, uint32 transit, const BMessage *message);
     void MouseUp(BPoint point);
+    void SyncCamera();
 
     void ZoomToFit(bool includingInvisibles, bool useSelection);
 

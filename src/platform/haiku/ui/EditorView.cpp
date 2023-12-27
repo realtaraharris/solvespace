@@ -87,7 +87,9 @@ void EditorView::Load(std::string path) {
 
     SS.GW.Init();
     SS.GW.offset = {};
-    SS.GW.scale = 10.0;
+    SS.GW.scale = 5.0;
+    SS.GW.projRight = Vector::From(1, 0, 0);
+    SS.GW.projUp = Vector::From(0, 1, 0);
 
     camera = SS.GW.GetCamera();
     camera.pixelRatio = 1;
@@ -193,5 +195,10 @@ void EditorView::ZoomToFit(bool includingInvisibles, bool useSelection) {
     camera.offset = SS.GW.offset;
     camera.scale = SS.GW.scale;
 
+    SS.GW.canvas.get()->SetCamera(camera);
+}
+
+void EditorView::SyncCamera() {
+    camera = SS.GW.GetCamera();
     SS.GW.canvas.get()->SetCamera(camera);
 }
