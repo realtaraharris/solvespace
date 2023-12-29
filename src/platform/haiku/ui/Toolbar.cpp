@@ -88,6 +88,8 @@ AppToolbar::AppToolbar(void)
 
     static BBitmap *constrainPerpendicularToolIcon =
         LoadIconFromResource("constrain-perpendicular-tool", TOOLBAR_ICON_SIZE);
+    static BBitmap *constrainPointOnLineToolIcon =
+        LoadIconFromResource("constrain-point-on-line-tool", TOOLBAR_ICON_SIZE);
 
 
     const BSize buttonSize = BSize(30.0, 30.0);
@@ -134,9 +136,12 @@ AppToolbar::AppToolbar(void)
     this->AddButton(BRect(BPoint(30.0, 213.0), buttonSize), constrainPerpendicularToolIcon,
                     new BMessage(CONSTRAIN_PERP_TOOL_BTN_CLICKED));
 
-    this->AddButton(BRect(BPoint(0.0, 253.0), buttonSize), nearestIsoToolIcon,
+    this->AddButton(BRect(BPoint(0.0, 243.0), buttonSize), constrainPointOnLineToolIcon,
+                    new BMessage(PT_ON_LINE_TOOL_BTN_CLICKED));
+
+    this->AddButton(BRect(BPoint(0.0, 276.0), buttonSize), nearestIsoToolIcon,
                     new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED));
-    this->AddButton(BRect(BPoint(30.0, 253.0), buttonSize),
+    this->AddButton(BRect(BPoint(30.0, 276.0), buttonSize),
                     nearestOrthoToolIcon,
                     new BMessage(NEAREST_ORTHO_TOOL_BTN_CLICKED));
 }

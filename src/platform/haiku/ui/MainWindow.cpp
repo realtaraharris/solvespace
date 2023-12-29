@@ -217,6 +217,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->Invalidate();
         break;
     }
+    case PT_ON_LINE_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::ON_ENTITY);
+        SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
 
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);
