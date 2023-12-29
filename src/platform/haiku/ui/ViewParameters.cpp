@@ -35,8 +35,6 @@ ViewParameters::ViewParameters(void)
         .Add(BSpaceLayoutItem::CreateGlue())
         .SetInsets(10.0f)
         .End();
-
-    this->Show();
 }
 
 void ViewParameters::UpdateViewParameters() {

@@ -108,8 +108,6 @@ PropertyBrowser::PropertyBrowser(void)
     BLayoutBuilder::Group<>(this, B_VERTICAL, 0.0f)
         .Add(scrollView = new BScrollView("scroll_view", groupList, 0, false, true, B_PLAIN_BORDER), 0.0f)
 	.End();
-
-    this->Show();
 }
 
 void PropertyBrowser::MessageReceived(BMessage *msg) {

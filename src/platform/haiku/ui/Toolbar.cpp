@@ -133,8 +133,6 @@ AppToolbar::AppToolbar(void)
     this->AddButton(BRect(BPoint(30.0, 253.0), buttonSize),
                     nearestOrthoToolIcon,
                     new BMessage(NEAREST_ORTHO_TOOL_BTN_CLICKED));
-
-    this->Show();
 }
 
 void AppToolbar::MessageReceived(BMessage *msg) {
