@@ -86,6 +86,10 @@ AppToolbar::AppToolbar(void)
     static BBitmap *nearestOrthoToolIcon =
         LoadIconFromResource("nearest-ortho-tool", TOOLBAR_ICON_SIZE);
 
+    static BBitmap *constrainPerpendicularToolIcon =
+        LoadIconFromResource("constrain-perpendicular-tool", TOOLBAR_ICON_SIZE);
+
+
     const BSize buttonSize = BSize(30.0, 30.0);
 
     this->AddButton(BRect(BPoint(0.0, 0.0), buttonSize), lineToolIcon,
@@ -127,6 +131,8 @@ AppToolbar::AppToolbar(void)
 
     this->AddButton(BRect(BPoint(0.0, 213.0), buttonSize), parallelToolIcon,
                     new BMessage(PARALLEL_TOOL_BTN_CLICKED));
+    this->AddButton(BRect(BPoint(30.0, 213.0), buttonSize), constrainPerpendicularToolIcon,
+                    new BMessage(CONSTRAIN_PERP_TOOL_BTN_CLICKED));
 
     this->AddButton(BRect(BPoint(0.0, 253.0), buttonSize), nearestIsoToolIcon,
                     new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED));

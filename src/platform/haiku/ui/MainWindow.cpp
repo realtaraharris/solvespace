@@ -211,6 +211,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->Invalidate();
         break;
     }
+    case CONSTRAIN_PERP_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::PERPENDICULAR);
+        SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
 
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);

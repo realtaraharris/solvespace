@@ -35,6 +35,7 @@ enum {
     HORIZONTAL_TOOL_BTN_CLICKED = 'htbc',
     VERTICAL_TOOL_BTN_CLICKED = 'vtbc',
     PARALLEL_TOOL_BTN_CLICKED = 'ptbc',
+    CONSTRAIN_PERP_TOOL_BTN_CLICKED = 'cpti',
 
     M_SHOW_EDITOR = 'mshe',
 
