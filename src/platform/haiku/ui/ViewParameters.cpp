@@ -38,7 +38,7 @@ ViewParameters::ViewParameters(void)
 }
 
 void ViewParameters::UpdateViewParameters() {
-    overallScaleFactor->SetText(std::format("Overall scale factor: {} px/{}",
+    overallScaleFactor->SetText(std::format("Overall scale factor: {:.3f} px/{}",
                                             SS.GW.scale * SS.MmPerUnit(),
                                             SS.UnitName())
                                     .c_str());
@@ -47,12 +47,12 @@ void ViewParameters::UpdateViewParameters() {
                                 SS.MmToString(SS.GW.offset.z))
                         .c_str());
     Vector n = (SS.GW.projRight).Cross(SS.GW.projUp);
-    projection->SetText(std::format("({}, {}, {})\n({}, {}, {})\n({}, {}, {})",
+    projection->SetText(std::format("({:.3f}, {:.3f}, {:.3f})\n({:.3f}, {:.3f}, {:.3f})\n({:.3f}, {:.3f}, {:.3f})",
                                     CO(SS.GW.projRight), CO(SS.GW.projUp),
                                     CO(n))
                             .c_str());
     perspectiveFactor->SetText(
-        std::format("{}", SS.cameraTangent * 1000).c_str());
+        std::format("{:.3f}", SS.cameraTangent * 1000).c_str());
     explodeDistance->SetText(
         std::format("{} {}", SS.MmToString(SS.explodeDistance), SS.UnitName())
             .c_str());

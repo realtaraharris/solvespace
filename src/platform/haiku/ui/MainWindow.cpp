@@ -90,12 +90,14 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->ZoomToMouse(1);
         SS.GW.Invalidate();
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_OUT: {
         editorView->ZoomToMouse(-1);
         SS.GW.Invalidate();
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_TO_FIT: {
@@ -103,11 +105,13 @@ void MainWindow::MessageReceived(BMessage *msg) {
             false, true); // includingInvisibles = false, useSelection = true
         SS.GW.Invalidate();
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case CENTER_VIEW_AT_POINT: {
         SS.GW.MenuView(SolveSpace::Command::CENTER_VIEW);
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case TOGGLE_SNAP_GRID: {
@@ -213,6 +217,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         SS.GW.Invalidate();
         editorView->SyncCamera();
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case NEAREST_ORTHO_TOOL_BTN_CLICKED: {
@@ -220,6 +225,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         SS.GW.Invalidate();
         editorView->SyncCamera();
         editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_SHOW_EDITOR: {
