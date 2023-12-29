@@ -95,7 +95,7 @@ void PropertyBrowser::ShowListOfGroups() {
 }
 
 PropertyBrowser::PropertyBrowser(void)
-    : BWindow(BRect(BPoint(730, 100), BSize(300, 50)), "Property Browser",
+    : BWindow(BRect(BPoint(730, 100), BSize(300, 150)), "Property Browser",
               B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
               B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS,
               B_CURRENT_WORKSPACE) {

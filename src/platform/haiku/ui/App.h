@@ -12,7 +12,7 @@ class App : public BApplication {
     App(void);
 };
 
-enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2 };
+enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2, VIEW_PARAMETERS = 3 };
 
 enum {
     LINE_TOOL_BTN_CLICKED = 'ltbc',
@@ -39,6 +39,7 @@ enum {
     M_SHOW_EDITOR = 'mshe',
 
     SHOW_LIST_OF_GROUPS = 'slog',
+    UPDATE_VIEW_PARAMETERS = 'upvp',
 
     READ_FILE = 'rdfl',
     M_OPEN_FILE = 'mof',

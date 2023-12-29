@@ -6,6 +6,7 @@
 
 #include "EditorView.h"
 #include "PropertyBrowser.h"
+#include "ViewParameters.h"
 
 class MainWindow : public BWindow {
   public:
@@ -17,6 +18,7 @@ class MainWindow : public BWindow {
     BMenuBar *menuBar;
     BWindow *toolWindow;
     PropertyBrowser *propertyBrowser;
+    ViewParameters *viewParameters;
     EditorView *editorView;
     BPath *currentFilePath;
 };

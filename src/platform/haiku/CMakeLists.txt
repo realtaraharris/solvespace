@@ -28,9 +28,10 @@ add_executable(SolveSpace
 	ui/DrawButton.cpp
 
 	ui/EditorView.cpp
+    ui/ViewParameters.cpp
 )
 
-set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 11)
+set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
 
 target_include_directories(SolveSpace
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}

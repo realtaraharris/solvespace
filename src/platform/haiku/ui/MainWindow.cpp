@@ -77,6 +77,10 @@ MainWindow::MainWindow(void)
     propertyBrowser = new PropertyBrowser();
     propertyBrowser->Show();
 
+    viewParameters = new ViewParameters();
+    be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+    viewParameters->Show();
+
     currentFilePath = new BPath();
 }
 
