@@ -37,6 +37,7 @@ enum {
     PARALLEL_TOOL_BTN_CLICKED = 'ptbc',
     CONSTRAIN_PERP_TOOL_BTN_CLICKED = 'cpti',
     PT_ON_LINE_TOOL_BTN_CLICKED = 'polc',
+    CONSTRAIN_SYMMETRIC_TOOL_BTN_CLICKED = 'cstc',
 
     M_SHOW_EDITOR = 'mshe',
 
