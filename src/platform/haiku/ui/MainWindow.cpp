@@ -241,6 +241,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->Invalidate();
         break;
     }
+    case OTHER_ANGLE_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::OTHER_ANGLE);
+        SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
 
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);
