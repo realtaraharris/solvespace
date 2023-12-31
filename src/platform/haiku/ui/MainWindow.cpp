@@ -229,6 +229,18 @@ void MainWindow::MessageReceived(BMessage *msg) {
         editorView->Invalidate();
         break;
     }
+    case CONSTRAIN_EQUAL_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EQUAL);
+        SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
+    case CONSTRAIN_ORIENTED_SAME_TOOL_BTN_CLICKED: {
+        SS.GW.ActivateCommand(SolveSpace::Command::ORIENTED_SAME);
+        SS.GW.Invalidate();
+        editorView->Invalidate();
+        break;
+    }
 
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);

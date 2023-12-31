@@ -92,6 +92,10 @@ AppToolbar::AppToolbar(void)
         LoadIconFromResource("constrain-point-on-line-tool", TOOLBAR_ICON_SIZE);
     static BBitmap *constrainSymmetricToolIcon =
         LoadIconFromResource("constrain-symmetric-tool", TOOLBAR_ICON_SIZE);
+    static BBitmap *constrainEqualToolIcon =
+        LoadIconFromResource("constrain-equal-tool", TOOLBAR_ICON_SIZE);
+    static BBitmap *constrainParallelNormalsToolIcon =
+        LoadIconFromResource("constrain-parallel-normals-tool", TOOLBAR_ICON_SIZE);
 
     const BSize buttonSize = BSize(30.0, 30.0);
 
@@ -142,9 +146,14 @@ AppToolbar::AppToolbar(void)
     this->AddButton(BRect(BPoint(30.0, 243.0), buttonSize), constrainSymmetricToolIcon,
                     new BMessage(CONSTRAIN_SYMMETRIC_TOOL_BTN_CLICKED));
 
-    this->AddButton(BRect(BPoint(0.0, 276.0), buttonSize), nearestIsoToolIcon,
+    this->AddButton(BRect(BPoint(0.0, 273.0), buttonSize), constrainEqualToolIcon,
+                    new BMessage(CONSTRAIN_EQUAL_TOOL_BTN_CLICKED));
+    this->AddButton(BRect(BPoint(30.0, 273.0), buttonSize), constrainParallelNormalsToolIcon,
+                    new BMessage(CONSTRAIN_ORIENTED_SAME_TOOL_BTN_CLICKED));
+
+    this->AddButton(BRect(BPoint(0.0, 336.0), buttonSize), nearestIsoToolIcon,
                     new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED));
-    this->AddButton(BRect(BPoint(30.0, 276.0), buttonSize),
+    this->AddButton(BRect(BPoint(30.0, 336.0), buttonSize),
                     nearestOrthoToolIcon,
                     new BMessage(NEAREST_ORTHO_TOOL_BTN_CLICKED));
 }
