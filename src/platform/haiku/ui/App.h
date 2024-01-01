@@ -41,6 +41,7 @@ enum {
     CONSTRAIN_EQUAL_TOOL_BTN_CLICKED = 'cebc',
     CONSTRAIN_ORIENTED_SAME_TOOL_BTN_CLICKED = 'cosc',
     OTHER_ANGLE_TOOL_BTN_CLICKED = 'oabc',
+    REF_TOOL_BTN_CLICKED = 'rtbx',
 
     M_SHOW_EDITOR = 'mshe',
 

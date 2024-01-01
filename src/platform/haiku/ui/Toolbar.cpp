@@ -98,6 +98,8 @@ AppToolbar::AppToolbar(void)
         LoadIconFromResource("constrain-parallel-normals-tool", TOOLBAR_ICON_SIZE);
     static BBitmap *otherSupplementaryAngleToolIcon =
         LoadIconFromResource("other-supplementary-angle-tool", TOOLBAR_ICON_SIZE);
+    static BBitmap *refToolIcon =
+        LoadIconFromResource("ref-tool", TOOLBAR_ICON_SIZE);
 
     const BSize buttonSize = BSize(30.0, 30.0);
 
@@ -155,6 +157,8 @@ AppToolbar::AppToolbar(void)
 
     this->AddButton(BRect(BPoint(0.0, 303.0), buttonSize), otherSupplementaryAngleToolIcon,
                     new BMessage(OTHER_ANGLE_TOOL_BTN_CLICKED));
+    this->AddButton(BRect(BPoint(30.0, 303.0), buttonSize), refToolIcon,
+                    new BMessage(REF_TOOL_BTN_CLICKED));
 
     this->AddButton(BRect(BPoint(0.0, 336.0), buttonSize), nearestIsoToolIcon,
                     new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED));
