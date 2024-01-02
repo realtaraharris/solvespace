@@ -43,7 +43,7 @@ void AppToolbar::AddButton(const BRect &frame, BBitmap *icon,
 }
 
 AppToolbar::AppToolbar(void)
-    : BWindow(BRect(BPoint(10, 100), BSize(60, 600)), "Tools",
+    : BWindow(BRect(BPoint(10, 100), BSize(60, 366)), "Tools",
               B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
               B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS,
               B_CURRENT_WORKSPACE) {
