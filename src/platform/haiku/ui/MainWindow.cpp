@@ -59,6 +59,22 @@ MainWindow::MainWindow(void)
         new BMenuItem("Show snap grid", new BMessage(TOGGLE_SNAP_GRID), '>'));
     menuBar->AddItem(viewMenu);
 
+    BMenu *groupMenu = new BMenu("Group");
+    groupMenu->AddItem(new BMenuItem("Sketch in 3D", new BMessage(M_GROUP_3D), '3')); // Command::GROUP_3D
+    groupMenu->AddItem(new BMenuItem("Sketch in new workplane", new BMessage(M_GROUP_WRKPL), 'w')); // Command::GROUP_WRKPL
+    groupMenu->AddSeparatorItem();
+    groupMenu->AddItem(new BMenuItem("Step translating", new BMessage(M_GROUP_TRANS), 't')); // Command::GROUP_TRANS
+    groupMenu->AddItem(new BMenuItem("Step rotating", new BMessage(M_GROUP_ROT), 'r')); // Command::GROUP_ROT
+    groupMenu->AddSeparatorItem();
+    groupMenu->AddItem(new BMenuItem("Extrude", new BMessage(M_GROUP_EXTRUDE), 'x')); // Command::GROUP_EXTRUDE
+    groupMenu->AddItem(new BMenuItem("Helix", new BMessage(M_GROUP_HELIX), 'h')); // Command::GROUP_HELIX
+    groupMenu->AddItem(new BMenuItem("Lathe", new BMessage(M_GROUP_LATHE), 'l')); // Command::GROUP_LATHE
+    groupMenu->AddItem(new BMenuItem("Revolve", new BMessage(M_GROUP_REVOLVE), 'v')); // Command::GROUP_REVOLVE
+    groupMenu->AddSeparatorItem();
+    groupMenu->AddItem(new BMenuItem("Link/Assemble...", new BMessage(M_GROUP_LINK), "")); // Command::GROUP_LINK
+    groupMenu->AddItem(new BMenuItem("Link recent", new BMessage(M_GROUP_RECENT), "")); // Command::GROUP_RECENT
+    menuBar->AddItem(groupMenu);
+
     rect.Set(0, 0, MIN_WIDTH, MIN_HEIGHT);
     editorView = new EditorView(rect);
 
@@ -270,6 +286,87 @@ void MainWindow::MessageReceived(BMessage *msg) {
         be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
+    case M_GROUP_3D: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_3D);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_WRKPL: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_WRKPL);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_TRANS: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_TRANS);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_ROT: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_ROT);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_EXTRUDE: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_EXTRUDE);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_HELIX: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_HELIX);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_LATHE: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LATHE);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_REVOLVE: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_REVOLVE);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_LINK: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LINK);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_GROUP_RECENT: {
+        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_RECENT);
+        SS.GW.Invalidate();
+        editorView->SyncCamera();
+        editorView->Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+
     case M_SHOW_EDITOR: {
         std::cout << "BOOOOOOM SUCCESS" << std::endl;
         break;

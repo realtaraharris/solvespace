@@ -59,7 +59,18 @@ enum {
     ALIGN_VIEW_TO_WORKPLANE = 'avtw',
     CENTER_VIEW_AT_POINT = 'cvap',
 
-    TOGGLE_SNAP_GRID = 'tsng'
+    TOGGLE_SNAP_GRID = 'tsng',
+
+    M_GROUP_3D = 'gr3d', // Command::GROUP_3D
+    M_GROUP_WRKPL = 'grwp', // Command::GROUP_WRKPL
+    M_GROUP_TRANS = 'grtr', // Command::GROUP_TRANS
+    M_GROUP_ROT = 'grrt', // Command::GROUP_ROT
+    M_GROUP_EXTRUDE = 'grex',// Command::GROUP_EXTRUDE
+    M_GROUP_HELIX = 'grhe', // Command::GROUP_HELIX
+    M_GROUP_LATHE = 'grla', // Command::GROUP_LATHE
+    M_GROUP_REVOLVE = 'grre', // Command::GROUP_REVOLVE
+    M_GROUP_LINK = 'grlk', // Command::GROUP_LINK
+    M_GROUP_RECENT = 'grct' // Command::GROUP_RECENT
 };
 
 #endif
