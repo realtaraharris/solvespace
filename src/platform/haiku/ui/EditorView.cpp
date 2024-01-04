@@ -17,23 +17,21 @@ void attachBufferToBBitmap(agg::rendering_buffer &buffer, BBitmap *bitmap) {
     buffer.attach(bits, width, height, -bpr);
 }
 
-EditorView::EditorView(BRect rect)
-    : BView(rect, "SolveSpace Editor View", B_FOLLOW_ALL_SIDES,
+EditorView::EditorView()
+    : BView(Bounds(), "SolveSpace Editor View", B_FOLLOW_ALL_SIDES,
             B_FRAME_EVENTS | B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE) {
-    initialRect = rect;
-    currentRect = rect;
-
     // choices: SS.GW.canvas.get(),
     // std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
     SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
 
     InitBitmapAndBuffer();
+    Invalidate();
 }
 
 EditorView::~EditorView() {}
 
 void EditorView::InitBitmapAndBuffer() {
-    retainedBitmap = new BBitmap(currentRect, 0, B_RGBA32);
+    retainedBitmap = new BBitmap(Bounds(), 0, B_RGBA32);
     if (retainedBitmap->IsValid()) {
         attachBufferToBBitmap(
             std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->buffer,
@@ -54,24 +52,14 @@ void EditorView::Draw(BRect updateRect) {
     DrawBitmap(retainedBitmap, updateRect, updateRect);
 }
 
-// this is never actually called in this example because nothing moves the view
-// frame
-void EditorView::FrameMoved(BPoint newLocation) {
-    currentRect.SetLeftTop(newLocation);
-}
-
 void EditorView::FrameResized(float width, float height) {
-    currentRect.SetRightBottom(currentRect.LeftTop() + BPoint(width, height));
-    initialRect = currentRect;
-
     InitBitmapAndBuffer(); // do this before drawing
-
     camera.width = width;
     camera.height = height;
     std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
         ->SetCamera(camera);
 
-    Draw(currentRect);
+    Draw(Bounds());
 }
 
 void EditorView::Load(std::string path) {
@@ -81,7 +69,6 @@ void EditorView::Load(std::string path) {
     if (!SS.LoadFromFile(fixturePath)) {
         return;
     }
-    std::cout << "loaded: " << path << std::endl;
 
     SS.AfterNewFile();
 
@@ -94,8 +81,8 @@ void EditorView::Load(std::string path) {
     camera = SS.GW.GetCamera();
     camera.pixelRatio = 1;
     camera.gridFit = true;
-    camera.width = initialRect.Width();
-    camera.height = initialRect.Height();
+    camera.width = Bounds().Width();
+    camera.height = Bounds().Height();
     camera.projUp = SS.GW.projUp;
     camera.projRight = SS.GW.projRight;
 
@@ -137,7 +124,7 @@ void EditorView::MouseDown(BPoint point) {
 
     SS.GW.MouseEvent(event);
     SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
-    Draw(currentRect);
+    Draw(Bounds());
 }
 
 void EditorView::MouseMoved(BPoint point, uint32 transit,
@@ -152,7 +139,7 @@ void EditorView::MouseMoved(BPoint point, uint32 transit,
 
     SS.GW.MouseEvent(event);
     SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
-    Draw(currentRect);
+    Draw(Bounds());
 }
 
 void EditorView::MouseUp(BPoint point) {
@@ -164,7 +151,7 @@ void EditorView::MouseUp(BPoint point) {
 
     SS.GW.MouseEvent(event);
     SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
-    Draw(currentRect);
+    Draw(Bounds());
 }
 
 void EditorView::ZoomToMouse(double zoomMultiplyer) {

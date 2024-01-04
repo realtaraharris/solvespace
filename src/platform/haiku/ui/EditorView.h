@@ -27,12 +27,11 @@
 
 class EditorView : public BView {
   public:
-    EditorView(BRect rect);
+    EditorView();
     ~EditorView();
     //  void AttachedToWindow();
     //  void DetachedFromWindow();
     void Draw(BRect updateRect);
-    void FrameMoved(BPoint newLocation);
     void FrameResized(float width, float height);
     void SaveToPng();
     void Load(std::string path);
@@ -51,8 +50,6 @@ class EditorView : public BView {
     Lighting lighting;
     BPoint currentMousePosition;
 
-    BRect initialRect;
-    BRect currentRect;
     BBitmap *retainedBitmap;
     agg::rendering_buffer buffer;
 

@@ -25,9 +25,7 @@ namespace SolveSpace {
 	typedef agg::pixfmt_bgra32 pixel_format_type;
 	typedef agg::renderer_base<pixel_format_type> renderer_base;
 
-	AggRenderer::AggRenderer() {
-		std::cout << "in constructor" << std::endl;
-	}
+	AggRenderer::AggRenderer() {}
 
 	void AggRenderer::Clear() {
         SurfaceRenderer::Clear();
@@ -57,7 +55,7 @@ namespace SolveSpace {
 
 	    pixel_format_type pixf(buffer);
 	    renderer_base rb(pixf);
-		
+
 		pf.reset();
 	}
 
@@ -81,10 +79,10 @@ namespace SolveSpace {
 
 		agg::rasterizer_scanline_aa<> pf;
 		agg::scanline_p8 sl;
-		
+
 		typedef agg::pixfmt_bgra32 pixel_format_type;
 		typedef agg::renderer_base<pixel_format_type> renderer_base;
-		
+
 		typedef agg::renderer_scanline_aa_solid<renderer_base> renderer_scanline;
 		typedef agg::rasterizer_scanline_aa<> rasterizer_scanline;
 
@@ -112,7 +110,7 @@ namespace SolveSpace {
 			} else {
 				agg::path_storage path;
 				typedef agg::conv_dash<agg::path_storage> dash_t;
-				
+
 				dash_t dash(path);
 
 				for (int i = 0, n = dashes.size(); i < n - 1; i += 2) {
@@ -133,7 +131,7 @@ namespace SolveSpace {
 			agg::render_scanlines_aa_solid(pf, sl, rb, agg::rgba8(color.red, color.green, color.blue, color.alpha));
 		} else if(b.IsCircle(n, &c, &r)) {
 			ssassert(false, "not implemented: AggRenderer::OutputBezier b.IsCircle() == true");
-		} else if (b.deg == 3 && !b.IsRational()) {	
+		} else if (b.deg == 3 && !b.IsRational()) {
 			ssassert(false, "wtf, this code never runs in test!");
 
 			// TODO: are these defaults good?
@@ -141,41 +139,41 @@ namespace SolveSpace {
 			double m_approximation_scale = 1.0; // 0.1 - 5
 			double m_cusp_limit = 45; // 0 - 90
 			double m_width = 4.0; // -50 - 100
-			
+
 			int m_curve_type = 1; // 0 is incremental, 1 is subdivision
 			int m_case_type = 0; // cases 0 - 8
 			int m_inner_join = 0; // "Inner Bevel", "Inner Miter", "Inner Jag", "Inner Round"
 			int m_line_join = 0; // "Miter Join", "Miter Revert", "Round Join", "Bevel Join", "Miter Round"
 			int m_line_cap = 2; // "Butt Cap", "Square Cap", "Round Cap"
-			
+
 			bool m_show_points = true;
 			bool m_show_outline = false;
 
 		    agg::ellipse e1;
 
 		    renderer_scanline ren(rb);
-		
+
 		    rasterizer_scanline ras;
-		
+
 		    agg::path_storage path;
-		
+
 		    double x, y;
 		    path.remove_all();
 		    agg::curve3 curve;
-		    
+
 		    curve.approximation_method(agg::curve_approximation_method_e(m_curve_type));
 		    curve.approximation_scale(m_approximation_scale);
 		    curve.angle_tolerance(agg::deg2rad(m_angle_tolerance));
 		    curve.cusp_limit(agg::deg2rad(m_cusp_limit));
-	
+
 		    curve.approximation_scale(m_approximation_scale);
 		    curve.angle_tolerance(agg::deg2rad(m_angle_tolerance));
 		    curve.cusp_limit(agg::deg2rad(m_cusp_limit));
-	
+
 		    curve.init(b.ctrl[1].x, b.ctrl[1].y,
 		               b.ctrl[2].x, b.ctrl[2].y,
 		               b.ctrl[3].x, b.ctrl[3].y);
-	
+
 		    path.concat_path(curve);
 
 		    agg::conv_stroke<agg::path_storage> stroke(path);
@@ -184,7 +182,7 @@ namespace SolveSpace {
 		    stroke.line_cap(agg::line_cap_e(m_line_cap));
 		    stroke.inner_join(agg::inner_join_e(m_inner_join));
 		    stroke.inner_miter_limit(1.01);
-		
+
 			agg::conv_transform<agg::conv_stroke<agg::path_storage>> camtrans(stroke, cameraMatrix);
 		    ras.add_path(camtrans);
 		    ren.color(agg::rgba(0, 0.5, 0, 0.5)); // TODO: is this the right color?
@@ -209,7 +207,7 @@ namespace SolveSpace {
 		ps.move_to(tr.a.x, tr.a.y);
 		ps.line_to(tr.b.x, tr.b.y);
 		ps.line_to(tr.c.x, tr.c.y);
-		
+
 		agg::conv_transform<agg::path_storage> camtrans(ps, cameraMatrix);
 
 		ras.add_path(camtrans);
@@ -223,7 +221,7 @@ namespace SolveSpace {
 
 	void AggPixmapRenderer::Init(bool standalone) {
 	    Clear();
-	    
+
 		pixmap = std::make_shared<Pixmap>();
 		pixmap->format = Pixmap::Format::BGRA;
 		pixmap->width  = (size_t)camera.width;

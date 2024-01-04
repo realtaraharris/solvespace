@@ -75,8 +75,7 @@ MainWindow::MainWindow(void)
     groupMenu->AddItem(new BMenuItem("Link recent", new BMessage(M_GROUP_RECENT), "")); // Command::GROUP_RECENT
     menuBar->AddItem(groupMenu);
 
-    rect.Set(0, 0, MIN_WIDTH, MIN_HEIGHT);
-    editorView = new EditorView(rect);
+    editorView = new EditorView();
 
     SetLayout(new BGroupLayout(B_VERTICAL));
 
@@ -147,47 +146,38 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case LINE_TOOL_BTN_CLICKED: {
-        std::cout << "LINE_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::LINE_SEGMENT);
         break;
     }
     case RECT_TOOL_BTN_CLICKED: {
-        std::cout << "RECT_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::RECTANGLE);
         break;
     }
     case CIRCLE_TOOL_BTN_CLICKED: {
-        std::cout << "CIRCLE_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::CIRCLE);
         break;
     }
     case ARC_TOOL_BTN_CLICKED: {
-        std::cout << "ARC_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::ARC);
         break;
     }
     case TANGENT_ARC_TOOL_BTN_CLICKED: {
-        std::cout << "TANGENT_ARC_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::TANGENT_ARC);
         break;
     }
     case CUBIC_SPLINE_TOOL_BTN_CLICKED: {
-        std::cout << "CUBIC_SPLINE_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::CUBIC);
         break;
     }
     case DATUM_POINT_TOOL_BTN_CLICKED: {
-        std::cout << "DATUM_POINT_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::DATUM_POINT);
         break;
     }
     case CONSTRUCTION_TOOL_BTN_CLICKED: {
-        std::cout << "CONSTRUCTION_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::CONSTRUCTION);
         break;
     }
     case SPLIT_CURVES_TOOL_BTN_CLICKED: {
-        std::cout << "SPLIT_CURVES_TOOL_BTN" << std::endl;
         SS.GW.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
         break;
     }
@@ -196,14 +186,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case DISTANCE_DIA_TOOL_BTN_CLICKED: {
-        std::cout << "DISTANCE_DIA_TOOL_BTN" << std::endl;
         SS.GW.ActivateCommand(SolveSpace::Command::DISTANCE_DIA);
         SS.GW.Invalidate();
         editorView->Invalidate();
         break;
     }
     case ANGLE_TOOL_BTN_CLICKED: {
-        std::cout << "ANGLE_TOOL_BTN" << std::endl;
         SS.GW.ActivateCommand(SolveSpace::Command::ANGLE);
         SS.GW.Invalidate();
         editorView->Invalidate();
@@ -368,7 +356,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     }
 
     case M_SHOW_EDITOR: {
-        std::cout << "BOOOOOOM SUCCESS" << std::endl;
         break;
     }
     case M_QUIT_APP: {
