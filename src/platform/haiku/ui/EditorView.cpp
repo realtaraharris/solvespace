@@ -48,6 +48,7 @@ void EditorView::Draw(BRect updateRect) {
     SS.GW.Draw(SS.GW.canvas.get());
     SS.GW.canvas.get()->FlushFrame();
     SS.GW.canvas.get()->FinishFrame();
+    SS.GW.Paint();
 
     DrawBitmap(retainedBitmap, updateRect, updateRect);
 }

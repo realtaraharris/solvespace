@@ -863,6 +863,8 @@ void GraphicsWindow::Paint() {
 
     havePainted = true;
 
+    const Camera origCamera = canvas->GetCamera();
+
     Camera   camera   = GetCamera();
     Lighting lighting = GetLighting();
 
@@ -882,8 +884,8 @@ void GraphicsWindow::Paint() {
     canvas->StartFrame();
 
     // Draw the 3d objects.
-    Draw(canvas.get());
-    canvas->FlushFrame();
+    // Draw(canvas.get());
+    // canvas->FlushFrame();
 
     // Draw the 2d UI overlay.
     camera.LoadIdentity();
@@ -916,15 +918,10 @@ void GraphicsWindow::Paint() {
         SS.screenshotFile.Clear();
     }
 
-    // And finally the toolbar.
-    if(SS.showToolbar) {
-        canvas->SetCamera(camera);
-        ToolbarDraw(&uiCanvas);
-    }
+    canvas->SetCamera(origCamera);
 
     canvas->FlushFrame();
     canvas->FinishFrame();
-    canvas->Clear();
 }
 
 void GraphicsWindow::Invalidate(bool clearPersistent) {
