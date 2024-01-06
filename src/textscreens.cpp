@@ -44,9 +44,9 @@ void TextWindow::ShowHeader(bool withNav) {
 // to hide or show them, and to view them in detail. This is our home page.
 //-----------------------------------------------------------------------------
 void TextWindow::ScreenSelectGroup(int link, uint32_t v) {
-    GraphicsWindow::MenuEdit(Command::UNSELECT_ALL);
-    SS.TW.GoToScreen(Screen::GROUP_INFO);
-    SS.TW.shown.group.v = v;
+    // GraphicsWindow::MenuEdit(Command::UNSELECT_ALL);
+    // SS.TW.GoToScreen(Screen::GROUP_INFO);
+    // SS.TW.shown.group.v = v;
 }
 void TextWindow::ScreenToggleGroupShown(int link, uint32_t v) {
     hGroup hg = { v };
@@ -441,7 +441,7 @@ void TextWindow::ShowGroupInfo() {
             &TextWindow::ScreenChangePitchOption,
             g->valB != 0 ? CHECK_TRUE : CHECK_FALSE);
 
-        Printf(false, ""); // blank line    
+        Printf(false, ""); // blank line
     }
 
     if(g->type == Group::Type::EXTRUDE || g->type == Group::Type::LATHE ||
