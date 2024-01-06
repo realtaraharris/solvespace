@@ -519,9 +519,10 @@ public:
     void EditControlDone(std::string s);
 };
 
+// TODO: move this into its own damn file
 class GraphicsWindow {
 public:
-    void Init();
+    void Init(double width, double height, int pixelDeviceRatio);
 
     Platform::WindowRef   window;
 
@@ -568,6 +569,9 @@ public:
     // These parameters define the map from 2d screen coordinates to the
     // coordinates of the 3d sketch points. We will use an axonometric
     // projection.
+    double width;
+    double height;
+    int devicePixelRatio;
     Vector  offset;
     Vector  projRight;
     Vector  projUp;

@@ -57,6 +57,8 @@ void EditorView::FrameResized(float width, float height) {
     InitBitmapAndBuffer(); // do this before drawing
     camera.width = width;
     camera.height = height;
+    SS.GW.width = width;
+    SS.GW.height = height;
     std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
         ->SetCamera(camera);
 
@@ -71,9 +73,9 @@ void EditorView::Load(std::string path) {
         return;
     }
 
-    SS.AfterNewFile();
+    // SS.AfterNewFile();
 
-    SS.GW.Init();
+    SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0); // width, height, pixelDeviceRatio
     SS.GW.offset = {};
     SS.GW.scale = 5.0;
     SS.GW.projRight = Vector::From(1, 0, 0);

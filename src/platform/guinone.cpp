@@ -99,10 +99,10 @@ public:
 
     virtual double GetPixelDensity() override { return 1.0; }
 
+    // TODO: rip this method out and just make the internals read SS.GW.width/height instead
     virtual void GetContentSize(double *width, double *height) override {
-	const BSize size = be_app->WindowAt(0)->Size();
-	*width = size.Width();
-	*height = size.Height() - MENUBAR_HEIGHT;
+        *width = SS.GW.width;
+        *height = SS.GW.height;
     }
 
     virtual int GetDevicePixelRatio() override { return 1; }

@@ -388,7 +388,10 @@ void GraphicsWindow::PopulateRecentFiles() {
     });
 }
 
-void GraphicsWindow::Init() {
+void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
+    width = 500;
+    height = 500;
+    devicePixelRatio = 1;
     scale     = 5;
     offset    = Vector::From(0, 0, 0);
     projRight = Vector::From(1, 0, 0);

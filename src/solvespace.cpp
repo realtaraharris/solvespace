@@ -138,7 +138,7 @@ void SolveSpaceUI::Init() {
     ScheduleAutosave();
 
     NewFile();
-    AfterNewFile();
+//    AfterNewFile();
 
     if(TW.window && GW.window) {
         TW.window->ThawPosition(settings, "TextWindow");
@@ -525,7 +525,8 @@ void SolveSpaceUI::AfterNewFile() {
 
     GenerateAll(Generate::ALL);
 
-    GW.Init();
+// TODO: resetting the graphics window should not require passing a size or pixel device ratio
+//    GW.Init();
     TW.Init();
 
     unsaved = false;

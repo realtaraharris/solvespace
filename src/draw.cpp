@@ -304,11 +304,12 @@ void GraphicsWindow::GroupSelection() {
 
 Camera GraphicsWindow::GetCamera() const {
     Camera camera = {};
-    if(window) {
-        window->GetContentSize(&camera.width, &camera.height);
-        camera.pixelRatio = window->GetDevicePixelRatio();
-        camera.gridFit    = (window->GetDevicePixelRatio() == 1);
-    } else {    // solvespace-cli
+    if (window) { // TODO: directly test for solvespace-cli?
+        camera.width = width;
+        camera.height = height;
+        camera.pixelRatio = devicePixelRatio;
+        camera.gridFit    = devicePixelRatio == 1;
+    } else { // solvespace-cli
         camera.width = 297.0;   // A4? Whatever...
         camera.height = 210.0;
         camera.pixelRatio = 1.0;
@@ -342,7 +343,6 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToSelect() {
     int bestOrder = -1;
     int bestZIndex = 0;
     double bestDepth = VERY_POSITIVE;
-    
     for(const Hover &hov : hoverList) {
         hGroup hg = {};
         if(hov.selection.entity.v != 0) {
