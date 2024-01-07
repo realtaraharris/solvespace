@@ -5,8 +5,7 @@
 
 class AppToolbar : public BWindow {
   public:
-    AppToolbar(void);
-    void AddButton(const BRect &frame, BBitmap *icon, BMessage *message, const char* tooltipText);
+    AppToolbar(BRect rect, BSize toolbarIconSize);
     void MessageReceived(BMessage *msg);
 
   private:

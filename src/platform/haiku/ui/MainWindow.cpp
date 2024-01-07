@@ -8,6 +8,7 @@
 #include <MenuItem.h>
 #include <StorageKit.h>
 #include <View.h>
+#include <ControlLook.h>
 
 #include "App.h" // contains message enums
 #include "Solver.h"
@@ -15,8 +16,8 @@
 
 #include <iostream>
 
-#define INIT_X 100
-#define INIT_Y 100
+#define INIT_X 125
+#define INIT_Y 45
 
 MainWindow::MainWindow(void)
     : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH,
@@ -86,7 +87,10 @@ MainWindow::MainWindow(void)
 
     SS.Init();
 
-    toolWindow = new AppToolbar();
+    const BSize toolbarIconSize = be_control_look->ComposeIconSize(B_LARGE_ICON);
+    BRect toolbarRect = BRect(BPoint(10, 35), BSize(0, 0));
+    toolWindow = new AppToolbar(toolbarRect, toolbarIconSize);
+    toolWindow->ResizeToPreferred();
     toolWindow->Show();
 
     propertyBrowser = new PropertyBrowser();

@@ -6,7 +6,7 @@
 #include "solvespace.h"
 
 ViewParameters::ViewParameters(void)
-    : BWindow(BRect(BPoint(730, 300), BSize(300, 400)), "View Parameters",
+    : BWindow(BRect(BPoint(740, 225), BSize(300, 400)), "View Parameters",
               B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
               B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE) {
     overallScaleFactor = new BStringView(NULL, "");
