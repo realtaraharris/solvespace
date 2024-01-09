@@ -23,7 +23,8 @@ MainWindow::MainWindow(void)
     : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH,
                     INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT),
               "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS,
-              B_CURRENT_WORKSPACE) {
+              B_CURRENT_WORKSPACE),
+              settings(new BMessage('sett')) {
     BRect rect(Bounds());
 
     SetSizeLimits(
@@ -101,22 +102,26 @@ MainWindow::MainWindow(void)
 
     SS.Init();
 
+
     const BSize toolbarIconSize =
         be_control_look->ComposeIconSize(B_LARGE_ICON);
     BRect toolbarRect = BRect(BPoint(10, 35), BSize(0, 0));
     toolWindow = new AppToolbar(toolbarRect, toolbarIconSize);
     toolWindow->ResizeToPreferred();
-    toolWindow->Show();
 
     propertyBrowser = new PropertyBrowser();
-    propertyBrowser->Show();
+
 
     viewParameters = new ViewParameters();
     be_app->WindowAt(VIEW_PARAMETERS)
         ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
-    viewParameters->Show();
 
     currentFilePath = new BPath();
+
+    LoadSettings();
+    toolWindow->Show();
+    propertyBrowser->Show();
+    viewParameters->Show();
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
@@ -568,7 +573,93 @@ void MainWindow::MessageReceived(BMessage *msg) {
     }
 }
 
+status_t load_settings(BMessage *message, const char *filename) {
+    status_t status = B_BAD_VALUE;
+    if (!message) { return status; }
+
+    BPath path;
+    status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+    if (status != B_OK) { return status; }
+
+    status = path.Append(filename);
+    if (status != B_OK) { return status; }
+
+    BFile file(path.Path(), B_READ_ONLY);
+    status = file.InitCheck();
+    if (status != B_OK) { return status; }
+
+    status = message->Unflatten(&file);
+    file.Unset();
+
+    return status;
+}
+
+status_t save_settings(BMessage *message, const char *filename) {
+    status_t status = B_BAD_VALUE;
+    if (!message) { return status; }
+
+    BPath path;
+    status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+    if (status != B_OK) { return status; }
+
+    status = path.Append(filename);
+    if (status != B_OK) { return status; }
+
+    BFile file(path.Path(), B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE);
+    status = file.InitCheck();
+    if (status != B_OK) { return status; }
+
+    status = message->Flatten(&file);
+    file.Unset();
+
+    return status;
+}
+
+void MainWindow::LoadSettings() {
+    if (load_settings(settings, "SolveSpace_settings") != B_OK) { return; }
+
+    BRect frame;
+    if (settings->FindRect("SolveSpace Window", &frame) == B_OK) {
+        MoveTo(frame.LeftTop());
+        ResizeTo(frame.Width(), frame.Height());
+    }
+
+    if (settings->FindRect("Toolbar Window", &frame) == B_OK) {
+        be_app->WindowAt(TOOLBAR)->MoveTo(frame.LeftTop());
+        be_app->WindowAt(TOOLBAR)->ResizeTo(frame.Width(), frame.Height());
+    }
+    if (settings->FindRect("Property Browser Window", &frame) == B_OK) {
+        be_app->WindowAt(PROPERTY_BROWSER)->MoveTo(frame.LeftTop());
+        be_app->WindowAt(PROPERTY_BROWSER)->ResizeTo(frame.Width(), frame.Height());
+    }
+    if (settings->FindRect("View Parameters Window", &frame) == B_OK) {
+        be_app->WindowAt(VIEW_PARAMETERS)->MoveTo(frame.LeftTop());
+        be_app->WindowAt(VIEW_PARAMETERS)->ResizeTo(frame.Width(), frame.Height());
+    }
+}
+
+void MainWindow::SaveSettings() {
+    if (settings->ReplaceRect("SolveSpace Window", Frame()) != B_OK) {
+        settings->AddRect("SolveSpace Window", Frame());
+    }
+
+    if (settings->ReplaceRect("Toolbar Window", be_app->WindowAt(TOOLBAR)->Frame()) != B_OK) {
+        settings->AddRect("Toolbar Window", be_app->WindowAt(TOOLBAR)->Frame());
+    }
+    if (settings->ReplaceRect("Property Browser Window", be_app->WindowAt(PROPERTY_BROWSER)->Frame()) != B_OK) {
+        settings->AddRect("Property Browser Window", be_app->WindowAt(PROPERTY_BROWSER)->Frame());
+    }
+    if (settings->ReplaceRect("View Parameters Window", be_app->WindowAt(VIEW_PARAMETERS)->Frame()) != B_OK) {
+        settings->AddRect("View Parameters Window", be_app->WindowAt(VIEW_PARAMETERS)->Frame());
+    }
+
+    if (save_settings(settings, "SolveSpace_settings") != B_OK) {
+        std::cerr << "error saving SolveSpace settings" << std::endl;
+    }
+}
+
 bool MainWindow::QuitRequested(void) {
+    SaveSettings();
     SolveSpace::Platform::CleanupForQuitting();
     be_app->PostMessage(B_QUIT_REQUESTED);
     return true;

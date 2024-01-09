@@ -13,7 +13,8 @@ class MainWindow : public BWindow {
     MainWindow(void);
     void MessageReceived(BMessage *msg);
     bool QuitRequested(void);
-
+    void LoadSettings();
+    void SaveSettings();
   private:
     BMenuBar *menuBar;
     BWindow *toolWindow;
@@ -21,6 +22,8 @@ class MainWindow : public BWindow {
     ViewParameters *viewParameters;
     EditorView *editorView;
     BPath *currentFilePath;
+
+    BMessage* settings;
 };
 
 #endif
