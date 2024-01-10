@@ -33,8 +33,11 @@ MainWindow::MainWindow(void)
 
     menuBar = new BMenuBar(rect, "menubar");
     BMenu *fileMenu = new BMenu("File");
-    fileMenu->AddItem(new BMenuItem("Open", new BMessage(M_OPEN_FILE), 'O'));
+    fileMenu->AddItem(new BMenuItem("New", new BMessage(M_NEW_FILE), 'N'));
+    fileMenu->AddItem(new BMenuItem("Open…", new BMessage(M_OPEN_FILE), 'O'));
     fileMenu->AddItem(new BMenuItem("Save", new BMessage(M_SAVE_FILE), 'S'));
+    fileMenu->AddItem(new BMenuItem("Save as…", new BMessage(M_SAVE_AS_FILE), NULL));
+    fileMenu->AddSeparatorItem();
     fileMenu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
     menuBar->AddItem(fileMenu);
 
@@ -83,12 +86,12 @@ MainWindow::MainWindow(void)
     groupMenu->AddItem(new BMenuItem("Revolve", new BMessage(M_GROUP_REVOLVE),
                                      'v')); // Command::GROUP_REVOLVE
     groupMenu->AddSeparatorItem();
-    groupMenu->AddItem(new BMenuItem("Link/Assemble...",
+    groupMenu->AddItem(new BMenuItem("Link/Assemble…",
                                      new BMessage(M_GROUP_LINK),
-                                     "")); // Command::GROUP_LINK
+                                     NULL)); // Command::GROUP_LINK
     groupMenu->AddItem(new BMenuItem("Link recent",
                                      new BMessage(M_GROUP_RECENT),
-                                     "")); // Command::GROUP_RECENT
+                                     NULL)); // Command::GROUP_RECENT
     menuBar->AddItem(groupMenu);
 
     editorView = new EditorView();
@@ -538,6 +541,32 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_QUIT_APP: {
         FreeAllTemporary();
         be_app->PostMessage(B_QUIT_REQUESTED);
+        break;
+    }
+    case M_NEW_FILE: {
+        break;
+    }
+    case M_SAVE_AS_FILE: {
+        BFilePanel *fp =
+            new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL,
+                           B_FILE_NODE, false, new BMessage(SAVE_AS_FILE));
+        fp->SetSaveText(currentFilePath->Leaf());
+        fp->Show();
+        break;
+    }
+    case SAVE_AS_FILE: {
+        // TODO: report errors to user
+        if (!msg->HasRef("directory") || !msg->HasString("name")) { break; }
+        entry_ref ref;
+        const char *name;
+
+        if (msg->FindRef("directory", 0, &ref) != B_OK || msg->FindString("name", &name) != B_OK) { break; }
+        BEntry entry(&ref, true);
+
+        if (entry.GetPath(currentFilePath) != B_OK) { break; }
+        SS.SaveToFile(
+            Platform::Path::From(std::string(currentFilePath->Path()) + "/" + std::string(name)));
+
         break;
     }
     case M_OPEN_FILE: {

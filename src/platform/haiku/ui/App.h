@@ -49,8 +49,11 @@ enum {
     UPDATE_VIEW_PARAMETERS = 'upvp',
 
     READ_FILE = 'rdfl',
+    SAVE_AS_FILE = 'saaf',
+    M_NEW_FILE = 'mnf',
     M_OPEN_FILE = 'mof',
     M_SAVE_FILE = 'msf',
+    M_SAVE_AS_FILE = 'msaf',
     M_QUIT_APP = 'mqa',
 
     ZOOM_IN = 'zin',
