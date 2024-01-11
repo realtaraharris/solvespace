@@ -44,10 +44,6 @@ void EditorView::InitBitmapAndBuffer() {
 
 void EditorView::Draw(BRect updateRect) {
     SS.GW.canvas.get()->Clear();
-    SS.GW.canvas.get()->StartFrame();
-    SS.GW.Draw(SS.GW.canvas.get());
-    SS.GW.canvas.get()->FlushFrame();
-    SS.GW.canvas.get()->FinishFrame();
     SS.GW.Paint();
 
     DrawBitmap(retainedBitmap, updateRect, updateRect);
@@ -102,17 +98,17 @@ void EditorView::Load(std::string path) {
 }
 
 SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
-    int32 buttons;
-    if (Window()->CurrentMessage()->FindInt32("Buttons", (int32 *)&buttons)) {
-        if (buttons & B_PRIMARY_MOUSE_BUTTON) {
-            return SolveSpace::Platform::MouseEvent::Button::LEFT;
-        }
-        if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-            return SolveSpace::Platform::MouseEvent::Button::MIDDLE;
-        }
-        if (buttons & B_TERTIARY_MOUSE_BUTTON) {
-            return SolveSpace::Platform::MouseEvent::Button::RIGHT;
-        }
+    uint32 buttons;
+
+    Window()->CurrentMessage()->FindInt32("buttons", (int32 *)&buttons);
+    if (buttons & B_PRIMARY_MOUSE_BUTTON) {
+        return SolveSpace::Platform::MouseEvent::Button::LEFT;
+    }
+    if (buttons & B_SECONDARY_MOUSE_BUTTON) {
+        return SolveSpace::Platform::MouseEvent::Button::MIDDLE;
+    }
+    if (buttons & B_TERTIARY_MOUSE_BUTTON) {
+        return SolveSpace::Platform::MouseEvent::Button::RIGHT;
     }
 
     return SolveSpace::Platform::MouseEvent::Button::LEFT;

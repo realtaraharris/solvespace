@@ -863,8 +863,6 @@ void GraphicsWindow::Paint() {
 
     havePainted = true;
 
-    const Camera origCamera = canvas->GetCamera();
-
     Camera   camera   = GetCamera();
     Lighting lighting = GetLighting();
 
@@ -884,8 +882,8 @@ void GraphicsWindow::Paint() {
     canvas->StartFrame();
 
     // Draw the 3d objects.
-    // Draw(canvas.get());
-    // canvas->FlushFrame();
+    Draw(canvas.get());
+    canvas->FlushFrame();
 
     // Draw the 2d UI overlay.
     camera.LoadIdentity();
@@ -917,8 +915,6 @@ void GraphicsWindow::Paint() {
         if(f) fclose(f);
         SS.screenshotFile.Clear();
     }
-
-    canvas->SetCamera(origCamera);
 
     canvas->FlushFrame();
     canvas->FinishFrame();
