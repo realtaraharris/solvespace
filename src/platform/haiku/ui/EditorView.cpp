@@ -76,22 +76,8 @@ void EditorView::Load(std::string path) {
     SS.GW.scale = 5.0;
     SS.GW.projRight = Vector::From(1, 0, 0);
     SS.GW.projUp = Vector::From(0, 1, 0);
-
-    camera = SS.GW.GetCamera();
-    camera.pixelRatio = 1;
-    camera.gridFit = true;
-    camera.width = Bounds().Width();
-    camera.height = Bounds().Height();
-    camera.projUp = SS.GW.projUp;
-    camera.projRight = SS.GW.projRight;
-
     SS.gridSpacing = 5.0; // TODO: get these from settings file?
 
-    camera.scale = SS.GW.scale;
-    camera.offset = SS.GW.offset;
-
-    SS.GW.canvas.get()->SetLighting(SS.GW.GetLighting());
-    SS.GW.canvas.get()->SetCamera(camera);
     std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);
 
     FrameResized(camera.width, camera.height);
@@ -151,40 +137,4 @@ void EditorView::MouseUp(BPoint point) {
     SS.GW.MouseEvent(event);
     SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
     Draw(Bounds());
-}
-
-void EditorView::ZoomToMouse(double zoomMultiplyer) {
-    double offsetRight = camera.offset.Dot(camera.projRight);
-    double offsetUp = camera.offset.Dot(camera.projUp);
-
-    double righti = currentMousePosition.x / camera.scale - offsetRight;
-    double upi = currentMousePosition.y / camera.scale - offsetUp;
-
-    // zoomMultiplyer of 1 gives a default zoom factor of 1.2x: zoomMultiplyer
-    // * 1.2 zoom = adjusted zoom negative zoomMultiplyer will zoom out,
-    // positive will zoom in
-    camera.scale *= exp(0.1823216 * zoomMultiplyer); // ln(1.2) = 0.1823216
-
-    double rightf = currentMousePosition.x / camera.scale - offsetRight;
-    double upf = currentMousePosition.y / camera.scale - offsetUp;
-
-    camera.offset = camera.offset.Plus(projRight.ScaledBy(rightf - righti));
-    camera.offset = camera.offset.Plus(projUp.ScaledBy(upf - upi));
-
-    SS.GW.canvas.get()->SetCamera(camera);
-}
-
-void EditorView::ZoomToFit(bool includingInvisibles, bool useSelection) {
-    SS.GW.ZoomToFit(camera, false,
-                    true); // includingInvisibles = false, useSelection = true
-
-    camera.offset = SS.GW.offset;
-    camera.scale = SS.GW.scale;
-
-    SS.GW.canvas.get()->SetCamera(camera);
-}
-
-void EditorView::SyncCamera() {
-    camera = SS.GW.GetCamera();
-    SS.GW.canvas.get()->SetCamera(camera);
 }

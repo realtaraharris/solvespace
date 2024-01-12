@@ -268,33 +268,25 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case ZOOM_IN: {
-        editorView->ZoomToMouse(1);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.GW.MenuView(SolveSpace::Command::ZOOM_IN);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_OUT: {
-        editorView->ZoomToMouse(-1);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.GW.MenuView(SolveSpace::Command::ZOOM_OUT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_TO_FIT: {
-        editorView->ZoomToFit(
-            false, true); // includingInvisibles = false, useSelection = true
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.GW.MenuView(SolveSpace::Command::ZOOM_TO_FIT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case CENTER_VIEW_AT_POINT: {
         SS.GW.MenuView(SolveSpace::Command::CENTER_VIEW);
-        editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
@@ -430,7 +422,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -439,7 +430,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case NEAREST_ORTHO_TOOL_BTN_CLICKED: {
         SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ORTHO);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -448,7 +438,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_3D: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_3D);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -457,7 +446,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_WRKPL: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_WRKPL);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -466,7 +454,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_TRANS: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_TRANS);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -475,7 +462,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_ROT: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_ROT);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -484,7 +470,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_EXTRUDE: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_EXTRUDE);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -493,7 +478,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_HELIX: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_HELIX);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -502,7 +486,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_LATHE: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LATHE);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -511,7 +494,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_REVOLVE: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_REVOLVE);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -520,7 +502,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_LINK: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LINK);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -529,7 +510,6 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_GROUP_RECENT: {
         SS.GW.ActivateCommand(SolveSpace::Command::GROUP_RECENT);
         SS.GW.Invalidate();
-        editorView->SyncCamera();
         editorView->Invalidate();
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
