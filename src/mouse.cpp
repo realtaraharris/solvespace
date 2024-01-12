@@ -471,8 +471,6 @@ void GraphicsWindow::ReplacePending(hRequest before, hRequest after) {
 }
 
 void GraphicsWindow::MouseMiddleOrRightDown(double x, double y) {
-    if(window->IsEditorVisible()) return;
-
     orig.offset = offset;
     orig.projUp = projUp;
     orig.projRight = projRight;
