@@ -30,10 +30,8 @@ void SolveSpaceUI::UndoRedo() {
     UndoEnableMenus();
 }
 
-void SolveSpaceUI::UndoEnableMenus() {
-//    SS.GW.undoMenuItem->SetEnabled(undo.cnt > 0);
-//    SS.GW.redoMenuItem->SetEnabled(redo.cnt > 0);
-}
+// TODO: one interface that might work is to subclass SolveSpaceUI?
+void SolveSpaceUI::UndoEnableMenus() {}
 
 void SolveSpaceUI::PushFromCurrentOnto(UndoStack *uk) {
     if(uk->cnt == MAX_UNDO) {

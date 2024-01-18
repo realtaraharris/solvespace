@@ -17,6 +17,10 @@ class MainWindow : public BWindow {
     void SaveSettings();
   private:
     BMenuBar *menuBar;
+
+    BMenuItem *undoMenuItem;
+    BMenuItem *redoMenuItem;
+
     BWindow *toolWindow;
     PropertyBrowser *propertyBrowser;
     ViewParameters *viewParameters;

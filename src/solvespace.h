@@ -535,7 +535,7 @@ public:
             style.Clear();
         }
     } UndoState;
-    enum { MAX_UNDO = 100 };
+    enum { MAX_UNDO = 100 }; // TODO: shouldn't this be a setting?
     typedef struct {
         UndoState   d[MAX_UNDO];
         int         cnt;
@@ -548,7 +548,7 @@ public:
     bool ReloadLinkedImage(const Platform::Path &saveFile, Platform::Path *filename,
                            bool canCancel);
 
-    void UndoEnableMenus();
+    virtual void UndoEnableMenus();
     void UndoRemember();
     void UndoUndo();
     void UndoRedo();
@@ -824,7 +824,18 @@ void ImportDwg(const Platform::Path &file);
 bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 
+#if !defined(HEADLESS)
+class HaikuSpaceUI : public SolveSpaceUI {
+public:
+    void UndoEnableMenus();
+};
+
+extern HaikuSpaceUI SS;
+#else
 extern SolveSpaceUI SS;
+#endif
+
+
 extern Sketch SK;
 
 }

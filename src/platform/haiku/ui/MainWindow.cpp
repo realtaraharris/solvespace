@@ -41,6 +41,31 @@ MainWindow::MainWindow(void)
     fileMenu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
     menuBar->AddItem(fileMenu);
 
+    BMenu *editMenu = new BMenu("Edit");
+    undoMenuItem = new BMenuItem("Undo", new BMessage(M_UNDO), 'Z');
+    editMenu->AddItem(undoMenuItem);
+    redoMenuItem = new BMenuItem("Redo", new BMessage(M_REDO), 'Z', B_SHIFT_KEY);
+    editMenu->AddItem(redoMenuItem);
+    editMenu->AddItem(new BMenuItem("Regenerate all", new BMessage(M_NOT_IMPL), NULL));
+    editMenu->AddSeparatorItem();
+    editMenu->AddItem(new BMenuItem("Snap selection to grid", new BMessage(M_NOT_IMPL), '.'));
+    editMenu->AddItem(new BMenuItem("Rotate imported 90°", new BMessage(M_NOT_IMPL), '9'));
+    editMenu->AddSeparatorItem();
+    editMenu->AddItem(new BMenuItem("Cut", new BMessage(M_NOT_IMPL), 'X'));
+    editMenu->AddItem(new BMenuItem("Copy", new BMessage(M_NOT_IMPL), 'C'));
+    editMenu->AddItem(new BMenuItem("Paste", new BMessage(M_NOT_IMPL), 'V'));
+    editMenu->AddItem(new BMenuItem("Paste transformed", new BMessage(M_NOT_IMPL), 'T'));
+    editMenu->AddItem(new BMenuItem("Delete", new BMessage(M_NOT_IMPL), NULL));
+    editMenu->AddSeparatorItem();
+    editMenu->AddItem(new BMenuItem("Select edge chain", new BMessage(M_NOT_IMPL), 'E'));
+    editMenu->AddItem(new BMenuItem("Select all", new BMessage(M_NOT_IMPL), 'A'));
+    editMenu->AddItem(new BMenuItem("Unselect all", new BMessage(M_NOT_IMPL), NULL));
+    editMenu->AddSeparatorItem();
+//    editMenu->AddItem(new BMenuItem("Line styles", new BMessage(M_NOT_IMPL), NULL));
+//    editMenu->AddItem(new BMenuItem("View projection", new BMessage(M_NOT_IMPL), NULL));
+    editMenu->AddItem(new BMenuItem("Configuration…", new BMessage(M_NOT_IMPL), NULL));
+    menuBar->AddItem(editMenu);
+
     BMenu *viewMenu = new BMenu("View");
     viewMenu->AddItem(new BMenuItem("Zoom in", new BMessage(ZOOM_IN), '+'));
     viewMenu->AddItem(new BMenuItem("Zoom out", new BMessage(ZOOM_OUT), '-'));
@@ -573,6 +598,36 @@ void MainWindow::MessageReceived(BMessage *msg) {
                     ->PostMessage(new BMessage(SHOW_LIST_OF_GROUPS));
             }
         }
+        break;
+    }
+    case M_UNDO: {
+        SS.GW.ActivateCommand(SolveSpace::Command::UNDO);
+        SS.GW.Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)
+            ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case M_REDO: {
+        SS.GW.ActivateCommand(SolveSpace::Command::REDO);
+        SS.GW.Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)
+            ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
+        break;
+    }
+    case SET_UNDO_ENABLED: {
+        undoMenuItem->SetEnabled(true);
+        break;
+    }
+    case SET_UNDO_DISABLED: {
+        undoMenuItem->SetEnabled(false);
+        break;
+    }
+    case SET_REDO_ENABLED: {
+        redoMenuItem->SetEnabled(true);
+        break;
+    }
+    case SET_REDO_DISABLED: {
+        redoMenuItem->SetEnabled(false);
         break;
     }
     default: {

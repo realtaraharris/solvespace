@@ -6,8 +6,14 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 #include "config.h"
+#include "platform/haiku/ui/HaikuSpaceUI.h"
 
+#if !defined(HEADLESS)
+// TODO: declare this in neutral places,
+HaikuSpaceUI SolveSpace::SS = {};
+#else
 SolveSpaceUI SolveSpace::SS = {};
+#endif
 Sketch SolveSpace::SK = {};
 
 void SolveSpaceUI::Init() {

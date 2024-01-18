@@ -5,6 +5,12 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
+namespace SolveSpace {
+    // TODO: fix this hack with something more elegant
+    // stub this out to silence the linker
+    void HaikuSpaceUI::UndoEnableMenus() {}
+}
+
 int main(int argc, char **argv) {
     std::vector<std::string> args = Platform::InitCli(argc, argv);
 

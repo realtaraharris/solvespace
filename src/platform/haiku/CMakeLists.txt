@@ -29,6 +29,8 @@ add_executable(SolveSpace
 
 	ui/EditorView.cpp
     ui/ViewParameters.cpp
+
+    ui/HaikuSpaceUI.cpp
 )
 
 set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)

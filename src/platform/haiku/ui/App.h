@@ -48,6 +48,7 @@ enum {
     SHOW_LIST_OF_GROUPS = 'slog',
     UPDATE_VIEW_PARAMETERS = 'upvp',
 
+    // File menu
     READ_FILE = 'rdfl',
     SAVE_AS_FILE = 'saaf',
     M_NEW_FILE = 'mnf',
@@ -56,6 +57,16 @@ enum {
     M_SAVE_AS_FILE = 'msaf',
     M_QUIT_APP = 'mqa',
 
+    // Edit menu
+    M_UNDO = 'undo',
+    M_REDO = 'redo',
+
+    SET_UNDO_ENABLED = 'suen',
+    SET_UNDO_DISABLED = 'sudi',
+    SET_REDO_ENABLED = 'sren',
+    SET_REDO_DISABLED = 'srdi',
+
+    // View menu
     ZOOM_IN = 'zin',
     ZOOM_OUT = 'zout',
     ZOOM_TO_FIT = 'zfit',
@@ -73,7 +84,9 @@ enum {
     M_GROUP_LATHE = 'grla', // Command::GROUP_LATHE
     M_GROUP_REVOLVE = 'grre', // Command::GROUP_REVOLVE
     M_GROUP_LINK = 'grlk', // Command::GROUP_LINK
-    M_GROUP_RECENT = 'grct' // Command::GROUP_RECENT
+    M_GROUP_RECENT = 'grct', // Command::GROUP_RECENT
+
+    M_NOT_IMPL = 'mnti'
 };
 
 #endif
