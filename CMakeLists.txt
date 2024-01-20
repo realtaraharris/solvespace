@@ -24,11 +24,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
 
-if (APPLE)
-    # Docs say this must be set before the first project() call
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "macOS minimum supported version")
-endif()
-
 # project
 
 # NOTE TO PACKAGERS: The embedded git commit hash is critical for rapid bug triage when the builds
@@ -182,14 +177,6 @@ endif()
 
 # common dependencies
 
-if(APPLE)
-    set(CMAKE_FIND_FRAMEWORK LAST)
-endif()
-
-if(EMSCRIPTEN)
-    set(M_LIBRARY "" CACHE STRING "libm (not necessary)" FORCE)
-endif()
-
 message(STATUS "Using in-tree libdxfrw")
 add_subdirectory(extlib/libdxfrw)
 
@@ -216,114 +203,22 @@ if(NOT EXISTS "${EIGEN3_INCLUDE_DIRS}")
 endif()
 
 
-if(WIN32 OR APPLE OR EMSCRIPTEN)
-    # On Win32 and macOS we use vendored packages, since there is little to no benefit
-    # to trying to find system versions. In particular, trying to link to libraries from
-    # Homebrew or macOS system libraries into the .app file is highly likely to result
-    # in incompatibilities after upgrades.
-
-    include(FindVendoredPackage)
-    include(AddVendoredSubdirectory)
-
-    set(FORCE_VENDORED_ZLIB     ON)
-    set(FORCE_VENDORED_PNG      ON)
-    set(FORCE_VENDORED_Freetype ON)
-
-    find_vendored_package(ZLIB zlib
-        ZLIB_LIBRARY            zlibstatic
-        ZLIB_INCLUDE_DIR        ${CMAKE_SOURCE_DIR}/extlib/zlib)
-    list(APPEND ZLIB_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extlib/zlib)
-
-    find_vendored_package(PNG libpng
-        SKIP_INSTALL_ALL        ON
-        PNG_LIBRARY             png_static
-        PNG_ARM_NEON            "off"
-        PNG_SHARED              OFF
-        PNG_STATIC              ON
-        PNG_EXECUTABLES         OFF
-        PNG_TESTS               OFF
-        PNG_FRAMEWORK           OFF
-        PNG_PNG_INCLUDE_DIR     ${CMAKE_SOURCE_DIR}/extlib/libpng)
-    list(APPEND PNG_PNG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/extlib/libpng)
-
-    find_vendored_package(Freetype freetype
-        WITH_ZLIB               OFF
-        WITH_BZip2              OFF
-        WITH_PNG                OFF
-        WITH_HarfBuzz           OFF
-        FREETYPE_LIBRARY        freetype
-        FREETYPE_INCLUDE_DIRS   ${CMAKE_SOURCE_DIR}/extlib/freetype/include)
-
-    message(STATUS "Using in-tree pixman")
-    set(PIXMAN_FOUND            YES)
-    set(PIXMAN_LIBRARY          pixman)
-    set(PIXMAN_BUILD_TESTS      OFF CACHE BOOL "")
-    set(PIXMAN_BUILD_DEMOS      OFF CACHE BOOL "")
-
-    set(PIXMAN_INCLUDE_DIRS     ${CMAKE_SOURCE_DIR}/extlib/pixman/pixman)
-    list(APPEND PIXMAN_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extlib/pixman/pixman)
-    add_vendored_subdirectory(extlib/pixman)
-
-    message(STATUS "Using in-tree cairo")
-    add_vendored_subdirectory(extlib/cairo)
-    set(CAIRO_FOUND             YES)
-    set(CAIRO_LIBRARIES         cairo)
-    set(CAIRO_INCLUDE_DIRS      ${CMAKE_SOURCE_DIR}/extlib/cairo/src)
-    list(APPEND CAIRO_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/extlib/cairo/src)
-
-    list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
-
-else()
-    # On Linux and BSDs we're a good citizen and link to system libraries.
-    find_package(Backtrace)
-    find_package(PkgConfig REQUIRED)
-    find_package(ZLIB REQUIRED)
-    find_package(PNG REQUIRED)
-    find_package(Freetype REQUIRED)
-    pkg_check_modules(CAIRO REQUIRED cairo)
-    list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
-endif()
+# On Linux and BSDs we're a good citizen and link to system libraries.
+find_package(Backtrace)
+find_package(PkgConfig REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(PNG REQUIRED)
+find_package(Freetype REQUIRED)
+pkg_check_modules(CAIRO REQUIRED cairo)
+list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
 
 # GUI dependencies
 
 if(ENABLE_GUI)
-    if(WIN32)
-        if(OPENGL STREQUAL "3")
-            message(STATUS "Using in-tree ANGLE")
-            set(ANGLE_STATIC            ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_D3D9       ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_D3D11      ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_OPENGL     ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_ESSL       ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_GLSL       ON  CACHE INTERNAL "")
-            set(ANGLE_ENABLE_HLSL       ON  CACHE INTERNAL "")
-            add_vendored_subdirectory(extlib/angle)
-            set(OPENGL_LIBRARIES        EGL GLESv2)
-            set(OPENGL_INCLUDE_DIR      ${CMAKE_SOURCE_DIR}/extlib/angle/include)
-        else()
-            find_package(OpenGL REQUIRED)
-        endif()
-
-        if(MSVC AND ${CMAKE_SIZEOF_VOID_P} EQUAL 4)
-            message(STATUS "Using prebuilt SpaceWare")
-            set(SPACEWARE_FOUND TRUE)
-            set(SPACEWARE_INCLUDE_DIR
-                "${CMAKE_SOURCE_DIR}/extlib/si")
-            set(SPACEWARE_LIBRARIES
-                "${CMAKE_SOURCE_DIR}/extlib/si/siapp.lib")
-        endif()
-    elseif(APPLE)
-        find_package(OpenGL REQUIRED)
-        find_library(APPKIT_LIBRARY AppKit REQUIRED)
-    elseif(EMSCRIPTEN)
-        # Everything is built in
-    else()
-        find_package(OpenGL REQUIRED)
-        find_package(SpaceWare)
-        pkg_check_modules(FONTCONFIG REQUIRED fontconfig)
-        pkg_check_modules(JSONC REQUIRED json-c)
-        pkg_check_modules(GTKMM REQUIRED gtkmm-3.0>=3.18 pangomm-1.4 x11)
-    endif()
+    find_package(OpenGL REQUIRED)
+    find_package(SpaceWare)
+    pkg_check_modules(FONTCONFIG REQUIRED fontconfig)
+    pkg_check_modules(JSONC REQUIRED json-c)
 endif()
 
 # code coverage
@@ -348,61 +243,9 @@ if(ENABLE_COVERAGE)
     endif()
 endif()
 
-# translations
-
-find_program(XGETTEXT xgettext)
-find_program(MSGINIT  msginit)
-find_program(MSGMERGE msgmerge)
-if(XGETTEXT AND MSGINIT AND MSGMERGE)
-    set(HAVE_GETTEXT TRUE)
-else()
-    message(WARNING "Gettext not found, translations will not be updated")
-    set(HAVE_GETTEXT FALSE)
-endif()
-
 # solvespace-only compiler flags
 
 add_definitions('-g')
-
-if(WIN32)
-    add_definitions(
-        -D_CRT_SECURE_NO_DEPRECATE
-        -D_CRT_SECURE_NO_WARNINGS
-        -D_SCL_SECURE_NO_WARNINGS
-        -DWINVER=0x0501
-        -D_WIN32_WINNT=0x0501
-        -D_WIN32_IE=_WIN32_WINNT
-        -DISOLATION_AWARE_ENABLED
-        -DWIN32
-        -DWIN32_LEAN_AND_MEAN
-        -DUNICODE
-        -D_UNICODE
-        -DNOMINMAX
-        -D_USE_MATH_DEFINES)
-endif()
-
-if(MSVC)
-    # Many versions of MSVC do not have the (C99) inline keyword, instead
-    # they have their own __inline; this breaks `static inline` functions.
-    # We do not want to care and so we fix this with a definition.
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Dinline=__inline")
-    # Same for the (C99) __func__ special variable; we use it only in C++ code.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D__func__=__FUNCTION__")
-
-    # Multi-processor Compilation
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-
-    # We rely on these /we flags. They correspond to the GNU-style flags below as
-    # follows: /w4062=-Wswitch
-    set(WARNING_FLAGS   "${WARNING_FLAGS} /we4062")
-
-    # Link 32 bit SolveSpace with /LARGEADDRESSAWARE which allows it to access
-    # up to 3GB on a properly configured 32 bit Windows and up to 4GB on 64 bit.
-    # See https://msdn.microsoft.com/en-us/library/aa366778
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
-endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WARNING_FLAGS   "-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers")
@@ -415,10 +258,6 @@ endif()
 
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${WARNING_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
-
-if(WIN32)
-    set(CMAKE_RC_FLAGS  "${CMAKE_RC_FLAGS} -l0")
-endif()
 
 if(ENABLE_COVERAGE)
     if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
@@ -440,9 +279,14 @@ endif()
 
 add_subdirectory("src/platform/haiku")
 
+if(ENABLE_GUI)
+    add_compile_definitions(HAIKU_GUI=${HAIKU_GUI})
+endif()
+
 add_subdirectory(res)
 add_subdirectory(src)
 add_subdirectory(exposed)
+
 if(ENABLE_TESTS)
     add_subdirectory(test)
 endif()

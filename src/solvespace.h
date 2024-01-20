@@ -824,17 +824,11 @@ void ImportDwg(const Platform::Path &file);
 bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 
-#if !defined(HEADLESS)
-class HaikuSpaceUI : public SolveSpaceUI {
-public:
-    void UndoEnableMenus();
-};
-
-extern HaikuSpaceUI SS;
+#if defined(HAIKU_GUI)
+    extern HaikuSpaceUI SS;
 #else
-extern SolveSpaceUI SS;
+    extern SolveSpaceUI SS;
 #endif
-
 
 extern Sketch SK;
 

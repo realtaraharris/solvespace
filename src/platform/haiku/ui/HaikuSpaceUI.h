@@ -9,6 +9,9 @@
 #include "App.h"
 #include "../../../solvespace.h"
 
-
+class HaikuSpaceUI : public SolveSpaceUI {
+public:
+    void UndoEnableMenus();
+};
 
 #endif // HAIKUSPACEUI_H

@@ -29,6 +29,7 @@ add_executable(SolveSpace
 
 	ui/EditorView.cpp
     ui/ViewParameters.cpp
+    ../guihaiku.cpp
 
     ui/HaikuSpaceUI.cpp
 )
