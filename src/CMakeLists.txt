@@ -1,5 +1,7 @@
 include(GNUInstallDirs)
 
+add_definitions('-g' '-gdwarf-4')
+
 # configuration
 
 include_directories(

@@ -2,8 +2,7 @@ cmake_minimum_required (VERSION 3.20)
 
 project(SolveSpace)
 
-add_definitions('-g' '-Wall' '-Wextra' '-fpermissive' '-Wno-multichar' '-Wfatal-errors')
-#add_definitions('-Wall' '-Wextra' '-fpermissive' '-Wno-multichar' '-Wfatal-errors')
+add_definitions('-g' '-gdwarf-4')
 
 include_directories("/boot/system/develop/headers/agg2/")
 include_directories(${CMAKE_SOURCE_DIR})

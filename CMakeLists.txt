@@ -1,6 +1,8 @@
 # cmake configuration
 cmake_minimum_required(VERSION 3.9...3.19)
 
+add_definitions('-g' '-gdwarf-4')
+
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR
             "In-tree builds are not supported; please perform an out-of-tree build:\n"
@@ -73,24 +75,6 @@ endif()
 
 # common compiler flags
 include(CheckCXXCompilerFlag)
-
-if (NOT APPLE)
-    set(FILE_PREFIX_MAP "-ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=.")
-    check_cxx_compiler_flag("${FILE_PREFIX_MAP}" HAS_FILE_PREFIX_MAP)
-    if(HAS_FILE_PREFIX_MAP)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FILE_PREFIX_MAP}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FILE_PREFIX_MAP}")
-    endif()
-endif()
-
-if(MINGW)
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} -static-libgcc")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
-    # Link 32 bit SolveSpace with --large-address-aware which allows it to access
-    # up to 3GB on a properly configured 32 bit Windows and up to 4GB on 64 bit.
-    # See https://msdn.microsoft.com/en-us/library/aa366778
-    set(CMAKE_EXE_LINKER_FLAGS "-Wl,--large-address-aware")
-endif()
 
 # Ensure that all platforms use 64-bit IEEE floating point operations for consistency;
 # this is most important for the testsuite, which compares savefiles directly
@@ -244,8 +228,6 @@ if(ENABLE_COVERAGE)
 endif()
 
 # solvespace-only compiler flags
-
-add_definitions('-g')
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WARNING_FLAGS   "-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers")
