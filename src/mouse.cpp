@@ -844,6 +844,7 @@ bool GraphicsWindow::ConstrainPointByHovered(hEntity pt, const Point2d *projecte
 }
 
 bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
+    if (window == NULL) { return true; }
     using Platform::MouseEvent;
     double width, height;
     window->GetContentSize(&width, &height);

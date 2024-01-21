@@ -858,8 +858,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 }
 
 void GraphicsWindow::Paint() {
-    ssassert(window != NULL && canvas != NULL,
-             "Cannot paint without window and canvas");
+    if (window == NULL || canvas == NULL) { return; }
 
     havePainted = true;
 
@@ -873,8 +872,6 @@ void GraphicsWindow::Paint() {
                                        0.4f*bgColor.greenF(),
                                        0.4f*bgColor.blueF());
         lighting.backgroundColor = bgColor;
-        // And show the text window, which has info to debug it
-        ForceTextWindowShown();
     }
 
     canvas->SetLighting(lighting);
