@@ -199,10 +199,8 @@ list(APPEND AGG_INCLUDE_DIRS /boot/system/develop/headers/agg2/)
 # GUI dependencies
 
 if(ENABLE_GUI)
-    find_package(OpenGL REQUIRED)
-    find_package(SpaceWare)
-    pkg_check_modules(FONTCONFIG REQUIRED fontconfig)
-    pkg_check_modules(JSONC REQUIRED json-c)
+#    find_package(OpenGL REQUIRED)
+    add_compile_definitions(HAIKU_GUI=${HAIKU_GUI})
 endif()
 
 # code coverage
@@ -260,10 +258,6 @@ endif()
 # application components
 
 add_subdirectory("src/platform/haiku")
-
-if(ENABLE_GUI)
-    add_compile_definitions(HAIKU_GUI=${HAIKU_GUI})
-endif()
 
 add_subdirectory(res)
 add_subdirectory(src)

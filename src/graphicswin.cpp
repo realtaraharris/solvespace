@@ -406,7 +406,7 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
     ssassert(!SK.groupOrder.IsEmpty(),
              "Group order can't be empty since we will activate the last group.");
     activeGroup = *SK.groupOrder.Last();
-//    SK.GetGroup(activeGroup)->Activate();
+    SK.GetGroup(activeGroup)->Activate();
 
     showWorkplanes = false;
     showNormals = true;
@@ -495,7 +495,7 @@ void GraphicsWindow::AnimateOnto(Quaternion quatf, Vector offsetf) {
     projRight = quatf.RotationU();
     projUp    = quatf.RotationV();
     offset    = offsetf;
-    window->Invalidate();
+//    window->Invalidate();
     return;
 
     // Get our initial orientation and translation.

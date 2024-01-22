@@ -8,7 +8,6 @@
 #include "config.h"
 
 #if defined(HAIKU_GUI)
-    #include "platform/haiku/ui/HaikuSpaceUI.h"
     HaikuSpaceUI SolveSpace::SS = {};
 #else
     SolveSpaceUI SolveSpace::SS = {};
@@ -16,6 +15,7 @@
 
 Sketch SolveSpace::SK = {};
 
+// TODO: move this into SolveSpaceUI.cpp
 void SolveSpaceUI::Init() {
 #if !defined(HEADLESS)
     // Check that the resource system works.
@@ -533,7 +533,7 @@ void SolveSpaceUI::AfterNewFile() {
 
 // TODO: resetting the graphics window should not require passing a size or pixel device ratio
 //    GW.Init();
-    TW.Init();
+//    TW.Init();
 
     unsaved = false;
 

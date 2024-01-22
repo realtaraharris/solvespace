@@ -69,8 +69,10 @@ void EditorView::Load(std::string path) {
         return;
     }
 
-    // SS.AfterNewFile();
+	this->New();
+}
 
+void EditorView::New() {
     SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0); // width, height, pixelDeviceRatio
     SS.GW.offset = {};
     SS.GW.scale = 5.0;

@@ -35,6 +35,7 @@ class EditorView : public BView {
     void FrameResized(float width, float height);
     void SaveToPng();
     void Load(std::string path);
+	void New();
 
     void MouseDown(BPoint point);
     void MouseMoved(BPoint point, uint32 transit, const BMessage *message);

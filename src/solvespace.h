@@ -511,6 +511,7 @@ public:
 #undef ENTITY
 #undef CONSTRAINT
 
+// TODO: move this into SolveSpaceUI.h
 class SolveSpaceUI {
 public:
     TextWindow                 *pTW;
@@ -676,7 +677,7 @@ public:
     std::vector<Platform::Path> recentFiles;
     bool Load(const Platform::Path &filename);
     bool GetFilenameAndSave(bool saveAs);
-    bool OkayToStartNewFile();
+    virtual bool OkayToStartNewFile();
     hGroup CreateDefaultDrawingGroup();
     void UpdateWindowTitles();
     void ClearExisting();
@@ -825,6 +826,7 @@ bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *s
 bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 
 #if defined(HAIKU_GUI)
+	#include "platform/haiku/ui/HaikuSpaceUI.h"
     extern HaikuSpaceUI SS;
 #else
     extern SolveSpaceUI SS;

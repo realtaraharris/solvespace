@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 
-#include <Alert.h> // BAlert
+#include <Alert.h>
 #include <Application.h>
 #include <Button.h>
 #include <ControlLook.h>
@@ -549,6 +549,11 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_NEW_FILE: {
+        SS.GW.ActivateCommand(SolveSpace::Command::NEW);
+		editorView->New();
+        SS.GW.Invalidate();
+        be_app->WindowAt(VIEW_PARAMETERS)
+            ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_SAVE_AS_FILE: {

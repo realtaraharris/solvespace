@@ -175,40 +175,10 @@ target_include_directories(solvespace-headless
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
     PUBLIC ${EIGEN3_INCLUDE_DIRS}
     ${AGG_INCLUDE_DIRS}
-    "platform/haiku/ui/"
-    )
+    "platform/haiku/ui/")
 
 target_link_libraries(solvespace-headless
     PRIVATE
     agg
     be
     solvespace-core)
-
-# solvespace command-line executable
-
-if(ENABLE_CLI)
-    add_executable(solvespace-cli
-        platform/entrycli.cpp
-        $<TARGET_PROPERTY:resources,EXTRA_SOURCES>)
-
-    target_link_libraries(solvespace-cli
-        solvespace-core
-        solvespace-headless)
-
-    add_dependencies(solvespace-cli
-        resources)
-endif()
-
-# solvespace unix package
-
-if(NOT (WIN32 OR APPLE OR EMSCRIPTEN))
-    if(ENABLE_GUI)
-        install(TARGETS solvespace
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    endif()
-    if(ENABLE_CLI)
-        install(TARGETS solvespace-cli
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-    endif()
-endif()
-
