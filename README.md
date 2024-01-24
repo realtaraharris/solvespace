@@ -3,8 +3,6 @@
 <img src="res/freedesktop/solvespace-scalable.svg" width="70" height="70" alt="SolveSpace Logo" align="left">
 
 [![Build Status](https://github.com/solvespace/solvespace/workflows/CD/badge.svg)](https://github.com/solvespace/solvespace/actions)
-[![solvespace](https://snapcraft.io/solvespace/badge.svg)](https://snapcraft.io/solvespace)
-[![solvespace](https://snapcraft.io/solvespace/trending.svg?name=0)](https://snapcraft.io/solvespace)
 
 This repository contains the source code of [SolveSpace][], a parametric
 2d/3d CAD.
@@ -32,34 +30,6 @@ _Official_ release packages for macOS (>=10.6 64-bit) and Windows
 automatically built by the SolveSpace maintainers for each stable release.
 
 [rel]: https://github.com/solvespace/solvespace/releases
-
-### Via Flathub
-
-Official releases can be installed as a Flatpak from Flathub.
-
-[Get SolveSpace from Flathub](https://flathub.org/apps/details/com.solvespace.SolveSpace)
-
-These should work on any Linux distribution that supports Flatpak.
-
-### Via Snap Store
-
-Official releases can be installed from the `stable` channel.
-
-Builds from master are automatically released to the `edge` channel in the Snap
-Store. Those packages contain the latest improvements, but receive less testing
-than release builds.
-
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/solvespace)
-
-Or install from a terminal:
-
-```sh
-# for the latest stable release:
-snap install solvespace
-
-# for the bleeding edge builds from master:
-snap install solvespace --edge
-```
 
 ### Via automated edge builds
 
