@@ -20,9 +20,6 @@
 [submodule "extlib/angle"]
 	path = extlib/angle
 	url = https://github.com/solvespace/angle
-[submodule "extlib/mimalloc"]
-	path = extlib/mimalloc
-	url = https://github.com/microsoft/mimalloc
 [submodule "extlib/eigen"]
 	path = extlib/eigen
 	url = https://gitlab.com/libeigen/eigen.git

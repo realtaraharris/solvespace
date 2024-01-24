@@ -164,13 +164,10 @@ endif()
 message(STATUS "Using in-tree libdxfrw")
 add_subdirectory(extlib/libdxfrw)
 
-message(STATUS "Using in-tree mimalloc")
 set(MI_OVERRIDE OFF CACHE BOOL "")
 set(MI_BUILD_SHARED OFF CACHE BOOL "")
 set(MI_BUILD_OBJECT OFF CACHE BOOL "")
 set(MI_BUILD_TESTS OFF CACHE BOOL "")
-add_subdirectory(extlib/mimalloc EXCLUDE_FROM_ALL)
-set(MIMALLOC_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/extlib/mimalloc/include)
 
 if(NOT FORCE_VENDORED_Eigen3)
     find_package(Eigen3 CONFIG)

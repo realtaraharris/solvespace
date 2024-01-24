@@ -10,7 +10,6 @@
 #   include <CoreFoundation/CFBundle.h>
 #endif
 #include "solvespace.h"
-#include "mimalloc.h"
 #include "config.h"
 #if defined(WIN32)
 // Conversely, include Microsoft headers after solvespace.h to avoid clashes.
@@ -20,6 +19,8 @@
 #   include <unistd.h>
 #   include <sys/stat.h>
 #endif
+
+#include <list>
 
 namespace SolveSpace {
 namespace Platform {
@@ -697,34 +698,22 @@ void DebugPrint(const char *fmt, ...) {
 // Temporary arena.
 //-----------------------------------------------------------------------------
 
-struct MimallocHeap {
-    mi_heap_t *heap = NULL;
-
-    ~MimallocHeap() {
-        if(heap != NULL)
-            mi_heap_destroy(heap);
-    }
-};
-
-static thread_local MimallocHeap TempArena;
+static thread_local std::list<void *> TempArena = {};
 
 void *AllocTemporary(size_t size) {
-    if(TempArena.heap == NULL) {
-        TempArena.heap = mi_heap_new();
-        ssassert(TempArena.heap != NULL, "out of memory");
-    }
-    void *ptr = mi_heap_zalloc(TempArena.heap, size);
+    void *ptr = malloc(size);
     ssassert(ptr != NULL, "out of memory");
+	memset(ptr, 0, size);
+    TempArena.push_back(ptr);
     return ptr;
 }
 
 void FreeAllTemporary() {
-    MimallocHeap temp;
-    std::swap(TempArena.heap, temp.heap);
-}
+	for (void *ptr: TempArena) {
+		free(ptr);
+	}
 
-void CleanupForQuitting() {
-    TempArena.~MimallocHeap();
+	TempArena.clear();
 }
 
 }

@@ -1,4 +1,4 @@
-git submodule update --init extlib/libdxfrw extlib/mimalloc
+git submodule update --init extlib/libdxfrw
 pkgman install freetype_devel cairo_devel eigen json_c_devel agg_devel freetype_debuginfo fontconfig_debuginfo graphite2_debuginfo libiconv_debuginfo lcms_debuginfo
 mkdir build
 cd build

@@ -22,15 +22,13 @@ target_include_directories(slvs_deps INTERFACE SYSTEM
     ${FREETYPE_INCLUDE_DIRS}
     ${CAIRO_INCLUDE_DIRS}
     ${AGG_INCLUDE_DIRS}
-    ${MIMALLOC_INCLUDE_DIR}
     ${EIGEN3_INCLUDE_DIRS})
 target_link_libraries(slvs_deps INTERFACE
     dxfrw
     ${ZLIB_LIBRARY}
     ${PNG_LIBRARY}
     ${FREETYPE_LIBRARY}
-    ${CAIRO_LIBRARIES}
-    mimalloc-static)
+    ${CAIRO_LIBRARIES})
 
 if(Backtrace_FOUND)
     target_include_directories(slvs_deps INTERFACE SYSTEM

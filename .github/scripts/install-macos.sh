@@ -13,4 +13,4 @@ else
     brew install libomp
 fi
 
-git submodule update --init extlib/cairo extlib/freetype extlib/libdxfrw extlib/libpng extlib/mimalloc extlib/pixman extlib/zlib extlib/eigen
+git submodule update --init extlib/cairo extlib/freetype extlib/libdxfrw extlib/libpng extlib/pixman extlib/zlib extlib/eigen

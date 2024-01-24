@@ -729,7 +729,6 @@ void MainWindow::SaveSettings() {
 
 bool MainWindow::QuitRequested(void) {
     SaveSettings();
-    SolveSpace::Platform::CleanupForQuitting();
     be_app->PostMessage(B_QUIT_REQUESTED);
     return true;
 }

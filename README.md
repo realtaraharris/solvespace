@@ -110,7 +110,7 @@ Before building, check out the project and the necessary submodules:
 ```sh
 git clone https://github.com/solvespace/solvespace
 cd solvespace
-git submodule update --init extlib/libdxfrw extlib/mimalloc extlib/eigen
+git submodule update --init extlib/libdxfrw extlib/eigen
 ```
 
 After that, build SolveSpace as following:
@@ -274,7 +274,7 @@ Before building, check out the project and the necessary submodules:
 ```sh
 git clone https://github.com/solvespace/solvespace
 cd solvespace
-git submodule update --init extlib/libdxfrw extlib/mimalloc extlib/eigen
+git submodule update --init extlib/libdxfrw extlib/eigen
 ```
 
 After that, build SolveSpace as following:
