@@ -16,12 +16,6 @@ list(APPEND CMAKE_MODULE_PATH
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
-# for /MT on MSVC
-set(CMAKE_USER_MAKE_RULES_OVERRIDE
-   "${CMAKE_SOURCE_DIR}/cmake/c_flag_overrides.cmake")
-set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX
-   "${CMAKE_SOURCE_DIR}/cmake/cxx_flag_overrides.cmake")
-
 if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
@@ -185,7 +179,6 @@ endif()
 
 
 # On Linux and BSDs we're a good citizen and link to system libraries.
-find_package(Backtrace)
 find_package(PkgConfig REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(PNG REQUIRED)
@@ -255,10 +248,9 @@ endif()
 # application components
 
 add_subdirectory("src/platform/haiku")
-
 add_subdirectory(res)
 add_subdirectory(src)
-add_subdirectory(exposed)
+#add_subdirectory(exposed)
 
 if(ENABLE_TESTS)
     add_subdirectory(test)

@@ -30,20 +30,6 @@ target_link_libraries(slvs_deps INTERFACE
     ${FREETYPE_LIBRARY}
     ${CAIRO_LIBRARIES})
 
-if(Backtrace_FOUND)
-    target_include_directories(slvs_deps INTERFACE SYSTEM
-        ${Backtrace_INCLUDE_DIRS})
-    target_link_libraries(slvs_deps INTERFACE
-        ${Backtrace_LIBRARY})
-endif()
-
-if(SPACEWARE_FOUND)
-    target_include_directories(slvs_deps INTERFACE SYSTEM
-        ${SPACEWARE_INCLUDE_DIR})
-    target_link_libraries(slvs_deps INTERFACE
-        ${SPACEWARE_LIBRARIES})
-endif()
-
 if(ENABLE_OPENMP)
     target_link_libraries(slvs_deps INTERFACE slvs_openmp)
 endif()
@@ -80,13 +66,6 @@ set_target_properties(slvs PROPERTIES
     PUBLIC_HEADER ${CMAKE_SOURCE_DIR}/include/slvs.h
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)
-
-if(NOT WIN32)
-    install(TARGETS slvs
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-endif()
 
 # solvespace library
 
