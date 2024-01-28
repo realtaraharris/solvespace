@@ -1,6 +1,6 @@
 # SolveSpace for Haiku
 
-<img src="src/platform/haiku/resources/icons/solvespace.svg" width="70" height="70" alt="SolveSpace Logo" align="left">
+<img src="src/platform/haiku/resources/icons/solvespace.png" width="70" height="70" alt="SolveSpace for Haiku Logo" align="left">
 
 This repository contains the source code for SolveSpace for Haiku, a parametric 2D/3D CAD with a native Haiku user interface.
 
