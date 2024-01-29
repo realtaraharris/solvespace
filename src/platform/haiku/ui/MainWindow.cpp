@@ -1,3 +1,8 @@
+/*
+ * Copyright 2023, 2024 Tara Harris <3769985+realtaraharris@users.noreply.github.com>
+ * All rights reserved. Distributed under the terms of the GPLv3 and MIT licenses.
+ */
+
 #include "MainWindow.h"
 
 #include <Alert.h>
@@ -11,7 +16,6 @@
 #include <View.h>
 
 #include "App.h" // contains message enums
-#include "Solver.h"
 #include "Toolbar.h"
 
 #include <iostream>

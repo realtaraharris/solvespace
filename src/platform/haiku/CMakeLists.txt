@@ -24,7 +24,6 @@ add_executable(SolveSpace
 	ui/GroupsListView.cpp
 
 	ui/HVIFUtil.cpp
-	ui/DrawButton.cpp
 
 	ui/EditorView.cpp
     ui/ViewParameters.cpp
