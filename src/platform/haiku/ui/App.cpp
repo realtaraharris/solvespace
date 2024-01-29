@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-App::App(void) : BApplication("application/x-vnd.dw-TestApp") {
+App::App(void) : BApplication("application/x-vnd.dw-solvespace") {
     MainWindow *mainwin = new MainWindow();
     mainwin->Show();
 }
