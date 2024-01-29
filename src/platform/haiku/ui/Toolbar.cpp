@@ -13,7 +13,6 @@
 #include <View.h>
 #include <Window.h>
 
-#include "DrawButton.h"
 #include "HVIFUtil.h"
 
 #include "App.h" // contains message enums
