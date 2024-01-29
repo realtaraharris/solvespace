@@ -8,3 +8,7 @@
 *.lib  binary
 *.png  binary
 *.slvs binary
+
+exposed/*.vb linguist-documentation
+exposed/*.c linguist-documentation
+extlib/** linguist-vendored
