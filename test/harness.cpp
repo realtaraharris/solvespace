@@ -257,13 +257,16 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
     pixmapCanvas.SetCamera(camera);
     pixmapCanvas.Init(true);
 
+    hGroup activeGroup = *SK.groupOrder.Last();
+    SS.GW.activeGroup.v = activeGroup.v;
+
     pixmapCanvas.StartFrame();
+    pixmapCanvas.Clear();
     SS.GW.Draw(&pixmapCanvas);
+    // TODO: draw overlays!
     pixmapCanvas.FlushFrame();
     pixmapCanvas.FinishFrame();
     std::shared_ptr<Pixmap> frame = pixmapCanvas.ReadFrame();
-
-    pixmapCanvas.Clear();
 
     // Now, diff framebuffer against reference render.
     Platform::Path refPath  = GetAssetPath(file, reference),

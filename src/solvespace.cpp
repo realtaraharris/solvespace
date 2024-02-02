@@ -144,18 +144,8 @@ void SolveSpaceUI::Init() {
     ScheduleAutosave();
 
     NewFile();
-//    AfterNewFile();
+    AfterNewFile();
 
-    if(TW.window && GW.window) {
-        TW.window->ThawPosition(settings, "TextWindow");
-        GW.window->ThawPosition(settings, "GraphicsWindow");
-        TW.window->SetVisible(true);
-        GW.window->SetVisible(true);
-        GW.window->Focus();
-
-        // Do this once the window is created.
-        Request3DConnexionEventsForWindow(GW.window);
-    }
 }
 
 bool SolveSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {

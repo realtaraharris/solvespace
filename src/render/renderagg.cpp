@@ -9,6 +9,7 @@
 #include "agg_conv_curve.h"
 #include "agg_bspline.h"
 #include "agg_ellipse.h"
+#include "agg_arc.h"
 #include "agg_gsv_text.h"
 #include "agg_scanline_p.h"
 #include "agg_renderer_scanline.h"
@@ -129,11 +130,23 @@ namespace SolveSpace {
 			}
 
 			agg::render_scanlines_aa_solid(pf, sl, rb, agg::rgba8(color.red, color.green, color.blue, color.alpha));
-		} else if(b.IsCircle(n, &c, &r)) {
-			ssassert(false, "not implemented: AggRenderer::OutputBezier b.IsCircle() == true");
-		} else if (b.deg == 3 && !b.IsRational()) {
-			ssassert(false, "wtf, this code never runs in test!");
+		} else if (b.IsCircle(n, &c, &r)) {
+			double theta0 = atan2(b.ctrl[0].y - c.y, b.ctrl[0].x - c.x),
+				theta1 = atan2(b.ctrl[2].y - c.y, b.ctrl[2].x - c.x),
+				dtheta = WRAP_SYMMETRIC(theta1 - theta0, 2*PI);
 
+			agg::arc arc;
+			arc.init(c.x, c.y, r, r, theta0, theta1, dtheta > 0);
+
+			agg::path_storage ps;
+			ps.concat_path(arc);
+			agg::conv_stroke<agg::path_storage> stroke(ps);
+
+			stroke.width(strokeWidth);
+			agg::conv_transform<agg::conv_stroke<agg::path_storage>> camtrans(stroke, cameraMatrix);
+
+			pf.add_path(camtrans);
+		} else if (b.deg == 3 && !b.IsRational()) {
 			// TODO: are these defaults good?
 			double m_angle_tolerance = 15; // 0 - 90
 			double m_approximation_scale = 1.0; // 0.1 - 5
