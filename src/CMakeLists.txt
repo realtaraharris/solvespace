@@ -142,7 +142,6 @@ target_link_libraries(solvespace-core PUBLIC slvs_deps)
 add_library(solvespace-headless STATIC EXCLUDE_FROM_ALL
     ${solvespace_core_gl_SOURCES}
     platform/guinone.cpp
-    render/rendercairo.cpp
     render/renderagg.cpp)
 
 target_compile_definitions(solvespace-headless

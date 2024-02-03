@@ -858,7 +858,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 }
 
 void GraphicsWindow::Paint() {
-    if (window == NULL || canvas == NULL) { return; }
+    if ((window == NULL && !overrideCamera) || canvas == NULL) { return; }
 
     havePainted = true;
 
@@ -874,8 +874,10 @@ void GraphicsWindow::Paint() {
         lighting.backgroundColor = bgColor;
     }
 
-    canvas->SetLighting(lighting);
-    canvas->SetCamera(camera);
+    if (!overrideCamera) {
+        canvas->SetLighting(lighting);
+        canvas->SetCamera(camera);
+    }
     canvas->StartFrame();
 
     // Draw the 3d objects.
@@ -883,11 +885,12 @@ void GraphicsWindow::Paint() {
     canvas->FlushFrame();
 
     // Draw the 2d UI overlay.
-    camera.LoadIdentity();
-    camera.offset.x = -(double)camera.width  / 2.0;
-    camera.offset.y = -(double)camera.height / 2.0;
-    canvas->SetCamera(camera);
-
+    if (!overrideCamera) {
+        camera.LoadIdentity();
+        camera.offset.x = -(double)camera.width  / 2.0;
+        camera.offset.y = -(double)camera.height / 2.0;
+        canvas->SetCamera(camera);
+    }
     UiCanvas uiCanvas = {};
     uiCanvas.canvas = canvas;
 

@@ -566,6 +566,7 @@ public:
     std::shared_ptr<BatchCanvas>    persistentCanvas;
     bool persistentDirty;
 
+    bool overrideCamera; // hack to make the Paint method work for both tests and the graphical UI
     // These parameters define the map from 2d screen coordinates to the
     // coordinates of the 3d sketch points. We will use an axonometric
     // projection.

@@ -145,7 +145,6 @@ void SolveSpaceUI::Init() {
 
     NewFile();
     AfterNewFile();
-
 }
 
 bool SolveSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {

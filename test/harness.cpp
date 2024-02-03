@@ -208,6 +208,10 @@ bool Test::Helper::CheckLoad(const char *file, int line, const char *fixture) {
     if(f) fclose(f);
 
     bool result = fixtureExists && SS.LoadFromFile(fixturePath);
+
+    hGroup activeGroup = *SK.groupOrder.Last();
+    SS.GW.activeGroup.v = activeGroup.v;
+
     if(!RecordCheck(result)) {
         PrintFailure(file, line,
                      ssprintf("loading file '%s'", fixturePath.raw.c_str()));
@@ -242,7 +246,6 @@ bool Test::Helper::CheckSave(const char *file, int line, const char *reference) 
 }
 
 bool Test::Helper::CheckRender(const char *file, int line, const char *reference) {
-    // First, render to a framebuffer.
     Camera camera = {};
     camera.pixelRatio = 1;
     camera.gridFit    = true;
@@ -250,23 +253,19 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
     camera.height     = 600;
     camera.projUp     = SS.GW.projUp;
     camera.projRight  = SS.GW.projRight;
-    camera.scale      = SS.GW.scale;
+    camera.scale      = 10.0;
 
-    AggPixmapRenderer pixmapCanvas;
-    pixmapCanvas.SetLighting(SS.GW.GetLighting());
-    pixmapCanvas.SetCamera(camera);
-    pixmapCanvas.Init(true);
+    SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
+    std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->SetLighting(SS.GW.GetLighting());
+    std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->SetCamera(camera);
+    std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(true);
 
-    hGroup activeGroup = *SK.groupOrder.Last();
-    SS.GW.activeGroup.v = activeGroup.v;
-
-    pixmapCanvas.StartFrame();
-    pixmapCanvas.Clear();
-    SS.GW.Draw(&pixmapCanvas);
-    // TODO: draw overlays!
-    pixmapCanvas.FlushFrame();
-    pixmapCanvas.FinishFrame();
-    std::shared_ptr<Pixmap> frame = pixmapCanvas.ReadFrame();
+    SS.GW.canvas.get()->Clear();
+    SS.GW.canvas.get()->StartFrame();
+    SS.GW.Paint();
+    SS.GW.canvas.get()->FlushFrame();
+    SS.GW.canvas.get()->FinishFrame();
+    std::shared_ptr<Pixmap> frame = SS.GW.canvas.get()->ReadFrame();
 
     // Now, diff framebuffer against reference render.
     Platform::Path refPath  = GetAssetPath(file, reference),
@@ -369,6 +368,9 @@ int main(int argc, char **argv) {
         }
 
         SS.Init();
+        SS.GW.Init(600, 600, 1.0);
+        SS.GW.overrideCamera = true;
+
         SS.showToolbar = false;
         SS.checkClosedContour = false;
 

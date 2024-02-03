@@ -23,6 +23,7 @@ EditorView::EditorView()
     // choices: SS.GW.canvas.get(),
     // std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
     SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
+    SS.GW.overrideCamera = false;
 
     InitBitmapAndBuffer();
     Invalidate();

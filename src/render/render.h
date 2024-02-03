@@ -336,7 +336,7 @@ public:
 //-----------------------------------------------------------------------------
 // 2d renderers
 //-----------------------------------------------------------------------------
-
+/*
 class CairoRenderer : public SurfaceRenderer {
 public:
     cairo_t     *context  = NULL;
@@ -380,6 +380,7 @@ public:
 
     std::shared_ptr<Pixmap> ReadFrame() override;
 };
+*/
 
 class AggRenderer : public SurfaceRenderer {
 public:

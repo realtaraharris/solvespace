@@ -134,7 +134,6 @@ MainWindow::MainWindow(void)
 
     SS.Init();
 
-
     const BSize toolbarIconSize =
         be_control_look->ComposeIconSize(B_LARGE_ICON);
     BRect toolbarRect = BRect(BPoint(10, 35), BSize(0, 0));
