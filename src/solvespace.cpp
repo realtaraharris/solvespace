@@ -531,8 +531,6 @@ void SolveSpaceUI::AfterNewFile() {
     // Create all the default styles; they'll get created on the fly anyways,
     // but can't hurt to do it now.
     Style::CreateAllDefaultStyles();
-
-    UpdateWindowTitles();
 }
 
 void SolveSpaceUI::AddToRecentList(const Platform::Path &filename) {
@@ -628,20 +626,6 @@ bool SolveSpaceUI::OkayToStartNewFile() {
         default:
             return false;
     }
-}
-
-void SolveSpaceUI::UpdateWindowTitles() {
-    if(!GW.window || !TW.window) return;
-
-    if(saveFile.IsEmpty()) {
-        GW.window->SetTitle(C_("title", "(new sketch)"));
-    } else {
-        if(!GW.window->SetTitleForFilename(saveFile)) {
-            GW.window->SetTitle(saveFile.raw);
-        }
-    }
-
-    TW.window->SetTitle(C_("title", "Property Browser"));
 }
 
 void SolveSpaceUI::MenuFile(Command id) {
@@ -792,8 +776,6 @@ void SolveSpaceUI::MenuFile(Command id) {
 
         default: ssassert(false, "Unexpected menu ID");
     }
-
-    SS.UpdateWindowTitles();
 }
 
 void SolveSpaceUI::MenuAnalyze(Command id) {

@@ -797,14 +797,6 @@ public:
     void SelectByMarquee();
     void ClearSuper();
 
-    // The toolbar, in toolbar.cpp
-    bool ToolbarDrawOrHitTest(int x, int y, UiCanvas *canvas,
-                              Command *hitCommand, int *hitX, int *hitY);
-    void ToolbarDraw(UiCanvas *canvas);
-    bool ToolbarMouseMoved(int x, int y);
-    bool ToolbarMouseDown(int x, int y);
-    Command toolbarHovered;
-
     // This sets what gets displayed.
     bool    showWorkplanes;
     bool    showNormals;

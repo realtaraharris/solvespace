@@ -483,9 +483,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
     SS.extraLine.draw = false;
     Invalidate();
 
-    // Don't show a context menu if the user is right-clicking the toolbar,
-    // or if they are finishing a pan.
-    if(ToolbarMouseMoved((int)x, (int)y)) return;
+    // Don't show a context menu if the user finishing a pan.
     if(orig.startedMoving) return;
 
     if(context.active) return;
@@ -1457,7 +1455,6 @@ void GraphicsWindow::MouseLeave() {
     // currently a context menu shown.
     if(!context.active) {
         hover.Clear();
-        toolbarHovered = Command::NONE;
         Invalidate();
     }
     SS.extraLine.draw = false;

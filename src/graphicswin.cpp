@@ -298,7 +298,6 @@ void GraphicsWindow::PopulateMainMenu() {
                     SetLocale(locale.Culture());
                     Platform::GetSettings()->FreezeString("Locale", locale.Culture());
 
-                    SS.UpdateWindowTitles();
                     PopulateMainMenu();
                     EnsureValidActives();
                 });
@@ -426,7 +425,6 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
     showSnapGrid = false;
     dimSolidModel = true;
     context.active = false;
-    toolbarHovered = Command::NONE;
 
     if(!window) {
         window = Platform::CreateWindow();

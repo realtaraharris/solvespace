@@ -116,7 +116,6 @@ add_library(solvespace-core STATIC
     system.cpp
     textscreens.cpp
     textwin.cpp
-    toolbar.cpp
     ttf.cpp
     undoredo.cpp
     util.cpp

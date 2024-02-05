@@ -679,7 +679,6 @@ public:
     bool GetFilenameAndSave(bool saveAs);
     virtual bool OkayToStartNewFile();
     hGroup CreateDefaultDrawingGroup();
-    void UpdateWindowTitles();
     void ClearExisting();
     void NewFile();
     bool SaveToFile(const Platform::Path &filename);
