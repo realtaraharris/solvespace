@@ -193,9 +193,6 @@ bool SolveSpaceUI::Load(const Platform::Path &filename) {
 void SolveSpaceUI::Exit() {
     Platform::SettingsRef settings = Platform::GetSettings();
 
-    GW.window->FreezePosition(settings, "GraphicsWindow");
-    TW.window->FreezePosition(settings, "TextWindow");
-
     // Recent files
     for(size_t i = 0; i < MAX_RECENT; i++) {
         std::string rawPath;
@@ -1058,7 +1055,6 @@ void SolveSpaceUI::Clear() {
         if(i < undo.cnt) undo.d[i].Clear();
         if(i < redo.cnt) redo.d[i].Clear();
     }
-    TW.window = NULL;
     GW.openRecentMenu = NULL;
     GW.linkRecentMenu = NULL;
     GW.showGridMenuItem = NULL;
@@ -1076,7 +1072,6 @@ void SolveSpaceUI::Clear() {
     GW.in3dMenuItem = NULL;
     GW.undoMenuItem = NULL;
     GW.redoMenuItem = NULL;
-    GW.window = NULL;
 }
 
 void Sketch::Clear() {

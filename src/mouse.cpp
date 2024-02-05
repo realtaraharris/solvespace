@@ -1367,18 +1367,12 @@ void GraphicsWindow::EditConstraint(hConstraint constraint) {
 }
 
 void GraphicsWindow::MouseLeftDoubleClick(double mx, double my) {
-    if(window->IsEditorVisible()) return;
-    SS.TW.HideEditControl();
-
     if(hover.constraint.v) {
         EditConstraint(hover.constraint);
     }
 }
 
 void GraphicsWindow::EditControlDone(const std::string &s) {
-    window->HideEditor();
-    window->Invalidate();
-
     Constraint *c = SK.GetConstraint(constraintBeingEdited);
 
     if(c->type == Constraint::Type::COMMENT) {
