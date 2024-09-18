@@ -60,6 +60,14 @@ enum {
     M_OPEN_FILE = 'mof',
     M_SAVE_FILE = 'msf',
     M_SAVE_AS_FILE = 'msaf',
+    M_EXPORT_IMAGE = 'mexi',
+    EXPORT_IMAGE = 'exim',
+    M_EXPORT_VIEW = 'mexv',
+    M_EXPORT_SECTION = 'mese',
+    M_EXPORT_WIREFRAME = 'mexw',
+    M_EXPORT_MESH = 'mexm',
+    M_EXPORT_SURFACES = 'mexs',
+    M_IMPORT = 'mimp',
     M_QUIT_APP = 'mqa',
 
     // Edit menu

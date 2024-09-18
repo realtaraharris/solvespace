@@ -42,6 +42,14 @@ MainWindow::MainWindow(void)
     fileMenu->AddItem(new BMenuItem("Save", new BMessage(M_SAVE_FILE), 'S'));
     fileMenu->AddItem(new BMenuItem("Save as…", new BMessage(M_SAVE_AS_FILE), NULL));
     fileMenu->AddSeparatorItem();
+    fileMenu->AddItem(new BMenuItem("Export image…", new BMessage(M_EXPORT_IMAGE), NULL));
+    fileMenu->AddItem(new BMenuItem("Export 2D view…", new BMessage(M_EXPORT_VIEW), NULL));
+    fileMenu->AddItem(new BMenuItem("Export 2D section…", new BMessage(M_EXPORT_SECTION), NULL));
+    fileMenu->AddItem(new BMenuItem("Export 3D wireframe…", new BMessage(M_EXPORT_WIREFRAME), NULL));
+    fileMenu->AddItem(new BMenuItem("Export triangle mesh…", new BMessage(M_EXPORT_MESH), NULL));
+    fileMenu->AddItem(new BMenuItem("Export surfaces…", new BMessage(M_EXPORT_SURFACES), NULL));
+    fileMenu->AddItem(new BMenuItem("Import…", new BMessage(M_IMPORT), NULL));
+    fileMenu->AddSeparatorItem();
     fileMenu->AddItem(new BMenuItem("Quit", new BMessage(M_QUIT_APP), 'Q'));
     menuBar->AddItem(fileMenu);
 
@@ -608,6 +616,63 @@ void MainWindow::MessageReceived(BMessage *msg) {
         }
         break;
     }
+    case M_EXPORT_IMAGE: {
+        BFilePanel *fp =
+            new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL,
+                           B_FILE_NODE, false, new BMessage(EXPORT_IMAGE));
+        fp->SetSaveText(currentFilePath->Leaf()); // TODO: strip extension and replace with png
+        fp->Show();
+        break;
+    }
+    case EXPORT_IMAGE: {
+        // TODO: extract identical code used elsewhere, e.g., the SAVE_AS_FILE case handler
+        if (!msg->HasRef("directory") || !msg->HasString("name")) { break; }
+        entry_ref ref;
+        const char *name;
+        BPath path;
+
+        if (msg->FindRef("directory", 0, &ref) != B_OK || msg->FindString("name", &name) != B_OK) { break; }
+        BEntry entry(&ref, true);
+
+        if (entry.GetPath(&path) != B_OK) { break; }
+
+        SS.ExportAsPngTo(
+            Platform::Path::From(std::string(path.Path()) + "/" + std::string(name))
+        );
+
+        break;
+    }
+    case M_EXPORT_VIEW: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_VIEW);
+        SS.GW.Invalidate();
+        break;
+    }
+    case M_EXPORT_SECTION: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_SECTION);
+        SS.GW.Invalidate();
+        break;
+    }
+    case M_EXPORT_WIREFRAME: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_WIREFRAME);
+        SS.GW.Invalidate();
+        break;
+    }
+    case M_EXPORT_MESH: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_MESH);
+        SS.GW.Invalidate();
+        break;
+    }
+    case M_EXPORT_SURFACES: {
+        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_SURFACES);
+        SS.GW.Invalidate();
+        break;
+    }
+    case M_IMPORT: {
+        SS.GW.ActivateCommand(SolveSpace::Command::IMPORT);
+        SS.GW.Invalidate();
+        break;
+    }
+
     case M_UNDO: {
         SS.GW.ActivateCommand(SolveSpace::Command::UNDO);
         SS.GW.Invalidate();
