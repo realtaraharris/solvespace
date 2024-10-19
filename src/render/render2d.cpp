@@ -224,7 +224,7 @@ void SurfaceRenderer::CalculateBBox() {
 
     for(STriangle &tr : mesh.l) {
         for(int i = 0; i < 3; i++) {
-            bbox.Include(tr.vertices[i]);
+            bbox.Include(tr.vertices(i));
         }
     }
 }

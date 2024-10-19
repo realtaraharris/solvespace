@@ -124,6 +124,30 @@ STriangle STriangle::From(STriMeta meta, Vector a, Vector b, Vector c) {
     return tr;
 }
 
+Vector STriangle::vertices (int i) const {
+    if (i == 0) {
+	   return a;
+	} else if (i == 1) {
+	   return b;
+	} else if (i == 2) {
+	   return c;
+	} else {
+		ssassert(false, "invalid array access on vertices");
+	}
+}
+
+Vector STriangle::normals (int i) const {
+    if (i == 0) {
+	   return an;
+	} else if (i == 1) {
+	   return bn;
+	} else if (i == 2) {
+	   return cn;
+	} else {
+		ssassert(false, "invalid array access on normal");
+	}
+}
+
 SEdge SEdge::From(Vector a, Vector b) {
     SEdge se = {};
     se.a = a;

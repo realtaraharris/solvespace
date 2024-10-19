@@ -657,7 +657,7 @@ void SKdNode::SnapToMesh(SMesh *m) {
             continue;
         }
         for(j = 0; j < 3; j++) {
-            Vector v = tr->vertices[j];
+            Vector v = tr->vertices(j);
 
             SMesh extra = {};
             SnapToVertex(v, &extra);
@@ -963,8 +963,8 @@ void SKdNode::MakeCertainEdgesInto(SEdgeList *sel, EdgeKind how, bool coplanarIs
     int cnt = 1234;
     for(STriangle *tr : tris) {
         for(int j = 0; j < 3; j++) {
-            Vector a = tr->vertices[j];
-            Vector b = tr->vertices[(j + 1) % 3];
+            Vector a = tr->vertices(j);
+            Vector b = tr->vertices((j + 1) % 3);
 
             SKdNode::EdgeOnInfo info = {};
             FindEdgeOn(a, b, cnt, coplanarIsInter, &info);
@@ -1022,10 +1022,10 @@ void SKdNode::MakeCertainEdgesInto(SEdgeList *sel, EdgeKind how, bool coplanarIs
 
                 case EdgeKind::SHARP:
                     if(info.count == 1) {
-                        Vector na0 = tr->normals[j].WithMagnitude(1.0);
-                        Vector nb0 = tr->normals[(j + 1) % 3].WithMagnitude(1.0);
-                        Vector na1 = info.tr->normals[info.ai].WithMagnitude(1.0);
-                        Vector nb1 = info.tr->normals[info.bi].WithMagnitude(1.0);
+                        Vector na0 = tr->normals(j).WithMagnitude(1.0);
+                        Vector nb0 = tr->normals((j + 1) % 3).WithMagnitude(1.0);
+                        Vector na1 = info.tr->normals(info.ai).WithMagnitude(1.0);
+                        Vector nb1 = info.tr->normals(info.bi).WithMagnitude(1.0);
                         if(!((na0.Equals(na1) && nb0.Equals(nb1)) ||
                              (na0.Equals(nb1) && nb0.Equals(na1)))) {
                             if(CheckAndAddTrianglePair(&edgeTris, tr, info.tr))
@@ -1053,8 +1053,8 @@ void SKdNode::MakeOutlinesInto(SOutlineList *sol, EdgeKind edgeKind) const
     int cnt = 1234;
     for(STriangle *tr : tris) {
         for(int j = 0; j < 3; j++) {
-            Vector a = tr->vertices[j];
-            Vector b = tr->vertices[(j + 1) % 3];
+            Vector a = tr->vertices(j);
+            Vector b = tr->vertices((j + 1) % 3);
 
             SKdNode::EdgeOnInfo info = {};
             FindEdgeOn(a, b, cnt, /*coplanarIsInter=*/false, &info);
@@ -1072,10 +1072,10 @@ void SKdNode::MakeOutlinesInto(SOutlineList *sol, EdgeKind edgeKind) const
                     break;
 
                 case EdgeKind::SHARP: {
-                        Vector na0 = tr->normals[j].WithMagnitude(1.0);
-                        Vector nb0 = tr->normals[(j + 1) % 3].WithMagnitude(1.0);
-                        Vector na1 = info.tr->normals[info.ai].WithMagnitude(1.0);
-                        Vector nb1 = info.tr->normals[info.bi].WithMagnitude(1.0);
+                        Vector na0 = tr->normals(j).WithMagnitude(1.0);
+                        Vector nb0 = tr->normals((j + 1) % 3).WithMagnitude(1.0);
+                        Vector na1 = info.tr->normals(info.ai).WithMagnitude(1.0);
+                        Vector nb1 = info.tr->normals(info.bi).WithMagnitude(1.0);
                         if(!((na0.Equals(na1) && nb0.Equals(nb1)) ||
                              (na0.Equals(nb1) && nb0.Equals(na1)))) {
                             tag = 1;

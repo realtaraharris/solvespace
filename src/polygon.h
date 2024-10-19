@@ -171,15 +171,8 @@ public:
     int         tag;
     STriMeta    meta;
 
-    union {
-        struct { Vector a, b, c; };
-        Vector vertices[3];
-    };
-
-    union {
-        struct { Vector an, bn, cn; };
-        Vector normals[3];
-    };
+    Vector a, b, c;
+    Vector an, bn, cn;
 
     static STriangle From(STriMeta meta, Vector a, Vector b, Vector c);
     Vector Normal() const;
@@ -193,6 +186,8 @@ public:
     double SignedVolume() const;
     double Area() const;
     bool IsDegenerate() const;
+    Vector vertices (int i) const;
+    Vector normals (int i) const;
 };
 
 class SBsp2 {

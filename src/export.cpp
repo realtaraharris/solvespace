@@ -909,7 +909,7 @@ void SolveSpaceUI::ExportMeshAsObjTo(FILE *fObj, FILE *fMtl, SMesh *sm) {
         }
         for(int i = 0; i < 3; i++) {
             fprintf(fObj, "v %.10f %.10f %.10f\n",
-                    CO(t.vertices[i].ScaledBy(1 / SS.exportScale)));
+                    CO(t.vertices(i).ScaledBy(1 / SS.exportScale)));
         }
     }
 
@@ -922,7 +922,7 @@ void SolveSpaceUI::ExportMeshAsObjTo(FILE *fObj, FILE *fMtl, SMesh *sm) {
 
     for(const STriangle &t : sm->l) {
         for(int i = 0; i < 3; i++) {
-            Vector n = t.normals[i].WithMagnitude(1.0);
+            Vector n = t.normals(i).WithMagnitude(1.0);
             fprintf(fObj, "vn %.10f %.10f %.10f\n",
                     CO(n));
         }
