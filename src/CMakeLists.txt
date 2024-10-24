@@ -1,7 +1,5 @@
 include(GNUInstallDirs)
 
-add_definitions('-g' '-gdwarf-4')
-
 # configuration
 
 include_directories(
@@ -22,20 +20,22 @@ target_include_directories(slvs_deps INTERFACE SYSTEM
     ${FREETYPE_INCLUDE_DIRS}
     ${CAIRO_INCLUDE_DIRS}
     ${AGG_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIRS})
+    ${EIGEN3_INCLUDE_DIRS}
+	-std=c++20)
 target_link_libraries(slvs_deps INTERFACE
     dxfrw
     ${ZLIB_LIBRARY}
     ${PNG_LIBRARY}
     ${FREETYPE_LIBRARY}
-    ${CAIRO_LIBRARIES})
+    ${CAIRO_LIBRARIES}
+	-std=c++20)
 
 if(ENABLE_OPENMP)
     target_link_libraries(slvs_deps INTERFACE slvs_openmp)
 endif()
 
 target_compile_options(slvs_deps
-    INTERFACE ${COVERAGE_FLAGS})
+    INTERFACE ${COVERAGE_FLAGS} -std=c++20)
 
 # platform utilities
 
@@ -52,6 +52,7 @@ add_library(slvs SHARED
     platform/platform.cpp
     lib.cpp)
 
+target_compile_options(slvs PRIVATE -std=c++20)
 target_compile_definitions(slvs
     PRIVATE -DLIBRARY)
 
@@ -134,6 +135,7 @@ add_library(solvespace-core STATIC
     srf/surfinter.cpp
     srf/triangulate.cpp)
 
+target_compile_options(solvespace-core PRIVATE -std=c++20)
 target_link_libraries(solvespace-core PUBLIC slvs_deps)
 
 # solvespace headless library

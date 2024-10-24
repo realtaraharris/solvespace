@@ -2,7 +2,9 @@ cmake_minimum_required (VERSION 3.20)
 
 project(SolveSpace)
 
-add_definitions('-g' '-gdwarf-4')
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_definitions(-g -gdwarf-4 -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
 include_directories("/boot/system/develop/headers/agg2/")
 include_directories(${CMAKE_SOURCE_DIR})
@@ -32,7 +34,8 @@ add_executable(SolveSpace
     ui/HaikuSpaceUI.cpp
 )
 
-set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
+# can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
+#set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
 
 target_include_directories(SolveSpace
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}

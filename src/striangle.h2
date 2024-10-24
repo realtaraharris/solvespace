@@ -1,0 +1,81 @@
+VectorEx: @value @print type = {
+  px: float = ();
+  py: float = ();
+  pz: float = ();
+  operator=: (out this, x: float, y: float, z: float) = {
+    px = x;
+	py = y;
+	pz = z;
+  }
+  Cross: (this, v: VectorEx) -> VectorEx = {
+     return VectorEx(
+		this.px * v.py - this.py * v.px,
+		this.py * v.pz - this.pz * v.py,
+		this.pz * v.px - this.px * v.pz
+	 );
+  }
+  Minus: (this, v: VectorEx) -> VectorEx = {
+     return VectorEx(
+		this.px - v.px,
+		this.py - v.py,
+		this.pz - v.pz
+	 );
+  }
+  ToString: (this) -> std::string = {
+	return "x: (this.px)$ y: (this.py)$ z: (this.pz)$";
+  }
+}
+
+STriMetaEx: @value @print type = {
+  operator=: (out this) = {
+  }
+}
+
+
+STriangleEx: type = {
+  tag: i32 = ();
+  meta: STriMetaEx = ();
+
+  a: VectorEx = ();
+  b: VectorEx = ();
+  c: VectorEx = ();
+
+  an: VectorEx = ();
+  bn: VectorEx = ();
+  cn: VectorEx = ();
+
+  operator=: (out this, metax: STriMetaEx, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
+	meta = metax;
+    a = ax;
+	b = bx;
+	c = cx;
+  }
+
+  From: (metax: STriMetaEx, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
+    return STriangleEx(metax, ax, bx, cx);
+  }
+  
+  Normal: (this) -> VectorEx = {
+    ab: VectorEx = this.b.Minus(this.a);
+	bc: VectorEx = c.Minus(b);
+    return ab.Cross(bc);
+  }
+}
+
+/*
+  vects_or_verts: @union type = {
+     vectors: @struct type = {
+       a: Vectorx;
+       b: Vectorx;
+       c: Vectorx;
+     }
+     vertices: std::array<Vectorx, 3>;
+  }
+  xyzzy: vects_or_verts = ();
+
+  Normal: (this) -> Vectorx = {
+    ab: Vectorx = xyzzy.vectors.b.Minus(xyzzy.vectors.a);
+    bc: Vectorx = xyzzy.vectors.c.Minus(xyzzy.vectors.b);
+    return ab.Cross(bc);
+  }
+*/

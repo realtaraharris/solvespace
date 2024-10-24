@@ -1,20 +1,15 @@
 # cmake configuration
-cmake_minimum_required(VERSION 3.9...3.19)
+cmake_minimum_required(VERSION 3.30)
 
-add_definitions('-g' '-gdwarf-4')
-
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-    message(FATAL_ERROR
-            "In-tree builds are not supported; please perform an out-of-tree build:\n"
-            "    rm -rf CMakeCache.txt CMakeFiles/\n"
-            "    mkdir build && cd build && cmake ..")
-endif()
+# TODO: remove hardcoded path that only works on my machine
+add_definitions(-g -gdwarf-4 -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -I/boot/home/cppfront/include/)
 
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake/")
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
+# this project won't compile when it emits -std=g++20, so let's try to force it to always use clang
+#SET(CMAKE_C_COMPILER "/bin/clang")
+#SET(CMAKE_CXX_COMPILER "/bin/clang++")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
@@ -67,8 +62,18 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     endif()
 endif()
 
+#set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_COLOR_DIAGNOSTICS OFF)
+set(FETCHCONTENT_QUIET FALSE)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # common compiler flags
-include(CheckCXXCompilerFlag)
+#include(CheckCXXCompilerFlag)
+
+#set(CMAKE_CXX_FLAGS -std=c++20)
+#add_compile_options("-std=c++20")
 
 # Ensure that all platforms use 64-bit IEEE floating point operations for consistency;
 # this is most important for the testsuite, which compares savefiles directly
@@ -213,23 +218,7 @@ if(ENABLE_COVERAGE)
     if(NOT GCOV OR NOT LCOV OR NOT GENHTML)
         message(FATAL_ERROR "gcov/llvm-cov and lcov are required for producing coverage reports")
     endif()
-endif()
 
-# solvespace-only compiler flags
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(WARNING_FLAGS   "-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers")
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(WARNING_FLAGS "${WARNING_FLAGS} -Wfloat-conversion")
-    endif()
-    # We rely on these -Werror flags.
-    set(WARNING_FLAGS   "${WARNING_FLAGS} -Werror=switch")
-endif()
-
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${WARNING_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
-
-if(ENABLE_COVERAGE)
     if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
             CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
         message(FATAL_ERROR "Code coverage is only available on GCC and Clang")
