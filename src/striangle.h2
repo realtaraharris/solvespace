@@ -7,6 +7,9 @@ VectorEx: @value @print type = {
 	py = y;
 	pz = z;
   }
+  From: (this, x: double, y: double, z: double) -> VectorEx = {
+	return VectorEx(x, y, z);
+  }
   Cross: (this, v: VectorEx) -> VectorEx = {
      return VectorEx(
 		this.px * v.py - this.py * v.px,
@@ -21,20 +24,40 @@ VectorEx: @value @print type = {
 		this.pz - v.pz
 	 );
   }
+  Dot: (this, b: VectorEx) -> float = {
+      return (this.px * b.px + this.py * b.py + this.pz * b.pz);
+  }
   ToString: (this) -> std::string = {
-	return "x: (this.px)$ y: (this.py)$ z: (this.pz)$";
+	return "eeep3 x: (this.px)$ y: (this.py)$ z: (this.pz)$";
+  }
+  DistanceToLine: (a: VectorEx, b: VectorEx) -> double = {
+	return 1.0; // TODO: actually calculate distance
+  }
+  WithMagnitude: (this, v: double) -> VectorEx = {
+    m: double = this.Magnitude();
+    if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
+	  if (fabs(v) > 1e-100) {
+        // dbp("Vector::WithMagnitude(%g) of zero vector!", v);
+      }
+	  return this.From(0, 0, 0);
+    } else {
+	  return this.ScaledBy(v / m);
+    }
+  }
+  MagSquared: (this) -> double = { // TODO: implement
+    return 1.0; // return (this.px * this.px + this.py * this.py + this.pz * this.pz);
+  }
+  Magnitude: (this) -> double = { // TODO: implement
+    return 1.0; // sqrt(this.px * this.px + this.py * this.py + this.pz * this.pz);
+  }
+  ScaledBy: (this, v: double) -> VectorEx = {
+    return VectorEx(this.px * v, this.py * v, this.pz * v);
   }
 }
-
-STriMetaEx: @value @print type = {
-  operator=: (out this) = {
-  }
-}
-
 
 STriangleEx: type = {
   tag: i32 = ();
-  meta: STriMetaEx = ();
+  meta: STriMeta = ();
 
   a: VectorEx = ();
   b: VectorEx = ();
@@ -44,38 +67,53 @@ STriangleEx: type = {
   bn: VectorEx = ();
   cn: VectorEx = ();
 
-  operator=: (out this, metax: STriMetaEx, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
+  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
 	meta = metax;
     a = ax;
 	b = bx;
 	c = cx;
   }
 
-  From: (metax: STriMetaEx, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
+  From: (metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
     return STriangleEx(metax, ax, bx, cx);
   }
   
   Normal: (this) -> VectorEx = {
     ab: VectorEx = this.b.Minus(this.a);
-	bc: VectorEx = c.Minus(b);
+	bc: VectorEx = this.c.Minus(this.b);
     return ab.Cross(bc);
+  }
+
+  MinAltitude: (this) -> double = {
+	altA: double = this.a.DistanceToLine(this.b, this.c.Minus(this.b));
+	altB: double = this.b.DistanceToLine(this.c, this.a.Minus(this.c));
+	altC: double = this.c.DistanceToLine(this.a, this.b.Minus(this.a));
+
+    return min(altA, min(altB, altC));
+  }
+
+  ContainsPoint: (this, p: VectorEx) -> bool = {
+    n: VectorEx = this.Normal();
+    if (this.MinAltitude() < LENGTH_EPS) { // shouldn't happen; zero-area triangle
+        return false;
+    }
+    return this.ContainsPointProjd(n.WithMagnitude(1.0), p);
+  }
+
+  ContainsPointProjd: (this, n: VectorEx, p: VectorEx) -> bool = {
+    ab: VectorEx = this.b.Minus(this.a);
+	bc: VectorEx = this.c.Minus(this.b);
+	ca: VectorEx = this.a.Minus(this.c);
+
+    no_ab: VectorEx = n.Cross(ab);
+    if (no_ab.Dot(p) < no_ab.Dot(this.a) - LENGTH_EPS) { return false; }
+
+    no_bc: VectorEx = n.Cross(bc);
+    if (no_bc.Dot(p) < no_bc.Dot(this.b) - LENGTH_EPS) { return false; }
+
+    no_ca: VectorEx = n.Cross(ca);
+    if (no_ca.Dot(p) < no_ca.Dot(this.c) - LENGTH_EPS) { return false; }
+
+    return true;
   }
 }
-
-/*
-  vects_or_verts: @union type = {
-     vectors: @struct type = {
-       a: Vectorx;
-       b: Vectorx;
-       c: Vectorx;
-     }
-     vertices: std::array<Vectorx, 3>;
-  }
-  xyzzy: vects_or_verts = ();
-
-  Normal: (this) -> Vectorx = {
-    ab: Vectorx = xyzzy.vectors.b.Minus(xyzzy.vectors.a);
-    bc: Vectorx = xyzzy.vectors.c.Minus(xyzzy.vectors.b);
-    return ab.Cross(bc);
-  }
-*/

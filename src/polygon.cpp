@@ -9,6 +9,7 @@
 #include "cpp2util.h"
 
 #include "solvespace.h"
+#include "polygon.h"
 #include "striangle.h"
 
 Vector STriangle::Normal() const {
