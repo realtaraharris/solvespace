@@ -17,6 +17,11 @@ VectorEx: @value @print type = {
 		this.pz * v.px - this.px * v.pz
 	 );
   }
+
+  Plus: (this, b: VectorEx) -> VectorEx = {
+    return VectorEx(this.px + b.px, this.py + b.py, this.pz + b.pz);
+  }
+
   Minus: (this, v: VectorEx) -> VectorEx = {
      return VectorEx(
 		this.px - v.px,
@@ -24,6 +29,11 @@ VectorEx: @value @print type = {
 		this.pz - v.pz
 	 );
   }
+
+  Negated: (this) -> VectorEx = {
+    return VectorEx(-this.px, -this.py, -this.pz);
+  }
+
   Dot: (this, b: VectorEx) -> float = {
       return (this.px * b.px + this.py * b.py + this.pz * b.pz);
   }
@@ -37,7 +47,7 @@ VectorEx: @value @print type = {
     m: double = this.Magnitude();
     if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
 	  if (fabs(v) > 1e-100) {
-        // dbp("Vector::WithMagnitude(%g) of zero vector!", v);
+        // dbp("VectorEx::WithMagnitude(%g) of zero vector!", v);
       }
 	  return this.From(0, 0, 0);
     } else {
@@ -52,6 +62,41 @@ VectorEx: @value @print type = {
   }
   ScaledBy: (this, v: double) -> VectorEx = {
     return VectorEx(this.px * v, this.py * v, this.pz * v);
+  }
+  ScaleOutOfCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
+    r: VectorEx = u.ScaledBy(this.px).Plus(
+	  v.ScaledBy(this.py).Plus(
+	  n.ScaledBy(this.pz)));
+    return r;
+  }
+
+  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+    if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
+
+    d: VectorEx = b.Minus(a);
+    m: double = d.MagSquared();
+    distsq: double = ((this.Minus(a)).Cross(d)).MagSquared() / m;
+
+    if (distsq >= tol * tol) { return false; }
+
+    t: double = (this.Minus(a)).DivProjected(d);
+
+    if (t < 0 || t > 1) { return false; } // on-endpoint already tested
+
+    return true;
+  }
+  Equals: (this, v: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+    // quick axis-aligned tests before going further
+	dv: VectorEx = this.Minus(v);
+    if (fabs(dv.px) > tol) { return false; }
+    if (fabs(dv.py) > tol) { return false; }
+    if (fabs(dv.pz) > tol) { return false; }
+
+    return dv.MagSquared() < tol * tol;
+  }
+  DivProjected: (this, delta: VectorEx) -> double = {
+    return (this.px * delta.px + this.py * delta.py + this.pz * delta.pz)
+         / (delta.px * delta.px + delta.py * delta.py + delta.pz * delta.pz);
   }
 }
 
@@ -72,6 +117,17 @@ STriangleEx: type = {
     a = ax;
 	b = bx;
 	c = cx;
+  }
+
+  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx, anx: VectorEx, bnx: VectorEx, cnx: VectorEx) = {
+	meta = metax;
+    a = ax;
+	b = bx;
+	c = cx;
+
+    an = anx;
+	bn = bnx;
+	cn = cnx;
   }
 
   From: (metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
@@ -115,5 +171,34 @@ STriangleEx: type = {
     if (no_ca.Dot(p) < no_ca.Dot(this.c) - LENGTH_EPS) { return false; }
 
     return true;
+  }
+  SignedVolume: (this) -> double = {
+    return this.a.Dot(this.b.Cross(this.c)) / 6.0;
+  }
+  Area: (this) -> double = {
+    ab: VectorEx = this.a.Minus(this.b);
+    cb: VectorEx = this.c.Minus(this.b);
+    return ab.Cross(cb).Magnitude() / 2.0;
+  }
+
+  IsDegenerate: (this) -> bool = {
+    return this.a.OnLineSegment(this.b, this.c) ||
+           this.b.OnLineSegment(this.a, this.c) ||
+           this.c.OnLineSegment(this.a, this.b);
+  }
+  FlipNormal: (inout this) = {
+    std::swap(this.a, this.b);
+    std::swap(this.an, this.bn);
+  }
+
+  Transform: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> STriangleEx = {
+	return STriangleEx(this.meta,
+	  this.a.ScaleOutOfCsys(u, v, n),
+	  this.b.ScaleOutOfCsys(u, v, n),
+	  this.c.ScaleOutOfCsys(u, v, n),
+      this.an.ScaleOutOfCsys(u, v, n),
+      this.bn.ScaleOutOfCsys(u, v, n),
+      this.cn.ScaleOutOfCsys(u, v, n)
+	);
   }
 }
