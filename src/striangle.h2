@@ -1,44 +1,44 @@
 VectorEx: @value @print type = {
-  px: float = ();
-  py: float = ();
-  pz: float = ();
-  operator=: (out this, x: float, y: float, z: float) = {
-    px = x;
-	py = y;
-	pz = z;
+  public x: float = (); // TODO: try taking these private once this replaces the cpp1 Vector class
+  public y: float = ();
+  public z: float = ();
+  operator=: (out this, px: float, py: float, pz: float) = {
+    x = px;
+	y = py;
+	z = pz;
   }
-  From: (this, x: double, y: double, z: double) -> VectorEx = {
-	return VectorEx(x, y, z);
+  From: (this, px: double, py: double, pz: double) -> VectorEx = {
+	return VectorEx(px, py, pz);
   }
   Cross: (this, v: VectorEx) -> VectorEx = {
      return VectorEx(
-		this.px * v.py - this.py * v.px,
-		this.py * v.pz - this.pz * v.py,
-		this.pz * v.px - this.px * v.pz
+		this.x * v.y - this.y * v.x,
+		this.y * v.z - this.z * v.y,
+		this.z * v.x - this.x * v.z
 	 );
   }
 
   Plus: (this, b: VectorEx) -> VectorEx = {
-    return VectorEx(this.px + b.px, this.py + b.py, this.pz + b.pz);
+    return VectorEx(this.x + b.x, this.y + b.y, this.z + b.z);
   }
 
   Minus: (this, v: VectorEx) -> VectorEx = {
      return VectorEx(
-		this.px - v.px,
-		this.py - v.py,
-		this.pz - v.pz
+		this.x - v.x,
+		this.y - v.y,
+		this.z - v.z
 	 );
   }
 
   Negated: (this) -> VectorEx = {
-    return VectorEx(-this.px, -this.py, -this.pz);
+    return VectorEx(-this.x, -this.y, -this.z);
   }
 
   Dot: (this, b: VectorEx) -> float = {
-      return (this.px * b.px + this.py * b.py + this.pz * b.pz);
+      return (this.x * b.x + this.y * b.y + this.z * b.z);
   }
   ToString: (this) -> std::string = {
-	return "eeep3 x: (this.px)$ y: (this.py)$ z: (this.pz)$";
+	return "eeep3 x: (this.x)$ y: (this.y)$ z: (this.z)$";
   }
   DistanceToLine: (a: VectorEx, b: VectorEx) -> double = {
 	return 1.0; // TODO: actually calculate distance
@@ -55,18 +55,18 @@ VectorEx: @value @print type = {
     }
   }
   MagSquared: (this) -> double = { // TODO: implement
-    return 1.0; // return (this.px * this.px + this.py * this.py + this.pz * this.pz);
+    return 1.0; // return (this.x * this.px + this.y * this.py + this.z * this.z);
   }
   Magnitude: (this) -> double = { // TODO: implement
     return 1.0; // sqrt(this.px * this.px + this.py * this.py + this.pz * this.pz);
   }
   ScaledBy: (this, v: double) -> VectorEx = {
-    return VectorEx(this.px * v, this.py * v, this.pz * v);
+    return VectorEx(this.x * v, this.y * v, this.z * v);
   }
   ScaleOutOfCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
-    r: VectorEx = u.ScaledBy(this.px).Plus(
-	  v.ScaledBy(this.py).Plus(
-	  n.ScaledBy(this.pz)));
+    r: VectorEx = u.ScaledBy(this.x).Plus(
+	  v.ScaledBy(this.y).Plus(
+	  n.ScaledBy(this.z)));
     return r;
   }
 
@@ -88,15 +88,15 @@ VectorEx: @value @print type = {
   Equals: (this, v: VectorEx, tol: double = LENGTH_EPS) -> bool = {
     // quick axis-aligned tests before going further
 	dv: VectorEx = this.Minus(v);
-    if (fabs(dv.px) > tol) { return false; }
-    if (fabs(dv.py) > tol) { return false; }
-    if (fabs(dv.pz) > tol) { return false; }
+    if (fabs(dv.x) > tol) { return false; }
+    if (fabs(dv.y) > tol) { return false; }
+    if (fabs(dv.z) > tol) { return false; }
 
     return dv.MagSquared() < tol * tol;
   }
   DivProjected: (this, delta: VectorEx) -> double = {
-    return (this.px * delta.px + this.py * delta.py + this.pz * delta.pz)
-         / (delta.px * delta.px + delta.py * delta.py + delta.pz * delta.pz);
+    return (this.x * delta.x + this.y * delta.y + this.z * delta.z)
+         / (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
   }
 }
 
@@ -104,13 +104,17 @@ STriangleEx: type = {
   tag: i32 = ();
   meta: STriMeta = ();
 
-  a: VectorEx = ();
-  b: VectorEx = ();
-  c: VectorEx = ();
+  public a: VectorEx = (); // TODO: try taking these private once this replaces the cpp1 Vector class
+  public b: VectorEx = ();
+  public c: VectorEx = ();
 
-  an: VectorEx = ();
-  bn: VectorEx = ();
-  cn: VectorEx = ();
+  public an: VectorEx = ();
+  public bn: VectorEx = ();
+  public cn: VectorEx = ();
+
+  operator=: (out this) = {
+    meta = STriMeta();
+  }
 
   operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
 	meta = metax;

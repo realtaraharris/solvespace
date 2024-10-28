@@ -4,17 +4,16 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 
-// #include "striangle.h"
-#define CPP2_IMPORT_STD true
-#include "cpp2util.h"
+//#define CPP2_IMPORT_STD true
+//#include "cpp2util.h"
 
 #include "solvespace.h"
-#include "polygon.h"
-#include "striangle.h"
+//#include "polygon.h"
+//#include "striangle.h"
 
 Vector STriangle::Normal() const {
-    VectorEx v = VectorEx(1.0f, 2.0f, 3.0f);
-	std::cout << "v.ToString(): " << v.ToString() << std::endl;
+//    VectorEx v = VectorEx(1.0f, 2.0f, 3.0f);
+//	std::cout << "eeep2 v.ToString(): " << v.ToString() << std::endl;
 
     Vector ab = b.Minus(a), bc = c.Minus(b);
     return ab.Cross(bc);
