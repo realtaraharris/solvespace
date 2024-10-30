@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.30)
 
 # TODO: remove hardcoded path that only works on my machine
-add_definitions(-g -gdwarf-4 -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -I/boot/home/cppfront/include/)
+add_definitions(-g -gdwarf-4 -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -I/boot/home/cppfront/include/ -fno-diagnostics-show-option)
 
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/cmake/")

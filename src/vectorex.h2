@@ -1,0 +1,397 @@
+VectorEx: @value @print type = {
+  public x: float = (); // TODO: try taking these private once this replaces the cpp1 Vector class
+  public y: float = ();
+  public z: float = ();
+  operator=: (out this, px: float, py: float, pz: float) = {
+    x = px;
+	y = py;
+	z = pz;
+  }
+  From: (px: double, py: double, pz: double) -> VectorEx = {
+    return VectorExFromD(px, py, pz);
+  }
+/*
+  VectorExFromH: (px: hParam, py: hParam, pz: hParam) -> VectorEx = {
+    return VectorExFromH(px, py, pz);
+  }
+  VectorExAtIntersectionOfPlanes: (n1: VectorEx, d1: double, n2: VectorEx, d2: double) -> VectorEx = {
+    return VectorExAtIntersectionOfPlanes(n1, d1, n2, d2);
+  }
+  VectorExClosestPointBetweenLines: (a0: VectorEx, da: VectorEx, b0: VectorEx, db: VectorEx) -> (ta: double, tb: double) = {
+    eeep := VectorExClosestPointBetweenLines(a0, da, b0, db);
+	ta = eeep.ta;
+	tb = eeep.tb;
+  }
+  AtIntersectionOfPlaneAndLine: (n: VectorEx, d: double, p0: VectorEx, p1: VectorEx, parallel: *bool) -> VectorEx = {
+    return AtIntersectionOfPlaneAndLine(n, d, p0, p1, parallel);
+  }
+*/
+  Plus: (this, b: VectorEx) -> VectorEx = {
+    return VectorEx(this.x + b.x, this.y + b.y, this.z + b.z);
+  }
+  ToString: (this) -> std::string = {
+	return "eeep3 x: (this.x)$ y: (this.y)$ z: (this.z)$";
+  }
+  DistanceToLine: (a: VectorEx, b: VectorEx) -> double = {
+	return 1.0; // TODO: actually calculate distance
+  }
+  WithMagnitude: (this, v: double) -> VectorEx = {
+    m: double = this.Magnitude();
+    if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
+	  if (fabs(v) > 1e-100) {
+        // dbp("VectorEx::WithMagnitude(%g) of zero vector!", v);
+      }
+	  return this.From(0, 0, 0);
+    } else {
+	  return this.ScaledBy(v / m);
+    }
+  }
+  MagSquared: (this) -> double = {
+    return (this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z);
+  }
+  Magnitude: (this) -> double = {
+    return sqrt((this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z));
+  }
+  ScaledBy: (this, v: double) -> VectorEx = {
+    return VectorEx(this.x * v, this.y * v, this.z * v);
+  }
+  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+    if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
+
+    d: VectorEx = b.Minus(a);
+    m: double = d.MagSquared();
+    distsq: double = ((this.Minus(a)).Cross(d)).MagSquared() / m;
+
+    if (distsq >= tol * tol) { return false; }
+
+    t: double = (this.Minus(a)).DivProjected(d);
+
+    if (t < 0 || t > 1) { return false; } // on-endpoint already tested
+
+    return true;
+  }
+  Element: (this, i: int) -> double = {
+    if i == 0 {
+	  return (this.x);
+	} else if i == 1 {
+	  return (this.y);
+	} else if i == 2 {
+	  return (this.z);
+    }
+	ssassert(false, "Unexpected vector element index");
+  }
+  Equals: (this, v: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+    // quick axis-aligned tests before going further
+	dv: VectorEx = this.Minus(v);
+    if (fabs(dv.x) > tol) { return false; }
+    if (fabs(dv.y) > tol) { return false; }
+    if (fabs(dv.z) > tol) { return false; }
+
+    return dv.MagSquared() < tol * tol;
+  }
+  EqualsExactly: (this, v: VectorEx) -> bool = {
+    return EXACT(this.x == v.x && this.y == v.y && this.z == v.z);
+  }
+  Minus: (this, v: VectorEx) -> VectorEx = {
+    return VectorEx(this.x - v.x, this.y - v.y, this.z - v.z);
+  }
+  Negated: (this) -> VectorEx = {
+    return VectorEx(-this.x, -this.y, -this.z);
+  }
+  Cross: (this, b: VectorEx) -> VectorEx = {
+     return VectorEx(
+      -(this.z * b.y) + (this.y * b.z),
+       (this.z * b.x) - (this.x * b.z),
+      -(this.y * b.x) + (this.x * b.y)
+	 );
+  }
+  DirectionCosineWith: (this, b: VectorEx) -> double = {
+    a: VectorEx = this.WithMagnitude(1);
+    tmp: VectorEx = b.WithMagnitude(1);
+    return a.Dot(tmp);
+  }
+  Dot: (this, b: VectorEx) -> float = {
+      return (this.x * b.x + this.y * b.y + this.z * b.z);
+  }
+  Normal: (this, which: int) -> VectorEx = {
+    n: VectorEx;
+
+    // arbitrarily choose one vector that's normal to us, pivoting appropriately
+    xa: double = fabs(this.x);
+	ya: double = fabs(this.y);
+	za: double = fabs(this.z);
+
+    if (this.Equals(VectorExFromD(0, 0, 1))) {
+	  // make DXFs exported in the XY plane work nicely...
+	  n = VectorExFromD(1, 0, 0);
+    } else if (xa < ya && xa < za) {
+	  n = VectorExFromD(0, z, -y);
+    } else if (ya < za) {
+	  n = VectorExFromD(-z, 0, x);
+    } else {
+	  n = VectorExFromD(y, -z, 0);
+    }
+
+    if (which == 0) { // that's the vector we return.
+    } else if (which == 1) {
+      n = this.Cross(n);
+    } else { 
+	  ssassert(false, "Unexpected vector normal index");
+	}
+
+    n = n.WithMagnitude(1);
+
+    return n;
+  }
+  RotatedAbout: (this, orig: VectorEx, axis: VectorEx, theta: double) -> VectorEx = {
+    r: VectorEx = this.Minus(orig);
+    r = r.RotatedAbout(axis, theta);
+    return r.Plus(orig);
+  }
+  RotatedAbout: (this, axis: VectorEx, theta: double) -> VectorEx = {
+    c: double = cos(theta);
+    s: double = sin(theta);
+
+    axisn: VectorEx = axis.WithMagnitude(1);
+
+    return VectorExFromD(
+	  (this.x)*(c + (1 - c)*(axisn.x)*(axisn.x)) +
+	  (this.y)*((1 - c)*(axisn.x)*(axisn.y) - s*(axisn.z)) +
+	  (this.z)*((1 - c)*(axisn.x)*(axisn.z) + s*(axisn.y)),
+	  
+	  (this.x)*((1 - c)*(axisn.y)*(axisn.x) + s*(axisn.z)) +
+	  (this.y)*(c + (1 - c)*(axisn.y)*(axisn.y)) +
+	  (this.z)*((1 - c)*(axisn.y)*(axisn.z) - s*(axisn.x)),
+	  
+	  (this.x)*((1 - c)*(axisn.z)*(axisn.x) - s*(axisn.y)) +
+	  (this.y)*((1 - c)*(axisn.z)*(axisn.y) + s*(axisn.x)) +
+	  (this.z)*(c + (1 - c)*(axisn.z)*(axisn.z))
+	);
+  }
+  DotInToCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
+    return VectorExFromD(
+	  this.Dot(u),
+	  this.Dot(v),
+	  this.Dot(n)
+    );
+  }
+  ScaleOutOfCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
+    r: VectorEx = u.ScaledBy(this.x).Plus(
+	  v.ScaledBy(this.y).Plus(
+	  n.ScaledBy(this.z)));
+    return r;
+  }
+  DivProjected: (this, delta: VectorEx) -> double = {
+    return (this.x * delta.x + this.y * delta.y + this.z * delta.z)
+         / (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+  }
+}
+
+VectorExFromD: (px: double, py: double, pz: double) -> VectorEx = {
+  return VectorEx(px, py, pz);
+}
+
+VectorExFromH: (px: hParam, py: hParam, pz: hParam) -> VectorEx = {
+  assert(0 == 1); // TODO: lookups from SK.*
+  return VectorEx(0, 0, 0);
+}
+
+VectorExAtIntersectionOfPlanes: (n1: VectorEx, d1: double, n2: VectorEx, d2: double) -> VectorEx = {
+  det: double = (n1.Dot(n1))*(n2.Dot(n2)) - (n1.Dot(n2))*(n1.Dot(n2));
+  c1: double = (d1*n2.Dot(n2) - d2*n1.Dot(n2)) / det;
+  c2: double = (d2*n1.Dot(n1) - d1*n1.Dot(n2)) / det;
+
+  return (n1.ScaledBy(c1)).Plus(n2.ScaledBy(c2));
+}
+
+VectorExClosestPointBetweenLines: (a0: VectorEx, da: VectorEx, b0: VectorEx, db: VectorEx) -> (ta: double, tb: double) = {
+  // make a semi-orthogonal coordinate system from those directions;
+  // note that dna and dnb need not be perpendicular
+  dn: VectorEx = da.Cross(db); // normal to both
+  dna: VectorEx = dn.Cross(da); // normal to da
+  dnb: VectorEx = dn.Cross(db); // normal to db
+  
+  // at the intersection of the lines, a0 + pa*da = b0 + pb*db (where pa, pb are scalar params)
+  // so dot this equation against dna and dnb to get two equations to solve for da and db
+  ta = -((a0.Minus(b0)).Dot(dnb))/(da.Dot(dnb));
+  tb =  ((a0.Minus(b0)).Dot(dna))/(db.Dot(dna));
+}
+
+VectorExAtIntersectionOfLines: (a0: VectorEx, a1: VectorEx, b0: VectorEx, b1: VectorEx, skew: bool) -> (parama: double, paramb: double, intersectionPoint: VectorEx, skewed: bool) = {
+  da: VectorEx = a1.Minus(a0);
+  db: VectorEx = b1.Minus(b0);
+
+  eeep := VectorExClosestPointBetweenLines(a0, da, b0, db);
+  parama = eeep.ta;
+  paramb = eeep.tb;
+
+  // and from either of those, we get the intersection point
+  intersectionPoint = a0.Plus(da.ScaledBy(parama));
+  
+  skewed = false;
+  if (skew) { // check if the intersection points on each line are actually coincident
+	skewed = !intersectionPoint.Equals(b0.Plus(db.ScaledBy(paramb)));
+  }
+}
+
+VectorExAtIntersectionOfPlaneAndLine: (n: VectorEx, d: double, p0: VectorEx, p1: VectorEx, parallel: *bool) -> VectorEx = {
+  dp: VectorEx = p1.Minus(p0);
+  
+  if (fabs(n.Dot(dp)) < LENGTH_EPS) {
+    if (parallel) { parallel* = true; }
+	return VectorEx::From(0, 0, 0);
+  }
+  if (parallel) { parallel* = false; }
+  
+  // n dot (p0 + t*dp) = d
+  // (n dot p0) + t * (n dot dp) = d
+  t: double = (d - n.Dot(p0)) / (n.Dot(dp));
+  
+  return p0.Plus(dp.ScaledBy(t));
+}
+
+VectorExBoundingBoxesDisjoint: (amax: VectorEx, amin: VectorEx, bmax: VectorEx, bmin: VectorEx) -> bool = {
+  (copy i := 0) while i < 3 next i++ { // for (i = 0; i < 3; i++) {
+	if (amax.Element(i) < bmin.Element(i) - LENGTH_EPS) { return true; }
+	if (amin.Element(i) > bmax.Element(i) + LENGTH_EPS) { return true; }
+  }
+  return false;
+}
+
+VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx, p1: VectorEx, asSegment: bool) -> bool = {
+  dp: VectorEx = p1.Minus(p0);
+  lp: double = dp.Magnitude();
+  dp = dp.ScaledBy(1.0 / lp);
+
+  (copy i := 0) while i < 3 next i++ { // for (i = 0; i < 3; i++) {
+    j: int = WRAP(i + 1, 3);
+    k: int = WRAP(i + 2, 3);
+    if (lp * fabs(dp.Element(i)) < LENGTH_EPS) { continue; } // parallel to plane
+
+    (copy a := 0) while a < 2 next a++ { // for (a = 0; a < 2; a++) {
+      d: double;
+      if (a == 0) { d = amax.Element(i); } else { d = amin.Element(i); }
+      // n dot (p0 + t*dp) = d
+      // (n dot p0) + t * (n dot dp) = d
+      t: double = (d - p0.Element(i)) / dp.Element(i);
+      p: VectorEx = p0.Plus(dp.ScaledBy(t));
+
+      if (asSegment && (t < -LENGTH_EPS || t > (lp+LENGTH_EPS))) { continue; }
+
+      if (p.Element(j) > amax.Element(j) + LENGTH_EPS) { continue; }
+      if (p.Element(k) > amax.Element(k) + LENGTH_EPS) { continue; }
+
+      if (p.Element(j) < amin.Element(j) - LENGTH_EPS) { continue; }
+      if (p.Element(k) < amin.Element(k) - LENGTH_EPS) { continue; }
+      return true;
+    }
+  }
+  return false;
+}
+
+STriangleEx: type = {
+  tag: i32 = ();
+  meta: STriMeta = ();
+
+  public a: VectorEx = (); // TODO: try taking these private once this replaces the cpp1 Vector class
+  public b: VectorEx = ();
+  public c: VectorEx = ();
+
+  public an: VectorEx = ();
+  public bn: VectorEx = ();
+  public cn: VectorEx = ();
+
+  operator=: (out this) = {
+    meta = STriMeta();
+  }
+
+  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
+	meta = metax;
+    a = ax;
+	b = bx;
+	c = cx;
+  }
+
+  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx, anx: VectorEx, bnx: VectorEx, cnx: VectorEx) = {
+	meta = metax;
+    a = ax;
+	b = bx;
+	c = cx;
+
+    an = anx;
+	bn = bnx;
+	cn = cnx;
+  }
+
+  From: (metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
+    return STriangleEx(metax, ax, bx, cx);
+  }
+  
+  Normal: (this) -> VectorEx = {
+    ab: VectorEx = this.b.Minus(this.a);
+	bc: VectorEx = this.c.Minus(this.b);
+    return ab.Cross(bc);
+  }
+
+  MinAltitude: (this) -> double = {
+	altA: double = this.a.DistanceToLine(this.b, this.c.Minus(this.b));
+	altB: double = this.b.DistanceToLine(this.c, this.a.Minus(this.c));
+	altC: double = this.c.DistanceToLine(this.a, this.b.Minus(this.a));
+
+    return min(altA, min(altB, altC));
+  }
+
+  ContainsPoint: (this, p: VectorEx) -> bool = {
+    n: VectorEx = this.Normal();
+    if (this.MinAltitude() < LENGTH_EPS) { // shouldn't happen; zero-area triangle
+        return false;
+    }
+    return this.ContainsPointProjd(n.WithMagnitude(1.0), p);
+  }
+
+  ContainsPointProjd: (this, n: VectorEx, p: VectorEx) -> bool = {
+    ab: VectorEx = this.b.Minus(this.a);
+	bc: VectorEx = this.c.Minus(this.b);
+	ca: VectorEx = this.a.Minus(this.c);
+
+    no_ab: VectorEx = n.Cross(ab);
+    if (no_ab.Dot(p) < no_ab.Dot(this.a) - LENGTH_EPS) { return false; }
+
+    no_bc: VectorEx = n.Cross(bc);
+    if (no_bc.Dot(p) < no_bc.Dot(this.b) - LENGTH_EPS) { return false; }
+
+    no_ca: VectorEx = n.Cross(ca);
+    if (no_ca.Dot(p) < no_ca.Dot(this.c) - LENGTH_EPS) { return false; }
+
+    return true;
+  }
+  SignedVolume: (this) -> double = {
+    return this.a.Dot(this.b.Cross(this.c)) / 6.0;
+  }
+  Area: (this) -> double = {
+    ab: VectorEx = this.a.Minus(this.b);
+    cb: VectorEx = this.c.Minus(this.b);
+    return ab.Cross(cb).Magnitude() / 2.0;
+  }
+
+  IsDegenerate: (this) -> bool = {
+    return this.a.OnLineSegment(this.b, this.c) ||
+           this.b.OnLineSegment(this.a, this.c) ||
+           this.c.OnLineSegment(this.a, this.b);
+  }
+  FlipNormal: (inout this) = {
+    std::swap(this.a, this.b);
+    std::swap(this.an, this.bn);
+  }
+
+  Transform: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> STriangleEx = {
+	return STriangleEx(this.meta,
+	  this.a.ScaleOutOfCsys(u, v, n),
+	  this.b.ScaleOutOfCsys(u, v, n),
+	  this.c.ScaleOutOfCsys(u, v, n),
+      this.an.ScaleOutOfCsys(u, v, n),
+      this.bn.ScaleOutOfCsys(u, v, n),
+      this.cn.ScaleOutOfCsys(u, v, n)
+	);
+  }
+}
