@@ -471,11 +471,35 @@ int main () {
 	assertm(iseq(result, resultx), "results match");
   }
 
-  // Vector WithMagnitude(double s) const;
-  {}
+  // Vector::WithMagnitude
+  {
+    Vector a = Vector(1.0d, 1.0d, 1.0d);
+	double s = 2.0d;
+	Vector result = a.WithMagnitude(s);
+    // --
+    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+	double sx = 2.0d;
+	VectorEx resultx = ax.WithMagnitude(sx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
 
-  // Vector ScaledBy(double s) const;
-  {}
+  // Vector::ScaledBy
+  {
+    Vector a = Vector(1.0d, 1.0d, 1.0d);
+	double s = 2.0d;
+	Vector result = a.ScaledBy(s);
+    // --
+    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+	double sx = 2.0d;
+	VectorEx resultx = ax.ScaledBy(sx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
 
   // Vector::ProjectInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
@@ -483,29 +507,134 @@ int main () {
   // Vector::ProjectVectorInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
 
-  // double DivProjected(Vector delta) const;
-  {}
+  // Vector::DivProjected
+  {
+    Vector a = Vector(1.0d, 1.0d, 1.0d);
+    Vector s = Vector(1.0d, 0.0d, 0.0d);
+	double result = a.DivProjected(s);
+    // --
+    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx sx = VectorEx(1.0d, 0.0d, 0.0d);
+	double resultx = ax.DivProjected(sx);
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
 
-  // Vector ClosestOrtho() const;
-  {}
+  // Vector::ClosestOrtho
+  {
+    Vector a = Vector(1.0d, 1.0d, 1.0d);
+	Vector result = a.ClosestOrtho();
+    // --
+    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+	VectorEx resultx = ax.ClosestOrtho();
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
 
-  // void MakeMaxMin(Vector *maxv, Vector *minv) const;
-  {}
+  // Vector::MakeMaxMin
+  {
+    Vector t = Vector(1.0d, 0.0d, 0.0d);
+    Vector a = Vector(1.0d, 1.0d, 1.0d);
+    Vector b = Vector(0.0d, 0.0d, 0.0d);
+	t.MakeMaxMin(&a, &b);
+    // --
+    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
+    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx bx = VectorEx(0.0d, 0.0d, 0.0d);
+	tx.MakeMaxMin(ax, bx);
+	// --
+	assertm(iseq(a.x, ax.x), "results match");
+	assertm(iseq(a.y, ax.y), "results match");
+	assertm(iseq(a.z, ax.z), "results match");
+	assertm(iseq(b.x, bx.x), "results match");
+	assertm(iseq(b.y, bx.y), "results match");
+	assertm(iseq(b.z, bx.z), "results match");
+  }
 
-  // Vector ClampWithin(double minv, double maxv) const;
-  {}
+  // Vector::ClampWithin
+  {
+    Vector t = Vector(1.0d, 0.0d, 0.0d);
+    double minv = 0.1;
+	double maxv = 0.9;
+	Vector result = t.ClampWithin(minv, maxv);
+    // --
+    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
+    double minvx = 0.1;
+	double maxvx = 0.9;
+	VectorEx resultx = tx.ClampWithin(minvx, maxvx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
 
-  // bool OutsideAndNotOn(Vector maxv, Vector minv) const;
-  {}
+  // Vector::OutsideAndNotOn
+  {
+    Vector t = Vector(1.0d, 0.0d, 0.0d);
+    Vector maxv = Vector(1.0d, 1.0d, 1.0d);
+    Vector minv = Vector(0.0d, 0.0d, 0.0d);
+	bool result = t.OutsideAndNotOn(maxv, minv);
+    // --
+    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
+    VectorEx maxvx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx minvx = VectorEx(0.0d, 0.0d, 0.0d);
+	bool resultx = tx.OutsideAndNotOn(maxvx, minvx);
+	// --
+	assertm(result == resultx, "results match");
+  }
 
-  // Vector InPerspective(Vector u, Vector v, Vector n, Vector origin, double cameraTan) const;
-  {}
+  // Vector::InPerspective
+  {
+    Vector t = Vector(0.0d, 0.0d, 0.0d);
+    Vector u = Vector(1.0d, 0.0d, 0.0d);
+    Vector v = Vector(1.0d, 0.0d, 0.0d);
+    Vector n = Vector(1.0d, 1.0d, 1.0d);
+    Vector origin = Vector(0.0d, 0.0d, 0.0d);
+	double cameraTan = 1.0d;
+	Vector result = t.InPerspective(u, v, n, origin, cameraTan);
+    // --
+    VectorEx tx = VectorEx(0.0d, 0.0d, 0.0d);
+    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
+    VectorEx vx = VectorEx(1.0d, 0.0d, 0.0d);
+    VectorEx nx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx originx = VectorEx(0.0d, 0.0d, 0.0d);
+	double cameraTanx = 1.0d;
+	VectorEx resultx = tx.InPerspective(ux, vx, nx, originx, cameraTanx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
 
-  // Point2d Project2d(Vector u, Vector v) const;
-  {}
+  // Vector::Project2d
+  {
+    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    Vector u = Vector(1.0d, 0.0d, 0.0d);
+    Vector v = Vector(0.0d, 0.0d, 1.0d);
+    Point2d result = t.Project2d(u, v);
+    // --
+    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
+    VectorEx vx = VectorEx(0.0d, 0.0d, 1.0d);
+    Point2d resultx = tx.Project2d(ux, vx);
+    // --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+  }
 
-  // Point2d ProjectXy() const;
-  {}
+  // Vector::ProjectXy
+  {
+    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    Point2d result = t.ProjectXy();
+    // --
+    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    Point2d resultx = tx.ProjectXy();
+    // --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+  }
 
   // Vector4 Project4d() const;
   {}

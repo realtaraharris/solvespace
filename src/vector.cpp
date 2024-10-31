@@ -69,7 +69,7 @@ inline Vector Vector::ScaledBy(const double v) const {
     return {x * v, y * v, z * v};
 }
 
-inline void Vector::MakeMaxMin(Vector *maxv, Vector *minv) const {
+void Vector::MakeMaxMin(Vector *maxv, Vector *minv) const {
     maxv->x = max(maxv->x, x);
     maxv->y = max(maxv->y, y);
     maxv->z = max(maxv->z, z);
