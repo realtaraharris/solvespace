@@ -32,44 +32,6 @@ VectorEx: @value @print type = {
   ToString: (this) -> std::string = {
 	return "eeep3 x: (this.x)$ y: (this.y)$ z: (this.z)$";
   }
-  DistanceToLine: (a: VectorEx, b: VectorEx) -> double = {
-	return 1.0; // TODO: actually calculate distance
-  }
-  WithMagnitude: (this, v: double) -> VectorEx = {
-    m: double = this.Magnitude();
-    if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
-	  if (fabs(v) > 1e-100) {
-        // dbp("VectorEx::WithMagnitude(%g) of zero vector!", v);
-      }
-	  return this.From(0, 0, 0);
-    } else {
-	  return this.ScaledBy(v / m);
-    }
-  }
-  MagSquared: (this) -> double = {
-    return (this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z);
-  }
-  Magnitude: (this) -> double = {
-    return sqrt((this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z));
-  }
-  ScaledBy: (this, v: double) -> VectorEx = {
-    return VectorEx(this.x * v, this.y * v, this.z * v);
-  }
-  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = LENGTH_EPS) -> bool = {
-    if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
-
-    d: VectorEx = b.Minus(a);
-    m: double = d.MagSquared();
-    distsq: double = ((this.Minus(a)).Cross(d)).MagSquared() / m;
-
-    if (distsq >= tol * tol) { return false; }
-
-    t: double = (this.Minus(a)).DivProjected(d);
-
-    if (t < 0 || t > 1) { return false; } // on-endpoint already tested
-
-    return true;
-  }
   Element: (this, i: int) -> double = {
     if i == 0 {
 	  return (this.x);
@@ -181,11 +143,165 @@ VectorEx: @value @print type = {
 	  n.ScaledBy(this.z)));
     return r;
   }
+  DistanceToLine: (this, p0: VectorEx, dp: VectorEx) -> double = {
+    m: double = dp.Magnitude();
+    return ((this.Minus(p0)).Cross(dp)).Magnitude() / m;
+  }
+  DistanceToPlane: (this, normal: VectorEx, origin: VectorEx) -> double = {
+    return this.Dot(normal) - origin.Dot(normal);
+  }
+  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+    if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
+
+    d: VectorEx = b.Minus(a);
+    m: double = d.MagSquared();
+    distsq: double = ((this.Minus(a)).Cross(d)).MagSquared() / m;
+
+    if (distsq >= tol * tol) { return false; }
+
+    t: double = (this.Minus(a)).DivProjected(d);
+
+    if (t < 0 || t > 1) { return false; } // on-endpoint already tested
+
+    return true;
+  }
+  ClosestPointOnLine: (this, p0: VectorEx, dp: VectorEx) -> VectorEx = {
+    dpp: VectorEx = dp.WithMagnitude(1);
+    // this, p0, and (p0 + dpp) define a plane; the min distance is in
+    // that plane, so calculate its normal
+    pn: VectorEx = (this.Minus(p0)).Cross(dpp);
+    // the minimum distance line is in that plane, perpendicular to the line
+    n: VectorEx = pn.Cross(dpp);
+
+    // calculate the actual distance
+    d: double = (dpp.Cross(p0.Minus(this))).Magnitude();
+    return this.Plus(n.WithMagnitude(d));
+  }
+  Magnitude: (this) -> double = {
+    return sqrt((this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z));
+  }
+  MagSquared: (this) -> double = {
+    return (this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z);
+  }
+  WithMagnitude: (this, v: double) -> VectorEx = {
+    m: double = this.Magnitude();
+    if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
+	  if (fabs(v) > 1e-100) {
+        // dbp("VectorEx::WithMagnitude(%g) of zero vector!", v);
+      }
+	  return this.From(0, 0, 0);
+    } else {
+	  return this.ScaledBy(v / m);
+    }
+  }
+  ScaledBy: (this, v: double) -> VectorEx = {
+    return VectorEx(this.x * v, this.y * v, this.z * v);
+  }
   DivProjected: (this, delta: VectorEx) -> double = {
     return (this.x * delta.x + this.y * delta.y + this.z * delta.z)
          / (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
   }
+  ClosestOrtho: (this) -> VectorEx = {
+    mx: double = fabs(this.x);
+	my: double = fabs(this.y);
+	mz: double = fabs(this.z);
+
+    // TODO: replace with ternary operator once cpp2 has one
+	xTernTmp: double = 0;
+	if (this.x > 0) {
+      xTernTmp = 1;
+    } else {
+      xTernTmp = -1;
+    }
+
+    // TODO: replace with ternary operator once cpp2 has one
+	yTernTmp: double = 0;
+	if (this.y > 0) {
+	  yTernTmp = 1;
+	} else {
+	  yTernTmp = -1;
+	}
+
+	// TODO: replace with ternary operator once cpp2 has one
+	zTernTmp: double = 0;
+    if (this.z > 0) {
+	  zTernTmp = 1;
+	} else {
+	  zTernTmp = -1;
+	}
+
+    if (mx > my && mx > mz) {
+      return VectorExFromD(xTernTmp, 0, 0);
+    } else if (my > mz) {
+      return VectorExFromD(0, yTernTmp, 0);
+    } else {
+      return VectorExFromD(0, 0, zTernTmp);
+    }
+  }
+  /*
+  // the following code is correct cpp2, but there's a bug in cppfront that prevents its use
+  MakeMaxMin: (this, maxv_in: VectorEx, minv_in: VectorEx) -> (maxv: VectorEx, minv: VectorEx) = {
+    maxv = VectorExFromD(
+      std::max(maxv_in.x, this.x),
+	  std::max(maxv_in.y, this.y),
+	  std::max(maxv_in.z, this.z)
+    );
+    minv = VectorExFromD(
+	  std::min(minv_in.x, this.x),
+      std::min(minv_in.y, this.y),
+      std::min(minv_in.z, this.z)
+    );
+  }
+  */
+  MakeMaxMin: (this, inout maxv: VectorEx, inout minv: VectorEx) -> void = {
+    maxv = VectorExFromD(
+      std::max(maxv.x, this.x),
+	  std::max(maxv.y, this.y),
+	  std::max(maxv.z, this.z)
+    );
+    minv = VectorExFromD(
+	  std::min(minv.x, this.x),
+      std::min(minv.y, this.y),
+      std::min(minv.z, this.z)
+    );
+  }
+  ClampWithin: (this, minv: double, maxv: double) -> VectorEx = {
+    tmpx: double = 0;
+    tmpy: double = 0;
+    tmpz: double = 0;
+
+    if (this.x < minv) { tmpx = minv; }
+    if (this.y < minv) { tmpy = minv; }
+    if (this.z < minv) { tmpz = minv; }
+
+    if (this.x > maxv) { tmpx = maxv; }
+    if (this.y > maxv) { tmpy = maxv; }
+    if (this.z > maxv) { tmpz = maxv; }
+
+    return VectorExFromD(tmpx, tmpy, tmpz);
+  }
+  OutsideAndNotOn: (this, maxv: VectorEx, minv: VectorEx) -> bool = {
+    return (this.x > maxv.x + LENGTH_EPS) || (this.x < minv.x - LENGTH_EPS) ||
+           (this.y > maxv.y + LENGTH_EPS) || (this.y < minv.y - LENGTH_EPS) ||
+           (this.z > maxv.z + LENGTH_EPS) || (this.z < minv.z - LENGTH_EPS);
+  }
+  InPerspective: (this, u: VectorEx, v: VectorEx, n: VectorEx, origin: VectorEx, cameraTan: double ) -> VectorEx = {
+    r: VectorEx = this.Minus(origin).DotInToCsys(u, v, n);
+    // yes, minus; we are assuming a csys where u cross v equals n, backwards
+    // from the display stuff
+    w: double = (1 - r.z * cameraTan);
+    r = r.ScaledBy(1 / w);
+
+    return r;
+  }
+  Project2d: (this, u: VectorEx, v: VectorEx) -> Point2d = {
+    return Point2d(this.Dot(u), this.Dot(v));
+  }
+  ProjectXy: (this) -> Point2d = {
+    return Point2d(this.x, this.y);
+  }
 }
+
 
 VectorExFromD: (px: double, py: double, pz: double) -> VectorEx = {
   return VectorEx(px, py, pz);

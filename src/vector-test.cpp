@@ -349,7 +349,7 @@ int main () {
 	assertm(iseq(result.z, resultx.z), "results match");
   }
 
-  // Vector::DotInToCsys(Vector u, Vector v, Vector n) const;
+  // Vector::DotInToCsys
   {
     Vector t = Vector(1.0d, 1.0d, 1.0d);
     Vector u = Vector(1.0d, 0.0d, 0.0d);
@@ -368,19 +368,146 @@ int main () {
 	assertm(iseq(result.z, resultx.z), "results match");
   }
 
-  // Vector::ScaleOutOfCsys(Vector u, Vector v, Vector n) const;
+  // Vector::ScaleOutOfCsys
+  {
+    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    Vector u = Vector(1.0d, 0.0d, 0.0d);
+	Vector v = Vector(0.0d, 1.0d, 0.0d);
+	Vector n = Vector(0.0d, 0.0d, 1.0d);
+	Vector result = t.ScaleOutOfCsys(u, v, n);
+    // --
+    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
+	VectorEx vx = VectorEx(0.0d, 1.0d, 0.0d);
+	VectorEx nx = VectorEx(0.0d, 0.0d, 1.0d);
+	VectorEx resultx = tx.ScaleOutOfCsys(ux, vx, nx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
+
+  // Vector::DistanceToLine
+  {
+    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    Vector p0 = Vector(1.0d, 0.0d, 0.0d);
+	Vector dp = Vector(0.0d, 1.0d, 0.0d);
+	double result = t.DistanceToLine(p0, dp);
+    // --
+    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx p0x = VectorEx(1.0d, 0.0d, 0.0d);
+	VectorEx dpx = VectorEx(0.0d, 1.0d, 0.0d);
+	double resultx = tx.DistanceToLine(p0x, dpx);
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
+
+  // Vector::DistanceToPlane
+  {
+    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    Vector normal = Vector(1.0d, 0.0d, 0.0d);
+	Vector origin = Vector(0.0d, 1.0d, 0.0d);
+	double result = t.DistanceToPlane(normal, origin);
+    // --
+    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx normalx = VectorEx(1.0d, 0.0d, 0.0d);
+	VectorEx originx = VectorEx(0.0d, 1.0d, 0.0d);
+	double resultx = tx.DistanceToPlane(normalx, originx);
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
+
+  // Vector::OnLineSegment
+  {
+	Vector a = Vector(0.0d, 0.0d, 0.0d);
+    Vector b = Vector(1.0d, 1.0d, 1.0d);
+    Vector t = Vector(0.5d, 0.5d, 0.5d);
+	bool result = t.OnLineSegment(a, b);
+    // --
+	VectorEx ax = VectorEx(0.0d, 0.0d, 0.0d);
+    VectorEx bx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx tx = VectorEx(0.5d, 0.5d, 0.5d);
+	bool resultx = tx.OnLineSegment(ax, bx);
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
+
+  // Vector::ClosestPointOnLine
+  {
+    Vector p0 = Vector(0.0d, 0.0d, 0.0d);
+    Vector deltal = Vector(1.0d, 1.0d, 1.0d);
+    Vector t = Vector(0.5d, 0.5d, 0.5d);
+	Vector result = t.ClosestPointOnLine(p0, deltal);
+    // --
+	VectorEx p0x = VectorEx(0.0d, 0.0d, 0.0d);
+    VectorEx deltalx = VectorEx(1.0d, 1.0d, 1.0d);
+    VectorEx tx = VectorEx(0.5d, 0.5d, 0.5d);
+	VectorEx resultx = tx.ClosestPointOnLine(p0x, deltalx);
+	// --
+	assertm(iseq(result.x, resultx.x), "results match");
+	assertm(iseq(result.y, resultx.y), "results match");
+	assertm(iseq(result.z, resultx.z), "results match");
+  }
+
+  // Vector::Magnitude
+  {
+    Vector a = Vector(30.0d, 30.0d, 30.0d);
+	double result = a.Magnitude();
+    // --
+    VectorEx ax = VectorEx(30.0d, 30.0d, 30.0d);
+	double resultx = ax.Magnitude();
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
+
+  // Vector::MagSquared
+  {
+    Vector a = Vector(30.0d, 30.0d, 30.0d);
+	double result = a.MagSquared();
+    // --
+    VectorEx ax = VectorEx(30.0d, 30.0d, 30.0d);
+	double resultx = ax.MagSquared();
+	// --
+	assertm(iseq(result, resultx), "results match");
+  }
+
+  // Vector WithMagnitude(double s) const;
   {}
 
-  // double DistanceToLine(Vector p0, Vector dp) const;
+  // Vector ScaledBy(double s) const;
   {}
 
-  // double DistanceToPlane(Vector normal, Vector origin) const;
+  // Vector::ProjectInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
 
-  // bool OnLineSegment(Vector a, Vector b, double tol=LENGTH_EPS) const;
+  // Vector::ProjectVectorInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
 
-  // Vector ClosestPointOnLine(Vector p0, Vector deltal) const;
+  // double DivProjected(Vector delta) const;
+  {}
+
+  // Vector ClosestOrtho() const;
+  {}
+
+  // void MakeMaxMin(Vector *maxv, Vector *minv) const;
+  {}
+
+  // Vector ClampWithin(double minv, double maxv) const;
+  {}
+
+  // bool OutsideAndNotOn(Vector maxv, Vector minv) const;
+  {}
+
+  // Vector InPerspective(Vector u, Vector v, Vector n, Vector origin, double cameraTan) const;
+  {}
+
+  // Point2d Project2d(Vector u, Vector v) const;
+  {}
+
+  // Point2d ProjectXy() const;
+  {}
+
+  // Vector4 Project4d() const;
   {}
 
 /*
@@ -390,25 +517,6 @@ int main () {
 	std::cout << "resultx.x: " << resultx.x << std::endl;
 	std::cout << "resultx.y: " << resultx.y << std::endl;
 	std::cout << "resultx.z: " << resultx.z << std::endl;
-*/
-
-/*
-    double Magnitude() const;
-    double MagSquared() const;
-    Vector WithMagnitude(double s) const;
-    Vector ScaledBy(double s) const;
-    Vector ProjectInto(hEntity wrkpl) const;
-    Vector ProjectVectorInto(hEntity wrkpl) const;
-    double DivProjected(Vector delta) const;
-    Vector ClosestOrtho() const;
-    void MakeMaxMin(Vector *maxv, Vector *minv) const;
-    Vector ClampWithin(double minv, double maxv) const;
-    bool OutsideAndNotOn(Vector maxv, Vector minv) const;
-    Vector InPerspective(Vector u, Vector v, Vector n,
-                         Vector origin, double cameraTan) const;
-    Point2d Project2d(Vector u, Vector v) const;
-    Point2d ProjectXy() const;
-    Vector4 Project4d() const;
 */
   return 0;
 }
