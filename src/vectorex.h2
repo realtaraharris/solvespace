@@ -1,8 +1,9 @@
+SolveSpace: namespace = {
 VectorEx: @value @print type = {
-  public x: float = (); // TODO: try taking these private once this replaces the cpp1 Vector class
-  public y: float = ();
-  public z: float = ();
-  operator=: (out this, px: float, py: float, pz: float) = {
+  public x: double = (); // TODO: try taking these private once this replaces the cpp1 VectorEx class
+  public y: double = ();
+  public z: double = ();
+  operator=: (out this, px: double, py: double, pz: double) = {
     x = px;
 	y = py;
 	z = pz;
@@ -10,22 +11,6 @@ VectorEx: @value @print type = {
   From: (px: double, py: double, pz: double) -> VectorEx = {
     return VectorExFromD(px, py, pz);
   }
-/*
-  VectorExFromH: (px: hParam, py: hParam, pz: hParam) -> VectorEx = {
-    return VectorExFromH(px, py, pz);
-  }
-  VectorExAtIntersectionOfPlanes: (n1: VectorEx, d1: double, n2: VectorEx, d2: double) -> VectorEx = {
-    return VectorExAtIntersectionOfPlanes(n1, d1, n2, d2);
-  }
-  VectorExClosestPointBetweenLines: (a0: VectorEx, da: VectorEx, b0: VectorEx, db: VectorEx) -> (ta: double, tb: double) = {
-    eeep := VectorExClosestPointBetweenLines(a0, da, b0, db);
-	ta = eeep.ta;
-	tb = eeep.tb;
-  }
-  AtIntersectionOfPlaneAndLine: (n: VectorEx, d: double, p0: VectorEx, p1: VectorEx, parallel: *bool) -> VectorEx = {
-    return AtIntersectionOfPlaneAndLine(n, d, p0, p1, parallel);
-  }
-*/
   Plus: (this, b: VectorEx) -> VectorEx = {
     return VectorEx(this.x + b.x, this.y + b.y, this.z + b.z);
   }
@@ -72,7 +57,7 @@ VectorEx: @value @print type = {
     tmp: VectorEx = b.WithMagnitude(1);
     return a.Dot(tmp);
   }
-  Dot: (this, b: VectorEx) -> float = {
+  Dot: (this, b: VectorEx) -> double = {
       return (this.x * b.x + this.y * b.y + this.z * b.z);
   }
   Normal: (this, which: int) -> VectorEx = {
@@ -302,7 +287,6 @@ VectorEx: @value @print type = {
   }
 }
 
-
 VectorExFromD: (px: double, py: double, pz: double) -> VectorEx = {
   return VectorEx(px, py, pz);
 }
@@ -404,110 +388,4 @@ VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx
   }
   return false;
 }
-
-STriangleEx: type = {
-  tag: i32 = ();
-  meta: STriMeta = ();
-
-  public a: VectorEx = (); // TODO: try taking these private once this replaces the cpp1 Vector class
-  public b: VectorEx = ();
-  public c: VectorEx = ();
-
-  public an: VectorEx = ();
-  public bn: VectorEx = ();
-  public cn: VectorEx = ();
-
-  operator=: (out this) = {
-    meta = STriMeta();
-  }
-
-  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) = {
-	meta = metax;
-    a = ax;
-	b = bx;
-	c = cx;
-  }
-
-  operator=: (out this, metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx, anx: VectorEx, bnx: VectorEx, cnx: VectorEx) = {
-	meta = metax;
-    a = ax;
-	b = bx;
-	c = cx;
-
-    an = anx;
-	bn = bnx;
-	cn = cnx;
-  }
-
-  From: (metax: STriMeta, ax: VectorEx, bx: VectorEx, cx: VectorEx) -> STriangleEx = {
-    return STriangleEx(metax, ax, bx, cx);
-  }
-  
-  Normal: (this) -> VectorEx = {
-    ab: VectorEx = this.b.Minus(this.a);
-	bc: VectorEx = this.c.Minus(this.b);
-    return ab.Cross(bc);
-  }
-
-  MinAltitude: (this) -> double = {
-	altA: double = this.a.DistanceToLine(this.b, this.c.Minus(this.b));
-	altB: double = this.b.DistanceToLine(this.c, this.a.Minus(this.c));
-	altC: double = this.c.DistanceToLine(this.a, this.b.Minus(this.a));
-
-    return min(altA, min(altB, altC));
-  }
-
-  ContainsPoint: (this, p: VectorEx) -> bool = {
-    n: VectorEx = this.Normal();
-    if (this.MinAltitude() < LENGTH_EPS) { // shouldn't happen; zero-area triangle
-        return false;
-    }
-    return this.ContainsPointProjd(n.WithMagnitude(1.0), p);
-  }
-
-  ContainsPointProjd: (this, n: VectorEx, p: VectorEx) -> bool = {
-    ab: VectorEx = this.b.Minus(this.a);
-	bc: VectorEx = this.c.Minus(this.b);
-	ca: VectorEx = this.a.Minus(this.c);
-
-    no_ab: VectorEx = n.Cross(ab);
-    if (no_ab.Dot(p) < no_ab.Dot(this.a) - LENGTH_EPS) { return false; }
-
-    no_bc: VectorEx = n.Cross(bc);
-    if (no_bc.Dot(p) < no_bc.Dot(this.b) - LENGTH_EPS) { return false; }
-
-    no_ca: VectorEx = n.Cross(ca);
-    if (no_ca.Dot(p) < no_ca.Dot(this.c) - LENGTH_EPS) { return false; }
-
-    return true;
-  }
-  SignedVolume: (this) -> double = {
-    return this.a.Dot(this.b.Cross(this.c)) / 6.0;
-  }
-  Area: (this) -> double = {
-    ab: VectorEx = this.a.Minus(this.b);
-    cb: VectorEx = this.c.Minus(this.b);
-    return ab.Cross(cb).Magnitude() / 2.0;
-  }
-
-  IsDegenerate: (this) -> bool = {
-    return this.a.OnLineSegment(this.b, this.c) ||
-           this.b.OnLineSegment(this.a, this.c) ||
-           this.c.OnLineSegment(this.a, this.b);
-  }
-  FlipNormal: (inout this) = {
-    std::swap(this.a, this.b);
-    std::swap(this.an, this.bn);
-  }
-
-  Transform: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> STriangleEx = {
-	return STriangleEx(this.meta,
-	  this.a.ScaleOutOfCsys(u, v, n),
-	  this.b.ScaleOutOfCsys(u, v, n),
-	  this.c.ScaleOutOfCsys(u, v, n),
-      this.an.ScaleOutOfCsys(u, v, n),
-      this.bn.ScaleOutOfCsys(u, v, n),
-      this.cn.ScaleOutOfCsys(u, v, n)
-	);
-  }
 }

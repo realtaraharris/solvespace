@@ -5,6 +5,40 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
+/**/
+Vector Vector::From(hParam x, hParam y, hParam z) {
+    Vector v;
+    v.x = SK.GetParam(x)->val;
+    v.y = SK.GetParam(y)->val;
+    v.z = SK.GetParam(z)->val;
+    return v;
+}
+
+Vector4 Vector::Project4d() const {
+    return Vector4::From(1, x, y, z);
+}
+
+Vector Vector::ProjectVectorInto(hEntity wrkpl) const {
+    EntityBase *w = SK.GetEntity(wrkpl);
+    Vector u = w->Normal()->NormalU();
+    Vector v = w->Normal()->NormalV();
+
+    double up = this->Dot(u);
+    double vp = this->Dot(v);
+
+    return (u.ScaledBy(up)).Plus(v.ScaledBy(vp));
+}
+
+Vector Vector::ProjectInto(hEntity wrkpl) const {
+    EntityBase *w = SK.GetEntity(wrkpl);
+    Vector p0 = w->WorkplaneGetOffset();
+
+    Vector f = this->Minus(p0);
+
+    return p0.Plus(f.ProjectVectorInto(wrkpl));
+}
+/**/
+
 inline double Vector::Element(int i) const {
     switch (i) {
     case 0: return x;
@@ -23,15 +57,6 @@ inline bool Vector::Equals(Vector v, double tol) const {
 
     return dv.MagSquared() < tol*tol;
 }
-
-/*
-Vector Vector::From(hParam x, hParam y, hParam z) {
-    Vector v;
-    v.x = SK.GetParam(x)->val;
-    v.y = SK.GetParam(y)->val;
-    v.z = SK.GetParam(z)->val;
-    return v;
-} */
 
 inline Vector Vector::From(double x, double y, double z) {
     return {x, y, z};
@@ -235,27 +260,7 @@ Vector Vector::WithMagnitude(double v) const {
     }
 }
 
-/*
-Vector Vector::ProjectVectorInto(hEntity wrkpl) const {
-    EntityBase *w = SK.GetEntity(wrkpl);
-    Vector u = w->Normal()->NormalU();
-    Vector v = w->Normal()->NormalV();
 
-    double up = this->Dot(u);
-    double vp = this->Dot(v);
-
-    return (u.ScaledBy(up)).Plus(v.ScaledBy(vp));
-}
-
-Vector Vector::ProjectInto(hEntity wrkpl) const {
-    EntityBase *w = SK.GetEntity(wrkpl);
-    Vector p0 = w->WorkplaneGetOffset();
-
-    Vector f = this->Minus(p0);
-
-    return p0.Plus(f.ProjectVectorInto(wrkpl));
-}
-*/
 
 Point2d Vector::Project2d(Vector u, Vector v) const {
     Point2d p;
@@ -271,11 +276,7 @@ Point2d Vector::ProjectXy() const {
     return p;
 }
 
-/*
-Vector4 Vector::Project4d() const {
-    return Vector4::From(1, x, y, z);
-}
-*/
+
 
 double Vector::DivProjected(Vector delta) const {
     return (x*delta.x + y*delta.y + z*delta.z)

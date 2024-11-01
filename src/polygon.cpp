@@ -4,19 +4,22 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 
-//#define CPP2_IMPORT_STD true
-//#include "cpp2util.h"
-
 #include "solvespace.h"
-//#include "polygon.h"
-//#include "striangle.h"
+
+Vector vxt (VectorEx v) {
+std::cout << v.x << std::endl;
+  return Vector(v.x, v.y, v.z);
+}
+
+VectorEx txv (Vector v) {
+  return VectorEx(v.x, v.y, v.z);
+}
 
 Vector STriangle::Normal() const {
-//    VectorEx v = VectorEx(1.0f, 2.0f, 3.0f);
-//	std::cout << "eeep2 v.ToString(): " << v.ToString() << std::endl;
-
-    Vector ab = b.Minus(a), bc = c.Minus(b);
-    return ab.Cross(bc);
+  VectorEx ab = txv(b).Minus(txv(a)), bc = txv(c).Minus(txv(b));
+  VectorEx result = ab.Cross(bc);
+  std::cout << result.ToString() << std::endl;
+  return vxt(result);
 }
 
 double STriangle::MinAltitude() const {

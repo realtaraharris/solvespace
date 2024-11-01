@@ -34,12 +34,12 @@ int main () {
 
   // Vector::Cross
   {
-    Vector c = Vector(1, 2, 3);
-    Vector d = Vector(1, 2, 3);
+    Vector c = Vector(2.0d, 0.0d, -1.0d);
+    Vector d = Vector(1.0d, 1.0d, 0.0d);
     Vector e = c.Cross(d);
     // --
-    VectorEx cx = VectorEx(1, 2, 3);
-    VectorEx dx = VectorEx(1, 2, 3);
+    VectorEx cx = VectorEx(2.0d, 0.0d, -1.0d);
+    VectorEx dx = VectorEx(1.0d, 1.0d, 0.0d);
     VectorEx ex = cx.Cross(dx);
     // --
     assertm(e.x == ex.x, "x component ok");
@@ -238,10 +238,12 @@ int main () {
   // Vector::Minus
   {
     Vector e = Vector(1.0d, 1.0d, 1.0d);
-	Vector result = e.Minus(e);
+    Vector f = Vector(2.0d, 1.0d, 1.0d);
+	Vector result = e.Minus(f);
     // --
     VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx resultx = ex.Minus(ex);
+    VectorEx fx = VectorEx(2.0d, 1.0d, 1.0d);
+	VectorEx resultx = ex.Minus(fx);
 	// --
 	assertm(result.x == resultx.x, "results match");
 	assertm(result.y == resultx.y, "results match");
