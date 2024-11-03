@@ -446,8 +446,8 @@ void TextWindow::ScreenPasteTransformed(int link, uint32_t v) {
             break;
 
         case 'g': {
-            if(fabs(SS.TW.shown.paste.theta) < LENGTH_EPS &&
-               SS.TW.shown.paste.trans.Magnitude() < LENGTH_EPS &&
+            if(fabs(SS.TW.shown.paste.theta) < SolveSpace::LENGTH_EPS &&
+               SS.TW.shown.paste.trans.Magnitude() < SolveSpace::LENGTH_EPS &&
                SS.TW.shown.paste.times != 1)
             {
                 Message(_("Transformation is identity. So all copies will be "

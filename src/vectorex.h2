@@ -1,4 +1,4 @@
-SolveSpace: namespace = {
+//SolveSpace: namespace = {
 VectorEx: @value @print type = {
   public x: double = (); // TODO: try taking these private once this replaces the cpp1 VectorEx class
   public y: double = ();
@@ -27,7 +27,7 @@ VectorEx: @value @print type = {
     }
 	ssassert(false, "Unexpected vector element index");
   }
-  Equals: (this, v: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+  Equals: (this, v: VectorEx, tol: double = SolveSpace::LENGTH_EPS) -> bool = {
     // quick axis-aligned tests before going further
 	dv: VectorEx = this.Minus(v);
     if (fabs(dv.x) > tol) { return false; }
@@ -135,7 +135,7 @@ VectorEx: @value @print type = {
   DistanceToPlane: (this, normal: VectorEx, origin: VectorEx) -> double = {
     return this.Dot(normal) - origin.Dot(normal);
   }
-  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = LENGTH_EPS) -> bool = {
+  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = SolveSpace::LENGTH_EPS) -> bool = {
     if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
 
     d: VectorEx = b.Minus(a);
@@ -279,11 +279,11 @@ VectorEx: @value @print type = {
 
     return r;
   }
-  Project2d: (this, u: VectorEx, v: VectorEx) -> Point2d = {
-    return Point2d(this.Dot(u), this.Dot(v));
+  Project2d: (this, u: VectorEx, v: VectorEx) -> SolveSpace::Point2d = {
+    return SolveSpace::Point2d(this.Dot(u), this.Dot(v));
   }
-  ProjectXy: (this) -> Point2d = {
-    return Point2d(this.x, this.y);
+  ProjectXy: (this) -> SolveSpace::Point2d = {
+    return SolveSpace::Point2d(this.x, this.y);
   }
 }
 
@@ -291,7 +291,7 @@ VectorExFromD: (px: double, py: double, pz: double) -> VectorEx = {
   return VectorEx(px, py, pz);
 }
 
-VectorExFromH: (px: hParam, py: hParam, pz: hParam) -> VectorEx = {
+VectorExFromH: (px: SolveSpace::hParam, py: SolveSpace::hParam, pz: SolveSpace::hParam) -> VectorEx = {
   assert(0 == 1); // TODO: lookups from SK.*
   return VectorEx(0, 0, 0);
 }
@@ -388,4 +388,4 @@ VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx
   }
   return false;
 }
-}
+//}

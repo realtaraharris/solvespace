@@ -46,4 +46,4 @@ bool HaikuSpaceUI::OkayToStartNewFile() {
 	return false;
 }
 
-bool HaikuSpaceUI::GetFilenameAndSave(bool saveAs) {}
+bool HaikuSpaceUI::GetFilenameAndSave(bool saveAs) { return false; }

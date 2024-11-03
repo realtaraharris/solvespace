@@ -195,10 +195,10 @@ public:
         double d = bsp->d;
         // Count vertices in the plane
         for(int i = 0; i < 3; i++) {
-            if(dt[i] > d + LENGTH_EPS) {
+            if(dt[i] > d + SolveSpace::LENGTH_EPS) {
                 posc++;
                 isPos[i] = true;
-            } else if(dt[i] < d - LENGTH_EPS) {
+            } else if(dt[i] < d - SolveSpace::LENGTH_EPS) {
                 negc++;
                 isNeg[i] = true;
             } else {
@@ -220,7 +220,7 @@ public:
         for(size_t i = 0; i < cnt; i++) {
             double dt = bsp->n.Dot(vertex[i]);
             isPos[i] = isNeg[i] = isOn[i] = false;
-            if(fabs(dt - bsp->d) < LENGTH_EPS) {
+            if(fabs(dt - bsp->d) < SolveSpace::LENGTH_EPS) {
                 isOn[i] = true;
                 if(onc < 2) {
                     on[onc] = vertex[i];
@@ -563,7 +563,7 @@ void SBsp2::InsertEdge(SEdge *nedge, Vector nnp, Vector out) {
 
     bool isPos[2] = {}, isNeg[2] = {}, isOn[2] = {};
     for(int i = 0; i < 2; i++) {
-        if(fabs(dt[i] - d) < LENGTH_EPS) {
+        if(fabs(dt[i] - d) < SolveSpace::LENGTH_EPS) {
             isOn[i] = true;
         } else if(dt[i] > d) {
             isPos[i] = true;
@@ -641,7 +641,7 @@ void SBsp2::InsertTriangle(STriangle *tr, SMesh *m, SBsp3 *bsp3) {
     bool isPos[3] = {}, isNeg[3] = {}, isOn[3] = {};
     int inc = 0, posc = 0, negc = 0;
     for(int i = 0; i < 3; i++) {
-        if(fabs(dt[i] - d) < LENGTH_EPS) {
+        if(fabs(dt[i] - d) < SolveSpace::LENGTH_EPS) {
             isOn[i] = true;
             inc++;
         } else if(dt[i] > d) {

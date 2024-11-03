@@ -1,5 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
+
 class Vector {
 public:
     double x, y, z;
@@ -28,7 +29,7 @@ public:
                                           Vector p0, Vector p1, bool asSegment);
 
     double Element(int i) const;
-    bool Equals(Vector v, double tol=LENGTH_EPS) const;
+    bool Equals(Vector v, double tol=SolveSpace::LENGTH_EPS) const;
     bool EqualsExactly(Vector v) const;
     Vector Plus(Vector b) const;
     Vector Minus(Vector b) const;
@@ -43,7 +44,7 @@ public:
     Vector ScaleOutOfCsys(Vector u, Vector v, Vector n) const;
     double DistanceToLine(Vector p0, Vector dp) const;
     double DistanceToPlane(Vector normal, Vector origin) const;
-    bool OnLineSegment(Vector a, Vector b, double tol=LENGTH_EPS) const;
+    bool OnLineSegment(Vector a, Vector b, double tol=SolveSpace::LENGTH_EPS) const;
     Vector ClosestPointOnLine(Vector p0, Vector deltal) const;
     double Magnitude() const;
     double MagSquared() const;

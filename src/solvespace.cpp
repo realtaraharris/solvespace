@@ -4,6 +4,7 @@
 //
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
+#include "cpp2util.h"
 #include "solvespace.h"
 #include "config.h"
 

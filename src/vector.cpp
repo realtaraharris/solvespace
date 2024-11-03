@@ -3,7 +3,19 @@
 //
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
+
 #include "solvespace.h"
+
+/*
+Vector vxt (VectorEx v) {
+std::cout << v.x << std::endl;
+  return Vector(v.x, v.y, v.z);
+}
+
+VectorEx txv (Vector v) {
+  return VectorEx(v.x, v.y, v.z);
+}
+*/
 
 /**/
 Vector Vector::From(hParam x, hParam y, hParam z) {

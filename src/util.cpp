@@ -427,7 +427,7 @@ Quaternion Quaternion::Mirror() const {
     return Quaternion::From(u, v);
 }
 
-#include "vector.cpp"
+//#include "vector.cpp"
 
 size_t VectorHash::operator()(const Vector &v) const {
     const size_t size = (size_t)pow(std::numeric_limits<size_t>::max(), 1.0 / 3.0) - 1;
