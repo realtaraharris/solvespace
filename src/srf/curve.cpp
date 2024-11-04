@@ -137,9 +137,9 @@ bool SBezier::IsCircle(Vector axis, Vector *center, double *r) const {
            r0 = axis.Cross(t0),
            r2 = axis.Cross(t2);
 
-    *center = Vector::AtIntersectionOfLines(ctrl[0], (ctrl[0]).Plus(r0),
-                                            ctrl[2], (ctrl[2]).Plus(r2),
-                                            NULL, NULL, NULL);
+    VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(ctrl[0], (ctrl[0]).Plus(r0),
+	  ctrl[2], (ctrl[2]).Plus(r2), false);
+	*center = eeep.intersectionPoint;
 
     double rd0 = center->Minus(ctrl[0]).Magnitude(),
            rd2 = center->Minus(ctrl[2]).Magnitude();

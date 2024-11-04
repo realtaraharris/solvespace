@@ -269,7 +269,7 @@ bool TtfFont::ExtractTTFData(bool keepOpen) {
 }
 
 typedef struct OutlineData {
-    Vector       origin, u, v; // input parameters
+    Vector       origin = Vector(0, 0, 0), u = Vector(0, 0, 0), v = Vector(0, 0, 0); // input parameters
     SBezierList *beziers;      // output bezier list
     float        factor;       // ratio between freetype and solvespace coordinates
     FT_Pos       bx;           // x offset of the current glyph

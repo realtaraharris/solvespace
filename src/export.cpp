@@ -687,9 +687,9 @@ void VectorFileWriter::OutputLinesAndMesh(SBezierLoopSetSet *sblss, SMesh *sm) {
     ptMax = Vector::From(VERY_NEGATIVE, VERY_NEGATIVE, VERY_NEGATIVE);
     if(sm) {
         for(tr = sm->l.First(); tr; tr = sm->l.NextAfter(tr)) {
-            (tr->a).MakeMaxMin(&ptMax, &ptMin);
-            (tr->b).MakeMaxMin(&ptMax, &ptMin);
-            (tr->c).MakeMaxMin(&ptMax, &ptMin);
+            (tr->a).MakeMaxMin(ptMax, ptMin);
+            (tr->b).MakeMaxMin(ptMax, ptMin);
+            (tr->c).MakeMaxMin(ptMax, ptMin);
         }
     }
     if(sblss) {
@@ -699,7 +699,7 @@ void VectorFileWriter::OutputLinesAndMesh(SBezierLoopSetSet *sblss, SMesh *sm) {
             for(sbl = sbls->l.First(); sbl; sbl = sbls->l.NextAfter(sbl)) {
                 for(b = sbl->l.First(); b; b = sbl->l.NextAfter(b)) {
                     for(int i = 0; i <= b->deg; i++) {
-                        (b->ctrl[i]).MakeMaxMin(&ptMax, &ptMin);
+                        (b->ctrl[i]).MakeMaxMin(ptMax, ptMin);
                     }
                 }
             }

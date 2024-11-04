@@ -84,7 +84,7 @@ void SurfaceRenderer::DrawQuad(const Vector &a, const Vector &b, const Vector &c
              fill->layer == Layer::FRONT ||
              fill->layer == Layer::BACK, "Unexpected mesh layer");
 
-    Vector zOffset = {};
+    Vector zOffset = Vector(0, 0, 0);
     if(fill->layer == Layer::BACK) {
         zOffset.z -= 1e6;
     } else if(fill->layer == Layer::FRONT) {
@@ -167,7 +167,7 @@ void SurfaceRenderer::DrawFaces(const SMesh &m, const std::vector<uint32_t> &fac
     ssassert(fill->layer == Layer::NORMAL ||
              fill->layer == Layer::DEPTH_ONLY, "Unexpected mesh layer");
 
-    Vector zOffset = {};
+    Vector zOffset = Vector(0, 0, 0);
     zOffset.z += camera.scale * fill->zIndex;
 
     size_t facesSize = faces.size();

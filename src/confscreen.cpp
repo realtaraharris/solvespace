@@ -383,7 +383,7 @@ bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
             break;
         }
         case Edit::COLOR: {
-            Vector rgb;
+            Vector rgb = Vector(0, 0, 0);
             if(sscanf(s.c_str(), "%lf, %lf, %lf", &rgb.x, &rgb.y, &rgb.z)==3) {
                 rgb = rgb.ClampWithin(0, 1);
                 SS.modelColor[edit.i] = RGBf(rgb.x, rgb.y, rgb.z);

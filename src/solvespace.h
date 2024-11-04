@@ -152,6 +152,15 @@ using handle_map = std::map<Key, T>;
 
 class Group;
 class SSurface;
+class hEntity;
+class hParam;
+class Vector;
+class Vector4;
+}
+
+#include "vectorex.h"
+
+namespace SolveSpace {
 #include "dsc.h"
 #include "polygon.h"
 #include "srf/surface.h"
@@ -160,7 +169,6 @@ class SSurface;
 class Entity;
 class hEntity;
 class Param;
-class hParam;
 typedef IdList<Entity,hEntity> EntityList;
 typedef IdList<Param,hParam> ParamList;
 
@@ -172,11 +180,9 @@ enum class SolveResult : uint32_t {
     TOO_MANY_UNKNOWNS        = 20
 };
 
-
 #include "sketch.h"
 #include "ui.h"
 #include "expr.h"
-
 
 // Utility functions that are provided in the platform-independent code.
 class utf8_iterator : std::iterator<std::forward_iterator_tag, char32_t> {

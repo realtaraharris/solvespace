@@ -45,7 +45,7 @@ void SBsp3::InsertInPlane(bool pos2, STriangle *tr, SMesh *m) {
     bool sameNormal = false;
     double maxNormalMag = -1;
 
-    Vector lln, trn = tr->Normal();
+    Vector lln = Vector(0, 0, 0), trn = tr->Normal();
 
     SBsp3 *ll = this;
     while(ll) {
@@ -249,7 +249,7 @@ public:
     }
 
     bool ClassifyConvexVertices(Vector *vertex, size_t cnt, bool insertEdges) {
-        Vector inter[2];
+        Vector inter[2] = { Vector(0, 0, 0), Vector(0, 0, 0) };
         int inters = 0;
 
         npos = 0;
@@ -306,7 +306,7 @@ public:
     void ProcessEdgeInsert() {
         ssassert(onc == 2, "Impossible");
 
-        Vector a, b;
+        Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0);
         if     (!isOn[0]) { a = tr->b; b = tr->c; }
         else if(!isOn[1]) { a = tr->c; b = tr->a; }
         else if(!isOn[2]) { a = tr->a; b = tr->b; }
@@ -320,7 +320,7 @@ public:
         ssassert(posc == 1 && negc == 1 && onc == 1, "Impossible");
 
         bool bpos;
-        Vector a, b, c;
+        Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), c = Vector(0, 0, 0);
 
         // Standardize so that a is on the plane
         if       (isOn[0]) { a = tr->a; b = tr->b; c = tr->c; bpos = isPos[1];
@@ -342,7 +342,7 @@ public:
     }
 
     bool SplitIntoTwoPieces(bool insertEdge) {
-        Vector a, b, c;
+        Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), c = Vector(0, 0, 0);
         if(posc == 2 && negc == 1) {
             // Standardize so that a is on one side, and b and c are on the other.
             if       (isNeg[0]) {   a = tr->a; b = tr->b; c = tr->c;
@@ -669,7 +669,7 @@ void SBsp2::InsertTriangle(STriangle *tr, SMesh *m, SBsp3 *bsp3) {
     }
 
     // The polygon must be split into two pieces, one above, one below.
-    Vector a, b, c;
+    Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), c = Vector(0, 0, 0);
 
     if(posc == 1 && negc == 1 && inc == 1) {
         bool bpos;

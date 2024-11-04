@@ -405,8 +405,8 @@ Quaternion Quaternion::ToThe(double p) const {
 
 Quaternion Quaternion::Times(Quaternion b) const {
     double sa = w, sb = b.w;
-    Vector va = { vx, vy, vz };
-    Vector vb = { b.vx, b.vy, b.vz };
+    Vector va = Vector(vx, vy, vz);
+    Vector vb = Vector(b.vx, b.vy, b.vz);
 
     Quaternion r;
     r.w = sa*sb - va.Dot(vb);

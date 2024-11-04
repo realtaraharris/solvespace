@@ -100,9 +100,9 @@ SBezier Camera::ProjectBezier(SBezier b) const {
 }
 
 void Camera::LoadIdentity() {
-    offset    = { 0.0, 0.0, 0.0 };
-    projRight = { 1.0, 0.0, 0.0 };
-    projUp    = { 0.0, 1.0, 0.0 };
+    offset    = Vector(0.0, 0.0, 0.0);
+    projRight = Vector(1.0, 0.0, 0.0);
+    projUp    = Vector(0.0, 1.0, 0.0);
     scale     = 1.0;
     tangent   = 0.0;
 }
@@ -235,8 +235,8 @@ const Camera &BatchCanvas::GetCamera() const {
 //-----------------------------------------------------------------------------
 
 void UiCanvas::DrawLine(int x1, int y1, int x2, int y2, RgbaColor color, int width, int zIndex) {
-    Vector va = { (double)x1 + 0.5, (double)Flip(y1) + 0.5, 0.0 },
-           vb = { (double)x2 + 0.5, (double)Flip(y2) + 0.5, 0.0 };
+    Vector va = Vector((double)x1 + 0.5, (double)Flip(y1) + 0.5, 0.0),
+           vb = Vector((double)x2 + 0.5, (double)Flip(y2) + 0.5, 0.0);
 
     Canvas::Stroke stroke = {};
     stroke.layer  = Canvas::Layer::NORMAL;
@@ -251,10 +251,10 @@ void UiCanvas::DrawLine(int x1, int y1, int x2, int y2, RgbaColor color, int wid
 
 void UiCanvas::DrawRect(int l, int r, int t, int b, RgbaColor fillColor, RgbaColor outlineColor,
                         int zIndex) {
-    Vector va = { (double)l + 0.5, (double)Flip(b) + 0.5, 0.0 },
-           vb = { (double)l + 0.5, (double)Flip(t) + 0.5, 0.0 },
-           vc = { (double)r + 0.5, (double)Flip(t) + 0.5, 0.0 },
-           vd = { (double)r + 0.5, (double)Flip(b) + 0.5, 0.0 };
+    Vector va = Vector((double)l + 0.5, (double)Flip(b) + 0.5, 0.0),
+           vb = Vector((double)l + 0.5, (double)Flip(t) + 0.5, 0.0),
+           vc = Vector((double)r + 0.5, (double)Flip(t) + 0.5, 0.0),
+           vd = Vector((double)r + 0.5, (double)Flip(b) + 0.5, 0.0);
 
     if(!fillColor.IsEmpty()) {
         Canvas::Fill fill = {};
@@ -290,9 +290,9 @@ void UiCanvas::DrawPixmap(std::shared_ptr<const Pixmap> pm, int x, int y, int zI
     Canvas::hFill hcf = canvas->GetFill(fill);
 
     canvas->DrawPixmap(pm,
-                       { (double)x, (double)(flip ? Flip(y) - pm->height : y), 0.0 },
-                       { (double)pm->width,  0.0, 0.0 },
-                       { 0.0, (double)pm->height, 0.0 },
+                       Vector((double)x, (double)(flip ? Flip(y) - pm->height : y), 0.0),
+                       Vector((double)pm->width,  0.0, 0.0),
+                       Vector(0.0, (double)pm->height, 0.0),
                        { 0.0, 1.0 },
                        { 1.0, 0.0 },
                        hcf);
@@ -322,9 +322,9 @@ void UiCanvas::DrawBitmapChar(char32_t codepoint, int x, int y, RgbaColor color,
     }
 
     canvas->DrawPixmap(font->texture,
-                       { (double)x, (double)Flip(y), 0.0 },
-                       { (double)w,  0.0, 0.0 },
-                       { 0.0, (double) h, 0.0 },
+                       Vector((double)x, (double)Flip(y), 0.0),
+                       Vector((double)w,  0.0, 0.0),
+                       Vector(0.0, (double) h, 0.0),
                        { s0, t1 },
                        { s1, t0 },
                        hcf);

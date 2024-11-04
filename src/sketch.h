@@ -227,7 +227,7 @@ public:
     struct {
         PolyError       how;
         SEdge           notClosedAt;
-        Vector          errorPointAt;
+        Vector          errorPointAt = Vector(0, 0, 0);
     }               polyError;
 
     bool            booleanFailed;
@@ -446,7 +446,7 @@ public:
     hParam      param[8];
 
     // Transformed points/normals/distances have their numerical base
-    Vector      numPoint;
+    Vector      numPoint = Vector(0, 0, 0);
     Quaternion  numNormal;
     double      numDistance;
 
@@ -547,9 +547,20 @@ public:
     // Note EntityBase({}); without explicitly value-initializing
     // the base class, MSVC2013 will default-initialize it, leaving
     // POD members with indeterminate value.
-    Entity() : EntityBase({}), forceHidden(), actPoint(), actNormal(),
-        actDistance(), actVisible(), style(), construction(),
-        beziers(), edges(), edgesChordTol(), screenBBox(), screenBBoxValid() {};
+	Entity() : EntityBase(),
+ // Entity() : EntityBase({}), // cpp2 has a better way to guarantee initialization
+	    forceHidden(),
+		actPoint(),
+		actNormal(),
+        actDistance(),
+		actVisible(),
+		style(),
+		construction(),
+        beziers(),
+		edges(),
+		edgesChordTol(),
+		screenBBox(),
+		screenBBoxValid() {};
 
     // A linked entity that was hidden in the source file ends up hidden
     // here too.
@@ -558,7 +569,7 @@ public:
     // All points/normals/distances have their numerical value; this is
     // a convenience, to simplify the link/assembly code, so that the
     // part is entirely described by the entities.
-    Vector      actPoint;
+    Vector      actPoint = Vector(0, 0, 0);
     Quaternion  actNormal;
     double      actDistance;
     // and the shown state also gets saved here, for later import
@@ -1001,7 +1012,23 @@ public:
     Platform::Path file;
     bool        construction;
 
-    Vector      point[MAX_POINTS_IN_ENTITY];
+    Vector      point[MAX_POINTS_IN_ENTITY] = {
+	    Vector(0, 0, 0),
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+
+		Vector(0, 0, 0),
+		Vector(0, 0, 0),
+		Vector(0, 0, 0)
+	};
     double      distance;
 
     hEntity     oldEnt;

@@ -359,7 +359,7 @@ uint32_t SMesh::FirstIntersectionWith(Point2d mp) const {
 }
 
 Vector SMesh::GetCenterOfMass() const {
-    Vector center = {};
+    Vector center = Vector(0, 0, 0);
     double vol = 0.0;
     for(int i = 0; i < l.n; i++) {
         const STriangle &tr = l[i];
@@ -696,7 +696,7 @@ void SKdNode::SplitLinesAgainstTriangle(SEdgeList *sel, STriangle *tr) const {
             if((da < -LENGTH_EPS && db > LENGTH_EPS) ||
                (db < -LENGTH_EPS && da > LENGTH_EPS))
             {
-                Vector m = Vector::AtIntersectionOfPlaneAndLine(
+                Vector m = VectorAtIntersectionOfPlaneAndLine(
                                         tn, td,
                                         se->a, se->b, NULL);
                 seln.AddEdge(m, se->b, se->auxA, 0, se->tag);
@@ -899,7 +899,7 @@ void SKdNode::FindEdgeOn(Vector a, Vector b, int cnt, bool coplanarIsInter,
                     if(coplanarIsInter) {
                         info->intersectsMesh = true;
                     } else {
-                        Vector p = Vector::AtIntersectionOfPlaneAndLine(
+                        Vector p = VectorAtIntersectionOfPlaneAndLine(
                                                 n, d, a, b, NULL);
                         Vector ta = tr->a,
                                tb = tr->b,

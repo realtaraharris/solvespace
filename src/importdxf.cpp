@@ -887,10 +887,9 @@ public:
             c->valA = actual;
         }
 
-        bool skew = false;
-        Vector pi = Vector::AtIntersectionOfLines(l0p0, l0p1, l1p0, l1p1, &skew);
-        if(!skew) {
-            c->disp.offset = toVector(data->getTextPoint()).Minus(pi);
+        VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(l0p0, l0p1, l1p0, l1p1, false);
+        if(!eeep.skewed) {
+            c->disp.offset = toVector(data->getTextPoint()).Minus(eeep.intersectionPoint);
         }
     }
 

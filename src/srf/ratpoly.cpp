@@ -122,10 +122,9 @@ bool SBezier::PointOnThisAndCurve(const SBezier *sbb, Vector *p) const {
             return true;
         }
 
-        double tta, ttb;
-        Vector::ClosestPointBetweenLines(pa, da, pb, db, &tta, &ttb);
-        ta += tta;
-        tb += ttb;
+        VectorClosestPointBetweenLines_ret eeep = VectorClosestPointBetweenLines(pa, da, pb, db);
+		ta += eeep.ta;
+		tb += eeep.tb;
     }
     return false;
 }
@@ -513,7 +512,7 @@ bool SSurface::PointIntersectingLine(Vector p0, Vector p1, double *u, double *v)
         double d = p.Dot(n);
 
         bool parallel;
-        pi = Vector::AtIntersectionOfPlaneAndLine(n, d, p0, p1, &parallel);
+        pi = VectorAtIntersectionOfPlaneAndLine(n, d, p0, p1, &parallel);
         if(parallel) {
             dbp("parallel (surface intersecting line)");
             break;
@@ -561,7 +560,7 @@ Vector SSurface::ClosestPointOnThisAndSurface(SSurface *srf2, Vector p) {
 
         if((cp[0]).Equals(cp[1], RATPOLY_EPS)) break;
 
-        Vector p0 = Vector::AtIntersectionOfPlanes(n[0], d[0], n[1], d[1]),
+        Vector p0 = VectorAtIntersectionOfPlanes(n[0], d[0], n[1], d[1]),
                dp = (n[0]).Cross(n[1]);
 
         Vector pc = p.ClosestPointOnLine(p0, dp);
@@ -621,7 +620,7 @@ void SSurface::PointOnSurfaces(SSurface *s1, SSurface *s2, double *up, double *v
         }
 
         bool parallel;
-        Vector pi = Vector::AtIntersectionOfPlanes(n[0], d[0],
+        Vector pi = VectorAtIntersectionOfPlanes(n[0], d[0],
                                                    n[1], d[1],
                                                    n[2], d[2], &parallel);
 

@@ -107,7 +107,7 @@ void GraphicsWindow::CopySelection() {
         cr.file         = e->file;
         cr.construction = e->construction;
         {for(int i = 0; i < pts; i++) {
-            Vector pt;
+            Vector pt = Vector(0, 0, 0);
             if(req == Request::Type::DATUM_POINT) {
                 pt = e->PointGetNum();
             } else {

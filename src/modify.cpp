@@ -331,9 +331,9 @@ void GraphicsWindow::MakeTangentArc() {
                t0 = pc[0].TangentAt(t[0]),
                t1 = pc[1].TangentAt(t[1]);
 
-        pinter = Vector::AtIntersectionOfLines(p0, p0.Plus(t0),
-                                               p1, p1.Plus(t1),
-                                               NULL, NULL, NULL);
+		VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(p0, p0.Plus(t0),
+                                               p1, p1.Plus(t1), false);
+		pinter = eeep.intersectionPoint;
 
         // The sign of vv determines whether shortest distance is
         // clockwise or anti-clockwise.

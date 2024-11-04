@@ -433,11 +433,10 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
                        t2 =             u.ScaledBy(-r*s). Plus(v.ScaledBy(r*c));
 
                 // The control point must lie on both tangents.
-                Vector p1 = Vector::AtIntersectionOfLines(p0, p0.Plus(t0),
-                                                          p2, p2.Plus(t2),
-                                                          NULL);
+				VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(p0, p0.Plus(t0),
+                                                          p2, p2.Plus(t2), NULL);
 
-                SBezier sb = SBezier::From(p0, p1, p2);
+                SBezier sb = SBezier::From(p0, eeep.intersectionPoint, p2);
                 sb.weight[1] = cos(dtheta/2);
                 sbl->l.Add(&sb);
             }
@@ -802,7 +801,7 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
             }
 
             Canvas::hFill hf = canvas->GetFill(fill);
-            Vector v[4] = {};
+            Vector v[4] = { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) };
             for(int i = 0; i < 4; i++) {
                 v[i] = SK.GetEntity(point[i])->PointGetDrawNum();
             }

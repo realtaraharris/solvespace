@@ -79,7 +79,7 @@ public:
     int             auxA, auxB;
 
     int             deg;
-    Vector          ctrl[4];
+    Vector          ctrl[4] = { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) };
     double          weight[4];
     uint32_t        entity;
 
@@ -151,8 +151,8 @@ public:
 class SBezierLoopSet {
 public:
     List<SBezierLoop> l;
-    Vector normal;
-    Vector point;
+    Vector normal = Vector(0, 0, 0);
+    Vector point = Vector(0, 0, 0);
     double area;
 
     static SBezierLoopSet From(SBezierList *spcl, SPolygon *poly,
@@ -183,7 +183,7 @@ public:
 class SCurvePt {
 public:
     int         tag;
-    Vector      p;
+    Vector      p = Vector(0, 0, 0);
     bool        vertex;
 };
 
@@ -233,8 +233,8 @@ public:
     // If a trim runs backwards, then start and finish still correspond to
     // the actual start and finish, but they appear in reverse order in
     // the referenced curve.
-    Vector      start;
-    Vector      finish;
+    Vector      start = Vector(0, 0, 0);
+    Vector      finish = Vector(0, 0, 0);
 
     static STrimBy EntireCurve(SShell *shell, hSCurve hsc, bool backwards);
 };
@@ -243,10 +243,10 @@ public:
 class SInter {
 public:
     int         tag;
-    Vector      p;
+    Vector      p = Vector(0, 0, 0);
     SSurface    *srf;
     Point2d     pinter;
-    Vector      surfNormal;     // of the intersecting surface, at pinter
+    Vector      surfNormal = Vector(0, 0, 0);     // of the intersecting surface, at pinter
     bool        onEdge;         // pinter is on edge of trim poly
 };
 
@@ -271,7 +271,12 @@ public:
     uint32_t        face;
 
     int             degm, degn;
-    Vector          ctrl[4][4];
+    Vector          ctrl[4][4] = {
+      { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) },
+      { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) },
+      { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) },
+      { Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0) }
+	};
     double          weight[4][4];
 
     List<STrimBy>   trim;

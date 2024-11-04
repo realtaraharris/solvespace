@@ -230,8 +230,8 @@ bool SContour::IsEmptyTriangle(int ap, int bp, int cp, double scaledEPS) const {
 
     // Accelerate with an axis-aligned bounding box test
     Vector maxv = tr.a, minv = tr.a;
-    (tr.b).MakeMaxMin(&maxv, &minv);
-    (tr.c).MakeMaxMin(&maxv, &minv);
+    (tr.b).MakeMaxMin(maxv, minv);
+    (tr.c).MakeMaxMin(maxv, minv);
 
     Vector n = Vector::From(0, 0, -1);
 
@@ -302,8 +302,8 @@ bool SContour::IsEar(int bp, double scaledEps) const {
 
     // Accelerate with an axis-aligned bounding box test
     Vector maxv = tr.a, minv = tr.a;
-    (tr.b).MakeMaxMin(&maxv, &minv);
-    (tr.c).MakeMaxMin(&maxv, &minv);
+    (tr.b).MakeMaxMin(maxv, minv);
+    (tr.c).MakeMaxMin(maxv, minv);
 
     int i;
     for(i = 0; i < l.n; i++) {
@@ -612,7 +612,7 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
         // generate two triangles in the mesh, and cut it out of our polygon.
         // Quads around the perimeter would be rejected by AnyEdgeCrossings.
         std::vector<bool> bottom(lj.n, false); // did we use this quad?
-        Vector tu = {0,0,0}, tv = {0,0,0};
+        Vector tu = Vector(0, 0, 0), tv = Vector(0, 0, 0);
         int i, j;
         for(i = 1; i < (li.n-1); i++) {
             bool prev_flag = false;
@@ -621,10 +621,10 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
                 double us = li[i], uf = li[i+1],
                        vs = lj[j], vf = lj[j+1];
 
-                Vector a = Vector::From(us, vs, 0),
-                       b = Vector::From(us, vf, 0),
-                       c = Vector::From(uf, vf, 0),
-                       d = Vector::From(uf, vs, 0);
+                Vector a = Vector(us, vs, 0),
+                       b = Vector(us, vf, 0),
+                       c = Vector(uf, vf, 0),
+                       d = Vector(uf, vs, 0);
 
                 //  |   d-----c
                 //  |   |     |

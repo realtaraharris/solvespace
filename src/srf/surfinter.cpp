@@ -117,7 +117,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
     GetAxisAlignedBounding(&amax, &amin);
     b->GetAxisAlignedBounding(&bmax, &bmin);
 
-    if(Vector::BoundingBoxesDisjoint(amax, amin, bmax, bmin)) {
+    if (VectorBoundingBoxesDisjoint(amax, amin, bmax, bmin)) {
         // They cannot possibly intersect, no curves to generate
         return;
     }
@@ -137,7 +137,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
         Vector dl = na.Cross(nb);
         if(dl.Magnitude() < LENGTH_EPS) return; // parallel planes
         dl = dl.WithMagnitude(1);
-        Vector p = Vector::AtIntersectionOfPlanes(na, da, nb, db);
+        Vector p = VectorAtIntersectionOfPlanes(na, da, nb, db);
 
         // Trim it to the region 0 <= {u,v} <= 1 for each plane; not strictly
         // necessary, since line will be split and excess edges culled, but
@@ -243,7 +243,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
                        p1 = p0.Plus(along);
 
                 bezier.ctrl[i] =
-                    Vector::AtIntersectionOfPlaneAndLine(n, d, p0, p1, NULL);
+                    VectorAtIntersectionOfPlaneAndLine(n, d, p0, p1, NULL);
             }
 
             AddExactIntersectionCurve(&bezier, b, agnstA, agnstB, into);

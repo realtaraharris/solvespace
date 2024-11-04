@@ -26,9 +26,9 @@ public:
     double      height;
     double      pixelRatio;
     bool        gridFit;
-    Vector      offset;
-    Vector      projRight;
-    Vector      projUp;
+    Vector      offset = Vector(0, 0, 0);
+    Vector      projRight = Vector(0, 0, 0);
+    Vector      projUp = Vector(0, 0, 0);
     double      scale;
     double      tangent;
 
@@ -54,7 +54,7 @@ public:
     RgbaColor   backgroundColor;
     double      ambientIntensity;
     double      lightIntensity[2];
-    Vector      lightDirection[2];
+    Vector      lightDirection[2] = { Vector(0, 0, 0), Vector(0, 0, 0) };
 };
 
 class BatchCanvas;

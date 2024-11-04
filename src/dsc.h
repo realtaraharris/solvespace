@@ -75,7 +75,7 @@ public:
     Quaternion Mirror() const;
 };
 
-#include "vector.h"
+// #include "vector.h"
 
 struct VectorHash {
     size_t operator()(const Vector &v) const;
@@ -607,8 +607,8 @@ struct RgbaColorCompare {
 
 class BBox {
 public:
-    Vector minp;
-    Vector maxp;
+    Vector minp = Vector(0, 0, 0);
+    Vector maxp = Vector(0, 0, 0);
 
     static BBox From(const Vector &p0, const Vector &p1);
 

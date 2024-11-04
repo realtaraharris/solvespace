@@ -4,7 +4,7 @@ project(SolveSpace)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_definitions(-g -gdwarf-4 -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
+add_definitions(-g -gdwarf-4 -fpermissive -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
 add_subdirectory(extlib/libdxfrw)
 
@@ -75,7 +75,6 @@ add_executable(SolveSpace
 	src/polyline.cpp
 	src/request.cpp
 	src/resource.cpp
-	src/solvespace.cpp
 	src/style.cpp
 	src/system.cpp
 	src/textscreens.cpp
@@ -83,8 +82,8 @@ add_executable(SolveSpace
 	src/ttf.cpp
 	src/undoredo.cpp
 	src/util.cpp
-    src/vector.cpp
 	src/view.cpp
+	src/solvespace.cpp
 
 	src/render/render.cpp
 	src/render/render2d.cpp

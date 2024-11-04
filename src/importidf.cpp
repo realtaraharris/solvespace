@@ -278,11 +278,9 @@ static void MakeBeziersForArcs(SBezierList *sbl, Vector center, Vector pa, Vecto
                t2 =             u.ScaledBy(-r*s). Plus(v.ScaledBy(r*c));
 
         // The control point must lie on both tangents.
-        Vector p1 = Vector::AtIntersectionOfLines(p0, p0.Plus(t0),
-                                                  p2, p2.Plus(t2),
-                                                  NULL);
+		VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(p0, p0.Plus(t0), p2, p2.Plus(t2), false);
 
-        SBezier sb = SBezier::From(p0, p1, p2);
+        SBezier sb = SBezier::From(p0, eeep.intersectionPoint, p2);
         sb.weight[1] = cos(dtheta/2);
         sbl->l.Add(&sb);
     }

@@ -251,11 +251,10 @@ public:
                             da = da.ScaledBy(-1);
                         }
 
-                        bool skew = false;
                         Vector ref = c.disp.offset;
-                        Vector pi = Vector::AtIntersectionOfLines(a0, a0.Plus(da), b0, b0.Plus(db),
-                                                                  &skew);
-                        if(!skew) ref = pi.Plus(c.disp.offset);
+						VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(a0, a0.Plus(da), b0, b0.Plus(db), false);
+                        Vector pi = eeep.intersectionPoint;
+                        if(!eeep.skewed) ref = pi.Plus(c.disp.offset);
 
                         Vector norm = da.Cross(db);
                         Vector dna = norm.Cross(da).WithMagnitude(1.0);

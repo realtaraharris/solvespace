@@ -915,10 +915,7 @@ double VectorFont::GetWidth(double forCapHeight, const std::string &str) {
 }
 
 Vector VectorFont::GetExtents(double forCapHeight, const std::string &str) {
-    Vector ex = {};
-    ex.x = GetWidth(forCapHeight, str);
-    ex.y = GetHeight(forCapHeight);
-    return ex;
+    return Vector(GetWidth(forCapHeight, str), GetHeight(forCapHeight), 0);
 }
 
 void VectorFont::Trace(double forCapHeight, Vector o, Vector u, Vector v, const std::string &str,

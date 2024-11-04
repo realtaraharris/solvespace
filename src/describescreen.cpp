@@ -67,7 +67,7 @@ void TextWindow::DescribeSelection() {
     auto const &gs = SS.GW.gs;
     if(gs.n == 1 && (gs.points == 1 || gs.entities == 1)) {
         Entity *e = SK.GetEntity(gs.points == 1 ? gs.point[0] : gs.entity[0]);
-        Vector p;
+        Vector p = Vector(0, 0, 0);
 
 #define COSTR_NO_LINK(p) \
     SS.MmToString((p).x).c_str(), \

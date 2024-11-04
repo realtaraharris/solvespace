@@ -124,15 +124,15 @@ void Group::GenerateForStepAndRepeat(T *steps, T *outs, Group::CombineAs forWhat
         int ap = a*2 - (subtype == Subtype::ONE_SIDED ? 0 : (n-1));
 
         if(type == Type::TRANSLATE) {
-            Vector trans = Vector::From(h.param(0), h.param(1), h.param(2));
+            Vector trans = VectorFromH(h.param(0), h.param(1), h.param(2));
             trans = trans.ScaledBy(ap);
             transd[a].MakeFromTransformationOf(steps,
                 trans, Quaternion::IDENTITY, 1.0);
         } else {
-            Vector trans = Vector::From(h.param(0), h.param(1), h.param(2));
+            Vector trans = VectorFromH(h.param(0), h.param(1), h.param(2));
             double theta = ap * SK.GetParam(h.param(3))->val;
             double c = cos(theta), s = sin(theta);
-            Vector axis = Vector::From(h.param(4), h.param(5), h.param(6));
+            Vector axis = VectorFromH(h.param(4), h.param(5), h.param(6));
             Quaternion q = Quaternion::From(c, s*axis.x, s*axis.y, s*axis.z);
             // Rotation is centered at t; so A(x - t) + t = Ax + (t - At)
             transd[a].MakeFromTransformationOf(steps,
@@ -245,7 +245,7 @@ void Group::GenerateShellAndMesh() {
         }
     } else if(type == Type::EXTRUDE && haveSrc) {
         Group *src = SK.GetGroup(opA);
-        Vector translate = Vector::From(h.param(0), h.param(1), h.param(2));
+        Vector translate = VectorFromH(h.param(0), h.param(1), h.param(2));
 
         Vector tbot, ttop;
         if(subtype == Subtype::ONE_SIDED) {
@@ -372,10 +372,10 @@ void Group::GenerateShellAndMesh() {
     } else if(type == Type::LINKED) {
         // The imported shell or mesh are copied over, with the appropriate
         // transformation applied. We also must remap the face entities.
-        Vector offset = {
+        Vector offset = Vector(
             SK.GetParam(h.param(0))->val,
             SK.GetParam(h.param(1))->val,
-            SK.GetParam(h.param(2))->val };
+            SK.GetParam(h.param(2))->val);
         Quaternion q = {
             SK.GetParam(h.param(3))->val,
             SK.GetParam(h.param(4))->val,

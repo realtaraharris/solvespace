@@ -75,7 +75,7 @@ void EditorView::Load(std::string path) {
 
 void EditorView::New() {
     SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0); // width, height, pixelDeviceRatio
-    SS.GW.offset = {};
+    SS.GW.offset = Vector(0, 0, 0);
     SS.GW.scale = 5.0;
     SS.GW.projRight = Vector::From(1, 0, 0);
     SS.GW.projUp = Vector::From(0, 1, 0);

@@ -451,8 +451,8 @@ void EntityBase::PointForceTo(Vector p) {
 
         case Type::POINT_N_ROT_AA: {
             // Force only the angle; the axis and center of rotation stay
-            Vector offset = Vector::From(param[0], param[1], param[2]);
-            Vector normal = Vector::From(param[4], param[5], param[6]);
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
+            Vector normal = VectorFromH(param[4], param[5], param[6]);
             Vector u = normal.Normal(0), v = normal.Normal(1);
             Vector po = p.Minus(offset), numo = numPoint.Minus(offset);
             double thetap = atan2(v.Dot(po), u.Dot(po));
@@ -472,8 +472,8 @@ void EntityBase::PointForceTo(Vector p) {
         case Type::POINT_N_ROT_AXIS_TRANS: {
             if(timesApplied == 0) break;
             // is the point on the rotation axis?
-            Vector offset = Vector::From(param[0], param[1], param[2]);
-            Vector normal = Vector::From(param[4], param[5], param[6]).WithMagnitude(1.0);
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
+            Vector normal = VectorFromH(param[4], param[5], param[6]).WithMagnitude(1.0);
             Vector check = numPoint.Minus(offset).Cross(normal);
             if (check.Dot(check) < LENGTH_EPS) { // if so, do extrusion style drag
                 Vector trans = (p.Minus(numPoint));
@@ -508,7 +508,7 @@ Vector EntityBase::PointGetNum() const {
     Vector p;
     switch(type) {
         case Type::POINT_IN_3D:
-            p = Vector::From(param[0], param[1], param[2]);
+            p = VectorFromH(param[0], param[1], param[2]);
             break;
 
         case Type::POINT_IN_2D: {
@@ -522,13 +522,13 @@ Vector EntityBase::PointGetNum() const {
         }
 
         case Type::POINT_N_TRANS: {
-            Vector trans = Vector::From(param[0], param[1], param[2]);
+            Vector trans = VectorFromH(param[0], param[1], param[2]);
             p = numPoint.Plus(trans.ScaledBy(timesApplied));
             break;
         }
 
         case Type::POINT_N_ROT_TRANS: {
-            Vector offset = Vector::From(param[0], param[1], param[2]);
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
             Quaternion q = PointGetQuaternion();
             p = q.Rotate(numPoint);
             p = p.Plus(offset);
@@ -536,7 +536,7 @@ Vector EntityBase::PointGetNum() const {
         }
 
         case Type::POINT_N_ROT_AA: {
-            Vector offset = Vector::From(param[0], param[1], param[2]);
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
             Quaternion q = PointGetQuaternion();
             p = numPoint.Minus(offset);
             p = q.Rotate(p);
@@ -545,8 +545,8 @@ Vector EntityBase::PointGetNum() const {
         }
 
         case Type::POINT_N_ROT_AXIS_TRANS: {
-            Vector offset = Vector::From(param[0], param[1], param[2]);
-            Vector displace = Vector::From(param[4], param[5], param[6])
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
+            Vector displace = VectorFromH(param[4], param[5], param[6])
                .WithMagnitude(SK.GetParam(param[7])->val).ScaledBy(timesApplied);
             Quaternion q = PointGetQuaternion();
             p = numPoint.Minus(offset);
@@ -752,8 +752,8 @@ Vector EntityBase::FaceGetNormalNum() const {
     if(type == Type::FACE_NORMAL_PT) {
         r = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
     } else if(type == Type::FACE_XPROD) {
-        Vector vc = Vector::From(param[0], param[1], param[2]);
-        Vector vn = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
+        Vector vc = VectorFromH(param[0], param[1], param[2]);
+        Vector vn = Vector(numNormal.vx, numNormal.vy, numNormal.vz);
         r = vc.Cross(vn);
     } else if(type == Type::FACE_N_ROT_TRANS) {
         // The numerical normal vector gets the rotation
@@ -816,23 +816,23 @@ Vector EntityBase::FaceGetPointNum() const {
         r = numPoint;
     } else if(type == Type::FACE_N_ROT_TRANS) {
         // The numerical point gets the rotation and translation.
-        Vector trans = Vector::From(param[0], param[1], param[2]);
+        Vector trans = VectorFromH(param[0], param[1], param[2]);
         Quaternion q = Quaternion::From(param[3], param[4], param[5], param[6]);
         r = q.Rotate(numPoint);
         r = r.Plus(trans);
     } else if(type == Type::FACE_N_ROT_AXIS_TRANS) {
-            Vector offset = Vector::From(param[0], param[1], param[2]);
-            Vector displace = Vector::From(param[4], param[5], param[6])
+            Vector offset = VectorFromH(param[0], param[1], param[2]);
+            Vector displace = VectorFromH(param[4], param[5], param[6])
                .WithMagnitude(SK.GetParam(param[7])->val).ScaledBy(timesApplied);
             Quaternion q = PointGetQuaternion();
             r = numPoint.Minus(offset);
             r = q.Rotate(r);
             r = r.Plus(offset).Plus(displace);
     } else if(type == Type::FACE_N_TRANS) {
-        Vector trans = Vector::From(param[0], param[1], param[2]);
+        Vector trans = VectorFromH(param[0], param[1], param[2]);
         r = numPoint.Plus(trans.ScaledBy(timesApplied));
     } else if(type == Type::FACE_N_ROT_AA) {
-        Vector trans = Vector::From(param[0], param[1], param[2]);
+        Vector trans = VectorFromH(param[0], param[1], param[2]);
         Quaternion q = GetAxisAngleQuaternion(3);
         r = numPoint.Minus(trans);
         r = q.Rotate(r);

@@ -573,26 +573,26 @@ public:
     double width;
     double height;
     int devicePixelRatio;
-    Vector  offset;
-    Vector  projRight;
-    Vector  projUp;
+    Vector  offset = Vector(0, 0, 0);
+    Vector  projRight = Vector(0, 0, 0);
+    Vector  projUp = Vector(0, 0, 0);
     double  scale;
     struct {
         bool    mouseDown;
-        Vector  offset;
-        Vector  projRight;
-        Vector  projUp;
+        Vector  offset = Vector(0, 0, 0);
+        Vector  projRight = Vector(0, 0, 0);
+        Vector  projUp = Vector(0, 0, 0);
         Point2d mouse;
         Point2d mouseOnButtonDown;
-        Vector  marqueePoint;
+        Vector  marqueePoint = Vector(0, 0, 0);
         bool    startedMoving;
     }       orig;
     // We need to detect when the projection is changed to invalidate
     // caches for drawn items.
     struct {
-        Vector  offset;
-        Vector  projRight;
-        Vector  projUp;
+        Vector  offset = Vector(0, 0, 0);
+        Vector  projRight = Vector(0, 0, 0);
+        Vector  projUp = Vector(0, 0, 0);
         double  scale;
     }       cached;
 
@@ -700,8 +700,8 @@ public:
     class ParametricCurve {
     public:
         bool isLine; // else circle
-        Vector p0, p1;
-        Vector u, v;
+        Vector p0 = Vector(0, 0, 0), p1 = Vector(0, 0, 0);
+        Vector u = Vector(0, 0, 0), v = Vector(0, 0, 0);
         double r, theta0, theta1, dtheta;
 
         void MakeFromEntity(hEntity he, bool reverse);

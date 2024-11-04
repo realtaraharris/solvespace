@@ -521,7 +521,7 @@ Vector GraphicsWindow::ProjectPoint3(Vector p) {
 Vector GraphicsWindow::ProjectPoint4(Vector p, double *w) {
     p = p.Plus(offset);
 
-    Vector r;
+    Vector r = Vector(0, 0, 0);
     r.x = p.Dot(projRight);
     r.y = p.Dot(projUp);
     r.z = p.Dot(projUp.Cross(projRight));
@@ -587,7 +587,7 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
     EntityBase *wrkpl = SK.GetEntity(he),
                *norm  = wrkpl->Normal();
     Vector n = projUp.Cross(projRight);
-    Vector wu, wv, wn, wp;
+    Vector wu = Vector(0, 0, 0), wv = Vector(0, 0, 0), wn = Vector(0, 0, 0), wp = Vector(0, 0, 0);
     wp = SK.GetEntity(wrkpl->point[0])->PointGetNum();
     wu = norm->NormalU();
     wv = norm->NormalV();
@@ -611,7 +611,7 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
         // (not to the grid plane). If the plane is on edge then this is
         // impossible so don't try to draw the grid.
         bool parallel;
-        Vector tpp = Vector::AtIntersectionOfPlaneAndLine(
+        Vector tpp = VectorAtIntersectionOfPlaneAndLine(
                                         wn, wn.Dot(wp),
                                         tp, tp.Plus(n),
                                         &parallel);
@@ -813,7 +813,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 
         canvas->DrawLine(p.Minus(u), p.Plus(u), hcsDatum);
         canvas->DrawLine(p.Minus(v), p.Plus(v), hcsDatum);
-        Vector prev;
+        Vector prev = Vector(0, 0, 0);
         for(int i = 0; i <= subdiv; i++) {
             double a = (double)i / subdiv * 2.0 * PI;
             Vector point = p.Plus(u.ScaledBy(cos(a))).Plus(v.ScaledBy(sin(a)));
@@ -826,7 +826,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 
     // A note to indicate the origin in the just-exported file.
     if(SS.justExportedInfo.draw) {
-        Vector p, u, v;
+        Vector p = Vector(0, 0, 0), u = Vector(0, 0, 0), v = Vector(0, 0, 0);
         if(SS.justExportedInfo.showOrigin) {
             p = SS.justExportedInfo.pt,
             u = SS.justExportedInfo.u,

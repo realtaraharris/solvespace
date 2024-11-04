@@ -21,11 +21,11 @@ void SShell::MakeFromIntersectionOf(SShell *a, SShell *b) {
 }
 
 void SCurve::GetAxisAlignedBounding(Vector *ptMax, Vector *ptMin) const {
-    *ptMax = {VERY_NEGATIVE, VERY_NEGATIVE, VERY_NEGATIVE};
-    *ptMin = {VERY_POSITIVE, VERY_POSITIVE, VERY_POSITIVE};
+    *ptMax = Vector(VERY_NEGATIVE, VERY_NEGATIVE, VERY_NEGATIVE);
+    *ptMin = Vector(VERY_POSITIVE, VERY_POSITIVE, VERY_POSITIVE);
 
     for(int i = 0; i <= exact.deg; i++) {
-        exact.ctrl[i].MakeMaxMin(ptMax, ptMin);
+        exact.ctrl[i].MakeMaxMin(*ptMax, *ptMin);
     }
 }
 
@@ -45,12 +45,12 @@ static void FindVertsOnCurve(List<SInter> *l, const SCurve *curve, SShell *sh) {
         Vector cmax, cmin;
         sc.GetAxisAlignedBounding(&cmax, &cmin);
 
-        if(Vector::BoundingBoxesDisjoint(amax, amin, cmax, cmin)) {
+        if (VectorBoundingBoxesDisjoint(amax, amin, cmax, cmin)) {
             // They cannot possibly intersect, no curves to generate
             continue;
         }
         
-        for(int i=0; i<2; i++) {
+        for (int i=0; i<2; i++) {
             Vector pt = sc.exact.ctrl[ i==0 ? 0 : sc.exact.deg ];
             double t;
             curve->exact.ClosestPointTo(pt, &t, /*must converge=*/ false);

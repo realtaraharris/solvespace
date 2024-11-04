@@ -39,7 +39,7 @@ class SEdge {
 public:
     int    tag;
     int    auxA, auxB;
-    Vector a, b;
+    Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0);
 
     static SEdge From(Vector a, Vector b);
     bool EdgeCrosses(Vector a, Vector b, Vector *pi=NULL, SPointList *spl=NULL) const;
@@ -97,8 +97,8 @@ public:
 
     EarType ear;
 
-    Vector  p;
-    Vector  auxv;
+    Vector  p = Vector(0, 0, 0);
+    Vector  auxv = Vector(0, 0, 0);
 };
 
 class SPointList {
@@ -116,7 +116,7 @@ class SContour {
 public:
     int             tag;
     int             timesEnclosed;
-    Vector          xminPt;
+    Vector          xminPt = Vector(0, 0, 0);
     List<SPoint>    l;
 
     void AddPoint(Vector p);
@@ -146,7 +146,7 @@ typedef struct {
 class SPolygon {
 public:
     List<SContour>  l;
-    Vector          normal;
+    Vector          normal = Vector(0, 0, 0);
 
     Vector ComputeNormal() const;
     void AddEmptyContour();
@@ -171,8 +171,8 @@ public:
     int         tag;
     STriMeta    meta;
 
-    Vector a, b, c;
-    Vector an, bn, cn;
+    Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), c = Vector(0, 0, 0);
+    Vector an = Vector(0, 0, 0), bn = Vector(0, 0, 0), cn = Vector(0, 0, 0);
 
     static STriangle From(STriMeta meta, Vector a, Vector b, Vector c);
     Vector Normal() const;
@@ -192,9 +192,9 @@ public:
 
 class SBsp2 {
 public:
-    Vector      np;     // normal to the plane
+    Vector      np = Vector(0, 0, 0);     // normal to the plane
 
-    Vector      no;     // outer normal to the edge
+    Vector      no = Vector(0, 0, 0);     // outer normal to the edge
     double      d;
     SEdge       edge;
 
@@ -214,7 +214,7 @@ public:
 
 class SBsp3 {
 public:
-    Vector      n;
+    Vector      n = Vector(0, 0, 0);
     double      d;
 
     STriangle   tri;
@@ -302,7 +302,7 @@ public:
 class SOutline {
 public:
     int    tag;
-    Vector a, b, nl, nr;
+    Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), nl = Vector(0, 0, 0), nr = Vector(0, 0, 0);
 
     bool IsVisible(Vector projDir) const;
 };
@@ -363,7 +363,7 @@ public:
     struct Edge;
 
     struct Vertex {
-        Vector              pos;
+        Vector              pos = Vector(0, 0, 0);
         std::vector<Edge *> edges;
 
         bool GetNext(uint32_t kind, Vertex **next, Edge **nextEdge);

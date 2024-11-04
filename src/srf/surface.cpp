@@ -195,7 +195,7 @@ void SSurface::GetAxisAlignedBounding(Vector *ptMax, Vector *ptMin) const {
     int i, j;
     for(i = 0; i <= degm; i++) {
         for(j = 0; j <= degn; j++) {
-            (ctrl[i][j]).MakeMaxMin(ptMax, ptMin);
+            (ctrl[i][j]).MakeMaxMin(*ptMax, *ptMin);
         }
     }
 }
@@ -203,7 +203,7 @@ void SSurface::GetAxisAlignedBounding(Vector *ptMax, Vector *ptMin) const {
 bool SSurface::LineEntirelyOutsideBbox(Vector a, Vector b, bool asSegment) const {
     Vector amax, amin;
     GetAxisAlignedBounding(&amax, &amin);
-    if(!Vector::BoundingBoxIntersectsLine(amax, amin, a, b, asSegment)) {
+    if (!VectorBoundingBoxIntersectsLine(amax, amin, a, b, asSegment)) {
         // The line segment could fail to intersect the bbox, but lie entirely
         // within it and intersect the surface.
         if(a.OutsideAndNotOn(amax, amin) && b.OutsideAndNotOn(amax, amin)) {

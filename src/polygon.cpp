@@ -5,7 +5,10 @@
 //-----------------------------------------------------------------------------
 
 #include "solvespace.h"
+//#include "vectorex.h"
+#include <iostream>
 
+/*
 Vector vxt (VectorEx v) {
 std::cout << v.x << std::endl;
   return Vector(v.x, v.y, v.z);
@@ -20,6 +23,12 @@ Vector STriangle::Normal() const {
   VectorEx result = ab.Cross(bc);
   std::cout << result.ToString() << std::endl;
   return vxt(result);
+}
+*/
+
+Vector STriangle::Normal() const {
+  Vector ab = b.Minus(a), bc = c.Minus(b);
+  return ab.Cross(bc);
 }
 
 double STriangle::MinAltitude() const {
@@ -220,10 +229,12 @@ bool SEdge::EdgeCrosses(Vector ea, Vector eb, Vector *ppi, SPointList *spl) cons
     }
 
     // Lines are not parallel, so look for an intersection.
-    pi = Vector::AtIntersectionOfLines(ea, eb, a, b,
-                                       &skew,
-                                       &t, &tthis);
-    if(skew) return false;
+	VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(ea, eb, a, b, skew);
+	t = eeep.parama;
+	tthis = eeep.paramb;
+    pi = eeep.intersectionPoint;
+
+	if (eeep.skewed) { return false; }
 
     inOrEdge0 = (t     > -t_eps)     && (t     < (1 + t_eps));
     inOrEdge1 = (tthis > -tthis_eps) && (tthis < (1 + tthis_eps));
@@ -904,10 +915,10 @@ void SContour::OffsetInto(SContour *dest, double r) const {
             thetan += 2*PI;
         }
 
-        if(fabs(thetan - thetap) < (1*PI)/180) {
-            Vector p = { b.x - r*sin(thetap), b.y + r*cos(thetap), 0 };
+        if (fabs(thetan - thetap) < (1*PI) / 180) {
+            Vector p = Vector(b.x - r*sin(thetap), b.y + r*cos(thetap), 0);
             dest->AddPoint(p);
-        } else if(thetan < thetap) {
+        } else if (thetan < thetap) {
             // This is an inside corner. We have two edges, Ep and En. Move
             // out from their intersection by radius, normal to En, and
             // then draw a line parallel to En. Move out from their
@@ -936,18 +947,18 @@ void SContour::OffsetInto(SContour *dest, double r) const {
             dest->AddPoint(Vector::From(x, y, 0));
         } else {
             if(fabs(thetap - thetan) < (6*PI)/180) {
-                Vector pp = { b.x - r*sin(thetap),
-                              b.y + r*cos(thetap), 0 };
+                Vector pp = Vector(b.x - r*sin(thetap),
+                                   b.y + r*cos(thetap), 0);
                 dest->AddPoint(pp);
 
-                Vector pn = { b.x - r*sin(thetan),
-                              b.y + r*cos(thetan), 0 };
+                Vector pn = Vector(b.x - r*sin(thetan),
+                                   b.y + r*cos(thetan), 0);
                 dest->AddPoint(pn);
             } else {
                 double theta;
                 for(theta = thetap; theta <= thetan; theta += (6*PI)/180) {
-                    Vector p = { b.x - r*sin(theta),
-                                 b.y + r*cos(theta), 0 };
+                    Vector p = Vector(b.x - r*sin(theta),
+                                      b.y + r*cos(theta), 0);
                     dest->AddPoint(p);
                 }
             }

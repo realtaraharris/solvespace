@@ -1,6 +1,6 @@
-//SolveSpace: namespace = {
-VectorEx: @value @print type = {
-  public x: double = (); // TODO: try taking these private once this replaces the cpp1 VectorEx class
+SolveSpace: namespace = {
+Vector: @value @print type = {
+  public x: double = ();
   public y: double = ();
   public z: double = ();
   operator=: (out this, px: double, py: double, pz: double) = {
@@ -8,11 +8,11 @@ VectorEx: @value @print type = {
 	y = py;
 	z = pz;
   }
-  From: (px: double, py: double, pz: double) -> VectorEx = {
-    return VectorExFromD(px, py, pz);
+  From: (px: double, py: double, pz: double) -> Vector = {
+    return VectorFromD(px, py, pz);
   }
-  Plus: (this, b: VectorEx) -> VectorEx = {
-    return VectorEx(this.x + b.x, this.y + b.y, this.z + b.z);
+  Plus: (this, b: Vector) -> Vector = {
+    return Vector(this.x + b.x, this.y + b.y, this.z + b.z);
   }
   ToString: (this) -> std::string = {
 	return "eeep3 x: (this.x)$ y: (this.y)$ z: (this.z)$";
@@ -27,56 +27,56 @@ VectorEx: @value @print type = {
     }
 	ssassert(false, "Unexpected vector element index");
   }
-  Equals: (this, v: VectorEx, tol: double = SolveSpace::LENGTH_EPS) -> bool = {
+  Equals: (this, v: Vector, tol: double = LENGTH_EPS) -> bool = {
     // quick axis-aligned tests before going further
-	dv: VectorEx = this.Minus(v);
+	dv: Vector = this.Minus(v);
     if (fabs(dv.x) > tol) { return false; }
     if (fabs(dv.y) > tol) { return false; }
     if (fabs(dv.z) > tol) { return false; }
 
     return dv.MagSquared() < tol * tol;
   }
-  EqualsExactly: (this, v: VectorEx) -> bool = {
+  EqualsExactly: (this, v: Vector) -> bool = {
     return EXACT(this.x == v.x && this.y == v.y && this.z == v.z);
   }
-  Minus: (this, v: VectorEx) -> VectorEx = {
-    return VectorEx(this.x - v.x, this.y - v.y, this.z - v.z);
+  Minus: (this, v: Vector) -> Vector = {
+    return Vector(this.x - v.x, this.y - v.y, this.z - v.z);
   }
-  Negated: (this) -> VectorEx = {
-    return VectorEx(-this.x, -this.y, -this.z);
+  Negated: (this) -> Vector = {
+    return Vector(-this.x, -this.y, -this.z);
   }
-  Cross: (this, b: VectorEx) -> VectorEx = {
-     return VectorEx(
+  Cross: (this, b: Vector) -> Vector = {
+     return Vector(
       -(this.z * b.y) + (this.y * b.z),
        (this.z * b.x) - (this.x * b.z),
       -(this.y * b.x) + (this.x * b.y)
 	 );
   }
-  DirectionCosineWith: (this, b: VectorEx) -> double = {
-    a: VectorEx = this.WithMagnitude(1);
-    tmp: VectorEx = b.WithMagnitude(1);
+  DirectionCosineWith: (this, b: Vector) -> double = {
+    a: Vector = this.WithMagnitude(1);
+    tmp: Vector = b.WithMagnitude(1);
     return a.Dot(tmp);
   }
-  Dot: (this, b: VectorEx) -> double = {
+  Dot: (this, b: Vector) -> double = {
       return (this.x * b.x + this.y * b.y + this.z * b.z);
   }
-  Normal: (this, which: int) -> VectorEx = {
-    n: VectorEx;
+  Normal: (this, which: int) -> Vector = {
+    n: Vector;
 
     // arbitrarily choose one vector that's normal to us, pivoting appropriately
     xa: double = fabs(this.x);
 	ya: double = fabs(this.y);
 	za: double = fabs(this.z);
 
-    if (this.Equals(VectorExFromD(0, 0, 1))) {
+    if (this.Equals(VectorFromD(0, 0, 1))) {
 	  // make DXFs exported in the XY plane work nicely...
-	  n = VectorExFromD(1, 0, 0);
+	  n = VectorFromD(1, 0, 0);
     } else if (xa < ya && xa < za) {
-	  n = VectorExFromD(0, z, -y);
+	  n = VectorFromD(0, z, -y);
     } else if (ya < za) {
-	  n = VectorExFromD(-z, 0, x);
+	  n = VectorFromD(-z, 0, x);
     } else {
-	  n = VectorExFromD(y, -z, 0);
+	  n = VectorFromD(y, -z, 0);
     }
 
     if (which == 0) { // that's the vector we return.
@@ -90,18 +90,18 @@ VectorEx: @value @print type = {
 
     return n;
   }
-  RotatedAbout: (this, orig: VectorEx, axis: VectorEx, theta: double) -> VectorEx = {
-    r: VectorEx = this.Minus(orig);
+  RotatedAbout: (this, orig: Vector, axis: Vector, theta: double) -> Vector = {
+    r: Vector = this.Minus(orig);
     r = r.RotatedAbout(axis, theta);
     return r.Plus(orig);
   }
-  RotatedAbout: (this, axis: VectorEx, theta: double) -> VectorEx = {
+  RotatedAbout: (this, axis: Vector, theta: double) -> Vector = {
     c: double = cos(theta);
     s: double = sin(theta);
 
-    axisn: VectorEx = axis.WithMagnitude(1);
+    axisn: Vector = axis.WithMagnitude(1);
 
-    return VectorExFromD(
+    return VectorFromD(
 	  (this.x)*(c + (1 - c)*(axisn.x)*(axisn.x)) +
 	  (this.y)*((1 - c)*(axisn.x)*(axisn.y) - s*(axisn.z)) +
 	  (this.z)*((1 - c)*(axisn.x)*(axisn.z) + s*(axisn.y)),
@@ -115,30 +115,30 @@ VectorEx: @value @print type = {
 	  (this.z)*(c + (1 - c)*(axisn.z)*(axisn.z))
 	);
   }
-  DotInToCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
-    return VectorExFromD(
+  DotInToCsys: (this, u: Vector, v: Vector, n: Vector) -> Vector = {
+    return VectorFromD(
 	  this.Dot(u),
 	  this.Dot(v),
 	  this.Dot(n)
     );
   }
-  ScaleOutOfCsys: (this, u: VectorEx, v: VectorEx, n: VectorEx) -> VectorEx = {
-    r: VectorEx = u.ScaledBy(this.x).Plus(
+  ScaleOutOfCsys: (this, u: Vector, v: Vector, n: Vector) -> Vector = {
+    r: Vector = u.ScaledBy(this.x).Plus(
 	  v.ScaledBy(this.y).Plus(
 	  n.ScaledBy(this.z)));
     return r;
   }
-  DistanceToLine: (this, p0: VectorEx, dp: VectorEx) -> double = {
+  DistanceToLine: (this, p0: Vector, dp: Vector) -> double = {
     m: double = dp.Magnitude();
     return ((this.Minus(p0)).Cross(dp)).Magnitude() / m;
   }
-  DistanceToPlane: (this, normal: VectorEx, origin: VectorEx) -> double = {
+  DistanceToPlane: (this, normal: Vector, origin: Vector) -> double = {
     return this.Dot(normal) - origin.Dot(normal);
   }
-  OnLineSegment: (this, a: VectorEx, b: VectorEx, tol: double = SolveSpace::LENGTH_EPS) -> bool = {
+  OnLineSegment: (this, a: Vector, b: Vector, tol: double = LENGTH_EPS) -> bool = {
     if (this.Equals(a, tol) || this.Equals(b, tol)) { return true; }
 
-    d: VectorEx = b.Minus(a);
+    d: Vector = b.Minus(a);
     m: double = d.MagSquared();
     distsq: double = ((this.Minus(a)).Cross(d)).MagSquared() / m;
 
@@ -150,13 +150,13 @@ VectorEx: @value @print type = {
 
     return true;
   }
-  ClosestPointOnLine: (this, p0: VectorEx, dp: VectorEx) -> VectorEx = {
-    dpp: VectorEx = dp.WithMagnitude(1);
+  ClosestPointOnLine: (this, p0: Vector, dp: Vector) -> Vector = {
+    dpp: Vector = dp.WithMagnitude(1);
     // this, p0, and (p0 + dpp) define a plane; the min distance is in
     // that plane, so calculate its normal
-    pn: VectorEx = (this.Minus(p0)).Cross(dpp);
+    pn: Vector = (this.Minus(p0)).Cross(dpp);
     // the minimum distance line is in that plane, perpendicular to the line
-    n: VectorEx = pn.Cross(dpp);
+    n: Vector = pn.Cross(dpp);
 
     // calculate the actual distance
     d: double = (dpp.Cross(p0.Minus(this))).Magnitude();
@@ -168,25 +168,43 @@ VectorEx: @value @print type = {
   MagSquared: (this) -> double = {
     return (this.x) * (this.x) + (this.y) * (this.y) + (this.z) * (this.z);
   }
-  WithMagnitude: (this, v: double) -> VectorEx = {
+  WithMagnitude: (this, v: double) -> Vector = {
     m: double = this.Magnitude();
     if (EXACT(m == 0)) { // we can do a zero vector with zero magnitude, but not any other cases
 	  if (fabs(v) > 1e-100) {
-        // dbp("VectorEx::WithMagnitude(%g) of zero vector!", v);
+        // dbp("Vector::WithMagnitude(%g) of zero vector!", v);
       }
 	  return this.From(0, 0, 0);
     } else {
 	  return this.ScaledBy(v / m);
     }
   }
-  ScaledBy: (this, v: double) -> VectorEx = {
-    return VectorEx(this.x * v, this.y * v, this.z * v);
+  ScaledBy: (this, v: double) -> Vector = {
+    return Vector(this.x * v, this.y * v, this.z * v);
   }
-  DivProjected: (this, delta: VectorEx) -> double = {
+  ProjectVectorInto: (this, workplane: hEntity) -> Vector = {
+    w: EntityBase = SK.GetEntity(workplane);
+    u: Vector = w.Normal()*.NormalU();
+    v: Vector = w.Normal()*.NormalV();
+
+    up: double = this.Dot(u);
+    vp: double = this.Dot(v);
+
+    return (u.ScaledBy(up)).Plus(v.ScaledBy(vp));
+  }
+  ProjectInto: (this, workplane: hEntity) -> Vector = {
+    w: EntityBase = SK.GetEntity(workplane);
+    p0: Vector = w.WorkplaneGetOffset();
+
+    f: Vector = this.Minus(p0);
+
+    return p0.Plus(f.ProjectVectorInto(workplane));
+  }
+  DivProjected: (this, delta: Vector) -> double = {
     return (this.x * delta.x + this.y * delta.y + this.z * delta.z)
          / (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
   }
-  ClosestOrtho: (this) -> VectorEx = {
+  ClosestOrtho: (this) -> Vector = {
     mx: double = fabs(this.x);
 	my: double = fabs(this.y);
 	mz: double = fabs(this.z);
@@ -216,41 +234,41 @@ VectorEx: @value @print type = {
 	}
 
     if (mx > my && mx > mz) {
-      return VectorExFromD(xTernTmp, 0, 0);
+      return VectorFromD(xTernTmp, 0, 0);
     } else if (my > mz) {
-      return VectorExFromD(0, yTernTmp, 0);
+      return VectorFromD(0, yTernTmp, 0);
     } else {
-      return VectorExFromD(0, 0, zTernTmp);
+      return VectorFromD(0, 0, zTernTmp);
     }
   }
   /*
   // the following code is correct cpp2, but there's a bug in cppfront that prevents its use
-  MakeMaxMin: (this, maxv_in: VectorEx, minv_in: VectorEx) -> (maxv: VectorEx, minv: VectorEx) = {
-    maxv = VectorExFromD(
+  MakeMaxMin: (this, maxv_in: Vector, minv_in: Vector) -> (maxv: Vector, minv: Vector) = {
+    maxv = VectorFromD(
       std::max(maxv_in.x, this.x),
 	  std::max(maxv_in.y, this.y),
 	  std::max(maxv_in.z, this.z)
     );
-    minv = VectorExFromD(
+    minv = VectorFromD(
 	  std::min(minv_in.x, this.x),
       std::min(minv_in.y, this.y),
       std::min(minv_in.z, this.z)
     );
   }
   */
-  MakeMaxMin: (this, inout maxv: VectorEx, inout minv: VectorEx) -> void = {
-    maxv = VectorExFromD(
+  MakeMaxMin: (this, inout maxv: Vector, inout minv: Vector) -> void = {
+    maxv = VectorFromD(
       std::max(maxv.x, this.x),
 	  std::max(maxv.y, this.y),
 	  std::max(maxv.z, this.z)
     );
-    minv = VectorExFromD(
+    minv = VectorFromD(
 	  std::min(minv.x, this.x),
       std::min(minv.y, this.y),
       std::min(minv.z, this.z)
     );
   }
-  ClampWithin: (this, minv: double, maxv: double) -> VectorEx = {
+  ClampWithin: (this, minv: double, maxv: double) -> Vector = {
     tmpx: double = 0;
     tmpy: double = 0;
     tmpz: double = 0;
@@ -263,15 +281,15 @@ VectorEx: @value @print type = {
     if (this.y > maxv) { tmpy = maxv; }
     if (this.z > maxv) { tmpz = maxv; }
 
-    return VectorExFromD(tmpx, tmpy, tmpz);
+    return VectorFromD(tmpx, tmpy, tmpz);
   }
-  OutsideAndNotOn: (this, maxv: VectorEx, minv: VectorEx) -> bool = {
+  OutsideAndNotOn: (this, maxv: Vector, minv: Vector) -> bool = {
     return (this.x > maxv.x + LENGTH_EPS) || (this.x < minv.x - LENGTH_EPS) ||
            (this.y > maxv.y + LENGTH_EPS) || (this.y < minv.y - LENGTH_EPS) ||
            (this.z > maxv.z + LENGTH_EPS) || (this.z < minv.z - LENGTH_EPS);
   }
-  InPerspective: (this, u: VectorEx, v: VectorEx, n: VectorEx, origin: VectorEx, cameraTan: double ) -> VectorEx = {
-    r: VectorEx = this.Minus(origin).DotInToCsys(u, v, n);
+  InPerspective: (this, u: Vector, v: Vector, n: Vector, origin: Vector, cameraTan: double ) -> Vector = {
+    r: Vector = this.Minus(origin).DotInToCsys(u, v, n);
     // yes, minus; we are assuming a csys where u cross v equals n, backwards
     // from the display stuff
     w: double = (1 - r.z * cameraTan);
@@ -279,24 +297,26 @@ VectorEx: @value @print type = {
 
     return r;
   }
-  Project2d: (this, u: VectorEx, v: VectorEx) -> SolveSpace::Point2d = {
+  Project2d: (this, u: Vector, v: Vector) -> SolveSpace::Point2d = {
     return SolveSpace::Point2d(this.Dot(u), this.Dot(v));
   }
   ProjectXy: (this) -> SolveSpace::Point2d = {
     return SolveSpace::Point2d(this.x, this.y);
   }
+  Project4d: (this) -> Vector4 = {
+    return Vector4::From(1, x, y, z);
+  }
 }
 
-VectorExFromD: (px: double, py: double, pz: double) -> VectorEx = {
-  return VectorEx(px, py, pz);
+VectorFromD: (px: double, py: double, pz: double) -> Vector = {
+  return Vector(px, py, pz);
 }
 
-VectorExFromH: (px: SolveSpace::hParam, py: SolveSpace::hParam, pz: SolveSpace::hParam) -> VectorEx = {
-  assert(0 == 1); // TODO: lookups from SK.*
-  return VectorEx(0, 0, 0);
+VectorFromH: (px: hParam, py: hParam, pz: hParam) -> Vector = {
+  return Vector(SK.GetParam(px)*.val, SK.GetParam(py)*.val, SK.GetParam(pz)*.val);
 }
 
-VectorExAtIntersectionOfPlanes: (n1: VectorEx, d1: double, n2: VectorEx, d2: double) -> VectorEx = {
+VectorAtIntersectionOfPlanes: (n1: Vector, d1: double, n2: Vector, d2: double) -> Vector = {
   det: double = (n1.Dot(n1))*(n2.Dot(n2)) - (n1.Dot(n2))*(n1.Dot(n2));
   c1: double = (d1*n2.Dot(n2) - d2*n1.Dot(n2)) / det;
   c2: double = (d2*n1.Dot(n1) - d1*n1.Dot(n2)) / det;
@@ -304,12 +324,12 @@ VectorExAtIntersectionOfPlanes: (n1: VectorEx, d1: double, n2: VectorEx, d2: dou
   return (n1.ScaledBy(c1)).Plus(n2.ScaledBy(c2));
 }
 
-VectorExClosestPointBetweenLines: (a0: VectorEx, da: VectorEx, b0: VectorEx, db: VectorEx) -> (ta: double, tb: double) = {
+VectorClosestPointBetweenLines: (a0: Vector, da: Vector, b0: Vector, db: Vector) -> (ta: double, tb: double) = {
   // make a semi-orthogonal coordinate system from those directions;
   // note that dna and dnb need not be perpendicular
-  dn: VectorEx = da.Cross(db); // normal to both
-  dna: VectorEx = dn.Cross(da); // normal to da
-  dnb: VectorEx = dn.Cross(db); // normal to db
+  dn: Vector = da.Cross(db); // normal to both
+  dna: Vector = dn.Cross(da); // normal to da
+  dnb: Vector = dn.Cross(db); // normal to db
   
   // at the intersection of the lines, a0 + pa*da = b0 + pb*db (where pa, pb are scalar params)
   // so dot this equation against dna and dnb to get two equations to solve for da and db
@@ -317,11 +337,11 @@ VectorExClosestPointBetweenLines: (a0: VectorEx, da: VectorEx, b0: VectorEx, db:
   tb =  ((a0.Minus(b0)).Dot(dna))/(db.Dot(dna));
 }
 
-VectorExAtIntersectionOfLines: (a0: VectorEx, a1: VectorEx, b0: VectorEx, b1: VectorEx, skew: bool) -> (parama: double, paramb: double, intersectionPoint: VectorEx, skewed: bool) = {
-  da: VectorEx = a1.Minus(a0);
-  db: VectorEx = b1.Minus(b0);
+VectorAtIntersectionOfLines: (a0: Vector, a1: Vector, b0: Vector, b1: Vector, skew: bool) -> (parama: double, paramb: double, intersectionPoint: Vector, skewed: bool) = {
+  da: Vector = a1.Minus(a0);
+  db: Vector = b1.Minus(b0);
 
-  eeep := VectorExClosestPointBetweenLines(a0, da, b0, db);
+  eeep := VectorClosestPointBetweenLines(a0, da, b0, db);
   parama = eeep.ta;
   paramb = eeep.tb;
 
@@ -334,12 +354,12 @@ VectorExAtIntersectionOfLines: (a0: VectorEx, a1: VectorEx, b0: VectorEx, b1: Ve
   }
 }
 
-VectorExAtIntersectionOfPlaneAndLine: (n: VectorEx, d: double, p0: VectorEx, p1: VectorEx, parallel: *bool) -> VectorEx = {
-  dp: VectorEx = p1.Minus(p0);
+VectorAtIntersectionOfPlaneAndLine: (n: Vector, d: double, p0: Vector, p1: Vector, parallel: *bool) -> Vector = {
+  dp: Vector = p1.Minus(p0);
   
   if (fabs(n.Dot(dp)) < LENGTH_EPS) {
     if (parallel) { parallel* = true; }
-	return VectorEx::From(0, 0, 0);
+	return Vector::From(0, 0, 0);
   }
   if (parallel) { parallel* = false; }
   
@@ -350,7 +370,7 @@ VectorExAtIntersectionOfPlaneAndLine: (n: VectorEx, d: double, p0: VectorEx, p1:
   return p0.Plus(dp.ScaledBy(t));
 }
 
-VectorExBoundingBoxesDisjoint: (amax: VectorEx, amin: VectorEx, bmax: VectorEx, bmin: VectorEx) -> bool = {
+VectorBoundingBoxesDisjoint: (amax: Vector, amin: Vector, bmax: Vector, bmin: Vector) -> bool = {
   (copy i := 0) while i < 3 next i++ { // for (i = 0; i < 3; i++) {
 	if (amax.Element(i) < bmin.Element(i) - LENGTH_EPS) { return true; }
 	if (amin.Element(i) > bmax.Element(i) + LENGTH_EPS) { return true; }
@@ -358,8 +378,8 @@ VectorExBoundingBoxesDisjoint: (amax: VectorEx, amin: VectorEx, bmax: VectorEx, 
   return false;
 }
 
-VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx, p1: VectorEx, asSegment: bool) -> bool = {
-  dp: VectorEx = p1.Minus(p0);
+VectorBoundingBoxIntersectsLine: (amax: Vector, amin: Vector, p0: Vector, p1: Vector, asSegment: bool) -> bool = {
+  dp: Vector = p1.Minus(p0);
   lp: double = dp.Magnitude();
   dp = dp.ScaledBy(1.0 / lp);
 
@@ -374,9 +394,9 @@ VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx
       // n dot (p0 + t*dp) = d
       // (n dot p0) + t * (n dot dp) = d
       t: double = (d - p0.Element(i)) / dp.Element(i);
-      p: VectorEx = p0.Plus(dp.ScaledBy(t));
+      p: Vector = p0.Plus(dp.ScaledBy(t));
 
-      if (asSegment && (t < -LENGTH_EPS || t > (lp+LENGTH_EPS))) { continue; }
+      if (asSegment && (t < -LENGTH_EPS || t > (lp + LENGTH_EPS))) { continue; }
 
       if (p.Element(j) > amax.Element(j) + LENGTH_EPS) { continue; }
       if (p.Element(k) > amax.Element(k) + LENGTH_EPS) { continue; }
@@ -388,4 +408,40 @@ VectorExBoundingBoxIntersectsLine: (amax: VectorEx, amin: VectorEx, p0: VectorEx
   }
   return false;
 }
-//}
+
+det2: (a1: double, b1: double, a2: double, b2: double) -> double = {
+  return (a1 * b2) - (b1 * a2);
+}
+
+det3: (a1: double, b1: double, c1: double,
+       a2: double, b2: double, c2: double,
+       a3: double, b3: double, c3: double) -> double = {
+  return a1 * det2(b2, c2, b3, c3) -
+         b1 * det2(a2, c2, a3, c3) +
+         c1 * det2(a2, b2, a3, b3);
+}
+
+VectorAtIntersectionOfPlanes: (na: Vector, da: double, nb: Vector, db: double, nc: Vector, dc: double, parallel: *bool) -> Vector = {
+  det: double = det3(na.x, na.y, na.z,
+                     nb.x, nb.y, nb.z,
+                     nc.x, nc.y, nc.z);
+  if (fabs(det) < 1e-10) { // arbitrary tolerance, not so good
+    parallel* = true;
+	return Vector(0, 0, 0);
+  }
+
+  parallel* = false;
+
+  detx: double = det3(da,   na.y, na.z,
+                      db,   nb.y, nb.z,
+                      dc,   nc.y, nc.z);
+  dety: double = det3(na.x, da,   na.z,
+                      nb.x, db,   nb.z,
+                      nc.x, dc,   nc.z);
+  detz: double = det3(na.x, na.y, da,
+                      nb.x, nb.y, db,
+                      nc.x, nc.y, dc  );
+
+  return Vector(detx / det, dety / det, detz / det);
+}
+}
