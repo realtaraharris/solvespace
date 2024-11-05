@@ -4,6 +4,9 @@ project(SolveSpace)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
+#set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
+
 add_definitions(-g -gdwarf-4 -fpermissive -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
 add_subdirectory(extlib/libdxfrw)
@@ -12,17 +15,25 @@ find_package(ZLIB REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Freetype REQUIRED)
 
-include_directories("/boot/system/develop/headers/agg2/")
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories("/system/develop/headers/gnu/")
-include_directories("src/")
-include_directories("/boot/home/cppfront/include/")
+include_directories(
+	"/boot/system/develop/headers/agg2/"
+	${CMAKE_SOURCE_DIR}
+	"/system/develop/headers/gnu/"
+	"src/"
+	"/boot/home/cppfront/include/"
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+)
 
-link_directories("~/config/non-packaged/lib/")
-link_directories("build/bin/")
+link_directories(
+	"~/config/non-packaged/lib/"
+	"build/bin/"
+)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/config.h
+)
 
 add_executable(SolveSpace
 	src/platform/haiku/ui/App.cpp
@@ -99,9 +110,6 @@ add_executable(SolveSpace
 	src/srf/surfinter.cpp
 	src/srf/triangulate.cpp
 )
-
-# can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
-#set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
 
 target_include_directories(SolveSpace
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
