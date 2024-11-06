@@ -5,56 +5,29 @@ project(SolveSpace)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
-#set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
+# set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
 
 add_definitions(-g -gdwarf-4 -fpermissive -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
+#if (ENABLE_TESTS)
+#    add_subdirectory(res)
+#    add_subdirectory(test)
+#endif()
 add_subdirectory(extlib/libdxfrw)
 
 find_package(ZLIB REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Freetype REQUIRED)
 
-include_directories(
-	"/boot/system/develop/headers/agg2/"
-	${CMAKE_SOURCE_DIR}
-	"/system/develop/headers/gnu/"
-	"src/"
-	"/boot/home/cppfront/include/"
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-)
-
-link_directories(
-	"~/config/non-packaged/lib/"
-	"build/bin/"
-)
-
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
 	${CMAKE_CURRENT_BINARY_DIR}/config.h
 )
 
-add_executable(SolveSpace
-	src/platform/haiku/ui/App.cpp
-	src/platform/haiku/ui/MainWindow.cpp
-
-	src/platform/haiku/ui/Toolbar.cpp
-	src/platform/haiku/ui/PropertyBrowser.cpp
-	src/platform/haiku/ui/ListView/DragSortableListView.cpp
-	src/platform/haiku/ui/ListView/ThumbListItem.cpp
-	src/platform/haiku/ui/GroupsListView.cpp
-
-	src/platform/haiku/ui/HVIFUtil.cpp
-
-	src/platform/haiku/ui/EditorView.cpp
-    src/platform/haiku/ui/ViewParameters.cpp
-    src/platform/haiku/ui/guihaiku.cpp
-	src/platform/gui.cpp
-	src/platform/platform.cpp
-
-    src/platform/haiku/ui/HaikuSpaceUI.cpp
-
+add_library(solvespace-core OBJECT
+	src/importdxf.cpp
+	src/exportvector.cpp
+	src/ttf.cpp
 	src/bsp.cpp
 	src/clipboard.cpp
 	src/confscreen.cpp
@@ -67,21 +40,17 @@ add_executable(SolveSpace
 	src/entity.cpp
 	src/export.cpp
 	src/exportstep.cpp
-	src/exportvector.cpp
 	src/expr.cpp
 	src/file.cpp
 	src/generate.cpp
 	src/graphicswin.cpp
 	src/group.cpp
 	src/groupmesh.cpp
-
-    src/importdxf.cpp
     src/importidf.cpp
     src/importmesh.cpp
 	src/mesh.cpp
 	src/modify.cpp
 	src/mouse.cpp
-
 	src/polygon.cpp
 	src/polyline.cpp
 	src/request.cpp
@@ -90,16 +59,13 @@ add_executable(SolveSpace
 	src/system.cpp
 	src/textscreens.cpp
 	src/textwin.cpp
-	src/ttf.cpp
 	src/undoredo.cpp
 	src/util.cpp
 	src/view.cpp
 	src/solvespace.cpp
-
 	src/render/render.cpp
 	src/render/render2d.cpp
 	src/render/renderagg.cpp
-
 	src/srf/boolean.cpp
 	src/srf/curve.cpp
 	src/srf/merge.cpp
@@ -111,15 +77,38 @@ add_executable(SolveSpace
 	src/srf/triangulate.cpp
 )
 
-target_include_directories(SolveSpace
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-    PUBLIC
-    ${AGG_INCLUDE_DIRS}
-    ${ZLIB_INCLUDE_DIR}
-    ${PNG_PNG_INCLUDE_DIR}
-    ${FREETYPE_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIRS}
-    src/
+target_include_directories(solvespace-core PRIVATE
+	${FREETYPE_INCLUDE_DIRS}
+	/boot/home/cppfront/include/
+	/boot/system/develop/headers/agg2/
+	src/
+	extlib/libdxfrw/
+	${CMAKE_CURRENT_BINARY_DIR} # adds config.h/config.in.h
+)
+
+add_executable(SolveSpace
+	src/platform/haiku/ui/App.cpp
+	src/platform/haiku/ui/MainWindow.cpp
+	src/platform/haiku/ui/Toolbar.cpp
+	src/platform/haiku/ui/PropertyBrowser.cpp
+	src/platform/haiku/ui/ListView/DragSortableListView.cpp
+	src/platform/haiku/ui/ListView/ThumbListItem.cpp
+	src/platform/haiku/ui/GroupsListView.cpp
+	src/platform/haiku/ui/HVIFUtil.cpp
+	src/platform/haiku/ui/EditorView.cpp
+	src/platform/haiku/ui/ViewParameters.cpp
+	src/platform/haiku/ui/guihaiku.cpp
+	src/platform/gui.cpp
+	src/platform/platform.cpp
+	src/platform/haiku/ui/HaikuSpaceUI.cpp
+	$<TARGET_OBJECTS:solvespace-core>
+)
+
+target_include_directories(SolveSpace PRIVATE
+	/boot/home/cppfront/include/
+	/boot/system/develop/headers/agg2/
+	src/
+	${CMAKE_CURRENT_BINARY_DIR} # adds config.h/config.in.h
 )
 
 target_link_libraries(SolveSpace be agg translation tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
