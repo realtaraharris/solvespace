@@ -183,9 +183,9 @@ Vector: @value @print type = {
     return Vector(this.x * v, this.y * v, this.z * v);
   }
   ProjectVectorInto: (this, workplane: hEntity) -> Vector = {
-    w: EntityBase = SK.GetEntity(workplane);
-    u: Vector = w.Normal()*.NormalU();
-    v: Vector = w.Normal()*.NormalV();
+    w: *EntityBase = SK.GetEntity(workplane);
+    u: Vector = w*.Normal()*.NormalU();
+    v: Vector = w*.Normal()*.NormalV();
 
     up: double = this.Dot(u);
     vp: double = this.Dot(v);
@@ -193,8 +193,8 @@ Vector: @value @print type = {
     return (u.ScaledBy(up)).Plus(v.ScaledBy(vp));
   }
   ProjectInto: (this, workplane: hEntity) -> Vector = {
-    w: EntityBase = SK.GetEntity(workplane);
-    p0: Vector = w.WorkplaneGetOffset();
+    w: *EntityBase = SK.GetEntity(workplane);
+    p0: Vector = w*.WorkplaneGetOffset();
 
     f: Vector = this.Minus(p0);
 

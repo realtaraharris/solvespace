@@ -4,7 +4,6 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include <regex>
-#include <cairo.h>
 
 #include "harness.h"
 
@@ -218,7 +217,7 @@ bool Test::Helper::CheckLoad(const char *file, int line, const char *fixture) {
         return false;
     } else {
         SS.AfterNewFile();
-        SS.GW.offset = {};
+        SS.GW.offset = Vector(0, 0, 0);
         SS.GW.scale  = 10.0;
         return true;
     }
@@ -409,10 +408,6 @@ int main(int argc, char **argv) {
                 (unsigned)ranTally, (unsigned)skippedTally,
                 (unsigned)checkTally, testTime.count());
     }
-
-    // At last, try to reset all caches we or our dependencies have, to make SNR
-    // of memory checking tools like valgrind higher.
-    cairo_debug_reset_static_data();
 
     return (failTally > 0);
 }

@@ -9,10 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_definitions(-g -gdwarf-4 -fpermissive -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
-#if (ENABLE_TESTS)
-#    add_subdirectory(res)
-#    add_subdirectory(test)
-#endif()
+add_subdirectory(res)
 add_subdirectory(extlib/libdxfrw)
 
 find_package(ZLIB REQUIRED)
@@ -25,6 +22,8 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
+	src/platform/gui.cpp
+	src/platform/platform.cpp
 	src/importdxf.cpp
 	src/exportvector.cpp
 	src/ttf.cpp
@@ -98,8 +97,6 @@ add_executable(SolveSpace
 	src/platform/haiku/ui/EditorView.cpp
 	src/platform/haiku/ui/ViewParameters.cpp
 	src/platform/haiku/ui/guihaiku.cpp
-	src/platform/gui.cpp
-	src/platform/platform.cpp
 	src/platform/haiku/ui/HaikuSpaceUI.cpp
 	$<TARGET_OBJECTS:solvespace-core>
 )
@@ -146,3 +143,135 @@ add_custom_command(TARGET SolveSpace POST_BUILD
         COMMAND mimeset -f ${CMAKE_BINARY_DIR}/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )
+
+# test suite
+set(testsuite_sources
+    test/analysis/contour_area/test.cpp
+    test/core/expr/test.cpp
+    test/core/locale/test.cpp
+    test/core/path/test.cpp
+    test/constraint/points_coincident/test.cpp
+    test/constraint/pt_pt_distance/test.cpp
+    test/constraint/pt_plane_distance/test.cpp
+    test/constraint/pt_line_distance/test.cpp
+#   test/constraint/pt_face_distance/test.cpp # hangs the runner. why?
+    test/constraint/proj_pt_distance/test.cpp
+    test/constraint/pt_in_plane/test.cpp
+    test/constraint/pt_on_line/test.cpp
+    test/constraint/pt_on_face/test.cpp
+    test/constraint/equal_length_lines/test.cpp
+    test/constraint/length_ratio/test.cpp
+    test/constraint/eq_len_pt_line_d/test.cpp
+    test/constraint/eq_pt_ln_distances/test.cpp
+    test/constraint/equal_angle/test.cpp
+    test/constraint/equal_line_arc_len/test.cpp
+    test/constraint/length_difference/test.cpp
+    test/constraint/symmetric/test.cpp
+    test/constraint/symmetric_horiz/test.cpp
+    test/constraint/symmetric_vert/test.cpp
+    test/constraint/symmetric_line/test.cpp
+    test/constraint/at_midpoint/test.cpp
+    test/constraint/horizontal/test.cpp
+    test/constraint/vertical/test.cpp
+    test/constraint/diameter/test.cpp
+    test/constraint/pt_on_circle/test.cpp
+    test/constraint/same_orientation/test.cpp
+#   test/constraint/angle/test.cpp # actually borken
+    test/constraint/parallel/test.cpp
+    test/constraint/perpendicular/test.cpp
+    test/constraint/arc_line_tangent/test.cpp
+    test/constraint/cubic_line_tangent/test.cpp
+    test/constraint/curve_curve_tangent/test.cpp
+    test/constraint/equal_radius/test.cpp
+    test/constraint/where_dragged/test.cpp
+    test/constraint/comment/test.cpp
+    test/request/arc_of_circle/test.cpp
+    test/request/circle/test.cpp
+    test/request/cubic/test.cpp
+    test/request/cubic_periodic/test.cpp
+    test/request/datum_point/test.cpp
+    test/request/image/test.cpp
+    test/request/line_segment/test.cpp
+    test/request/ttf_text/test.cpp
+    test/request/workplane/test.cpp
+    test/group/link/test.cpp
+    test/group/translate_asy/test.cpp
+    test/group/translate_nd/test.cpp
+)
+
+add_executable(solvespace-testsuite
+    test/harness.cpp
+	${testsuite_sources}
+	src/platform/guinone.cpp
+	$<TARGET_OBJECTS:solvespace-core>
+	$<TARGET_PROPERTY:resources,EXTRA_SOURCES>)
+
+target_link_libraries(solvespace-testsuite
+	dxfrw agg ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${COVERAGE_LIBRARY})
+
+target_include_directories(solvespace-testsuite
+	PRIVATE
+	${EIGEN3_INCLUDE_DIRS}
+	/boot/home/cppfront/include/
+	/boot/system/develop/headers/agg2/
+	src/
+	test/)
+
+add_dependencies(solvespace-testsuite resources)
+
+add_custom_target(test_solvespace
+    COMMAND $<TARGET_FILE:solvespace-testsuite>
+    COMMENT "Testing SolveSpace"
+    VERBATIM)
+
+# debug runner
+add_executable(solvespace-debugtool
+    test/debugtool.cpp
+	src/platform/guinone.cpp
+	$<TARGET_OBJECTS:solvespace-core>
+    $<TARGET_PROPERTY:resources>)
+
+target_link_libraries(solvespace-debugtool solvespace-core dxfrw agg ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
+
+target_include_directories(solvespace-debugtool PRIVATE
+	/boot/home/cppfront/include/
+	/boot/system/develop/headers/agg2/
+	src/
+)
+
+add_dependencies(solvespace-debugtool resources)
+
+# coverage reports
+if(ENABLE_COVERAGE)
+    set(LCOV_FLAGS   -q --gcov-tool ${GCOV})
+    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc lcov_branch_coverage=1)
+    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_line=(ssassert|switch)")
+    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_br_line=BRANCH_ALWAYS_TAKEN")
+    set(LCOV_COLLECT -c -b ${CMAKE_SOURCE_DIR}/src -d ${CMAKE_BINARY_DIR}/src --no-external)
+
+    add_custom_command(
+        OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
+        COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
+            -o ${CMAKE_BINARY_DIR}/coverage_base.info -i
+        DEPENDS solvespace-testsuite
+        COMMENT "Importing baseline coverage data"
+        VERBATIM)
+
+    add_custom_target(coverage_solvespace ALL
+        COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
+            -o ${CMAKE_BINARY_DIR}/coverage_test.info
+        COMMAND ${LCOV} ${LCOV_FLAGS}
+            -o ${CMAKE_BINARY_DIR}/coverage_full.info
+            -a ${CMAKE_BINARY_DIR}/coverage_base.info
+            -a ${CMAKE_BINARY_DIR}/coverage_test.info
+        COMMAND ${LCOV} ${LCOV_FLAGS} --summary
+            ${CMAKE_BINARY_DIR}/coverage_full.info
+        COMMAND ${GENHTML} -q --branch-coverage --demangle-cpp --legend
+            ${CMAKE_BINARY_DIR}/coverage_full.info
+            -o ${CMAKE_BINARY_DIR}/coverage/
+            -t "SolveSpace testbench"
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
+        DEPENDS test_solvespace
+        COMMENT "Generating coverage report"
+        VERBATIM)
+endif()
