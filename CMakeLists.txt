@@ -154,7 +154,7 @@ set(testsuite_sources
     test/constraint/pt_pt_distance/test.cpp
     test/constraint/pt_plane_distance/test.cpp
     test/constraint/pt_line_distance/test.cpp
-#   test/constraint/pt_face_distance/test.cpp # hangs the runner. why?
+    test/constraint/pt_face_distance/test.cpp
     test/constraint/proj_pt_distance/test.cpp
     test/constraint/pt_in_plane/test.cpp
     test/constraint/pt_on_line/test.cpp
@@ -176,7 +176,7 @@ set(testsuite_sources
     test/constraint/diameter/test.cpp
     test/constraint/pt_on_circle/test.cpp
     test/constraint/same_orientation/test.cpp
-#   test/constraint/angle/test.cpp # actually borken
+    test/constraint/angle/test.cpp # actually borken
     test/constraint/parallel/test.cpp
     test/constraint/perpendicular/test.cpp
     test/constraint/arc_line_tangent/test.cpp

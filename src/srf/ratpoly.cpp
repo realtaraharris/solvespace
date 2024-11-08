@@ -392,10 +392,11 @@ void SSurface::ClosestPointTo(Vector p, double *u, double *v, bool mustConverge)
     if(p.Equals(ctrl[0]   [degn])) { *u = 0; *v = 1; return; }
 
     // And planes are trivial, so don't waste time iterating over those.
-    if(degm == 1 && degn == 1) {
+    if(degm == 1 && degn == 1 && !(ctrl[1][0]).EqualsExactly(ctrl[0][1])) {
         Vector orig =  ctrl[0][0],
                bu   = (ctrl[1][0]).Minus(orig),
                bv   = (ctrl[0][1]).Minus(orig);
+
         if((ctrl[1][1]).Equals(orig.Plus(bu).Plus(bv))) {
 
             Vector n = bu.Cross(bv);

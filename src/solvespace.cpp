@@ -1153,4 +1153,4 @@ Group *Sketch::GetRunningMeshGroupFor(hGroup h) {
     return NULL;
 }
 
-#include "vectorex.hpp"
+#include "vector.hpp"

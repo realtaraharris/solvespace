@@ -2,8 +2,8 @@
 #include "solvespace.h"
 #include "polygon.h"
 
-#include "vectorex.h"
 #include "vector.h"
+#include "vectorold.h"
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 #define EPSILON (0.0000001f)
@@ -12,9 +12,9 @@
 int main () {
   // Vector::Vector
   {
-    Vector v = Vector(1, 2, 3);
+    VectorOld v = VectorOld(1, 2, 3);
     // --
-    VectorEx vx = VectorEx(1, 2, 3);
+    Vector vx = Vector(1, 2, 3);
     // --
     assertm(v.x == vx.x, "x component ok");
     assertm(v.y == vx.y, "y component ok");
@@ -23,9 +23,9 @@ int main () {
 
   // Vector::From
   {
-    Vector f = Vector::From(4.0d, 5.0d, 6.0d);
+    VectorOld f = VectorOld::From(4.0d, 5.0d, 6.0d);
     // --
-    VectorEx fx = VectorExFromD(4.0d, 5.0d, 6.0d);
+    Vector fx = VectorFromD(4.0d, 5.0d, 6.0d);
     // --
     assertm(f.x == fx.x, "x component ok");
     assertm(f.y == fx.y, "y component ok");
@@ -34,13 +34,13 @@ int main () {
 
   // Vector::Cross
   {
-    Vector c = Vector(2.0d, 0.0d, -1.0d);
-    Vector d = Vector(1.0d, 1.0d, 0.0d);
-    Vector e = c.Cross(d);
+    VectorOld c = VectorOld(2.0d, 0.0d, -1.0d);
+    VectorOld d = VectorOld(1.0d, 1.0d, 0.0d);
+    VectorOld e = c.Cross(d);
     // --
-    VectorEx cx = VectorEx(2.0d, 0.0d, -1.0d);
-    VectorEx dx = VectorEx(1.0d, 1.0d, 0.0d);
-    VectorEx ex = cx.Cross(dx);
+    Vector cx = Vector(2.0d, 0.0d, -1.0d);
+    Vector dx = Vector(1.0d, 1.0d, 0.0d);
+    Vector ex = cx.Cross(dx);
     // --
     assertm(e.x == ex.x, "x component ok");
     assertm(e.y == ex.y, "y component ok");
@@ -49,17 +49,17 @@ int main () {
 
   // Vector::AtIntersectionOfPlanes
   {
-    Vector g = Vector(0.0d, 0.0d, 1.0d);
-    Vector h = Vector(1.0d, 0.0d, 0.0d);
+    VectorOld g = VectorOld(0.0d, 0.0d, 1.0d);
+    VectorOld h = VectorOld(1.0d, 0.0d, 0.0d);
     double gd = 2.0;
     double hd = 2.0;
-    Vector i = Vector::AtIntersectionOfPlanes(g, gd, h, hd);
+    VectorOld i = VectorOld::AtIntersectionOfPlanes(g, gd, h, hd);
     // --
-    VectorEx gx = VectorEx(0.0d, 0.0d, 1.0d);
-    VectorEx hx = VectorEx(1.0d, 0.0d, 0.0d);
+    Vector gx = Vector(0.0d, 0.0d, 1.0d);
+    Vector hx = Vector(1.0d, 0.0d, 0.0d);
     double gdx = 2.0;
     double hdx = 2.0;
-    VectorEx ix = VectorExAtIntersectionOfPlanes(gx, gdx, hx, hdx);
+    Vector ix = VectorAtIntersectionOfPlanes(gx, gdx, hx, hdx);
     // --
     assertm(i.x == ix.x, "x component ok");
     assertm(i.y == ix.y, "y component ok");
@@ -68,19 +68,19 @@ int main () {
 
   // Vector::AtIntersectionOfLines
   {
-     Vector a0 = Vector(0.0d, 1.0d, 0.0d);
-     Vector da = Vector(1.0d, 0.0d, 0.0d);
-	 Vector b0 = Vector(0.0d, 1.0d, 1.0d);
-     Vector db = Vector(1.0d, 0.0d, 1.0d);
+     VectorOld a0 = VectorOld(0.0d, 1.0d, 0.0d);
+     VectorOld da = VectorOld(1.0d, 0.0d, 0.0d);
+	 VectorOld b0 = VectorOld(0.0d, 1.0d, 1.0d);
+     VectorOld db = VectorOld(1.0d, 0.0d, 1.0d);
 
      bool skew;
-	 Vector pi = Vector::AtIntersectionOfLines(a0, a0.Plus(da), b0, b0.Plus(db), &skew);
+	 VectorOld pi = VectorOld::AtIntersectionOfLines(a0, a0.Plus(da), b0, b0.Plus(db), &skew);
      // --
-     VectorEx a0x = VectorEx(0.0d, 1.0d, 0.0d);
-     VectorEx dax = VectorEx(1.0d, 0.0d, 0.0d);
-	 VectorEx b0x = VectorEx(0.0d, 1.0d, 1.0d);
-     VectorEx dbx = VectorEx(1.0d, 0.0d, 1.0d);
-	 VectorExAtIntersectionOfLines_ret eeep = VectorExAtIntersectionOfLines(a0x, a0x.Plus(dax), b0x, b0x.Plus(dbx), false);
+     Vector a0x = Vector(0.0d, 1.0d, 0.0d);
+     Vector dax = Vector(1.0d, 0.0d, 0.0d);
+	 Vector b0x = Vector(0.0d, 1.0d, 1.0d);
+     Vector dbx = Vector(1.0d, 0.0d, 1.0d);
+	 VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(a0x, a0x.Plus(dax), b0x, b0x.Plus(dbx), false);
 	 // --
 	 assertm(pi.x == eeep.intersectionPoint.x, "x component ok");
 	 assertm(pi.y == eeep.intersectionPoint.y, "y component ok");
@@ -89,19 +89,19 @@ int main () {
 
   // Vector::AtIntersectionOfPlaneAndLine
   {
-    Vector n = Vector(0.0d, 1.0d, 0.0d);
+    VectorOld n = VectorOld(0.0d, 1.0d, 0.0d);
     double dd = 10;
-    Vector p0 = Vector(0.0d, 0.0d, 1.0d);
-    Vector p1 = Vector(1.0d, 0.0d, 0.0d);
+    VectorOld p0 = VectorOld(0.0d, 0.0d, 1.0d);
+    VectorOld p1 = VectorOld(1.0d, 0.0d, 0.0d);
     bool parallel = false;
-    Vector k = Vector::AtIntersectionOfPlaneAndLine(n, dd, p0, p1, &parallel);
+    VectorOld k = VectorOld::AtIntersectionOfPlaneAndLine(n, dd, p0, p1, &parallel);
     // --
-    VectorEx nx = VectorEx(0.0d, 1.0d, 0.0d);
+    Vector nx = Vector(0.0d, 1.0d, 0.0d);
     double ddx = 10;
-    VectorEx p0x = VectorEx(0.0d, 0.0d, 1.0d);
-    VectorEx p1x = VectorEx(1.0d, 0.0d, 0.0d);
+    Vector p0x = Vector(0.0d, 0.0d, 1.0d);
+    Vector p1x = Vector(1.0d, 0.0d, 0.0d);
     bool parallelx = false;
-    VectorEx kx = VectorExAtIntersectionOfPlaneAndLine(nx, ddx, p0x, p1x, &parallelx);
+    Vector kx = VectorAtIntersectionOfPlaneAndLine(nx, ddx, p0x, p1x, &parallelx);
     // --
     assertm(k.x == kx.x, "x component ok");
     assertm(k.y == kx.y, "y component ok");
@@ -110,17 +110,17 @@ int main () {
 
   // Vector::AtIntersectionOfPlanes
   {
-    Vector n1 = Vector(1.0d, 0.0d, 0.0d);
+    VectorOld n1 = VectorOld(1.0d, 0.0d, 0.0d);
     double d1 = 1.0;
-	Vector n2 = Vector(0.0d, 0.0d, 1.0d);
+	VectorOld n2 = VectorOld(0.0d, 0.0d, 1.0d);
     double d2 = 1.0;
-	Vector p0 = Vector::AtIntersectionOfPlanes(n1, d1, n2, d2);
+	VectorOld p0 = VectorOld::AtIntersectionOfPlanes(n1, d1, n2, d2);
     // --
-	VectorEx n1x = VectorEx(1.0d, 0.0d, 0.0d);
+	Vector n1x = Vector(1.0d, 0.0d, 0.0d);
     double d1x = 1.0;
-	VectorEx n2x = VectorEx(0.0d, 0.0d, 1.0d);
+	Vector n2x = Vector(0.0d, 0.0d, 1.0d);
     double d2x = 1.0;
-	VectorEx p0x = VectorExAtIntersectionOfPlanes(n1x, d1x, n2x, d2x);
+	Vector p0x = VectorAtIntersectionOfPlanes(n1x, d1x, n2x, d2x);
 	// --
     assertm(p0.x == p0x.x, "x component ok");
     assertm(p0.y == p0x.y, "y component ok");
@@ -129,19 +129,19 @@ int main () {
 
   // Vector::ClosestPointBetweenLines
   {
-    Vector a0 = Vector(1.0d, 0.0d, 0.0d);
-    Vector da = Vector(0.0d, 1.0d, 0.0d);
-    Vector b0 = Vector(0.0d, 0.0d, 1.0d);
-    Vector db = Vector(0.0d, 1.0d, 1.0d);
+    VectorOld a0 = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld da = VectorOld(0.0d, 1.0d, 0.0d);
+    VectorOld b0 = VectorOld(0.0d, 0.0d, 1.0d);
+    VectorOld db = VectorOld(0.0d, 1.0d, 1.0d);
     double ta;
     double tb;
-	Vector::ClosestPointBetweenLines(a0, da, b0, db, &ta, &tb);
+	VectorOld::ClosestPointBetweenLines(a0, da, b0, db, &ta, &tb);
 	// --
-    VectorEx a0x = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx dax = VectorEx(0.0d, 1.0d, 0.0d);
-    VectorEx b0x = VectorEx(0.0d, 0.0d, 1.0d);
-    VectorEx dbx = VectorEx(0.0d, 1.0d, 1.0d);
-    VectorExClosestPointBetweenLines_ret resultx = VectorExClosestPointBetweenLines(a0x, dax, b0x, dbx);
+    Vector a0x = Vector(1.0d, 0.0d, 0.0d);
+    Vector dax = Vector(0.0d, 1.0d, 0.0d);
+    Vector b0x = Vector(0.0d, 0.0d, 1.0d);
+    Vector dbx = Vector(0.0d, 1.0d, 1.0d);
+    VectorClosestPointBetweenLines_ret resultx = VectorClosestPointBetweenLines(a0x, dax, b0x, dbx);
 	// --
 	assertm(ta == resultx.ta, "ta component ok");
 	assertm(tb == resultx.tb, "tb component ok");
@@ -149,48 +149,48 @@ int main () {
 
   // Vector::BoundingBoxesDisjoint
   {
-    Vector amax = Vector(0.0d, 0.0d, 1.0d);
-    Vector amin = Vector(1.0d, 0.0d, 0.0d);
-    Vector bmax = Vector(0.0d, 1.0d, 1.0d);
-    Vector bmin = Vector(1.0d, 1.0d, 1.0d);
-    bool result = Vector::BoundingBoxesDisjoint(amax, amin, bmax, bmin);
+    VectorOld amax = VectorOld(0.0d, 0.0d, 1.0d);
+    VectorOld amin = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld bmax = VectorOld(0.0d, 1.0d, 1.0d);
+    VectorOld bmin = VectorOld(1.0d, 1.0d, 1.0d);
+    bool result = VectorOld::BoundingBoxesDisjoint(amax, amin, bmax, bmin);
 	// --
-    VectorEx amaxex = VectorEx(0.0d, 0.0d, 1.0d);
-    VectorEx aminex = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx bmaxex = VectorEx(0.0d, 1.0d, 1.0d);
-    VectorEx bminex = VectorEx(1.0d, 1.0d, 1.0d);
-    bool resultx = VectorExBoundingBoxesDisjoint(amaxex, aminex, bmaxex, bminex);
+    Vector amaxex = Vector(0.0d, 0.0d, 1.0d);
+    Vector aminex = Vector(1.0d, 0.0d, 0.0d);
+    Vector bmaxex = Vector(0.0d, 1.0d, 1.0d);
+    Vector bminex = Vector(1.0d, 1.0d, 1.0d);
+    bool resultx = VectorBoundingBoxesDisjoint(amaxex, aminex, bmaxex, bminex);
 	// --
     assertm(result == resultx, "results match");
   }
 
   // Vector::BoundingBoxIntersectsLine
   {
-    Vector amax = Vector(0.0d, 0.0d, 1.0d);
-    Vector amin = Vector(1.0d, 0.0d, 0.0d);
-    Vector a = Vector(0.0d, 1.0d, 1.0d);
-    Vector b = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld amax = VectorOld(0.0d, 0.0d, 1.0d);
+    VectorOld amin = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld a = VectorOld(0.0d, 1.0d, 1.0d);
+    VectorOld b = VectorOld(1.0d, 1.0d, 1.0d);
 	bool asSegment = true;
-    bool result = Vector::BoundingBoxIntersectsLine(amax, amin, a, b, asSegment);
+    bool result = VectorOld::BoundingBoxIntersectsLine(amax, amin, a, b, asSegment);
     // --
-    VectorEx amaxx = VectorEx(0.0d, 0.0d, 1.0d);
-    VectorEx aminx = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx ax = VectorEx(0.0d, 1.0d, 1.0d);
-    VectorEx bx = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector amaxx = Vector(0.0d, 0.0d, 1.0d);
+    Vector aminx = Vector(1.0d, 0.0d, 0.0d);
+    Vector ax = Vector(0.0d, 1.0d, 1.0d);
+    Vector bx = Vector(1.0d, 1.0d, 1.0d);
 	bool asSegmentx = true;
-    bool resultx = VectorExBoundingBoxIntersectsLine(amaxx, aminx, ax, bx, asSegmentx);
+    bool resultx = VectorBoundingBoxIntersectsLine(amaxx, aminx, ax, bx, asSegmentx);
 	// --
 	assertm(result == resultx, "results match");
   }
 
   // Vector::Element
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
 	double x = e.Element(0);
 	double y = e.Element(1);
 	double z = e.Element(2);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
 	double xx = ex.Element(0);
 	double yx = ex.Element(1);
 	double zx = ex.Element(2);
@@ -202,10 +202,10 @@ int main () {
 
   // Vector::Equals
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
 	bool result = e.Equals(e, LENGTH_EPS);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
 	bool resultx = ex.Equals(ex, LENGTH_EPS);
 	// --
 	assertm(result == resultx, "results match");
@@ -213,10 +213,10 @@ int main () {
 
   // Vector::EqualsExactly
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
 	bool result = e.EqualsExactly(e);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
 	bool resultx = ex.EqualsExactly(ex);
 	// --
 	assertm(result == resultx, "results match");
@@ -224,11 +224,11 @@ int main () {
 
   // Vector::Plus
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
-	Vector result = e.Plus(e);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
+	VectorOld result = e.Plus(e);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx resultx = ex.Plus(ex);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
+	Vector resultx = ex.Plus(ex);
 	// --
 	assertm(result.x == resultx.x, "results match");
 	assertm(result.y == resultx.y, "results match");
@@ -237,13 +237,13 @@ int main () {
 
   // Vector::Minus
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
-    Vector f = Vector(2.0d, 1.0d, 1.0d);
-	Vector result = e.Minus(f);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld f = VectorOld(2.0d, 1.0d, 1.0d);
+	VectorOld result = e.Minus(f);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx fx = VectorEx(2.0d, 1.0d, 1.0d);
-	VectorEx resultx = ex.Minus(fx);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
+    Vector fx = Vector(2.0d, 1.0d, 1.0d);
+	Vector resultx = ex.Minus(fx);
 	// --
 	assertm(result.x == resultx.x, "results match");
 	assertm(result.y == resultx.y, "results match");
@@ -252,11 +252,11 @@ int main () {
 
   // Vector::Negated
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
-	Vector result = e.Negated();
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
+	VectorOld result = e.Negated();
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx resultx = ex.Negated();
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
+	Vector resultx = ex.Negated();
 	// --
 	assertm(result.x == resultx.x, "results match");
 	assertm(result.y == resultx.y, "results match");
@@ -265,11 +265,11 @@ int main () {
 
   // Vector::Cross
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
-	Vector result = e.Cross(e);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
+	VectorOld result = e.Cross(e);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx resultx = ex.Cross(ex);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
+	Vector resultx = ex.Cross(ex);
 	// --
 	assertm(result.x == resultx.x, "results match");
 	assertm(result.y == resultx.y, "results match");
@@ -278,10 +278,10 @@ int main () {
 
   // Vector::DirectionCosineWith
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
 	double result = e.DirectionCosineWith(e);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
 	double resultx = ex.DirectionCosineWith(ex);
 	// --
 	assertm(result - resultx < LENGTH_EPS, "results match");
@@ -289,10 +289,10 @@ int main () {
 
   // Vector::Dot
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
 	float result = e.Dot(e);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
 	float resultx = ex.Dot(ex);
 	// --
 	assertm(result == resultx, "results match");
@@ -300,13 +300,13 @@ int main () {
 
   // Vector::Normal
   {
-    Vector e = Vector(1.0d, 1.0d, 1.0d);
-	Vector result0 = e.Normal(0);
-	Vector result1 = e.Normal(1);
+    VectorOld e = VectorOld(1.0d, 1.0d, 1.0d);
+	VectorOld result0 = e.Normal(0);
+	VectorOld result1 = e.Normal(1);
     // --
-    VectorEx ex = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx result0x = ex.Normal(0);
-	VectorEx result1x = ex.Normal(1);
+    Vector ex = Vector(1.0d, 1.0d, 1.0d);
+	Vector result0x = ex.Normal(0);
+	Vector result1x = ex.Normal(1);
 	// --
 	assertm(iseq(result0.x, result0x.x), "results match");
 	assertm(iseq(result0.y, result0x.y), "results match");
@@ -318,17 +318,17 @@ int main () {
 
   // Vector::RotatedAbout
   {
-    Vector v = Vector(1.0d, 0.0d, 0.0d);
-	Vector orig = Vector(0.0d, 1.0d, 0.0d);
-	Vector axis = Vector(0.0d, 0.0d, 1.0d);
+    VectorOld v = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld orig = VectorOld(0.0d, 1.0d, 0.0d);
+	VectorOld axis = VectorOld(0.0d, 0.0d, 1.0d);
 	double theta = 2.0d;
-	Vector result = v.RotatedAbout(orig, axis, theta);
+	VectorOld result = v.RotatedAbout(orig, axis, theta);
     // --
-    VectorEx vx = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx origx = VectorEx(0.0d, 1.0d, 0.0d);
-	VectorEx axisx = VectorEx(0.0d, 0.0d, 1.0d);
+    Vector vx = Vector(1.0d, 0.0d, 0.0d);
+	Vector origx = Vector(0.0d, 1.0d, 0.0d);
+	Vector axisx = Vector(0.0d, 0.0d, 1.0d);
 	double thetax = 2.0d;
-	VectorEx resultx = vx.RotatedAbout(origx, axisx, thetax);
+	Vector resultx = vx.RotatedAbout(origx, axisx, thetax);
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
 	assertm(iseq(result.z, resultx.z), "results match");
@@ -336,15 +336,15 @@ int main () {
 
   // Vector::RotatedAbout
   {
-    Vector v = Vector(1.0d, 0.0d, 0.0d);
-	Vector axis = Vector(0.0d, 1.0d, 0.0d);
+    VectorOld v = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld axis = VectorOld(0.0d, 1.0d, 0.0d);
 	double theta = 2.0d;
-	Vector result = v.RotatedAbout(axis, theta);
+	VectorOld result = v.RotatedAbout(axis, theta);
     // --
-    VectorEx vx = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx axisx = VectorEx(0.0d, 1.0d, 0.0d);
+    Vector vx = Vector(1.0d, 0.0d, 0.0d);
+	Vector axisx = Vector(0.0d, 1.0d, 0.0d);
 	double thetax = 2.0d;
-	VectorEx resultx = vx.RotatedAbout(axisx, thetax);
+	Vector resultx = vx.RotatedAbout(axisx, thetax);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -353,17 +353,17 @@ int main () {
 
   // Vector::DotInToCsys
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
-    Vector u = Vector(1.0d, 0.0d, 0.0d);
-	Vector v = Vector(0.0d, 1.0d, 0.0d);
-	Vector n = Vector(0.0d, 0.0d, 1.0d);
-	Vector result = t.DotInToCsys(u, v, n);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld u = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld v = VectorOld(0.0d, 1.0d, 0.0d);
+	VectorOld n = VectorOld(0.0d, 0.0d, 1.0d);
+	VectorOld result = t.DotInToCsys(u, v, n);
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx vx = VectorEx(0.0d, 1.0d, 0.0d);
-	VectorEx nx = VectorEx(0.0d, 0.0d, 1.0d);
-	VectorEx resultx = tx.DotInToCsys(ux, vx, nx);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
+    Vector ux = Vector(1.0d, 0.0d, 0.0d);
+	Vector vx = Vector(0.0d, 1.0d, 0.0d);
+	Vector nx = Vector(0.0d, 0.0d, 1.0d);
+	Vector resultx = tx.DotInToCsys(ux, vx, nx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -372,17 +372,17 @@ int main () {
 
   // Vector::ScaleOutOfCsys
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
-    Vector u = Vector(1.0d, 0.0d, 0.0d);
-	Vector v = Vector(0.0d, 1.0d, 0.0d);
-	Vector n = Vector(0.0d, 0.0d, 1.0d);
-	Vector result = t.ScaleOutOfCsys(u, v, n);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld u = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld v = VectorOld(0.0d, 1.0d, 0.0d);
+	VectorOld n = VectorOld(0.0d, 0.0d, 1.0d);
+	VectorOld result = t.ScaleOutOfCsys(u, v, n);
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx vx = VectorEx(0.0d, 1.0d, 0.0d);
-	VectorEx nx = VectorEx(0.0d, 0.0d, 1.0d);
-	VectorEx resultx = tx.ScaleOutOfCsys(ux, vx, nx);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
+    Vector ux = Vector(1.0d, 0.0d, 0.0d);
+	Vector vx = Vector(0.0d, 1.0d, 0.0d);
+	Vector nx = Vector(0.0d, 0.0d, 1.0d);
+	Vector resultx = tx.ScaleOutOfCsys(ux, vx, nx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -391,14 +391,14 @@ int main () {
 
   // Vector::DistanceToLine
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
-    Vector p0 = Vector(1.0d, 0.0d, 0.0d);
-	Vector dp = Vector(0.0d, 1.0d, 0.0d);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld p0 = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld dp = VectorOld(0.0d, 1.0d, 0.0d);
 	double result = t.DistanceToLine(p0, dp);
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx p0x = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx dpx = VectorEx(0.0d, 1.0d, 0.0d);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
+    Vector p0x = Vector(1.0d, 0.0d, 0.0d);
+	Vector dpx = Vector(0.0d, 1.0d, 0.0d);
 	double resultx = tx.DistanceToLine(p0x, dpx);
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -406,14 +406,14 @@ int main () {
 
   // Vector::DistanceToPlane
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
-    Vector normal = Vector(1.0d, 0.0d, 0.0d);
-	Vector origin = Vector(0.0d, 1.0d, 0.0d);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld normal = VectorOld(1.0d, 0.0d, 0.0d);
+	VectorOld origin = VectorOld(0.0d, 1.0d, 0.0d);
 	double result = t.DistanceToPlane(normal, origin);
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx normalx = VectorEx(1.0d, 0.0d, 0.0d);
-	VectorEx originx = VectorEx(0.0d, 1.0d, 0.0d);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
+    Vector normalx = Vector(1.0d, 0.0d, 0.0d);
+	Vector originx = Vector(0.0d, 1.0d, 0.0d);
 	double resultx = tx.DistanceToPlane(normalx, originx);
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -421,14 +421,14 @@ int main () {
 
   // Vector::OnLineSegment
   {
-	Vector a = Vector(0.0d, 0.0d, 0.0d);
-    Vector b = Vector(1.0d, 1.0d, 1.0d);
-    Vector t = Vector(0.5d, 0.5d, 0.5d);
+	VectorOld a = VectorOld(0.0d, 0.0d, 0.0d);
+    VectorOld b = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld t = VectorOld(0.5d, 0.5d, 0.5d);
 	bool result = t.OnLineSegment(a, b);
     // --
-	VectorEx ax = VectorEx(0.0d, 0.0d, 0.0d);
-    VectorEx bx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx tx = VectorEx(0.5d, 0.5d, 0.5d);
+	Vector ax = Vector(0.0d, 0.0d, 0.0d);
+    Vector bx = Vector(1.0d, 1.0d, 1.0d);
+    Vector tx = Vector(0.5d, 0.5d, 0.5d);
 	bool resultx = tx.OnLineSegment(ax, bx);
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -436,15 +436,15 @@ int main () {
 
   // Vector::ClosestPointOnLine
   {
-    Vector p0 = Vector(0.0d, 0.0d, 0.0d);
-    Vector deltal = Vector(1.0d, 1.0d, 1.0d);
-    Vector t = Vector(0.5d, 0.5d, 0.5d);
-	Vector result = t.ClosestPointOnLine(p0, deltal);
+    VectorOld p0 = VectorOld(0.0d, 0.0d, 0.0d);
+    VectorOld deltal = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld t = VectorOld(0.5d, 0.5d, 0.5d);
+	VectorOld result = t.ClosestPointOnLine(p0, deltal);
     // --
-	VectorEx p0x = VectorEx(0.0d, 0.0d, 0.0d);
-    VectorEx deltalx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx tx = VectorEx(0.5d, 0.5d, 0.5d);
-	VectorEx resultx = tx.ClosestPointOnLine(p0x, deltalx);
+	Vector p0x = Vector(0.0d, 0.0d, 0.0d);
+    Vector deltalx = Vector(1.0d, 1.0d, 1.0d);
+    Vector tx = Vector(0.5d, 0.5d, 0.5d);
+	Vector resultx = tx.ClosestPointOnLine(p0x, deltalx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -453,10 +453,10 @@ int main () {
 
   // Vector::Magnitude
   {
-    Vector a = Vector(30.0d, 30.0d, 30.0d);
+    VectorOld a = VectorOld(30.0d, 30.0d, 30.0d);
 	double result = a.Magnitude();
     // --
-    VectorEx ax = VectorEx(30.0d, 30.0d, 30.0d);
+    Vector ax = Vector(30.0d, 30.0d, 30.0d);
 	double resultx = ax.Magnitude();
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -464,10 +464,10 @@ int main () {
 
   // Vector::MagSquared
   {
-    Vector a = Vector(30.0d, 30.0d, 30.0d);
+    VectorOld a = VectorOld(30.0d, 30.0d, 30.0d);
 	double result = a.MagSquared();
     // --
-    VectorEx ax = VectorEx(30.0d, 30.0d, 30.0d);
+    Vector ax = Vector(30.0d, 30.0d, 30.0d);
 	double resultx = ax.MagSquared();
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -475,13 +475,13 @@ int main () {
 
   // Vector::WithMagnitude
   {
-    Vector a = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld a = VectorOld(1.0d, 1.0d, 1.0d);
 	double s = 2.0d;
-	Vector result = a.WithMagnitude(s);
+	VectorOld result = a.WithMagnitude(s);
     // --
-    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ax = Vector(1.0d, 1.0d, 1.0d);
 	double sx = 2.0d;
-	VectorEx resultx = ax.WithMagnitude(sx);
+	Vector resultx = ax.WithMagnitude(sx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -490,13 +490,13 @@ int main () {
 
   // Vector::ScaledBy
   {
-    Vector a = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld a = VectorOld(1.0d, 1.0d, 1.0d);
 	double s = 2.0d;
-	Vector result = a.ScaledBy(s);
+	VectorOld result = a.ScaledBy(s);
     // --
-    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector ax = Vector(1.0d, 1.0d, 1.0d);
 	double sx = 2.0d;
-	VectorEx resultx = ax.ScaledBy(sx);
+	Vector resultx = ax.ScaledBy(sx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -506,17 +506,17 @@ int main () {
   // Vector::ProjectInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
 
-  // Vector::ProjectVectorInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
+  // Vector::ProjectVectorOldInto(hEntity wrkpl) -- ugh we don't want hEntity coupled here
   {}
 
   // Vector::DivProjected
   {
-    Vector a = Vector(1.0d, 1.0d, 1.0d);
-    Vector s = Vector(1.0d, 0.0d, 0.0d);
+    VectorOld a = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld s = VectorOld(1.0d, 0.0d, 0.0d);
 	double result = a.DivProjected(s);
     // --
-    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx sx = VectorEx(1.0d, 0.0d, 0.0d);
+    Vector ax = Vector(1.0d, 1.0d, 1.0d);
+    Vector sx = Vector(1.0d, 0.0d, 0.0d);
 	double resultx = ax.DivProjected(sx);
 	// --
 	assertm(iseq(result, resultx), "results match");
@@ -524,11 +524,11 @@ int main () {
 
   // Vector::ClosestOrtho
   {
-    Vector a = Vector(1.0d, 1.0d, 1.0d);
-	Vector result = a.ClosestOrtho();
+    VectorOld a = VectorOld(1.0d, 1.0d, 1.0d);
+	VectorOld result = a.ClosestOrtho();
     // --
-    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
-	VectorEx resultx = ax.ClosestOrtho();
+    Vector ax = Vector(1.0d, 1.0d, 1.0d);
+	Vector resultx = ax.ClosestOrtho();
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -537,14 +537,14 @@ int main () {
 
   // Vector::MakeMaxMin
   {
-    Vector t = Vector(1.0d, 0.0d, 0.0d);
-    Vector a = Vector(1.0d, 1.0d, 1.0d);
-    Vector b = Vector(0.0d, 0.0d, 0.0d);
+    VectorOld t = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld a = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld b = VectorOld(0.0d, 0.0d, 0.0d);
 	t.MakeMaxMin(&a, &b);
     // --
-    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx ax = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx bx = VectorEx(0.0d, 0.0d, 0.0d);
+    Vector tx = Vector(1.0d, 0.0d, 0.0d);
+    Vector ax = Vector(1.0d, 1.0d, 1.0d);
+    Vector bx = Vector(0.0d, 0.0d, 0.0d);
 	tx.MakeMaxMin(ax, bx);
 	// --
 	assertm(iseq(a.x, ax.x), "results match");
@@ -557,15 +557,15 @@ int main () {
 
   // Vector::ClampWithin
   {
-    Vector t = Vector(1.0d, 0.0d, 0.0d);
+    VectorOld t = VectorOld(1.0d, 0.0d, 0.0d);
     double minv = 0.1;
 	double maxv = 0.9;
-	Vector result = t.ClampWithin(minv, maxv);
+	VectorOld result = t.ClampWithin(minv, maxv);
     // --
-    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
+    Vector tx = Vector(1.0d, 0.0d, 0.0d);
     double minvx = 0.1;
 	double maxvx = 0.9;
-	VectorEx resultx = tx.ClampWithin(minvx, maxvx);
+	Vector resultx = tx.ClampWithin(minvx, maxvx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -574,14 +574,14 @@ int main () {
 
   // Vector::OutsideAndNotOn
   {
-    Vector t = Vector(1.0d, 0.0d, 0.0d);
-    Vector maxv = Vector(1.0d, 1.0d, 1.0d);
-    Vector minv = Vector(0.0d, 0.0d, 0.0d);
+    VectorOld t = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld maxv = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld minv = VectorOld(0.0d, 0.0d, 0.0d);
 	bool result = t.OutsideAndNotOn(maxv, minv);
     // --
-    VectorEx tx = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx maxvx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx minvx = VectorEx(0.0d, 0.0d, 0.0d);
+    Vector tx = Vector(1.0d, 0.0d, 0.0d);
+    Vector maxvx = Vector(1.0d, 1.0d, 1.0d);
+    Vector minvx = Vector(0.0d, 0.0d, 0.0d);
 	bool resultx = tx.OutsideAndNotOn(maxvx, minvx);
 	// --
 	assertm(result == resultx, "results match");
@@ -589,21 +589,21 @@ int main () {
 
   // Vector::InPerspective
   {
-    Vector t = Vector(0.0d, 0.0d, 0.0d);
-    Vector u = Vector(1.0d, 0.0d, 0.0d);
-    Vector v = Vector(1.0d, 0.0d, 0.0d);
-    Vector n = Vector(1.0d, 1.0d, 1.0d);
-    Vector origin = Vector(0.0d, 0.0d, 0.0d);
+    VectorOld t = VectorOld(0.0d, 0.0d, 0.0d);
+    VectorOld u = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld v = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld n = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld origin = VectorOld(0.0d, 0.0d, 0.0d);
 	double cameraTan = 1.0d;
-	Vector result = t.InPerspective(u, v, n, origin, cameraTan);
+	VectorOld result = t.InPerspective(u, v, n, origin, cameraTan);
     // --
-    VectorEx tx = VectorEx(0.0d, 0.0d, 0.0d);
-    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx vx = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx nx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx originx = VectorEx(0.0d, 0.0d, 0.0d);
+    Vector tx = Vector(0.0d, 0.0d, 0.0d);
+    Vector ux = Vector(1.0d, 0.0d, 0.0d);
+    Vector vx = Vector(1.0d, 0.0d, 0.0d);
+    Vector nx = Vector(1.0d, 1.0d, 1.0d);
+    Vector originx = Vector(0.0d, 0.0d, 0.0d);
 	double cameraTanx = 1.0d;
-	VectorEx resultx = tx.InPerspective(ux, vx, nx, originx, cameraTanx);
+	Vector resultx = tx.InPerspective(ux, vx, nx, originx, cameraTanx);
 	// --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
@@ -612,14 +612,14 @@ int main () {
 
   // Vector::Project2d
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
-    Vector u = Vector(1.0d, 0.0d, 0.0d);
-    Vector v = Vector(0.0d, 0.0d, 1.0d);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
+    VectorOld u = VectorOld(1.0d, 0.0d, 0.0d);
+    VectorOld v = VectorOld(0.0d, 0.0d, 1.0d);
     Point2d result = t.Project2d(u, v);
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
-    VectorEx ux = VectorEx(1.0d, 0.0d, 0.0d);
-    VectorEx vx = VectorEx(0.0d, 0.0d, 1.0d);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
+    Vector ux = Vector(1.0d, 0.0d, 0.0d);
+    Vector vx = Vector(0.0d, 0.0d, 1.0d);
     Point2d resultx = tx.Project2d(ux, vx);
     // --
 	assertm(iseq(result.x, resultx.x), "results match");
@@ -628,17 +628,17 @@ int main () {
 
   // Vector::ProjectXy
   {
-    Vector t = Vector(1.0d, 1.0d, 1.0d);
+    VectorOld t = VectorOld(1.0d, 1.0d, 1.0d);
     Point2d result = t.ProjectXy();
     // --
-    VectorEx tx = VectorEx(1.0d, 1.0d, 1.0d);
+    Vector tx = Vector(1.0d, 1.0d, 1.0d);
     Point2d resultx = tx.ProjectXy();
     // --
 	assertm(iseq(result.x, resultx.x), "results match");
 	assertm(iseq(result.y, resultx.y), "results match");
   }
 
-  // Vector4 Project4d() const;
+  // Vector4::Project4d() const;
   {}
 
 /*
@@ -655,7 +655,7 @@ int main () {
 /*
 int main () {
   STriangle testTri = STriangle();
-  Vector n = testTri.Normal().WithMagnitude(1);
+  VectorOld n = testTri.Normal().WithMagnitude(1);
 
   std::cout << "testTri.a.x: " << testTri.a.x << std::endl;
 

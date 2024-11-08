@@ -312,9 +312,8 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs,
     Vector a1 = a0.Plus(da);
     Vector b1 = b0.Plus(db);
 
-    bool skew;
     VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(a0, a0.Plus(da),
-                                              b0, b0.Plus(db), skew);
+                                              b0, b0.Plus(db), true);
     Vector pi = eeep.intersectionPoint;
 
     if(!eeep.skewed) {

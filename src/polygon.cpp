@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------
 
 #include "solvespace.h"
-//#include "vectorex.h"
+//#include "vector.h"
 #include <iostream>
 
 /*

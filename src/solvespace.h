@@ -158,7 +158,7 @@ class Vector;
 class Vector4;
 }
 
-#include "vectorex.h"
+#include "vector.h"
 
 namespace SolveSpace {
 #include "dsc.h"

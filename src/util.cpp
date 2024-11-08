@@ -525,7 +525,6 @@ double Point2d::Magnitude() const {
 Point2d Point2d::WithMagnitude(double v) const {
     double m = Magnitude();
     if(m < 1e-20) {
-        dbp("!!! WithMagnitude() of zero vector");
         return { v, 0 };
     }
     return { x * v / m, y * v / m };
