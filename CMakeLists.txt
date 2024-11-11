@@ -277,7 +277,7 @@ if(ENABLE_COVERAGE)
             -a ${CMAKE_BINARY_DIR}/coverage_test.info
         COMMAND ${LCOV} ${LCOV_FLAGS} --summary
             ${CMAKE_BINARY_DIR}/coverage_full.info
-        COMMAND ${GENHTML} -q --branch-coverage --demangle-cpp --legend
+        COMMAND ${GENHTML} -q --branch-coverage --demangle-cpp --legend --ignore-errors source
             ${CMAKE_BINARY_DIR}/coverage_full.info
             -o ${CMAKE_BINARY_DIR}/coverage/
             -t "SolveSpace testbench"
