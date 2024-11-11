@@ -1,8 +1,15 @@
 cmake_minimum_required (VERSION 3.20)
 
-project(SolveSpace)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ENABLE_COVERAGE ON)
+
+if (ENABLE_COVERAGE)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
+project(SolveSpace)
 
 # can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
 # set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
@@ -243,11 +250,15 @@ add_dependencies(solvespace-debugtool resources)
 
 # coverage reports
 if(ENABLE_COVERAGE)
+    find_program(GCOV gcov)
+    find_program(LCOV lcov)
+    find_program(GENHTML genhtml)
+
     set(LCOV_FLAGS   -q --gcov-tool ${GCOV})
     set(LCOV_FLAGS   ${LCOV_FLAGS} --rc lcov_branch_coverage=1)
     set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_line=(ssassert|switch)")
     set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_br_line=BRANCH_ALWAYS_TAKEN")
-    set(LCOV_COLLECT -c -b ${CMAKE_SOURCE_DIR}/src -d ${CMAKE_BINARY_DIR}/src --no-external)
+    set(LCOV_COLLECT -c -b ${CMAKE_SOURCE_DIR}/src --no-external -d ${CMAKE_CURRENT_BINARY_DIR}/)
 
     add_custom_command(
         OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
