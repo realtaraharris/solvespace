@@ -769,7 +769,7 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
         } else if(strcmp(line, VERSION_STRING)==0) {
 
         } else if(StrStartsWith(line, "Triangle ")) {
-            STriangle tr = {};
+            STriangle tr = STriangle();
             unsigned int rgba = 0;
             if(sscanf(line, "Triangle %x %x  "
                              "%lf %lf %lf  %lf %lf %lf  %lf %lf %lf",

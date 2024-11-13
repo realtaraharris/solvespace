@@ -166,29 +166,7 @@ public:
     void InverseTransformInto(SPolygon *sp, Vector u, Vector v, Vector n) const;
 };
 
-class STriangle {
-public:
-    int         tag;
-    STriMeta    meta;
-
-    Vector a = Vector(0, 0, 0), b = Vector(0, 0, 0), c = Vector(0, 0, 0);
-    Vector an = Vector(0, 0, 0), bn = Vector(0, 0, 0), cn = Vector(0, 0, 0);
-
-    static STriangle From(STriMeta meta, Vector a, Vector b, Vector c);
-    Vector Normal() const;
-    void FlipNormal();
-    double MinAltitude() const;
-    bool ContainsPoint(Vector p) const;
-    bool ContainsPointProjd(Vector n, Vector p) const;
-    STriangle Transform(Vector o, Vector u, Vector v) const;
-    bool Raytrace(const Vector &rayPoint, const Vector &rayDir,
-                  double *t, Vector *inters) const;
-    double SignedVolume() const;
-    double Area() const;
-    bool IsDegenerate() const;
-    Vector vertices (int i) const;
-    Vector normals (int i) const;
-};
+#include "striangle.h"
 
 class SBsp2 {
 public:

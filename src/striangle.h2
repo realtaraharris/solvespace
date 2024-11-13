@@ -1,6 +1,6 @@
-STriangleEx: type = {
-  tag: i32 = ();
-  meta: STriMeta = ();
+STriangle: type = {
+  public tag: i32 = ();
+  public meta: STriMeta = ();
 
   public a: Vector = (); // TODO: try taking these private once this replaces the cpp1 Vector class
   public b: Vector = ();
@@ -10,17 +10,24 @@ STriangleEx: type = {
   public bn: Vector = ();
   public cn: Vector = ();
 
-  operator=: (out this) = {
-    meta = STriMeta();
-  }
+  operator=: (out this) = {}
+  operator=: (out this, in that) = {
+	this.tag = that.tag;
+    this.meta = that.meta;
+	this.a = that.a;
+	this.b = that.b;
+	this.c = that.c;
 
+	this.an = that.an;
+	this.bn = that.bn;
+	this.cn = that.cn;
+  }
   operator=: (out this, metax: STriMeta, ax: Vector, bx: Vector, cx: Vector) = {
 	meta = metax;
     a = ax;
 	b = bx;
 	c = cx;
   }
-
   operator=: (out this, metax: STriMeta, ax: Vector, bx: Vector, cx: Vector, anx: Vector, bnx: Vector, cnx: Vector) = {
 	meta = metax;
     a = ax;
@@ -31,17 +38,18 @@ STriangleEx: type = {
 	bn = bnx;
 	cn = cnx;
   }
-
-  From: (metax: STriMeta, ax: Vector, bx: Vector, cx: Vector) -> STriangleEx = {
-    return STriangleEx(metax, ax, bx, cx);
+  From: (metax: STriMeta, ax: Vector, bx: Vector, cx: Vector) -> STriangle = {
+    return STriangle(metax, ax, bx, cx);
   }
-  
   Normal: (this) -> Vector = {
     ab: Vector = this.b.Minus(this.a);
 	bc: Vector = this.c.Minus(this.b);
     return ab.Cross(bc);
   }
-
+  FlipNormal: (inout this) = {
+    std::swap(this.a, this.b);
+    std::swap(this.an, this.bn);
+  }
   MinAltitude: (this) -> double = {
 	altA: double = this.a.DistanceToLine(this.b, this.c.Minus(this.b));
 	altB: double = this.b.DistanceToLine(this.c, this.a.Minus(this.c));
@@ -49,7 +57,6 @@ STriangleEx: type = {
 
     return min(altA, min(altB, altC));
   }
-
   ContainsPoint: (this, p: Vector) -> bool = {
     n: Vector = this.Normal();
     if (this.MinAltitude() < LENGTH_EPS) { // shouldn't happen; zero-area triangle
@@ -57,7 +64,6 @@ STriangleEx: type = {
     }
     return this.ContainsPointProjd(n.WithMagnitude(1.0), p);
   }
-
   ContainsPointProjd: (this, n: Vector, p: Vector) -> bool = {
     ab: Vector = this.b.Minus(this.a);
 	bc: Vector = this.c.Minus(this.b);
@@ -74,6 +80,58 @@ STriangleEx: type = {
 
     return true;
   }
+  Transform: (this, u: Vector, v: Vector, n: Vector) -> STriangle = {
+	return STriangle(this.meta,
+	  this.a.ScaleOutOfCsys(u, v, n),
+	  this.b.ScaleOutOfCsys(u, v, n),
+	  this.c.ScaleOutOfCsys(u, v, n),
+      this.an.ScaleOutOfCsys(u, v, n),
+      this.bn.ScaleOutOfCsys(u, v, n),
+      this.cn.ScaleOutOfCsys(u, v, n)
+	);
+  }
+  Raytrace: (this, rayPoint: Vector, rayDir: Vector, calcIntersection: bool) -> (hit: bool, t: double, inters: Vector) = {
+	// algorithm from "Fast, Minimum Storage Ray/Triangle Intersection" by Tomas Moeller & Ben Trumbore
+	hit = false;
+	t = 0;
+	inters = Vector(0, 0, 0);
+
+    // find vectors for two edges sharing vertex A
+    edge1: Vector = this.b.Minus(this.a);
+    edge2: Vector = this.c.Minus(this.a);
+
+    // begin calculating determinant - also used to calculate U parameter
+    pvec: Vector = rayDir.Cross(edge2);
+
+    // if determinant is near zero, ray lies in plane of triangle. also cull back-facing triangles here
+    det: double = edge1.Dot(pvec);
+    if (-det < LENGTH_EPS) { return; }
+	inv_det: double = 1.0f / det;
+
+    // calculate distance from vertex A to ray origin
+    tvec: Vector = rayPoint.Minus(this.a);
+
+    // calculate U parameter and test bounds
+    u: double = tvec.Dot(pvec) * inv_det;
+    if (u < 0.0f || u > 1.0f) { return; }
+
+    // prepare to test V parameter
+    qvec: Vector = tvec.Cross(edge1);
+
+    // calculate v parameter and test bounds
+    v: double = rayDir.Dot(qvec) * inv_det;
+    if (v < 0.0f || u + v > 1.0f) { return; }
+
+    // calculate t, ray intersects triangle
+    t = edge2.Dot(qvec) * inv_det;
+
+    // calculate intersection point
+    if (calcIntersection) {
+		inters = rayPoint.Plus(rayDir.ScaledBy(t));
+	}
+
+    hit = true;
+  }
   SignedVolume: (this) -> double = {
     return this.a.Dot(this.b.Cross(this.c)) / 6.0;
   }
@@ -82,25 +140,31 @@ STriangleEx: type = {
     cb: Vector = this.c.Minus(this.b);
     return ab.Cross(cb).Magnitude() / 2.0;
   }
-
   IsDegenerate: (this) -> bool = {
     return this.a.OnLineSegment(this.b, this.c) ||
            this.b.OnLineSegment(this.a, this.c) ||
            this.c.OnLineSegment(this.a, this.b);
   }
-  FlipNormal: (inout this) = {
-    std::swap(this.a, this.b);
-    std::swap(this.an, this.bn);
+  vertices: (this, i: int) -> Vector = {
+    if (i == 0) {
+	   return this.a;
+	} else if (i == 1) {
+	   return this.b;
+	} else if (i == 2) {
+	   return this.c;
+	} else {
+		ssassert(false, "invalid array access on vertices");
+	}
   }
-
-  Transform: (this, u: Vector, v: Vector, n: Vector) -> STriangleEx = {
-	return STriangleEx(this.meta,
-	  this.a.ScaleOutOfCsys(u, v, n),
-	  this.b.ScaleOutOfCsys(u, v, n),
-	  this.c.ScaleOutOfCsys(u, v, n),
-      this.an.ScaleOutOfCsys(u, v, n),
-      this.bn.ScaleOutOfCsys(u, v, n),
-      this.cn.ScaleOutOfCsys(u, v, n)
-	);
+  normals: (this, i: int) -> Vector = {
+    if (i == 0) {
+	   return this.an;
+	} else if (i == 1) {
+	   return this.bn;
+	} else if (i == 2) {
+	   return this.cn;
+	} else {
+		ssassert(false, "invalid array access on normal");
+	}
   }
 }

@@ -222,8 +222,7 @@ haveEdge:
 }
 
 bool SContour::IsEmptyTriangle(int ap, int bp, int cp, double scaledEPS) const {
-
-    STriangle tr = {};
+	STriangle tr = STriangle();
     tr.a = l[ap].p;
     tr.b = l[bp].p;
     tr.c = l[cp].p;
@@ -282,8 +281,8 @@ bool SContour::IsEar(int bp, double scaledEps) const {
     int ap = WRAP(bp-1, l.n),
         cp = WRAP(bp+1, l.n);
 
-    STriangle tr = {};
-    tr.a = l[ap].p;
+    STriangle tr = STriangle();
+	tr.a = l[ap].p;
     tr.b = l[bp].p;
     tr.c = l[cp].p;
 
@@ -343,8 +342,8 @@ void SContour::ClipEarInto(SMesh *m, int bp, double scaledEps) {
     int ap = WRAP(bp-1, l.n),
         cp = WRAP(bp+1, l.n);
 
-    STriangle tr = {};
-    tr.a = l[ap].p;
+    STriangle tr = STriangle();
+	tr.a = l[ap].p;
     tr.b = l[bp].p;
     tr.c = l[cp].p;
     if(tr.Normal().MagSquared() < scaledEps*scaledEps) {
@@ -430,8 +429,8 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
                 if (j > 3) {
                     Vector center = l[pstart+1].p.Plus(l[pstart+j-1].p).ScaledBy(0.5);
                     for (int x=0; x<j; x++) {
-                        STriangle tr = {};
-                        tr.a = center;
+                        STriangle tr = STriangle();
+						tr.a = center;
                         tr.b = l[pstart+x].p;
                         tr.c = l[pstart+x+1].p;
                         m->AddTriangle(&tr);
@@ -439,8 +438,8 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
                     for (int x=1; x<j; x++) {
                         l[pstart+x].tag = 1;
                     }
-                    STriangle tr = {};
-                    tr.a = center;
+                    STriangle tr = STriangle();
+					tr.a = center;
                     tr.b = l[pstart+j].p;
                     tr.c = l[pstart].p;
                     m->AddTriangle(&tr);    
@@ -656,8 +655,8 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
                            compare to LENGTH_EPS instead of zero to avoid alternating triangle
                            "orientations" when the tangents are orthogonal (revolve, lathe etc.)
                            this results in a higher quality mesh. */
-                        STriangle tr = {};
-                        tr.a = a;
+                        STriangle tr = STriangle();
+						tr.a = a;
                         tr.b = b;
                         tr.c = c;
                         mesh->AddTriangle(&tr);
@@ -666,8 +665,8 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
                         tr.c = d;
                         mesh->AddTriangle(&tr);
                     } else{
-                        STriangle tr = {};
-                        tr.a = a;
+                        STriangle tr = STriangle();
+						tr.a = a;
                         tr.b = b;
                         tr.c = d;
                         mesh->AddTriangle(&tr);

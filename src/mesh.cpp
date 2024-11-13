@@ -26,7 +26,7 @@ void SMesh::AddTriangle(STriMeta meta, Vector n, Vector a, Vector b, Vector c) {
     }
 }
 void SMesh::AddTriangle(STriMeta meta, Vector a, Vector b, Vector c) {
-    STriangle t = {};
+    STriangle t = STriangle();
     t.meta = meta;
     t.a = a;
     t.b = b;
@@ -345,14 +345,16 @@ uint32_t SMesh::FirstIntersectionWith(Point2d mp) const {
     double faceT = VERY_NEGATIVE;
     for(int i = 0; i < l.n; i++) {
         const STriangle &tr = l[i];
-        if(tr.meta.face == 0) continue;
+        if (tr.meta.face == 0) continue;
 
-        double t;
-        if(!tr.Raytrace(rayPoint, rayDir, &t, NULL)) continue;
-        if(t > faceT) {
+		SolveSpace::STriangle::Raytrace_ret eeep = tr.Raytrace(rayPoint, rayDir, false);
+
+        if (!eeep.hit) continue;
+        if (eeep.t > faceT) {
             face  = tr.meta.face;
-            faceT = t;
+            faceT = eeep.t;
         }
+
     }
 
     return face;

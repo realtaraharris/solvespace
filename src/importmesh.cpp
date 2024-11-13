@@ -149,7 +149,7 @@ bool LinkStl(const Platform::Path &filename, EntityList *el, SMesh *m, SShell *s
     std::vector<vertex> verts = {};
     
     for(uint32_t i = 0; i<n; i++) {
-        STriangle tr = {};
+        STriangle tr = STriangle();
 
         // read the triangle normal
         f.read((char*)&xn, 4);
