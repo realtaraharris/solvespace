@@ -153,6 +153,7 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 
 # test suite
 set(testsuite_sources
+    test/unit/striangle-test.cpp
     test/analysis/contour_area/test.cpp
     test/core/expr/test.cpp
     test/core/locale/test.cpp
