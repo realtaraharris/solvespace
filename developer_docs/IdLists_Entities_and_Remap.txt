@@ -1,7 +1,7 @@
 Some notes about Entities, Entity IDs and the IdList structure
 ==============================================================
 Sketch entities in SolveSpace are all of the same type without use of language
-support for polymorphism. The entity class is defined in sketch.h. That class
+support for polymorphism. The entity class is defined in entitymain.h. That class
 contains an enum for each entity to define its type (line, arc, etc...) and some
 other members that can be used to store different things depending on the entity
 type. This means all entities are the same size, so some data may be reference
@@ -17,7 +17,7 @@ The IdList class is a template and is used for more than entities.
 
 EntityMap:
 ==========
-Another important structure is the EntityMap and EntityKey defined in sketch.h
+Another important structure is the EntityMap and EntityKey defined in entitymain.h
 This is what allows SovleSpace to update groups when earlier groups in the
 sketch are changed. If a rectangle is extruded to a box and items are
 constrained to entities on that box, the user can go back to the sketch and

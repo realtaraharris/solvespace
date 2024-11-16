@@ -5,7 +5,6 @@
 // Copyright 2020 Paul Kahler.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
-#include "sketch.h"
 #include <vector>
 
 #define MIN_POINT_DISTANCE 0.001

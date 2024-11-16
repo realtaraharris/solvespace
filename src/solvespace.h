@@ -180,7 +180,7 @@ enum class SolveResult : uint32_t {
     TOO_MANY_UNKNOWNS        = 20
 };
 
-#include "sketch.h"
+#include "entitymain.h"
 #include "ui.h"
 #include "expr.h"
 

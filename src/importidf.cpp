@@ -6,7 +6,6 @@
 // Copyright 2020 Paul Kahler.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
-#include "sketch.h"
 
 // Split a string into substrings separated by spaces.
 // Allow quotes to enclose spaces within a string
