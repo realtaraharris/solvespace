@@ -42,7 +42,7 @@ add_library(solvespace-core OBJECT
 	src/describescreen.cpp
 	src/draw.cpp
 	src/drawentity.cpp
-	src/entity.cpp
+	src/entitybase.cpp
 	src/export.cpp
 	src/exportstep.cpp
 	src/expr.cpp
