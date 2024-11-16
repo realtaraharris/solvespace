@@ -106,7 +106,6 @@ void SolveSpace::MultMatrix(double *mata, double *matb, double *matr) {
 static void MessageBox(const char *fmt, va_list va, bool error,
                        std::function<void()> onDismiss = std::function<void()>())
 {
-#ifndef LIBRARY
     va_list va_size;
     va_copy(va_size, va);
     int size = vsnprintf(NULL, 0, fmt, va_size);
@@ -176,7 +175,6 @@ static void MessageBox(const char *fmt, va_list va, bool error,
         }
     };
     dialog->ShowModal();
-#endif
 }
 void SolveSpace::Error(const char *fmt, ...)
 {

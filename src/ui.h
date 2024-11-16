@@ -42,21 +42,13 @@ inline const char *N_(const char *msgid) {
 inline const char *CN_(const char *msgctxt, const char *msgid) {
     return msgid;
 }
-#if defined(LIBRARY)
-inline const char *_(const char *msgid) {
-    return msgid;
-}
-inline const char *C_(const char *msgctxt, const char *msgid) {
-    return msgid;
-}
-#else
+
 inline const char *_(const char *msgid) {
     return Translate(msgid).c_str();
 }
 inline const char *C_(const char *msgctxt, const char *msgid) {
     return Translate(msgctxt, msgid).c_str();
 }
-#endif
 
 // This table describes the top-level menus in the graphics window.
 enum class Command : uint32_t {

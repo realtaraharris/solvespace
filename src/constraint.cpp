@@ -54,8 +54,6 @@ std::string Constraint::DescriptionString() const {
     return ssprintf("c%03x-%s", h.v, s.c_str());
 }
 
-#ifndef LIBRARY
-
 //-----------------------------------------------------------------------------
 // Delete all constraints with the specified type, entityA, ptA. We use this
 // when auto-removing constraints that would become redundant.
@@ -861,8 +859,6 @@ void Constraint::MenuConstrain(Command id) {
 
     SS.GW.ClearSelection();
 }
-
-#endif /* ! LIBRARY */
 
 // formerly drawconstraint.cpp
 //-----------------------------------------------------------------------------
