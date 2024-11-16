@@ -1,4 +1,5 @@
 #include "clipboardrequest.h"
+#include "filewriter/vectorfilewriter.h"
 
 class SolveSpaceUI {
 public:

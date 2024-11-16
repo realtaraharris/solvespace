@@ -221,7 +221,6 @@ void Error(const char *fmt, ...);
 
 #include "system.h"
 #include "ttf.h"
-#include "filewriter.h"
 #include "sketch.h"
 #include "solvespaceui.h"
 

@@ -1,6 +1,7 @@
 #include "solvespace.h"
 #include "libdxfrw.h"
 #include "libdwgr.h"
+#include "filewriter/dxffilewriter.h"
 
 namespace SolveSpace {
 

@@ -32,19 +32,16 @@ add_library(solvespace-core OBJECT
 	src/platform/gui.cpp
 	src/platform/platform.cpp
 	src/importdxf.cpp
-	src/exportvector.cpp
 	src/ttf.cpp
 	src/bsp.cpp
 	src/clipboard.cpp
 	src/confscreen.cpp
 	src/constraint.cpp
 	src/constraintbase.cpp
-	src/describescreen.cpp
 	src/draw.cpp
 	src/entity.cpp
 	src/entitybase.cpp
 	src/export.cpp
-	src/exportstep.cpp
 	src/expr.cpp
 	src/file.cpp
 	src/generate.cpp
@@ -61,12 +58,13 @@ add_library(solvespace-core OBJECT
 	src/resource.cpp
 	src/style.cpp
 	src/system.cpp
+	src/sketch.cpp
 	src/textscreens.cpp
 	src/textwin.cpp
 	src/undoredo.cpp
 	src/util.cpp
 	src/view.cpp
-	src/solvespace.cpp
+	src/solvespaceui.cpp
 	src/render/render.cpp
 	src/render/render2d.cpp
 	src/render/renderagg.cpp
@@ -79,6 +77,16 @@ add_library(solvespace-core OBJECT
 	src/srf/surface.cpp
 	src/srf/surfinter.cpp
 	src/srf/triangulate.cpp
+	src/filewriter/dxffilewriter.cpp
+	src/filewriter/epsfilewriter.cpp
+	src/filewriter/hpglfilewriter.cpp
+	src/filewriter/pdffilewriter.cpp
+	src/filewriter/step2dfilewriter.cpp
+	src/filewriter/stepfilewriter.cpp
+	src/filewriter/gcodefilewriter.cpp
+	src/filewriter/svgfilewriter.cpp
+	src/filewriter/vectorfilewriter.cpp
+	src/filewriter/stipplepattern.cpp
 )
 
 target_include_directories(solvespace-core PRIVATE

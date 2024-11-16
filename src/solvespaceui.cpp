@@ -7,6 +7,8 @@
 #include "cpp2util.h"
 #include "solvespace.h"
 #include "config.h"
+#include "filewriter/vectorfilewriter.h"
+#include "filewriter/stepfilewriter.h"
 
 #if defined(HAIKU_GUI)
     HaikuSpaceUI SolveSpace::SS = {};
@@ -16,7 +18,6 @@
 
 Sketch SolveSpace::SK = {};
 
-// TODO: move this into SolveSpaceUI.cpp
 void SolveSpaceUI::Init() {
 #if !defined(HEADLESS)
     // Check that the resource system works.
