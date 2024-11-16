@@ -38,10 +38,9 @@ add_library(solvespace-core OBJECT
 	src/clipboard.cpp
 	src/confscreen.cpp
 	src/constraint.cpp
-	src/constrainteq.cpp
+	src/constraintbase.cpp
 	src/describescreen.cpp
 	src/draw.cpp
-	src/drawconstraint.cpp
 	src/drawentity.cpp
 	src/entity.cpp
 	src/export.cpp

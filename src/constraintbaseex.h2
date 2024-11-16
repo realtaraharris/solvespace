@@ -1,0 +1,1124 @@
+// TODO: nest this into ConstraintBase when cpp2 adds that feature
+/*
+ConstraintBaseType: @enum<u32> type = {
+  POINTS_COINCIDENT      :=  20;
+  PT_PT_DISTANCE         :=  30;
+  PT_PLANE_DISTANCE      :=  31;
+  PT_LINE_DISTANCE       :=  32;
+  PT_FACE_DISTANCE       :=  33;
+  PROJ_PT_DISTANCE       :=  34;
+  PT_IN_PLANE            :=  41;
+  PT_ON_LINE             :=  42;
+  PT_ON_FACE             :=  43;
+  EQUAL_LENGTH_LINES     :=  50;
+  LENGTH_RATIO           :=  51;
+  EQ_LEN_PT_LINE_D       :=  52;
+  EQ_PT_LN_DISTANCES     :=  53;
+  EQUAL_ANGLE            :=  54;
+  EQUAL_LINE_ARC_LEN     :=  55;
+  LENGTH_DIFFERENCE      :=  56;
+  SYMMETRIC              :=  60;
+  SYMMETRIC_HORIZ        :=  61;
+  SYMMETRIC_VERT         :=  62;
+  SYMMETRIC_LINE         :=  63;
+  AT_MIDPOINT            :=  70;
+  HORIZONTAL             :=  80;
+  VERTICAL               :=  81;
+  DIAMETER               :=  90;
+  PT_ON_CIRCLE           := 100;
+  SAME_ORIENTATION       := 110;
+  ANGLE                  := 120;
+  PARALLEL               := 121;
+  PERPENDICULAR          := 122;
+  ARC_LINE_TANGENT       := 123;
+  CUBIC_LINE_TANGENT     := 124;
+  CURVE_CURVE_TANGENT    := 125;
+  EQUAL_RADIUS           := 130;
+  WHERE_DRAGGED          := 200;
+  ARC_ARC_LEN_RATIO      := 210;
+  ARC_LINE_LEN_RATIO     := 211;
+  ARC_ARC_DIFFERENCE     := 212;
+  ARC_LINE_DIFFERENCE    := 213;
+  COMMENT                := 1000;
+}
+*/
+
+enum  ConstraintBaseType : uint32_t {
+        POINTS_COINCIDENT      =  20,
+        PT_PT_DISTANCE         =  30,
+        PT_PLANE_DISTANCE      =  31,
+        PT_LINE_DISTANCE       =  32,
+        PT_FACE_DISTANCE       =  33,
+        PROJ_PT_DISTANCE       =  34,
+        PT_IN_PLANE            =  41,
+        PT_ON_LINE             =  42,
+        PT_ON_FACE             =  43,
+        EQUAL_LENGTH_LINES     =  50,
+        LENGTH_RATIO           =  51,
+        EQ_LEN_PT_LINE_D       =  52,
+        EQ_PT_LN_DISTANCES     =  53,
+        EQUAL_ANGLE            =  54,
+        EQUAL_LINE_ARC_LEN     =  55,
+        LENGTH_DIFFERENCE      =  56,
+        SYMMETRIC              =  60,
+        SYMMETRIC_HORIZ        =  61,
+        SYMMETRIC_VERT         =  62,
+        SYMMETRIC_LINE         =  63,
+        AT_MIDPOINT            =  70,
+        HORIZONTAL             =  80,
+        VERTICAL               =  81,
+        DIAMETER               =  90,
+        PT_ON_CIRCLE           = 100,
+        SAME_ORIENTATION       = 110,
+        ANGLE                  = 120,
+        PARALLEL               = 121,
+        PERPENDICULAR          = 122,
+        ARC_LINE_TANGENT       = 123,
+        CUBIC_LINE_TANGENT     = 124,
+        CURVE_CURVE_TANGENT    = 125,
+        EQUAL_RADIUS           = 130,
+        WHERE_DRAGGED          = 200,
+        ARC_ARC_LEN_RATIO      = 210,
+        ARC_LINE_LEN_RATIO     = 211,
+        ARC_ARC_DIFFERENCE     = 212,
+        ARC_LINE_DIFFERENCE    = 213,
+        COMMENT                = 1000
+    };
+
+ConstraintBase: type = {
+  public tag: i32 = ();
+  public h: hConstraint;
+  public NO_CONSTRAINT: hConstraint;
+
+  public type: ConstraintBaseType;
+  public group: hGroup;
+  public workplane: hEntity;
+
+  // these are the parameters for the constraint
+  public valA: double;
+  public valP: hParam;
+  public ptA: hEntity;
+  public ptB: hEntity;
+  public entityA: hEntity;
+  public entityB: hEntity;
+  public entityC: hEntity;
+  public entityD: hEntity;
+  public other: bool;
+  public other2: bool;
+  public reference: bool; // a ref dimension, that generates no eqs
+  public comment: std::string; // since comments are represented as constraints
+  Equals: (this, c: ConstraintBase) -> bool = {
+    return (
+      this.type == c.type &&
+      this.group == c.group &&
+      this.workplane == c.workplane &&
+      this.valA == c.valA &&
+      this.valP == c.valP &&
+      this.ptA == c.ptA &&
+      this.ptB == c.ptB &&
+      this.entityA == c.entityA &&
+      this.entityB == c.entityB &&
+      this.entityC == c.entityC &&
+      this.entityD == c.entityD &&
+      this.other == c.other &&
+      this.other2 == c.other2 &&
+      this.reference == c.reference &&
+      this.comment == c.comment
+	);
+  }
+  HasLabel: (this) -> bool = {
+    if (
+	  this.type == ConstraintBaseType::PT_LINE_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_PLANE_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_FACE_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_PT_DISTANCE ||
+      this.type == ConstraintBaseType::PROJ_PT_DISTANCE ||
+      this.type == ConstraintBaseType::DIAMETER ||
+      this.type == ConstraintBaseType::LENGTH_RATIO ||
+      this.type == ConstraintBaseType::ARC_ARC_LEN_RATIO ||
+      this.type == ConstraintBaseType::ARC_LINE_LEN_RATIO ||
+      this.type == ConstraintBaseType::LENGTH_DIFFERENCE ||
+      this.type == ConstraintBaseType::ARC_ARC_DIFFERENCE ||
+      this.type == ConstraintBaseType::ARC_LINE_DIFFERENCE ||
+      this.type == ConstraintBaseType::ANGLE ||
+      this.type == ConstraintBaseType::COMMENT
+	) {
+      return true;
+	} else {
+	  return false;
+    }
+  }
+  IsProjectible: (this) -> bool = {
+    if (
+	  this.type == ConstraintBaseType::POINTS_COINCIDENT ||
+      this.type == ConstraintBaseType::PT_PT_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_LINE_DISTANCE ||
+      this.type == ConstraintBaseType::PT_ON_LINE ||
+	  this.type == ConstraintBaseType::EQUAL_LENGTH_LINES ||
+	  this.type == ConstraintBaseType::EQ_LEN_PT_LINE_D ||
+	  this.type == ConstraintBaseType::EQ_PT_LN_DISTANCES ||
+	  this.type == ConstraintBaseType::EQUAL_ANGLE ||
+	  this.type == ConstraintBaseType::LENGTH_RATIO ||
+	  this.type == ConstraintBaseType::ARC_ARC_LEN_RATIO ||
+	  this.type == ConstraintBaseType::ARC_LINE_LEN_RATIO ||
+	  this.type == ConstraintBaseType::LENGTH_DIFFERENCE ||
+	  this.type == ConstraintBaseType::ARC_ARC_DIFFERENCE ||
+	  this.type == ConstraintBaseType::ARC_LINE_DIFFERENCE ||
+	  this.type == ConstraintBaseType::SYMMETRIC ||
+	  this.type == ConstraintBaseType::SYMMETRIC_HORIZ ||
+	  this.type == ConstraintBaseType::SYMMETRIC_VERT ||
+	  this.type == ConstraintBaseType::SYMMETRIC_LINE ||
+	  this.type == ConstraintBaseType::AT_MIDPOINT ||
+	  this.type == ConstraintBaseType::HORIZONTAL ||
+	  this.type == ConstraintBaseType::VERTICAL ||
+	  this.type == ConstraintBaseType::ANGLE ||
+	  this.type == ConstraintBaseType::PARALLEL ||
+	  this.type == ConstraintBaseType::PERPENDICULAR ||
+	  this.type == ConstraintBaseType::WHERE_DRAGGED ||
+	  this.type == ConstraintBaseType::COMMENT
+	) {
+	  return true;
+	}
+	
+	if (
+	  this.type == ConstraintBaseType::PT_PLANE_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_FACE_DISTANCE ||
+	  this.type == ConstraintBaseType::PROJ_PT_DISTANCE ||
+	  this.type == ConstraintBaseType::PT_IN_PLANE ||
+	  this.type == ConstraintBaseType::PT_ON_FACE ||
+	  this.type == ConstraintBaseType::EQUAL_LINE_ARC_LEN ||
+	  this.type == ConstraintBaseType::DIAMETER ||
+	  this.type == ConstraintBaseType::PT_ON_CIRCLE ||
+	  this.type == ConstraintBaseType::SAME_ORIENTATION ||
+	  this.type == ConstraintBaseType::CUBIC_LINE_TANGENT ||
+	  this.type == ConstraintBaseType::CURVE_CURVE_TANGENT ||
+	  this.type == ConstraintBaseType::ARC_LINE_TANGENT ||
+	  this.type == ConstraintBaseType::EQUAL_RADIUS
+	) {
+	  return false;
+    }
+    ssassert(false, "Impossible");  
+  }
+  Generate: (this, l: *IdList<Param, hParam>) = {
+    if (this.type == ConstraintBaseType::PARALLEL || this.type == ConstraintBaseType::CUBIC_LINE_TANGENT) {
+	  // add new parameter only when we operate in 3d space
+	  if (this.workplane != EntityBase::FREE_IN_3D) { return; }
+	}
+	  
+	if (this.type == ConstraintBaseType::SAME_ORIENTATION || this.type == ConstraintBaseType::PT_ON_LINE) {
+	  p: Param = ();
+	  this.valP = h.param(0);
+	  p.h = valP;
+	  l*.Add(p&);
+	  return;
+	}
+  }
+  GenerateEquations: (this, l: *IdList<Equation, hEquation>, forReference: bool = false) = {
+    if (reference && !forReference) { return; }
+
+    exA: *Expr = Expr::From(valA);
+	if (type == Type::PT_PT_DISTANCE) {
+	  AddEq(l, Distance(workplane, ptA, ptB)*.Minus(exA), 0);
+	  return;
+	}
+
+    if (type == Type::PROJ_PT_DISTANCE) {
+	  pA: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+	  pB: ExprVector = SK.GetEntity(ptB)*.PointGetExprs();
+	  dp: ExprVector = pB.Minus(pA);
+	  
+	  pp: ExprVector = SK.GetEntity(entityA)*.VectorGetExprs();
+	  pp = pp.WithMagnitude(Expr::From(1.0));
+	  
+	  AddEq(l, (dp.Dot(pp))*.Minus(exA), 0);
+	  return;
+	}
+
+	if (type == Type::PT_LINE_DISTANCE) {
+	  AddEq(l, PointLineDistance(workplane, ptA, entityA)*.Minus(exA), 0);
+	  return;
+	}
+
+    if (type == Type::PT_PLANE_DISTANCE) {
+	  pt: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+	  AddEq(l, (PointPlaneDistance(pt, entityA))*.Minus(exA), 0);
+	  return;
+	}
+
+	if (type == Type::PT_FACE_DISTANCE) {
+	  pt: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+	  f: *EntityBase = SK.GetEntity(entityA);
+	  p0: ExprVector = f*.FaceGetPointExprs();
+	  n: ExprVector = f*.FaceGetNormalExprs();
+	  AddEq(l, (pt.Minus(p0)).Dot(n)*.Minus(exA), 0);
+	  return;
+	}
+	
+	if (type == Type::EQUAL_LENGTH_LINES) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+	  AddEq(l, Distance(workplane, a*.point[0], a*.point[1])*.Minus(
+	    Distance(workplane, b*.point[0], b*.point[1])), 0);
+      return;
+	}
+
+	// these work on distance squared, since the pt-line distances are signed, and we want the absolute value
+	if (type == Type::EQ_LEN_PT_LINE_D) {
+	  forLen: *EntityBase = SK.GetEntity(entityA);
+	  d1: *Expr = Distance(workplane, forLen*.point[0], forLen*.point[1]);
+	  d2: *Expr = PointLineDistance(workplane, ptA, entityB);
+	  AddEq(l, (d1*.Square())*.Minus(d2*.Square()), 0);
+	  return;
+	}
+
+	if (type == Type::EQ_PT_LN_DISTANCES) {
+	  d1: *Expr = PointLineDistance(workplane, ptA, entityA);
+	  d2: *Expr = PointLineDistance(workplane, ptB, entityB);
+	  AddEq(l, (d1*.Square())*.Minus(d2*.Square()), 0);
+	  return;
+	}
+
+	if (type == Type::LENGTH_RATIO) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+	  la: *Expr = Distance(workplane, a*.point[0], a*.point[1]);
+	  lb: *Expr = Distance(workplane, b*.point[0], b*.point[1]);
+	  AddEq(l, (la*.Div(lb))*.Minus(exA), 0);
+	  return;
+	}
+
+	if (type == Type::ARC_ARC_LEN_RATIO) {
+	  arc1: *EntityBase = SK.GetEntity(entityA);
+	  arc2: *EntityBase = SK.GetEntity(entityB);
+	  
+	  // and get the arc1 radius, and the cosine of its angle
+	  ao1: *EntityBase = SK.GetEntity(arc1*.point[0]);
+	  as1: *EntityBase = SK.GetEntity(arc1*.point[1]);
+	  af1: *EntityBase = SK.GetEntity(arc1*.point[2]);
+
+	  aos1: ExprVector = (as1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  aof1: ExprVector = (af1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  r1: *Expr = aof1.Magnitude();
+	  
+	  n1: ExprVector = arc1*.Normal()*.NormalExprsN();
+	  u1: ExprVector = aos1.WithMagnitude(Expr::From(1.0));
+	  v1: ExprVector = n1.Cross(u1);
+
+	  // so in our new csys, we start at (1, 0, 0)
+	  costheta1: *Expr = aof1.Dot(u1)*.Div(r1);
+	  sintheta1: *Expr = aof1.Dot(v1)*.Div(r1);
+	  
+	  thetas1: double = 0;
+	  thetaf1: double = 0;
+	  dtheta1: double = 0;
+	  arc1*.ArcGetAngles(thetas1&, thetaf1&, dtheta1&);
+	  theta1: *Expr;
+	  
+	  if (dtheta1 < 3 * PI / 4) {
+	    theta1 = costheta1*.ACos();
+	  } else if (dtheta1 < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta1 is not invertible, so use the sine to stop blowing up
+		theta1 = Expr::From(PI)*.Minus(sintheta1*.ASin());
+	  } else {
+	    theta1 = (Expr::From(2 * PI))*.Minus(costheta1*.ACos());
+	  }
+	  
+	  // and get the arc2 radius, and the cosine of its angle
+	  ao2: *EntityBase = SK.GetEntity(arc2*.point[0]);
+	  as2: *EntityBase = SK.GetEntity(arc2*.point[1]);
+	  af2: *EntityBase = SK.GetEntity(arc2*.point[2]);
+	  
+	  aos2: ExprVector = (as2*.PointGetExprs()).Minus(ao2*.PointGetExprs());
+	  aof2: ExprVector = (af2*.PointGetExprs()).Minus(ao2*.PointGetExprs());
+	  r2: *Expr = aof2.Magnitude();
+
+      n2: ExprVector = arc2*.Normal()*.NormalExprsN();
+	  u2: ExprVector = aos2.WithMagnitude(Expr::From(1.0));
+	  v2: ExprVector = n2.Cross(u2);
+	  
+	  // so in our new csys, we start at (1, 0, 0)
+	  costheta2: *Expr = aof2.Dot(u2)*.Div(r2);
+	  sintheta2: *Expr = aof2.Dot(v2)*.Div(r2);
+	  
+	  thetas2: double = 0;
+	  thetaf2: double = 0;
+	  dtheta2: double = 0;
+	  arc2*.ArcGetAngles(thetas2&, thetaf2&, dtheta2&);
+	  theta2: *Expr;
+	  if (dtheta2 < 3 * PI / 4) {
+	    theta2 = costheta2*.ACos();
+	  } else if (dtheta2 < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta2 is not invertible, so use the sine to stop blowing up
+		theta2 = Expr::From(PI)*.Minus(sintheta2*.ASin());
+	  } else {
+	    theta2 = (Expr::From(2*PI))*.Minus(costheta2*.ACos());
+	  }
+	  // and write the equation; (r1 * theta1) / ( r2 * theta2) = some ratio
+	    AddEq(l, (r1*.Times(theta1))*.Div(r2*.Times(theta2))*.Minus(exA), 0);
+		return;
+	  }
+	  
+	  if (type == Type::ARC_LINE_LEN_RATIO) {
+	    line: *EntityBase = SK.GetEntity(entityA);
+		arc1: *EntityBase = SK.GetEntity(entityB);
+		
+		ll: *Expr = Distance(workplane, line*.point[0], line*.point[1]);
+		
+		// and get the arc1 radius, and the cosine of its angle
+		ao1: *EntityBase = SK.GetEntity(arc1*.point[0]);
+		as1: *EntityBase = SK.GetEntity(arc1*.point[1]);
+		af1: *EntityBase = SK.GetEntity(arc1*.point[2]);
+		
+		aos1: ExprVector = (as1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+		aof1: ExprVector = (af1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+		r1: *Expr = aof1.Magnitude();
+		n1: ExprVector = arc1*.Normal()*.NormalExprsN();
+		u1: ExprVector = aos1.WithMagnitude(Expr::From(1.0));
+		v1: ExprVector = n1.Cross(u1);
+		
+		// so in our new csys, we start at (1, 0, 0)
+		costheta1: *Expr = aof1.Dot(u1)*.Div(r1);
+		sintheta1: *Expr = aof1.Dot(v1)*.Div(r1);
+		thetas1: double = 0;
+		thetaf1: double = 0;
+		dtheta1: double = 0;
+		arc1*.ArcGetAngles(thetas1&, thetaf1&, dtheta1&);
+		theta1 *Expr;
+		if (dtheta1 < 3 * PI / 4) {
+		  theta1 = costheta1*.ACos();
+		} else if (dtheta1 < 5 * PI / 4) {
+		  // as the angle crosses pi, cos theta1 is not invertible, so use the sine to stop blowing up
+		  theta1 = Expr::From(PI)*.Minus(sintheta1*.ASin());
+		} else {
+		  theta1 = (Expr::From(2*PI))*.Minus(costheta1*.ACos());
+		}
+		// and write the equation; (r1 * theta1) / ( length) = some ratio
+		AddEq(l, (r1*.Times(theta1))*.Div(ll)*.Minus(exA), 0);
+		return;
+	}
+
+	if (type == Type::LENGTH_DIFFERENCE) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+	  la: *Expr = Distance(workplane, a*.point[0], a*.point[1]);
+	  lb: *Expr = Distance(workplane, b*.point[0], b*.point[1]);
+	  AddEq(l, (la*.Minus(lb))*.Minus(exA), 0);
+	  return;
+	}
+	
+	if (type == Type::ARC_ARC_DIFFERENCE) {
+	  arc1: *EntityBase = SK.GetEntity(entityA);
+	  arc2: *EntityBase = SK.GetEntity(entityB);
+	  
+	  // and get the arc1 radius, and the cosine of its angle
+	  ao1: *EntityBase = SK.GetEntity(arc1*.point[0]);
+	  as1: *EntityBase = SK.GetEntity(arc1*.point[1]);
+	  af1: *EntityBase = SK.GetEntity(arc1*.point[2]);
+	  
+	  aos1: ExprVector = (as1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  aof1: ExprVector = (af1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  r1: *Expr = aof1.Magnitude();
+	  
+	  n1: ExprVector = arc1*.Normal()*.NormalExprsN();
+	  u1: ExprVector = aos1.WithMagnitude(Expr::From(1.0));
+	  v1: ExprVector = n1.Cross(u1);
+	  // so in our new csys, we start at (1, 0, 0)
+	  costheta1: *Expr = aof1.Dot(u1)*.Div(r1);
+	  sintheta1: *Expr = aof1.Dot(v1)*.Div(r1);
+
+	  thetas1: double = 0;
+	  thetaf1: double = 0;
+	  dtheta1: double = 0;
+	  arc1*.ArcGetAngles(thetas1&, thetaf1&, dtheta1&);
+	  theta1: *Expr;
+	  if (dtheta1 < 3 * PI / 4) {
+	    theta1 = costheta1*.ACos();
+	  } else if (dtheta1 < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta1 is not invertible, so use the sine to stop blowing up
+		theta1 = Expr::From(PI)*.Minus(sintheta1*.ASin());
+	  } else {
+	    theta1 = (Expr::From(2*PI))*.Minus(costheta1*.ACos());
+	  }
+	  
+	  // and get the arc2 radius, and the cosine of its angle
+	  ao2: *EntityBase = SK.GetEntity(arc2*.point[0]);
+	  as2: *EntityBase = SK.GetEntity(arc2*.point[1]);
+	  af2: *EntityBase = SK.GetEntity(arc2*.point[2]);
+	  
+	  aos2: ExprVector = (as2*.PointGetExprs()).Minus(ao2*.PointGetExprs());
+	  aof2: ExprVector = (af2*.PointGetExprs()).Minus(ao2*.PointGetExprs());
+	  r2: *Expr = aof2.Magnitude();
+	  
+	  n2: ExprVector = arc2*.Normal()*.NormalExprsN();
+	  u2: ExprVector = aos2.WithMagnitude(Expr::From(1.0));
+	  v2: ExprVector = n2.Cross(u2);
+	  // so in our new csys, we start at (1, 0, 0)
+	  costheta2: *Expr = aof2.Dot(u2)*.Div(r2);
+	  sintheta2: *Expr = aof2.Dot(v2)*.Div(r2);
+	  
+	  thetas2: double = 0;
+	  thetaf2: double = 0;
+	  dtheta2: double = 0;
+	  
+	  arc2*.ArcGetAngles(thetas2&, thetaf2&, dtheta2&);
+	  theta2: *Expr;
+	  if (dtheta2 < 3 * PI / 4) {
+	    theta2 = costheta2*.ACos();
+	  } else if (dtheta2 < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta2 is not invertible, so use the sine to stop blowing up
+		theta2 = Expr::From(PI)*.Minus(sintheta2*.ASin());
+	  } else {
+	    theta2 = (Expr::From(2*PI))*.Minus(costheta2*.ACos());
+      }
+	  // and write the equation (r1 * theta1) - (r2 * theta2) = some difference
+	  AddEq(l, (r1*.Times(theta1))*.Minus(r2*.Times(theta2))*.Minus(exA), 0);
+	  return;
+	}
+	if (type == Type::ARC_LINE_DIFFERENCE) {
+	  line: *EntityBase = SK.GetEntity(entityA);
+	  arc1: *EntityBase = SK.GetEntity(entityB);
+
+      ll: *Expr = Distance(workplane, line*.point[0], line*.point[1]);
+
+	  // get the arc1 radius, and the cosine of its angle
+	  ao1: *EntityBase = SK.GetEntity(arc1*.point[0]);
+	  as1: *EntityBase = SK.GetEntity(arc1*.point[1]);
+	  af1: *EntityBase = SK.GetEntity(arc1*.point[2]);
+
+	  aos1: ExprVector = (as1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  aof1: ExprVector = (af1*.PointGetExprs()).Minus(ao1*.PointGetExprs());
+	  r1: *Expr = aof1.Magnitude();
+	  n1: ExprVector = arc1*.Normal()*.NormalExprsN();
+	  u1: ExprVector = aos1.WithMagnitude(Expr::From(1.0));
+	  v1: ExprVector = n1.Cross(u1);
+	  // so in our new csys, we start at (1, 0, 0)
+	  costheta1: *Expr = aof1.Dot(u1)*.Div(r1);
+	  sintheta1: *Expr = aof1.Dot(v1)*.Div(r1);
+
+	  thetas1: double = 0;
+	  thetaf1: double = 0;
+	  dtheta1: double = 0;
+	  arc1*.ArcGetAngles(thetas1&, thetaf1&, dtheta1&);
+	  theta1 *Expr;
+	  if (dtheta1 < 3 * PI / 4) {
+	    theta1 = costheta1*.ACos();
+	  } else if (dtheta1 < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta1 is not invertible, so use the sine to stop blowing up
+		theta1 = Expr::From(PI)*.Minus(sintheta1*.ASin());
+	  } else {
+		theta1 = (Expr::From(2*PI))*.Minus(costheta1*.ACos());
+	  }
+      // write the equation (r1 * theta1) - (length) = some difference
+	  AddEq(l, (r1*.Times(theta1))*.Minus(ll)*.Minus(exA), 0);
+
+	  return;
+    }
+    if (type == Type::DIAMETER) {
+	  circle: *EntityBase = SK.GetEntity(entityA);
+	  r: *Expr = circle*.CircleGetRadiusExpr();
+	  AddEq(l, (r*.Times(Expr::From(2)))*.Minus(exA), 0);
+	  return;
+	}
+
+	if (type == Type::EQUAL_RADIUS) {
+	  c1: *EntityBase = SK.GetEntity(entityA);
+	  c2: *EntityBase = SK.GetEntity(entityB);
+	  AddEq(l, (c1*.CircleGetRadiusExpr())*.Minus(c2*.CircleGetRadiusExpr()), 0);
+	  return;
+	}
+	
+	if (type == Type::EQUAL_LINE_ARC_LEN) {
+	  line: *EntityBase = SK.GetEntity(entityA);
+	  arc: *EntityBase = SK.GetEntity(entityB);
+	  
+	  // get the line length
+	  l0: ExprVector = SK.GetEntity(line*.point[0])*.PointGetExprs();
+	  l1: ExprVector = SK.GetEntity(line*.point[1])*.PointGetExprs();
+	  ll *Expr = (l1.Minus(l0)).Magnitude();
+	  
+	  // and get the arc radius, and the cosine of its angle
+	  ao: *EntityBase = SK.GetEntity(arc*.point[0]);
+	  as: *EntityBase = SK.GetEntity(arc*.point[1]);
+	  af: *EntityBase = SK.GetEntity(arc*.point[2]);
+	  
+	  aos: ExprVector = (as*.PointGetExprs()).Minus(ao*.PointGetExprs());
+	  aof: ExprVector = (af*.PointGetExprs()).Minus(ao*.PointGetExprs());
+	  r: *Expr = aof.Magnitude();
+	  
+	  n: ExprVector = arc*.Normal()*.NormalExprsN();
+	  u: ExprVector = aos.WithMagnitude(Expr::From(1.0));
+	  v: ExprVector = n.Cross(u);
+	  
+	  // so in our new csys, we start at (1, 0, 0)
+	  costhea: *Expr = aof.Dot(u)*.Div(r);
+	  sintheta: *Expr = aof.Dot(v)*.Div(r);
+
+	  thetas: double = 0;
+	  thetaf: double = 0;
+	  dtheta: double = 0;
+	  arc*.ArcGetAngles(thetas&, thetaf&, dtheta&);
+	  theta: *Expr;
+	  
+	  if (dtheta < 3 * PI / 4) {
+	    theta = costheta*.ACos();
+	  } else if  (dtheta < 5 * PI / 4) {
+	    // as the angle crosses pi, cos theta is not invertible, so use the sine to stop blowing up
+		theta = Expr::From(PI)*.Minus(sintheta*.ASin());
+	  } else {
+	    theta = (Expr::From(2 * PI))*.Minus(costheta*.ACos());
+	  }
+	  
+	  // and write the equation r * theta = L
+	  AddEq(l, (r*.Times(theta))*.Minus(ll), 0);
+	  return;
+	}
+
+	if (type == Type::POINTS_COINCIDENT) {
+	  a: *EntityBase = SK.GetEntity(ptA);
+	  b: *EntityBase = SK.GetEntity(ptB);
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    pa: ExprVector = a*.PointGetExprs();
+		pb: ExprVector = b*.PointGetExprs();
+		AddEq(l, pa.x*.Minus(pb.x), 0);
+		AddEq(l, pa.y*.Minus(pb.y), 1);
+		AddEq(l, pa.z*.Minus(pb.z), 2);
+	  } else {
+	    au: *Expr = Expr();
+		av: *Expr = Expr();
+	    bu: *Expr = Expr();
+		bv: *Expr = Expr();
+		a*.PointGetExprsInWorkplane(workplane, au&, av&);
+		b*.PointGetExprsInWorkplane(workplane, bu&, bv&);
+		AddEq(l, au*.Minus(bu), 0);
+		AddEq(l, av*.Minus(bv), 1);
+	  }
+	  return;
+	}
+
+	if (type == Type::PT_IN_PLANE) {
+	  // this one works the same, whether projected or not
+	  AddEq(l, PointPlaneDistance(SK.GetEntity(ptA)*.PointGetExprs(), entityA), 0);
+	  return;
+	}
+
+	if (type == Type::PT_ON_FACE) {
+	  // a plane, n dot (p - p0) = 0
+	  p: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+	  f: *EntityBase = SK.GetEntity(entityA);
+	  p0: ExprVector = f*.FaceGetPointExprs();
+	  n: ExprVector = f*.FaceGetNormalExprs();
+	  AddEq(l, (p.Minus(p0)).Dot(n), 0);
+	  return;
+	}
+
+	if (type == Type::PT_ON_LINE) {
+	  ln: *EntityBase = SK.GetEntity(entityA);
+	  a: *EntityBase = SK.GetEntity(ln*.point[0]);
+	  b: *EntityBase = SK.GetEntity(ln*.point[1]);
+	  p: *EntityBase = SK.GetEntity(ptA);
+	  
+	  ep: ExprVector = p*.PointGetExprsInWorkplane(workplane);
+	  ea: ExprVector = a*.PointGetExprsInWorkplane(workplane);
+	  eb: ExprVector = b*.PointGetExprsInWorkplane(workplane);
+	  
+	  ptOnLine: ExprVector = ea.Plus(eb.Minus(ea).ScaledBy(Expr::From(valP)));
+	  eq: ExprVector = ptOnLine.Minus(ep);
+	  
+	  AddEq(l, eq);
+	  return;
+	}
+
+	if (type == Type::PT_ON_CIRCLE) {
+	  // this actually constrains the point to lie on the cylinder
+	  circle: *EntityBase = SK.GetEntity(entityA);
+	  center: ExprVector  = SK.GetEntity(circle*.point[0])*.PointGetExprs();
+	  pt: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+	  normal: *EntityBase= SK.GetEntity(circle*.normal);
+	  u: ExprVector = normal*.NormalExprsU();
+	  v: ExprVector = normal*.NormalExprsV();
+	  
+	  du: *Expr = (center.Minus(pt)).Dot(u);
+	  dv: *Expr = (center.Minus(pt)).Dot(v);
+	  
+	  r: *Expr = circle*.CircleGetRadiusExpr();
+	  
+	  AddEq(l, du*.Square()*.Plus(dv*.Square())*.Sqrt()*.Minus(r), 0);
+	  return;
+	}
+	
+	if (type == Type::AT_MIDPOINT) {
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    ln: *EntityBase = SK.GetEntity(entityA);
+		a: ExprVector = SK.GetEntity(ln*.point[0])*.PointGetExprs();
+		b: ExprVector = SK.GetEntity(ln*.point[1])*.PointGetExprs();
+		m: ExprVector = (a.Plus(b)).ScaledBy(Expr::From(0.5));
+		
+		if (ptA.v) {
+		  p: ExprVector = SK.GetEntity(ptA)*.PointGetExprs();
+		  AddEq(l, (m.x)*.Minus(p.x), 0);
+		  AddEq(l, (m.y)*.Minus(p.y), 1);
+		  AddEq(l, (m.z)*.Minus(p.z), 2);
+		} else {
+		  AddEq(l, PointPlaneDistance(m, entityB), 0);
+		}
+	  } else {
+	    ln: *EntityBase = SK.GetEntity(entityA);
+		a: *EntityBase = SK.GetEntity(ln*.point[0]);
+		b: *EntityBase = SK.GetEntity(ln*.point[1]);
+		
+		au: *Expr = Expr();
+		av: *Expr = Expr();
+		bu: *Expr = Expr();
+		bv: *Expr = Expr();
+		a*.PointGetExprsInWorkplane(workplane, au&, av&);
+		b*.PointGetExprsInWorkplane(workplane, bu&, bv&);
+		
+		mu: *Expr = Expr::From(0.5)*.Times(au*.Plus(bu));
+		mv: *Expr = Expr::From(0.5)*.Times(av*.Plus(bv));
+		
+		if (ptA.v) {
+		  p: *EntityBase = SK.GetEntity(ptA);
+		  pu: *Expr = Expr();
+		  pv: *Expr = Expr();
+		  p*.PointGetExprsInWorkplane(workplane, pu&, pv&);
+		  AddEq(l, pu*.Minus(mu), 0);
+		  AddEq(l, pv*.Minus(mv), 1);
+		} else {
+		  m: ExprVector = PointInThreeSpace(workplane, mu, mv);
+		  AddEq(l, PointPlaneDistance(m, entityB), 0);
+		}
+      }
+	  return;
+    }
+	
+	if (type == Type::SYMMETRIC) {
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    plane: *EntityBase = SK.GetEntity(entityA);
+		ea: *EntityBase = SK.GetEntity(ptA);
+		eb: *EntityBase = SK.GetEntity(ptB);
+		a: ExprVector = ea*.PointGetExprs();
+		b: ExprVector = eb*.PointGetExprs();
+
+		// the midpoint of the line connecting the symmetric points lies on the plane of the symmetry
+		m: ExprVector = (a.Plus(b)).ScaledBy(Expr::From(0.5));
+		AddEq(l, PointPlaneDistance(m, plane*.h), 0);
+		
+		// and projected into the plane of symmetry, the points are coincident
+		au: *Expr = Expr();
+		av: *Expr = Expr();
+		bu: *Expr = Expr();
+		bv: *Expr = Expr();
+		ea*.PointGetExprsInWorkplane(plane*.h, au&, av&);
+		eb*.PointGetExprsInWorkplane(plane*.h, bu&, bv&);
+		AddEq(l, au*.Minus(bu), 1);
+		AddEq(l, av*.Minus(bv), 2);
+	  } else {
+	    plane: *EntityBase = SK.GetEntity(entityA);
+		a: *EntityBase = SK.GetEntity(ptA);
+		b: *EntityBase = SK.GetEntity(ptB);
+		
+		au: *Expr = Expr();
+		av: *Expr = Expr();
+		bu: *Expr = Expr();
+		bv: *Expr = Expr();
+		a*.PointGetExprsInWorkplane(workplane, au&, av&);
+		b*.PointGetExprsInWorkplane(workplane, bu&, bv&);
+		mu: *Expr = Expr::From(0.5)*.Times(au*.Plus(bu));
+		mv: *Expr = Expr::From(0.5)*.Times(av*.Plus(bv));
+		
+		m: ExprVector = PointInThreeSpace(workplane, mu, mv);
+		AddEq(l, PointPlaneDistance(m, plane*.h), 0);
+		
+		// construct a vector within the workplane that is normal to the symmetry pane's normal
+		// (i.e., that lies in the plane of symmetry). the line connecting the points is
+		// perpendicular to that constructed vector
+		w: *EntityBase = SK.GetEntity(workplane);
+		u: ExprVector = w*.Normal()*.NormalExprsU();
+		v: ExprVector = w*.Normal()*.NormalExprsV();
+		
+		pa: ExprVector = a*.PointGetExprs();
+		pb: ExprVector = b*.PointGetExprs();
+		n: ExprVector = ();
+		d: *Expr = Expr();
+		plane*.WorkplaneGetPlaneExprs(n&, d&);
+		AddEq(l, (n.Cross(u.Cross(v))).Dot(pa.Minus(pb)), 1);
+	  }
+      return;
+    }
+
+	if (type == Type::SYMMETRIC_HORIZ || type == Type::SYMMETRIC_VERT) {
+	  ssassert(workplane != Entity::FREE_IN_3D, "Unexpected horizontal/vertical symmetric constraint in 3d");
+	  
+	  a: *EntityBase = SK.GetEntity(ptA);
+	  b: *EntityBase = SK.GetEntity(ptB);
+	  
+	  au: *Expr = Expr();
+	  av: *Expr = Expr();
+	  bu: *Expr = Expr();
+	  bv: *Expr = Expr();
+
+	  a*.PointGetExprsInWorkplane(workplane, au&, av&);
+	  b*.PointGetExprsInWorkplane(workplane, bu&, bv&);
+	  
+	  if (type == Type::SYMMETRIC_HORIZ) {
+	    AddEq(l, av*.Minus(bv), 0);
+		AddEq(l, au*.Plus(bu), 1);
+	  } else {
+	    AddEq(l, au*.Minus(bu), 0);
+		AddEq(l, av*.Plus(bv), 1);
+	  }
+	  return;
+	}
+	
+	if (type == Type::SYMMETRIC_LINE) {
+	  pa: *EntityBase = SK.GetEntity(ptA);
+      pb: *EntityBase = SK.GetEntity(ptB);
+
+	  pau: *Expr = Expr();
+	  pav: *Expr = Expr();
+	  pbu: *Expr = Expr();
+	  pbv: *Expr = Expr();
+	  pa*.PointGetExprsInWorkplane(workplane, pau&, pav&);
+	  pb*.PointGetExprsInWorkplane(workplane, pbu&, pbv&);
+	  
+	  ln: *EntityBase = SK.GetEntity(entityA);
+	  la: *EntityBase = SK.GetEntity(ln*.point[0]);
+	  lb: *EntityBase = SK.GetEntity(ln*.point[1]);
+	  lau: *Expr = Expr();
+	  lav: *Expr = Expr();
+	  lbu: *Expr = Expr();
+	  lbv: *Expr = Expr();
+	  la*.PointGetExprsInWorkplane(workplane, lau&, lav&);
+	  lb*.PointGetExprsInWorkplane(workplane, lbu&, lbv&);
+	  
+	  dpu: *Expr = pbu*.Minus(pau);
+	  dpv: *Expr = pbv*.Minus(pav);
+	  dlu: *Expr = lbu*.Minus(lau);
+	  dlv: *Expr = lbv*.Minus(lav);
+	  
+	  // the line through the points is perpendicular to the line of symmetry
+	  AddEq(l, (dlu*.Times(dpu))*.Plus(dlv*.Times(dpv)), 0);
+	  
+	  // the signed distances of the points to the line are equal in magnitude and opposite in sign, so sum to zero
+	  dista: *Expr = (dlv*.Times(lau*.Minus(pau)))*.Minus((dlu*.Times(lav*.Minus(pav))));
+	  distb: *Expr= (dlv*.Times(lau*.Minus(pbu)))*.Minus((dlu*.Times(lav*.Minus(pbv))));
+	  AddEq(l, dista*.Plus(distb), 1);
+
+	  return;
+	}
+
+	if (type == Type::HORIZONTAL || type == Type::VERTICAL) {
+	  ssassert(workplane != Entity::FREE_IN_3D, "Unexpected horizontal/vertical constraint in 3d");
+	  
+	  ha: hEntity;
+	  hb: hEntity;
+	  
+	  if (entityA.v) {
+	    e: *EntityBase = SK.GetEntity(entityA);
+		ha = e*.point[0];
+		hb = e*.point[1];
+	  } else {
+	    ha = ptA;
+		hb = ptB;
+	  }
+	  a: *EntityBase = SK.GetEntity(ha);
+	  b: *EntityBase = SK.GetEntity(hb);
+
+	  au: *Expr = Expr();
+	  av: *Expr = Expr();
+	  bu: *Expr = Expr();
+	  bv: *Expr = Expr();
+	  a*.PointGetExprsInWorkplane(workplane, au&, av&);
+	  b*.PointGetExprsInWorkplane(workplane, bu&, bv&);
+
+	  // TODO: when ternary form is added, rip out tmp
+	  tmp: Vector = ();
+	  if (type == Type::HORIZONTAL) { tmp = av*.Minus(bv); } else { tmp = au*.Minus(bu); }
+	  AddEq(l, tmp, 0);
+
+	  return;
+	}
+
+	if (type == Type::SAME_ORIENTATION) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+
+	  au: ExprVector = a*.NormalExprsU();
+	  an: ExprVector = a*.NormalExprsN();
+	  bu: ExprVector = b*.NormalExprsU();
+	  bv: ExprVector = b*.NormalExprsV();
+	  bn: ExprVector = b*.NormalExprsN();
+	  
+	  eq: ExprVector = VectorsParallel3d(an, bn, valP);
+	  AddEq(l, eq.x, 0);
+	  AddEq(l, eq.y, 1);
+	  AddEq(l, eq.z, 2);
+	  d1: *Expr = au.Dot(bv);
+	  d2: *Expr = au.Dot(bu);
+
+	  // allow either orientation for the coordinate system, depending on how it was drawn
+	  if (fabs(d1*.Eval()) < fabs(d2*.Eval())) {
+	    AddEq(l, d1, 3);
+	  } else {
+	    AddEq(l, d2, 3);
+	  }
+	  return;
+	}
+
+	if (type == Type::PERPENDICULAR || type == Type::ANGLE) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+	  ae: ExprVector = a*.VectorGetExprs();
+	  be: ExprVector = b*.VectorGetExprs();
+	  if (other) {
+	    ae = ae.ScaledBy(Expr::From(-1));
+	  }
+	  c: *Expr = DirectionCosine(workplane, ae, be);
+	  
+	  if (type == Type::ANGLE) {
+	    // the direction cosine is equal to the cosine of the specified angle
+		rads: *Expr = exA*.Times(Expr::From(PI / 180));
+		rc: *Expr = rads*.Cos();
+		arc: double = fabs(rc*.Eval());
+		// avoid false detection of inconsistent systems by gaining up as the difference in dot
+		// products gets small at small angles; doubles still have plenty of precision, only problem
+		// is that rank test
+
+		// TODO: when ternary form is added, rip out tmp
+		tmp: double;
+		if arc > 0.99 { tmp = 0.01 / (1.00001 - arc); } else { tmp = 1; }
+		mult: *Expr = Expr::From(tmp);
+		AddEq(l, (c*.Minus(rc))*.Times(mult), 0);
+	  } else {
+	    // the dot product (and therefore the direction cosine) is equal to zero, perpendicular
+		AddEq(l, c, 0);
+	  }
+
+	  return;
+	}
+
+	if (type == Type::EQUAL_ANGLE) {
+	  a: *EntityBase = SK.GetEntity(entityA);
+	  b: *EntityBase = SK.GetEntity(entityB);
+	  c: *EntityBase = SK.GetEntity(entityC);
+	  d: *EntityBase = SK.GetEntity(entityD);
+	  ae: ExprVector = a*.VectorGetExprs();
+	  be: ExprVector = b*.VectorGetExprs();
+	  ce: ExprVector = c*.VectorGetExprs();
+	  de: ExprVector = d*.VectorGetExprs();
+	
+	  if (other) {
+	    ae = ae.ScaledBy(Expr::From(-1));
+	  }
+	  
+	  cab: *Expr = DirectionCosine(workplane, ae, be);
+	  ccd: *Expr = DirectionCosine(workplane, ce, de);
+	  
+	  AddEq(l, cab*.Minus(ccd), 0);
+
+	  return;
+	}
+
+	if (type == Type::ARC_LINE_TANGENT) {
+	  arc: *EntityBase = SK.GetEntity(entityA);
+	  line: *EntityBase = SK.GetEntity(entityB);
+
+	  ac: ExprVector = SK.GetEntity(arc*.point[0])*.PointGetExprs();
+	  
+	  // TODO: when ternary form is added, rip out tmp
+	  tmp: double = 0;
+	  if other { tmp = 2; } else { tmp = 1; }
+	  ap: ExprVector = SK.GetEntity(arc*.point[tmp])*.PointGetExprs();
+
+	  ld: ExprVector = line*.VectorGetExprs();
+
+	  // the line is perpendicular to the radius
+	  AddEq(l, ld.Dot(ac.Minus(ap)), 0);
+
+	  return;
+	}
+
+	if (type == Type::CUBIC_LINE_TANGENT) {
+	  cubic: *EntityBase = SK.GetEntity(entityA);
+	  line: *EntityBase = SK.GetEntity(entityB);
+	  
+	  a: ExprVector;
+	  if (other) {
+	    a = cubic*.CubicGetFinishTangentExprs();
+	  } else {
+	    a = cubic*.CubicGetStartTangentExprs();
+	  }
+	  
+	  b: ExprVector = line*.VectorGetExprs();
+	  
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    eq: ExprVector = VectorsParallel3d(a, b, valP);
+		AddEq(l, eq);
+	  } else {
+	    w: *EntityBase = SK.GetEntity(workplane);
+		wn: ExprVector = w*.Normal()*.NormalExprsN();
+		AddEq(l, (a.Cross(b)).Dot(wn), 0);
+	  }
+
+	  return;
+	}
+
+	if (type == Type::CURVE_CURVE_TANGENT) {
+	  parallel: bool = true;
+	  dir: std::array<ExprVector, 2> = ();
+	  (copy i := 0) while i < 2 next i++ {
+		tmp: hEntity = ();
+		if (i == 0) { hEntity = entityA; } else { hEntity = entityB; }
+	    e: EntityBase = SK.GetEntity();
+		poth: bool = false;
+		if (i == 0) { poth = other; } else { poth = other2; }
+
+		if (e*.type == Entity::Type::ARC_OF_CIRCLE) {
+		  center: ExprVector = ();
+		  endpoint: ExprVector = ();
+		  center = SK.GetEntity(e*.point[0])*.PointGetExprs();
+		  // TODO: when ternary if arrives, remove tmp1
+		  tmp1: u8 = 0;
+		  if (oth) { tmp1 = 2; } else { tmp1 = 1; }
+		  endpoint = SK.GetEntity(e*.point[tmp1])*.PointGetExprs();
+		  dir[i] = endpoint.Minus(center);
+		  // we're using the vector from the center of the arc to an endpoint; so that's normal to
+		  // the tangent, not parallel.
+		  parallel = !parallel;
+		} else if (e*.type == Entity::Type::CUBIC) { // BRANCH_ALWAYS_TAKEN
+		  if (oth) {
+		    dir[i] = e*.CubicGetFinishTangentExprs();
+		  } else {
+		    dir[i] = e*.CubicGetStartTangentExprs();
+		  }
+		} else {
+		  ssassert(false, "Unexpected entity types for CURVE_CURVE_TANGENT");
+		}
+	  }
+	  if (parallel) {
+	    w: *EntityBase = SK.GetEntity(workplane);
+	    wn: ExprVector = w*.Normal()*.NormalExprsN();
+	    AddEq(l, ((dir[0]).Cross(dir[1])).Dot(wn), 0);
+	  } else {
+	    AddEq(l, (dir[0]).Dot(dir[1]), 0);
+	  }
+
+      return;
+    }
+
+    if (type == Type::PARALLEL) {
+      ea: *EntityBase = SK.GetEntity(entityA);
+	  eb: *EntityBase = SK.GetEntity(entityB);
+	  a: ExprVector = ea*.VectorGetExprsInWorkplane(workplane);
+	  b: ExprVector = eb*.VectorGetExprsInWorkplane(workplane);
+
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    eq: ExprVector = VectorsParallel3d(a, b, valP);
+	    AddEq(l, eq);
+	  } else {
+	    // we use expressions written in workplane csys, so we can assume the workplane normal is
+	    // (0, 0, 1). we can write the equation as:
+	    //   Expr *eq = a.Cross(b).Dot(ExprVector::From(0.0, 0.0, 1.0));
+	    // but this will just result in elimination of x and y terms after dot product. we can only
+	    // use the z expression:
+	    //   Expr *eq = a.Cross(b).z;
+	    // but it's more efficient to write it in the terms of pseudo-scalar product:
+	    eq: *Expr = (a.x*.Times(b.y))*.Minus(a.y*.Times(b.x));
+	    AddEq(l, eq, 0);
+  	  }
+
+	  return;
+    }
+
+    if (type == Type::WHERE_DRAGGED) {
+      ep: *EntityBase = SK.GetEntity(ptA);
+	  if (workplane == EntityBase::FREE_IN_3D) {
+	    ev: ExprVector = ep*.PointGetExprs();
+	    v: Vector = ep*.PointGetNum();
+	    AddEq(l, ev.x*.Minus(Expr::From(v.x)), 0);
+	    AddEq(l, ev.y*.Minus(Expr::From(v.y)), 1);
+	    AddEq(l, ev.z*.Minus(Expr::From(v.z)), 2);
+	  } else {
+	    u: *Expr = Expr()*;
+	    v: *Expr = Expr()*;
+ 	    ep*.PointGetExprsInWorkplane(workplane, u&, v&);
+	    AddEq(l, u*.Minus(Expr::From(u*.Eval())), 0);
+	    AddEq(l, v*.Minus(Expr::From(v*.Eval())), 1);
+	  }
+	
+	  return;
+    }
+
+    if (type == Type::COMMENT) {
+      return;
+    }
+    ssassert(false, "Unexpected constraint ID");
+  }
+
+  // some helpers when generating symbolic constraint equations
+  ModifyToSatisfy: (this) -> void = {
+    if (type == Type::ANGLE) {
+	  a: Vector = SK.GetEntity(entityA)*.VectorGetNum();
+	  b: Vector = SK.GetEntity(entityB)*.VectorGetNum();
+	  if (other) {
+	    a = a.ScaledBy(-1);
+	  }
+	  if (workplane != EntityBase::FREE_IN_3D) {
+	    a = a.ProjectVectorInto(workplane);
+		b = b.ProjectVectorInto(workplane);
+	  }
+	  c: double = (a.Dot(b)) / (a.Magnitude() * b.Magnitude());
+	  valA = acos(c) * 180 / PI;
+    } else if (type == Type::PT_ON_LINE) {
+	  eln: *EntityBase = SK.GetEntity(entityA);
+	  ea: *EntityBase = SK.GetEntity(eln*.point[0]);
+	  eb: *EntityBase = SK.GetEntity(eln*.point[1]);
+	  ep: *EntityBase = SK.GetEntity(ptA);
+	  exp: ExprVector = ep*.PointGetExprsInWorkplane(workplane);
+	  exa: ExprVector = ea*.PointGetExprsInWorkplane(workplane);
+	  exb: ExprVector = eb*.PointGetExprsInWorkplane(workplane);
+	  exba: ExprVector = exb.Minus(exa);
+	  SK.GetParam(valP)*.val = exba.Dot(exp.Minus(exa))*.Eval() / exba.Dot(exba)*.Eval();
+    } else {
+	  // we'll fix these ones up by looking at their symbolic equation; that means no extra work
+	  l: IdList<Equation,hEquation> = ();
+	  // generate the equations even if this is a reference dimension
+	  GenerateEquations(l&, true);
+	  ssassert(l.n == 1, "Expected constraint to generate a single equation");
+	  // these equations are written in the form f(...) - d = 0, where d is the value of the valA
+        valA += (l[0].e)*.Eval();
+        l.Clear();
+    }
+  }
+  AddEq: (this, l: *IdList<Equation, hEquation>, expr: *Expr, index: int) -> void = {
+    eq: Equation = ();
+    eq.e = expr;
+    eq.h = this.h.equation(index);
+    l*.Add(eq&);
+  }
+  AddEq: (this, l: *IdList<Equation, hEquation>, v: ExprVector, baseIndex: int = 0) -> void = {
+    AddEq(l, v.x, baseIndex);
+    AddEq(l, v.y, baseIndex + 1);
+    if (this.workplane == EntityBase::FREE_IN_3D) {
+	  AddEq(l, v.z, baseIndex + 2);
+    }
+  }
+  Clear: () = {}
+}
+
+/*
+  static Expr *DirectionCosine(hEntity wrkpl, ExprVector ae, ExprVector be);
+  static Expr *Distance(hEntity workplane, hEntity pa, hEntity pb);
+  static Expr *PointLineDistance(hEntity workplane, hEntity pt, hEntity ln);
+  static Expr *PointPlaneDistance(ExprVector p, hEntity plane);
+  static ExprVector VectorsParallel3d(ExprVector a, ExprVector b, hParam p);
+  static ExprVector PointInThreeSpace(hEntity workplane, Expr *u, Expr *v) {
+    EntityBase *w = SK.GetEntity(workplane);
+
+    ExprVector ub = w->Normal()->NormalExprsU();
+    ExprVector vb = w->Normal()->NormalExprsV();
+    ExprVector ob = w->WorkplaneGetOffsetExprs();
+
+    return (ub.ScaledBy(u)).Plus(vb.ScaledBy(v)).Plus(ob);
+  }
+ */
