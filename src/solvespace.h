@@ -518,6 +518,7 @@ public:
 #undef CONSTRAINT
 
 // TODO: move this into SolveSpaceUI.h
+#include "clipboardrequest.h"
 class SolveSpaceUI {
 public:
     TextWindow                 *pTW;
