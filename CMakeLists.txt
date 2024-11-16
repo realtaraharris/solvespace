@@ -50,7 +50,6 @@ add_library(solvespace-core OBJECT
 	src/generate.cpp
 	src/graphicswin.cpp
 	src/group.cpp
-	src/groupmesh.cpp
     src/importidf.cpp
     src/importmesh.cpp
 	src/mesh.cpp

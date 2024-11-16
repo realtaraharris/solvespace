@@ -16,10 +16,6 @@ void SolveSpace::Platform::FatalError(const std::string &message) {
     abort();
 }
 
-void Group::GenerateEquations(IdList<Equation,hEquation> *) {
-    // Nothing to do for now.
-}
-
 extern "C" {
 
 void Slvs_QuaternionU(double qw, double qx, double qy, double qz,
