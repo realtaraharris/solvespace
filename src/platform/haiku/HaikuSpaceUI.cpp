@@ -8,7 +8,7 @@
 #include <Alert.h>
 
 #include "App.h"
-#include "../../../solvespace.h"
+#include "../../solvespace.h"
 #include "HaikuSpaceUI.h"
 
 void HaikuSpaceUI::UndoEnableMenus() {

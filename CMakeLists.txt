@@ -99,18 +99,18 @@ target_include_directories(solvespace-core PRIVATE
 )
 
 add_executable(SolveSpace
-	src/platform/haiku/ui/App.cpp
-	src/platform/haiku/ui/MainWindow.cpp
-	src/platform/haiku/ui/Toolbar.cpp
-	src/platform/haiku/ui/PropertyBrowser.cpp
-	src/platform/haiku/ui/ListView/DragSortableListView.cpp
-	src/platform/haiku/ui/ListView/ThumbListItem.cpp
-	src/platform/haiku/ui/GroupsListView.cpp
-	src/platform/haiku/ui/HVIFUtil.cpp
-	src/platform/haiku/ui/EditorView.cpp
-	src/platform/haiku/ui/ViewParameters.cpp
-	src/platform/haiku/ui/guihaiku.cpp
-	src/platform/haiku/ui/HaikuSpaceUI.cpp
+	src/platform/haiku/App.cpp
+	src/platform/haiku/MainWindow.cpp
+	src/platform/haiku/Toolbar.cpp
+	src/platform/haiku/PropertyBrowser.cpp
+	src/platform/haiku/ListView/DragSortableListView.cpp
+	src/platform/haiku/ListView/ThumbListItem.cpp
+	src/platform/haiku/GroupsListView.cpp
+	src/platform/haiku/HVIFUtil.cpp
+	src/platform/haiku/EditorView.cpp
+	src/platform/haiku/ViewParameters.cpp
+	src/platform/haiku/guihaiku.cpp
+	src/platform/haiku/HaikuSpaceUI.cpp
 	$<TARGET_OBJECTS:solvespace-core>
 )
 

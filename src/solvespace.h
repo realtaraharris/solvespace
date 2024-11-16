@@ -240,8 +240,6 @@ extern Sketch SK;
 
 }
 
-#ifndef __OBJC__
 using namespace SolveSpace;
-#endif
 
 #endif
