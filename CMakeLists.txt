@@ -41,20 +41,21 @@ add_library(solvespace-core OBJECT
 	src/polyline.cpp
 	src/request.cpp
 	src/resource.cpp
+	src/sketch.cpp
 	src/style.cpp
 	src/system.cpp
-	src/sketch.cpp
 	src/ttf.cpp
 	src/util.cpp
 
-	src/importdxf.cpp
-	src/importidf.cpp
-	src/importmesh.cpp
+	src/import/importdxf.cpp
+	src/import/importidf.cpp
+	src/import/importmesh.cpp
 
 	src/tw/view.cpp
 	src/tw/textscreens.cpp
 	src/tw/textwin.cpp
 	src/tw/confscreen.cpp
+	src/tw/style.cpp
 
 	src/gw/draw.cpp
 	src/gw/graphicswin.cpp
