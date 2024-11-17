@@ -30,22 +30,25 @@ configure_file(
 
 add_library(solvespace-core OBJECT
 	src/bsp.cpp
-	src/constraint.cpp
-	src/constraintbase.cpp
+	src/mesh.cpp
+	src/polygon.cpp
+	src/polyline.cpp
+
 	src/entity.cpp
 	src/entitybase.cpp
 	src/expr.cpp
 	src/group.cpp
-	src/mesh.cpp
-	src/polygon.cpp
-	src/polyline.cpp
 	src/request.cpp
 	src/resource.cpp
+	src/ttf.cpp
 	src/sketch.cpp
 	src/style.cpp
 	src/system.cpp
-	src/ttf.cpp
 	src/util.cpp
+
+	src/constraint/constraint.cpp
+	src/constraint/draw.cpp
+	src/constraint/menu.cpp
 
 	src/import/importdxf.cpp
 	src/import/importidf.cpp

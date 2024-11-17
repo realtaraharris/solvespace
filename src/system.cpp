@@ -336,7 +336,7 @@ bool System::NewtonSolve(int tag) {
 void System::WriteEquationsExceptFor(hConstraint hc, Group *g) {
     // Generate all the equations from constraints in this group
     for(auto &con : SK.constraint) {
-        ConstraintBase *c = &con;
+        Constraint *c = &con;
         if(c->group != g->h) continue;
         if(c->h == hc) continue;
 
@@ -380,7 +380,7 @@ void System::FindWhichToRemoveToFixJacobian(Group *g, List<hConstraint> *bad, bo
                 return;
             }
 
-            ConstraintBase *c = &con;
+            Constraint *c = &con;
             if(c->group != g->h) continue;
             if((c->type == Constraint::Type::POINTS_COINCIDENT && a == 0) ||
                (c->type != Constraint::Type::POINTS_COINCIDENT && a == 1))
@@ -518,7 +518,7 @@ didnt_converge:
             if(!mat.eq[i]->h.isFromConstraint()) continue;
 
             hConstraint hc = mat.eq[i]->h.constraint();
-            ConstraintBase *c = SK.constraint.FindByIdNoOops(hc);
+            Constraint *c = SK.constraint.FindByIdNoOops(hc);
             if(!c) continue;
             // Don't double-show constraints that generated multiple
             // unsatisfied equations

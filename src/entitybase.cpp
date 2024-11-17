@@ -951,7 +951,7 @@ void EntityBase::GenerateEquations(IdList<Equation,hEquation> *l) const {
             // (to make a complete circle), then our distance constraint
             // would be redundant and therefore overconstrain things.
             auto it = std::find_if(SK.constraint.begin(), SK.constraint.end(),
-                                   [&](ConstraintBase const &con) {
+                                   [&](Constraint const &con) {
                                        return (con.group == group) &&
                                               (con.type == Constraint::Type::POINTS_COINCIDENT) &&
                                               ((con.ptA == point[1] && con.ptB == point[2]) ||

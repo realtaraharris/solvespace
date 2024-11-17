@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
-const hConstraint ConstraintBase::NO_CONSTRAINT = { 0 };
+const hConstraint Constraint::NO_CONSTRAINT = { 0 };
 
-bool ConstraintBase::HasLabel() const {
+bool Constraint::HasLabel() const {
     switch(type) {
         case Type::PT_LINE_DISTANCE:
         case Type::PT_PLANE_DISTANCE:
@@ -32,7 +32,7 @@ bool ConstraintBase::HasLabel() const {
     }
 }
 
-bool ConstraintBase::IsProjectible() const {
+bool Constraint::IsProjectible() const {
     switch(type) {
         case Type::POINTS_COINCIDENT:
         case Type::PT_PT_DISTANCE:
@@ -80,11 +80,11 @@ bool ConstraintBase::IsProjectible() const {
     ssassert(false, "Impossible");
 }
 
-ExprVector ConstraintBase::VectorsParallel3d(ExprVector a, ExprVector b, hParam p) {
+ExprVector Constraint::VectorsParallel3d(ExprVector a, ExprVector b, hParam p) {
     return a.Minus(b.ScaledBy(Expr::From(p)));
 }
 
-Expr *ConstraintBase::PointLineDistance(hEntity wrkpl, hEntity hpt, hEntity hln)
+Expr *Constraint::PointLineDistance(hEntity wrkpl, hEntity hpt, hEntity hln)
 {
     EntityBase *ln = SK.GetEntity(hln);
     EntityBase *a = SK.GetEntity(ln->point[0]);
@@ -121,14 +121,14 @@ Expr *ConstraintBase::PointLineDistance(hEntity wrkpl, hEntity hpt, hEntity hln)
     }
 }
 
-Expr *ConstraintBase::PointPlaneDistance(ExprVector p, hEntity hpl) {
+Expr *Constraint::PointPlaneDistance(ExprVector p, hEntity hpl) {
     ExprVector n;
     Expr *d;
     SK.GetEntity(hpl)->WorkplaneGetPlaneExprs(&n, &d);
     return (p.Dot(n))->Minus(d);
 }
 
-Expr *ConstraintBase::Distance(hEntity wrkpl, hEntity hpa, hEntity hpb) {
+Expr *Constraint::Distance(hEntity wrkpl, hEntity hpa, hEntity hpb) {
     EntityBase *pa = SK.GetEntity(hpa);
     EntityBase *pb = SK.GetEntity(hpb);
     ssassert(pa->IsPoint() && pb->IsPoint(),
@@ -160,7 +160,7 @@ Expr *ConstraintBase::Distance(hEntity wrkpl, hEntity hpa, hEntity hpb) {
 // Return the cosine of the angle between two vectors. If a workplane is
 // specified, then it's the cosine of their projections into that workplane.
 //-----------------------------------------------------------------------------
-Expr *ConstraintBase::DirectionCosine(hEntity wrkpl,
+Expr *Constraint::DirectionCosine(hEntity wrkpl,
                                       ExprVector ae, ExprVector be)
 {
     if(wrkpl == EntityBase::FREE_IN_3D) {
@@ -181,7 +181,7 @@ Expr *ConstraintBase::DirectionCosine(hEntity wrkpl,
     }
 }
 
-ExprVector ConstraintBase::PointInThreeSpace(hEntity workplane,
+ExprVector Constraint::PointInThreeSpace(hEntity workplane,
                                              Expr *u, Expr *v)
 {
     EntityBase *w = SK.GetEntity(workplane);
@@ -193,7 +193,7 @@ ExprVector ConstraintBase::PointInThreeSpace(hEntity workplane,
     return (ub.ScaledBy(u)).Plus(vb.ScaledBy(v)).Plus(ob);
 }
 
-void ConstraintBase::ModifyToSatisfy() {
+void Constraint::ModifyToSatisfy() {
     if(type == Type::ANGLE) {
         Vector a = SK.GetEntity(entityA)->VectorGetNum();
         Vector b = SK.GetEntity(entityB)->VectorGetNum();
@@ -230,7 +230,7 @@ void ConstraintBase::ModifyToSatisfy() {
     }
 }
 
-void ConstraintBase::AddEq(IdList<Equation,hEquation> *l, Expr *expr, int index) const
+void Constraint::AddEq(IdList<Equation,hEquation> *l, Expr *expr, int index) const
 {
     Equation eq;
     eq.e = expr;
@@ -238,7 +238,7 @@ void ConstraintBase::AddEq(IdList<Equation,hEquation> *l, Expr *expr, int index)
     l->Add(&eq);
 }
 
-void ConstraintBase::AddEq(IdList<Equation,hEquation> *l, const ExprVector &v,
+void Constraint::AddEq(IdList<Equation,hEquation> *l, const ExprVector &v,
                            int baseIndex) const {
     AddEq(l, v.x, baseIndex);
     AddEq(l, v.y, baseIndex + 1);
@@ -247,7 +247,7 @@ void ConstraintBase::AddEq(IdList<Equation,hEquation> *l, const ExprVector &v,
     }
 }
 
-void ConstraintBase::Generate(IdList<Param,hParam> *l) {
+void Constraint::Generate(IdList<Param,hParam> *l) {
     switch(type) {
         case Type::PARALLEL:
         case Type::CUBIC_LINE_TANGENT:
@@ -268,7 +268,7 @@ void ConstraintBase::Generate(IdList<Param,hParam> *l) {
     }
 }
 
-void ConstraintBase::GenerateEquations(IdList<Equation,hEquation> *l,
+void Constraint::GenerateEquations(IdList<Equation,hEquation> *l,
                                        bool forReference) const {
     if(reference && !forReference) return;
 

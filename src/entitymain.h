@@ -181,8 +181,7 @@ public:
 template<>
 struct IsHandleOracle<hConstraint> : std::true_type {};
 
-#include "constraintbase.h"
-#include "constraint.h"
+#include "constraint/constraint.h"
 
 class hEquation {
 public:

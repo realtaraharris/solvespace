@@ -680,7 +680,7 @@ public:
     // The constraint that is being edited with the on-screen textbox.
     hConstraint constraintBeingEdited;
 
-    bool SuggestLineConstraint(hRequest lineSegment, ConstraintBase::Type *type);
+    bool SuggestLineConstraint(hRequest lineSegment, Constraint::Type *type);
 
     Vector SnapToGrid(Vector p);
     Vector SnapToEntityByScreenPoint(Point2d pp, hEntity he);
