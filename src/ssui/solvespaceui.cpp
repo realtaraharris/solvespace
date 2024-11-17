@@ -1076,4 +1076,4 @@ void SolveSpaceUI::Clear() {
     GW.redoMenuItem = NULL;
 }
 
-#include "vector.hpp"
+#include "geometry/vector.hpp"

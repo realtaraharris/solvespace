@@ -158,11 +158,11 @@ class Vector;
 class Vector4;
 }
 
-#include "vector.h"
+#include "geometry/vector.h"
 
 namespace SolveSpace {
 #include "datastructures.h"
-#include "polygon.h"
+#include "geometry/polygon.h"
 #include "srf/surface.h"
 #include "render/render.h"
 

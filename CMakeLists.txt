@@ -29,11 +29,6 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
-	src/bsp.cpp
-	src/mesh.cpp
-	src/polygon.cpp
-	src/polyline.cpp
-
 	src/entity.cpp
 	src/entitybase.cpp
 	src/expr.cpp
@@ -45,6 +40,11 @@ add_library(solvespace-core OBJECT
 	src/style.cpp
 	src/system.cpp
 	src/util.cpp
+
+	src/geometry/bsp.cpp
+	src/geometry/mesh.cpp
+	src/geometry/polygon.cpp
+	src/geometry/polyline.cpp
 
 	src/constraint/constraint.cpp
 	src/constraint/draw.cpp

@@ -75,8 +75,6 @@ public:
     Quaternion Mirror() const;
 };
 
-// #include "vector.h"
-
 struct VectorHash {
     size_t operator()(const Vector &v) const;
 };
