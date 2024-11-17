@@ -161,7 +161,7 @@ class Vector4;
 #include "vector.h"
 
 namespace SolveSpace {
-#include "dsc.h"
+#include "datastructures.h"
 #include "polygon.h"
 #include "srf/surface.h"
 #include "render/render.h"
