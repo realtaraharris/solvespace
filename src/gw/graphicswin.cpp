@@ -1071,7 +1071,7 @@ void GraphicsWindow::DeleteTaggedRequests() {
 Vector GraphicsWindow::SnapToGrid(Vector p) {
     if(!LockedInWorkplane()) return p;
 
-    EntityBase *wrkpl = SK.GetEntity(ActiveWorkplane()),
+    Entity *wrkpl = SK.GetEntity(ActiveWorkplane()),
                *norm  = wrkpl->Normal();
     Vector wo = SK.GetEntity(wrkpl->point[0])->PointGetNum(),
            wu = norm->NormalU(),

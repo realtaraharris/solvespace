@@ -140,16 +140,15 @@ typedef std::unordered_map<EntityKey, EntityId, EntityKeyHash, EntityKeyEqual> E
 
 #include "group.h"
 #include "request.h"
-#include "entitybase.h"
-#include "entity.h"
+#include "entity/entity.h"
 
 class EntReqTable {
 public:
     static bool GetRequestInfo(Request::Type req, int extraPoints,
-                               EntityBase::Type *ent, int *pts, bool *hasNormal, bool *hasDistance);
-    static bool GetEntityInfo(EntityBase::Type ent, int extraPoints,
+                               Entity::Type *ent, int *pts, bool *hasNormal, bool *hasDistance);
+    static bool GetEntityInfo(Entity::Type ent, int extraPoints,
                               Request::Type *req, int *pts, bool *hasNormal, bool *hasDistance);
-    static Request::Type GetRequestForEntity(EntityBase::Type ent);
+    static Request::Type GetRequestForEntity(Entity::Type ent);
 };
 
 class Param {

@@ -765,7 +765,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                 r = n.Normal(0);
                 d = n.Normal(1);
             } else if(type == Type::PT_IN_PLANE) {
-                EntityBase *n = SK.GetEntity(entityA)->Normal();
+                Entity *n = SK.GetEntity(entityA)->Normal();
                 r = n->NormalU();
                 d = n->NormalV();
             } else {
@@ -875,7 +875,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                 rn = gn;
                 ru = gu;
             } else {
-                EntityBase *normal = SK.GetEntity(workplane)->Normal();
+                Entity *normal = SK.GetEntity(workplane)->Normal();
                 rn = normal->NormalN();
                 ru = normal->NormalV(); // ru meaning r_up, not u/v
             }
@@ -929,7 +929,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                     v = gu;
                     n = gn;
                 } else {
-                    EntityBase *wn = SK.GetEntity(workplane)->Normal();
+                    Entity *wn = SK.GetEntity(workplane)->Normal();
                     u = wn->NormalU();
                     v = wn->NormalV();
                     n = wn->NormalN();
@@ -944,7 +944,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                 textAt = p.Plus(out.WithMagnitude(14/camera.scale));
             } else {
                 Vector n = Vector(0, 0, 0), dir = Vector(0, 0, 0);
-                EntityBase *wn = SK.GetEntity(workplane)->Normal();
+                Entity *wn = SK.GetEntity(workplane)->Normal();
                 u = wn->NormalU();
                 v = wn->NormalV();
                 n = wn->NormalN();
@@ -1277,7 +1277,7 @@ s:
                 u = gr;
                 v = gu;
             } else {
-                EntityBase *norm = SK.GetEntity(workplane)->Normal();
+                Entity *norm = SK.GetEntity(workplane)->Normal();
                 u = norm->NormalU();
                 v = norm->NormalV();
             }

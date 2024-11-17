@@ -638,10 +638,10 @@ void SolveSpaceUI::UpgradeLegacyData() {
             case Constraint::Type::PT_ON_LINE: {
                 if(AllParamsExistFor(c)) continue;
 
-                EntityBase *eln = SK.GetEntity(c.entityA);
-                EntityBase *ea = SK.GetEntity(eln->point[0]);
-                EntityBase *eb = SK.GetEntity(eln->point[1]);
-                EntityBase *ep = SK.GetEntity(c.ptA);
+                Entity *eln = SK.GetEntity(c.entityA);
+                Entity *ea = SK.GetEntity(eln->point[0]);
+                Entity *eb = SK.GetEntity(eln->point[1]);
+                Entity *ep = SK.GetEntity(c.ptA);
 
                 ExprVector exp = ep->PointGetExprsInWorkplane(c.workplane);
                 ExprVector exa = ea->PointGetExprsInWorkplane(c.workplane);
@@ -655,8 +655,8 @@ void SolveSpaceUI::UpgradeLegacyData() {
             case Constraint::Type::CUBIC_LINE_TANGENT: {
                 if(AllParamsExistFor(c)) continue;
 
-                EntityBase *cubic = SK.GetEntity(c.entityA);
-                EntityBase *line  = SK.GetEntity(c.entityB);
+                Entity *cubic = SK.GetEntity(c.entityA);
+                Entity *line  = SK.GetEntity(c.entityB);
 
                 ExprVector a;
                 if(c.other) {
@@ -675,8 +675,8 @@ void SolveSpaceUI::UpgradeLegacyData() {
             case Constraint::Type::SAME_ORIENTATION: {
                 if(AllParamsExistFor(c)) continue;
 
-                EntityBase *an = SK.GetEntity(c.entityA);
-                EntityBase *bn = SK.GetEntity(c.entityB);
+                Entity *an = SK.GetEntity(c.entityA);
+                Entity *bn = SK.GetEntity(c.entityB);
 
                 ExprVector a = an->NormalExprsN();
                 ExprVector b = bn->NormalExprsN();
@@ -689,7 +689,7 @@ void SolveSpaceUI::UpgradeLegacyData() {
             case Constraint::Type::PARALLEL: {
                 if(AllParamsExistFor(c)) continue;
 
-                EntityBase *ea = SK.GetEntity(c.entityA),
+                Entity *ea = SK.GetEntity(c.entityA),
                            *eb = SK.GetEntity(c.entityB);
                 ExprVector a = ea->VectorGetExprsInWorkplane(c.workplane);
                 ExprVector b = eb->VectorGetExprsInWorkplane(c.workplane);

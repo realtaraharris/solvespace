@@ -584,7 +584,7 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
            height = camera.height;
 
     hEntity he = ActiveWorkplane();
-    EntityBase *wrkpl = SK.GetEntity(he),
+    Entity *wrkpl = SK.GetEntity(he),
                *norm  = wrkpl->Normal();
     Vector n = projUp.Cross(projRight);
     Vector wu = Vector(0, 0, 0), wv = Vector(0, 0, 0), wn = Vector(0, 0, 0), wp = Vector(0, 0, 0);

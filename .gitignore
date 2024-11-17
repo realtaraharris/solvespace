@@ -1,4 +1,9 @@
 .cache/
+# TODO: remove these once there is a better cpp2 build thing for cmake
+src/geometry/vector.h
+src/geometry/vector.hpp
+src/geometry/striangle.h
+src/geometry/striangle.hpp
 /CMakeCache.txt
 /build*/
 /test/**/*.diff.*

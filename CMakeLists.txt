@@ -29,8 +29,8 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
-	src/entity.cpp
-	src/entitybase.cpp
+	src/entity/entity.cpp
+
 	src/expr.cpp
 	src/group.cpp
 	src/request.cpp

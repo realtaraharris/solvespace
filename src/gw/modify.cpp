@@ -124,7 +124,7 @@ void GraphicsWindow::ParametricCurve::MakeFromEntity(hEntity he, bool reverse) {
             swap(theta0, theta1);
             dtheta = -dtheta;
         }
-        EntityBase *wrkpln = SK.GetEntity(e->workplane)->Normal();
+        Entity *wrkpln = SK.GetEntity(e->workplane)->Normal();
         u = wrkpln->NormalU();
         v = wrkpln->NormalV();
     } else ssassert(false, "Unexpected entity type");

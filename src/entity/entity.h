@@ -1,6 +1,5 @@
-
 #define MAX_POINTS_IN_ENTITY (12)
-class EntityBase {
+class Entity {
 public:
     int         tag;
     hEntity     h;
@@ -99,7 +98,7 @@ public:
     void WorkplaneGetPlaneExprs(ExprVector *n, Expr **d) const;
     ExprVector WorkplaneGetOffsetExprs() const;
     Vector WorkplaneGetOffset() const;
-    EntityBase *Normal() const;
+    Entity *Normal() const;
 
     bool IsFace() const;
     ExprVector FaceGetNormalExprs() const;
@@ -149,5 +148,70 @@ public:
     void AddEq(IdList<Equation,hEquation> *l, Expr *expr, int index) const;
     void GenerateEquations(IdList<Equation,hEquation> *l) const;
 
-    void Clear() {}
+/*
+	    forceHidden(),
+		actPoint(),
+		actNormal(),
+        actDistance(),
+		actVisible(),
+		style(),
+		construction(),
+        beziers(),
+		edges(),
+		edgesChordTol(),
+		screenBBox(),
+		screenBBoxValid() {};
+*/
+
+    // A linked entity that was hidden in the source file ends up hidden
+    // here too.
+    bool        forceHidden;
+
+    // All points/normals/distances have their numerical value; this is
+    // a convenience, to simplify the link/assembly code, so that the
+    // part is entirely described by the entities.
+    Vector      actPoint = Vector(0, 0, 0);
+    Quaternion  actNormal;
+    double      actDistance;
+    // and the shown state also gets saved here, for later import
+    bool        actVisible;
+
+    hStyle      style;
+    bool        construction;
+
+    SBezierList beziers;
+    SEdgeList   edges;
+    double      edgesChordTol;
+    BBox        screenBBox;
+    bool        screenBBoxValid;
+
+    bool IsStylable() const;
+    bool IsVisible() const;
+    bool CanBeDragged() const;
+
+    enum class DrawAs { DEFAULT, OVERLAY, HIDDEN, HOVERED, SELECTED };
+    void Draw(DrawAs how, Canvas *canvas);
+    void GetReferencePoints(std::vector<Vector> *refs);
+    int GetPositionOfPoint(const Camera &camera, Point2d p);
+
+    void ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const;
+    void GenerateBezierCurves(SBezierList *sbl) const;
+    void GenerateEdges(SEdgeList *el);
+
+    SBezierList *GetOrGenerateBezierCurves();
+    SEdgeList *GetOrGenerateEdges();
+    BBox GetOrGenerateScreenBBox(bool *hasBBox);
+
+    void CalculateNumerical(bool forExport);
+
+    std::string DescriptionString() const;
+
+    void Clear() {
+        beziers.l.Clear();
+        edges.l.Clear();
+    }
+
+    bool ShouldDrawExploded() const;
+    Vector ExplodeOffset() const;
+    Vector PointGetDrawNum() const;
 };

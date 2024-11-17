@@ -359,7 +359,7 @@ void System::WriteEquationsExceptFor(hConstraint hc, Group *g) {
     }
     // And the equations from entities
     for(auto &ent : SK.entity) {
-        EntityBase *e = &ent;
+        Entity *e = &ent;
         if(e->group != g->h) continue;
 
         e->GenerateEquations(&eq);
