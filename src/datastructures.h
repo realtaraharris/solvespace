@@ -54,43 +54,8 @@ struct VectorPred {
     bool operator()(Vector a, Vector b) const;
 };
 
-class Vector4 {
-public:
-    double w, x, y, z;
-
-    static Vector4 From(double w, double x, double y, double z);
-    static Vector4 From(double w, Vector v3);
-    static Vector4 Blend(Vector4 a, Vector4 b, double t);
-
-    Vector4 Plus(Vector4 b) const;
-    Vector4 Minus(Vector4 b) const;
-    Vector4 ScaledBy(double s) const;
-    Vector PerspectiveProject() const;
-};
-
-class Point2d {
-public:
-    double x, y;
-
-    static Point2d From(double x, double y);
-    static Point2d FromPolar(double r, double a);
-
-    Point2d Plus(const Point2d &b) const;
-    Point2d Minus(const Point2d &b) const;
-    Point2d ScaledBy(double s) const;
-    double DivProjected(Point2d delta) const;
-    double Dot(Point2d p) const;
-    double DistanceTo(const Point2d &p) const;
-    double DistanceToLine(const Point2d &p0, const Point2d &dp, bool asSegment) const;
-    double DistanceToLineSigned(const Point2d &p0, const Point2d &dp, bool asSegment) const;
-    double Angle() const;
-    double AngleTo(const Point2d &p) const;
-    double Magnitude() const;
-    double MagSquared() const;
-    Point2d WithMagnitude(double v) const;
-    Point2d Normal() const;
-    bool Equals(Point2d v, double tol=LENGTH_EPS) const;
-};
+#include "geometry/vector4.h"
+#include "geometry/point2d.h"
 
 // A simple list
 template<class T>
@@ -574,19 +539,6 @@ struct RgbaColorCompare {
     }
 };
 
-class BBox {
-public:
-    Vector minp = Vector(0, 0, 0);
-    Vector maxp = Vector(0, 0, 0);
-
-    static BBox From(const Vector &p0, const Vector &p1);
-
-    Vector GetOrigin() const;
-    Vector GetExtents() const;
-
-    void Include(const Vector &v, double r = 0.0);
-    bool Overlaps(const BBox &b1) const;
-    bool Contains(const Point2d &p, double r = 0.0) const;
-};
+#include "geometry/bbox.h"
 
 #endif
