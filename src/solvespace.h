@@ -222,7 +222,7 @@ void Error(const char *fmt, ...);
 #include "system.h"
 #include "ttf.h"
 #include "sketch.h"
-#include "solvespaceui.h"
+#include "ssui/solvespaceui.h"
 
 void ImportDxf(const Platform::Path &file);
 void ImportDwg(const Platform::Path &file);

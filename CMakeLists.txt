@@ -29,22 +29,16 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
-	src/platform/gui.cpp
-	src/platform/platform.cpp
 	src/importdxf.cpp
 	src/ttf.cpp
 	src/bsp.cpp
-	src/clipboard.cpp
 	src/confscreen.cpp
 	src/constraint.cpp
 	src/constraintbase.cpp
 	src/draw.cpp
 	src/entity.cpp
 	src/entitybase.cpp
-	src/export.cpp
 	src/expr.cpp
-	src/file.cpp
-	src/generate.cpp
 	src/graphicswin.cpp
 	src/group.cpp
     src/importidf.cpp
@@ -61,13 +55,23 @@ add_library(solvespace-core OBJECT
 	src/sketch.cpp
 	src/textscreens.cpp
 	src/textwin.cpp
-	src/undoredo.cpp
 	src/util.cpp
 	src/view.cpp
-	src/solvespaceui.cpp
+
 	src/render/render.cpp
 	src/render/render2d.cpp
 	src/render/renderagg.cpp
+
+	src/ssui/clipboard.cpp
+	src/ssui/export.cpp
+	src/ssui/file.cpp
+	src/ssui/generate.cpp
+	src/ssui/solvespaceui.cpp
+	src/ssui/undoredo.cpp
+
+	src/platform/gui.cpp
+	src/platform/platform.cpp
+
 	src/srf/boolean.cpp
 	src/srf/curve.cpp
 	src/srf/merge.cpp
@@ -77,6 +81,7 @@ add_library(solvespace-core OBJECT
 	src/srf/surface.cpp
 	src/srf/surfinter.cpp
 	src/srf/triangulate.cpp
+
 	src/filewriter/dxffilewriter.cpp
 	src/filewriter/epsfilewriter.cpp
 	src/filewriter/hpglfilewriter.cpp
