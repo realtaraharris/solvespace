@@ -111,8 +111,8 @@ void Group::MenuGroup(Command id, Platform::Path linkFile) {
                 ut = ut.WithMagnitude(1);
                 vt = vt.WithMagnitude(1);
 
-                if(fabs(SS.GW.projUp.Dot(vt)) < fabs(SS.GW.projUp.Dot(ut))) {
-                    swap(ut, vt);
+                if(std::fabs(SS.GW.projUp.Dot(vt)) < std::fabs(SS.GW.projUp.Dot(ut))) {
+                    std::swap(ut, vt);
                     g.predef.swapUV = true;
                 }
                 if(SS.GW.projRight.Dot(ut) < 0) g.predef.negateU = true;
@@ -455,7 +455,7 @@ void Group::Generate(IdList<Entity,hEntity> *entity,
                 Vector n = u.Cross(v);
                 v = (n.Cross(u)).WithMagnitude(1);
 
-                if(predef.swapUV) swap(u, v);
+                if(predef.swapUV) std::swap(u, v);
                 if(predef.negateU) u = u.ScaledBy(-1);
                 if(predef.negateV) v = v.ScaledBy(-1);
                 q = Quaternion::From(u, v);
@@ -961,7 +961,7 @@ void Group::MakeLatheSurfacesSelectable(IdList<Entity, hEntity> *el, hEntity in,
         // Check for perpendicularity: calculate cosine of the angle
         // between axis and line direction and check that
         // cos(angle) == 0 <-> angle == +-90 deg.
-        if(fabs(u.Dot(axis) / axis.Magnitude()) < ANGLE_COS_EPS) {
+        if(std::fabs(u.Dot(axis) / axis.Magnitude()) < ANGLE_COS_EPS) {
             en.param[0] = h.param(0);
             en.param[1] = h.param(1);
             en.param[2] = h.param(2);
@@ -1132,7 +1132,7 @@ void Group::CopyEntity(IdList<Entity,hEntity> *el,
         case Entity::Type::DISTANCE_N_COPY:
         case Entity::Type::DISTANCE:
             en.type = Entity::Type::DISTANCE_N_COPY;
-            en.numDistance = ep->actDistance*fabs(scale);
+            en.numDistance = ep->actDistance*std::fabs(scale);
             break;
 
         case Entity::Type::FACE_NORMAL_PT:
@@ -1376,7 +1376,7 @@ void Group::GenerateForStepAndRepeat(T *steps, T *outs, Group::CombineAs forWhat
                 (soFar->at(a+1)).Clear();
             }
         }
-        swap(scratch, soFar);
+        std::swap(scratch, soFar);
         n = (n+1)/2;
     }
     outs->Clear();
@@ -1484,11 +1484,11 @@ void Group::GenerateShellAndMesh() {
 
                 if(i == is || i == (is + 1)) {
                     // These are the top and bottom of the shell.
-                    if(fabs((onOrig.Plus(ttop)).Dot(n) - d) < LENGTH_EPS) {
+                    if(std::fabs((onOrig.Plus(ttop)).Dot(n) - d) < LENGTH_EPS) {
                         face = Remap(Entity::NO_ENTITY, REMAP_TOP);
                         ss->face = face.v;
                     }
-                    if(fabs((onOrig.Plus(tbot)).Dot(n) - d) < LENGTH_EPS) {
+                    if(std::fabs((onOrig.Plus(tbot)).Dot(n) - d) < LENGTH_EPS) {
                         face = Remap(Entity::NO_ENTITY, REMAP_BOTTOM);
                         ss->face = face.v;
                     }
@@ -1547,7 +1547,7 @@ void Group::GenerateShellAndMesh() {
         SBezierLoopSetSet *sblss = &(src->bezierLoops);
         SBezierLoopSet *sbls;
         for(sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
-            if(fabs(anglef - angles) < 2 * PI) {
+            if(std::fabs(anglef - angles) < 2 * PI) {
                 thisShell.MakeFromHelicalRevolutionOf(sbls, pt, axis, color, this,
                                                       angles, anglef, dists, distf);
             } else {
@@ -1992,7 +1992,7 @@ void Group::DrawContourAreaLabels(Canvas *canvas) {
         Canvas::Stroke stroke = Style::Stroke(hs);
         stroke.layer = Canvas::Layer::FRONT;
 
-        std::string label = SS.MmToStringSI(fabs(sbls.SignedArea()), /*dim=*/2);
+        std::string label = SS.MmToStringSI(std::fabs(sbls.SignedArea()), /*dim=*/2);
         double fontHeight = Style::TextHeight(hs);
         double textWidth  = VectorFont::Builtin()->GetWidth(fontHeight, label),
                textHeight = VectorFont::Builtin()->GetCapHeight(fontHeight);

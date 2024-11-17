@@ -259,7 +259,7 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
                 Entity *line = SK.GetEntity(c.entityB),
                        *arc  = SK.GetEntity(c.entityA);
                 if(line->type == Entity::Type::ARC_OF_CIRCLE) {
-                    swap(line, arc);
+                    std::swap(line, arc);
                 }
                 Constraint::ConstrainArcLineTangent(&c, line, arc);
                 break;
@@ -268,7 +268,7 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
                 Entity *line  = SK.GetEntity(c.entityB),
                        *cubic = SK.GetEntity(c.entityA);
                 if(line->type == Entity::Type::CUBIC) {
-                    swap(line, cubic);
+                    std::swap(line, cubic);
                 }
                 Constraint::ConstrainCubicLineTangent(&c, line, cubic);
                 break;

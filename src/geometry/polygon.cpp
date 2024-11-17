@@ -40,9 +40,9 @@ bool SEdge::EdgeCrosses(Vector ea, Vector eb, Vector *ppi, SPointList *spl) cons
     // Can't just test if distance between d and a equals distance between d and b;
     // they could be on opposite sides, since we don't have the sign.
     double m = sqrt(d.Magnitude()*dthis.Magnitude());
-    if(sqrt(fabs(d.Dot(dthis))) > (m - LENGTH_EPS)) {
+    if(sqrt(std::fabs(d.Dot(dthis))) > (m - LENGTH_EPS)) {
         // The edges are parallel.
-        if(fabs(a.DistanceToLine(ea, d)) > LENGTH_EPS) {
+        if(std::fabs(a.DistanceToLine(ea, d)) > LENGTH_EPS) {
             // and not coincident, so can't be intersecting
             return false;
         }
@@ -700,7 +700,7 @@ static bool IntersectionOfLines(double x0A, double y0A, double dxA, double dyA,
     //    x*dy - y*dx = (x0*dy - y0*dx)
 
     // So write the matrix, pre-pivoted.
-    if(fabs(dyA) > fabs(dyB)) {
+    if(std::fabs(dyA) > std::fabs(dyB)) {
         A[0][0] = dyA;  A[0][1] = -dxA;  b[0] = x0A*dyA - y0A*dxA;
         A[1][0] = dyB;  A[1][1] = -dxB;  b[1] = x0B*dyB - y0B*dxB;
     } else {
@@ -709,7 +709,7 @@ static bool IntersectionOfLines(double x0A, double y0A, double dxA, double dyA,
     }
 
     // Check the determinant; if it's zero then no solution.
-    if(fabs(A[0][0]*A[1][1] - A[0][1]*A[1][0]) < LENGTH_EPS) {
+    if(std::fabs(A[0][0]*A[1][1] - A[0][1]*A[1][0]) < LENGTH_EPS) {
         return false;
     }
 
@@ -756,7 +756,7 @@ void SContour::OffsetInto(SContour *dest, double r) const {
             thetan += 2*PI;
         }
 
-        if (fabs(thetan - thetap) < (1*PI) / 180) {
+        if (std::fabs(thetan - thetap) < (1*PI) / 180) {
             Vector p = Vector(b.x - r*sin(thetap), b.y + r*cos(thetap), 0);
             dest->AddPoint(p);
         } else if (thetan < thetap) {
@@ -787,7 +787,7 @@ void SContour::OffsetInto(SContour *dest, double r) const {
 
             dest->AddPoint(Vector::From(x, y, 0));
         } else {
-            if(fabs(thetap - thetan) < (6*PI)/180) {
+            if(std::fabs(thetap - thetan) < (6*PI)/180) {
                 Vector pp = Vector(b.x - r*sin(thetap),
                                    b.y + r*cos(thetap), 0);
                 dest->AddPoint(pp);

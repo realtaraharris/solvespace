@@ -898,7 +898,7 @@ void TextWindow::EditControlDone(std::string s) {
             break;
 
         case Edit::STEP_DIM_STEPS:
-            stepDim.steps = min(300, max(1, atoi(s.c_str())));
+            stepDim.steps = std::min(300, std::max(1, atoi(s.c_str())));
             break;
 
         case Edit::TANGENT_ARC_RADIUS:

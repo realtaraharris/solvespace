@@ -257,7 +257,7 @@ void SBezier::MakePwlInitialWorker(List<Vector> *l, double ta, double tb, double
     Vector pm3 = PointAt(tm3);
     Vector dir = pb.Minus(pa);
 
-    double d = max({
+    double d = std::max({
                    pm1.DistanceToLine(pa, dir),
                    pm2.DistanceToLine(pa, dir),
                    pm3.DistanceToLine(pa, dir)
@@ -426,7 +426,7 @@ void SSurface::ClosestPointTo(Vector p, double *u, double *v, bool mustConverge)
     // Search for a reasonable initial guess
     int i, j;
     double minDist = VERY_POSITIVE;
-    int res = (max(degm, degn) == 2) ? 7 : 20;
+    int res = (std::max(degm, degn) == 2) ? 7 : 20;
     for(i = 0; i < res; i++) {
         for(j = 0; j < res; j++) {
             double tryu = (i + 0.5)/res, tryv = (j + 0.5)/res;

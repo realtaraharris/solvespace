@@ -359,7 +359,7 @@ static double Frac(double x) {
 }
 
 static RgbaColor EncodeLengthAsFloat(double v) {
-    v = max(0.0, min(1.0, v));
+    v = std::max(0.0, std::min(1.0, v));
     double er = v;
     double eg = Frac(255.0 * v);
     double eb = Frac(65025.0 * v);

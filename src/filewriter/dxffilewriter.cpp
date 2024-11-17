@@ -194,7 +194,7 @@ public:
                         Vector refClosest = ref.ClosestPointOnLine(lA, dl);
 
                         double ddl = dl.Dot(dl);
-                        if(fabs(ddl) > LENGTH_EPS * LENGTH_EPS) {
+                        if(std::fabs(ddl) > LENGTH_EPS * LENGTH_EPS) {
                             double t = refClosest.Minus(lA).Dot(dl) / ddl;
                             if(t < 0.0) {
                                 refClosest = lA;
@@ -427,7 +427,7 @@ public:
             double theta0 = atan2(sb->ctrl[0].y - c.y, sb->ctrl[0].x - c.x);
             double theta1 = atan2(sb->ctrl[2].y - c.y, sb->ctrl[2].x - c.x);
             double dtheta = WRAP_SYMMETRIC(theta1 - theta0, 2.0 * PI);
-            if(dtheta < 0.0) swap(theta0, theta1);
+            if (dtheta < 0.0) { std::swap(theta0, theta1); }
 
             writeArc(c, r, theta0, theta1, hs);
         } else if(sb->IsRational()) {

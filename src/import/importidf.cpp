@@ -211,8 +211,8 @@ static void CreateEntity(EntityList *el, int *id, hEntity h0, hEntity h1, hEntit
     } else {
         // arc
         if(angle < 0.0) {
-            swap(p0,p1);
-            swap(h0,h1);
+            std::swap(p0,p1);
+            std::swap(h0,h1);
         }
         // locate the center of the arc
         Vector m = p0.Plus(p1).ScaledBy(0.5);

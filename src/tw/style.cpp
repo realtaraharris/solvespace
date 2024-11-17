@@ -258,7 +258,7 @@ bool TextWindow::EditControlDoneForStyles(const std::string &str) {
             } else {
                 v = atof(str.c_str());
             }
-            v = max(0.0, v);
+            v = std::max(0.0, v);
             if(edit.meaning == Edit::STYLE_TEXT_HEIGHT) {
                 s->textHeight = v;
             } else if(edit.meaning == Edit::STYLE_STIPPLE_PERIOD) {

@@ -45,7 +45,7 @@ void EpsFileWriter::Background(RgbaColor color) {
             MmToPts(0),     MmToPts(height));
 
     // same issue with cracks, stroke it to avoid them
-    double sw = max(width, height) / 1000;
+    double sw = std::max(width, height) / 1000;
     fprintf(f,
 "1 setlinejoin\r\n"
 "1 setlinecap\r\n"
@@ -105,7 +105,7 @@ void EpsFileWriter::Triangle(STriangle *tr) {
             MmToPts(tr->c.x - ptMin.x), MmToPts(tr->c.y - ptMin.y));
 
     // same issue with cracks, stroke it to avoid them
-    double sw = max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
+    double sw = std::max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
     fprintf(f,
 "1 setlinejoin\r\n"
 "1 setlinecap\r\n"

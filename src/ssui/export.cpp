@@ -48,7 +48,7 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
         vt = vt.WithMagnitude(1);
 
         if(fabs(SS.GW.projUp.Dot(vt)) < fabs(SS.GW.projUp.Dot(ut))) {
-            swap(ut, vt);
+            std::swap(ut, vt);
         }
         if(SS.GW.projRight.Dot(ut) < 0) ut = ut.ScaledBy(-1);
         if(SS.GW.projUp.   Dot(vt) < 0) vt = vt.ScaledBy(-1);
@@ -366,12 +366,12 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
 
             // And calculate lighting for the triangle
             Vector n = tt.Normal().WithMagnitude(1);
-            double lighting = min(1.0, SS.ambientIntensity +
-                                  max(0.0, (SS.lightIntensity[0])*(n.Dot(l0))) +
-                                  max(0.0, (SS.lightIntensity[1])*(n.Dot(l1))));
-            double r = min(1.0, tt.meta.color.redF()   * lighting),
-                   g = min(1.0, tt.meta.color.greenF() * lighting),
-                   b = min(1.0, tt.meta.color.blueF()  * lighting);
+            double lighting = std::min(1.0, SS.ambientIntensity +
+                                  std::max(0.0, (SS.lightIntensity[0])*(n.Dot(l0))) +
+                                  std::max(0.0, (SS.lightIntensity[1])*(n.Dot(l1))));
+            double r = std::min(1.0, tt.meta.color.redF()   * lighting),
+                   g = std::min(1.0, tt.meta.color.greenF() * lighting),
+                   b = std::min(1.0, tt.meta.color.blueF()  * lighting);
             tt.meta.color = RGBf(r, g, b);
             smp.AddTriangle(&tt);
         }
@@ -495,7 +495,7 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
 
             double ta = aj.Minus(ai).Dot(di) / di.Dot(di);
             double tb = bj.Minus(ai).Dot(di) / di.Dot(di);
-            if(ta > tb) {
+            if (ta > tb) {
                 std::swap(pAj, pBj);
                 std::swap(ta, tb);
             }
@@ -813,8 +813,8 @@ void SolveSpaceUI::ExportMeshAsThreeJsTo(FILE *f, const Platform::Path &filename
     // only rotates about the world origin.
 
     sm->GetBounding(&bndh, &bndl);
-    double largerBoundXY = max((bndh.x - bndl.x), (bndh.y - bndl.y));
-    double largerBoundZ = max(largerBoundXY, (bndh.z - bndl.z + 1));
+    double largerBoundXY = std::max((bndh.x - bndl.x), (bndh.y - bndl.y));
+    double largerBoundZ = std::max(largerBoundXY, (bndh.z - bndl.z + 1));
 
     std::string basename = filename.FileStem();
     for(size_t i = 0; i < basename.length(); i++) {

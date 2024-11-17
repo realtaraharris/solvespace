@@ -176,7 +176,7 @@ public:
     void Reverse() {
         int i;
         for(i = 0; i < (n/2); i++) {
-            swap(elem[i], elem[(n-1)-i]);
+            std::swap(elem[i], elem[(n-1)-i]);
         }
     }
 };

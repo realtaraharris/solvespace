@@ -877,7 +877,7 @@ void Constraint::GenerateEquations(IdList<Equation,hEquation> *l,
             Expr *d2 = au.Dot(bu);
             // Allow either orientation for the coordinate system, depending
             // on how it was drawn.
-            if(fabs(d1->Eval()) < fabs(d2->Eval())) {
+            if(std::fabs(d1->Eval()) < std::fabs(d2->Eval())) {
                 AddEq(l, d1, 3);
             } else {
                 AddEq(l, d2, 3);
@@ -899,7 +899,7 @@ void Constraint::GenerateEquations(IdList<Equation,hEquation> *l,
                 // specified angle
                 Expr *rads = exA->Times(Expr::From(PI/180)),
                      *rc   = rads->Cos();
-                double arc = fabs(rc->Eval());
+                double arc = std::fabs(rc->Eval());
                 // avoid false detection of inconsistent systems by gaining
                 // up as the difference in dot products gets small at small
                 // angles; doubles still have plenty of precision, only

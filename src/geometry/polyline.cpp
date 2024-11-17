@@ -31,7 +31,7 @@ bool PolylineBuilder::Vertex::GetNext(uint32_t kind, Vector plane, double dist,
 
         // We choose the best next edge with minimal distance from the current plane
         Vector nextPos = e->GetOtherVertex(this)->pos;
-        double curD = fabs(plane.Dot(nextPos) - dist);
+        double curD = std::fabs(plane.Dot(nextPos) - dist);
         if(best != NULL && curD > minD) continue;
         best = e;
         minD = curD;

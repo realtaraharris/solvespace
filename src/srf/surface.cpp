@@ -464,15 +464,15 @@ void SSurface::Reverse() {
     int i, j;
     for(i = 0; i < (degm+1)/2; i++) {
         for(j = 0; j <= degn; j++) {
-            swap(ctrl[i][j], ctrl[degm-i][j]);
-            swap(weight[i][j], weight[degm-i][j]);
+            std::swap(ctrl[i][j], ctrl[degm-i][j]);
+            std::swap(weight[i][j], weight[degm-i][j]);
         }
     }
 
     STrimBy *stb;
     for(stb = trim.First(); stb; stb = trim.NextAfter(stb)) {
         stb->backwards = !stb->backwards;
-        swap(stb->start, stb->finish);
+        std::swap(stb->start, stb->finish);
     }
 }
 

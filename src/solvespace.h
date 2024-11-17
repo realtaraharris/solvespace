@@ -86,11 +86,6 @@ typedef struct _cairo_surface cairo_surface_t;
 
 namespace SolveSpace {
 
-using std::min;
-using std::max;
-using std::swap;
-using std::fabs;
-
 [[noreturn]]
 void AssertFailure(const char *file, unsigned line, const char *function,
                    const char *condition, const char *message);

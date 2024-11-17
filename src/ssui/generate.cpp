@@ -152,7 +152,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
             for(i = 0; i < SK.groupOrder.n; i++) {
                 Group *g = SK.GetGroup(SK.groupOrder[i]);
                 if((!g->clean) || !g->IsSolvedOkay()) {
-                    first = min(first, i);
+                    first = std::min(first, i);
                 }
                 if(g->h == SS.GW.activeGroup) {
                     last = i;

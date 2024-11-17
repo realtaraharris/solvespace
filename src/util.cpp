@@ -122,7 +122,7 @@ static void MessageBox(const char *fmt, va_list va, bool error,
     while(separatorAt != std::string::npos) {
         size_t dotAt = text.find('.', separatorAt + 1),
                colonAt = text.find(':', separatorAt + 1);
-        separatorAt = min(dotAt, colonAt);
+        separatorAt = std::min(dotAt, colonAt);
         if(separatorAt == std::string::npos ||
                 (separatorAt + 1 < text.size() && isspace(text[separatorAt + 1]))) {
             break;
@@ -202,9 +202,9 @@ size_t VectorHash::operator()(const Vector &v) const {
     const size_t size = (size_t)pow(std::numeric_limits<size_t>::max(), 1.0 / 3.0) - 1;
     const double eps = 4.0 * LENGTH_EPS;
 
-    double x = fabs(v.x) / eps;
-    double y = fabs(v.y) / eps;
-    double z = fabs(v.y) / eps;
+    double x = std::fabs(v.x) / eps;
+    double y = std::fabs(v.y) / eps;
+    double z = std::fabs(v.y) / eps;
 
     size_t xs = size_t(fmod(x, (double)size));
     size_t ys = size_t(fmod(y, (double)size));

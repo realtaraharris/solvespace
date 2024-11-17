@@ -188,7 +188,7 @@ bool Test::Helper::CheckEqualString(const char *file, int line, const char *valu
 
 bool Test::Helper::CheckEqualEpsilon(const char *file, int line, const char *valueExpr,
                                      double value, double reference) {
-    bool result = fabs(value - reference) < LENGTH_EPS;
+    bool result = std::fabs(value - reference) < LENGTH_EPS;
     if(!RecordCheck(result)) {
         std::string msg = ssprintf("(%s) = %.4g ≉ %.4g", valueExpr,
                                    value, reference);

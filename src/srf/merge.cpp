@@ -88,10 +88,10 @@ void SShell::MergeCoincidentSurfaces() {
             SEdge *se;
             for(se = sel.l.First(); se; se = sel.l.NextAfter(se)) {
                 double ut = (se->a).Dot(u), vt = (se->a).Dot(v);
-                umax = max(umax, ut);
-                vmax = max(vmax, vt);
-                umin = min(umin, ut);
-                vmin = min(vmin, vt);
+                umax = std::max(umax, ut);
+                vmax = std::max(vmax, vt);
+                umin = std::min(umin, ut);
+                vmin = std::min(vmin, vt);
             }
 
             // An interesting problem here; the real curve could extend
@@ -99,7 +99,7 @@ void SShell::MergeCoincidentSurfaces() {
             // bits. Not a problem for us, but some apps won't import STEP
             // in that case. So give a bit of extra room; in theory just
             // a chord tolerance, but more can't hurt.
-            double muv = max((umax - umin), (vmax - vmin));
+            double muv = std::max((umax - umin), (vmax - vmin));
             double tol = muv/50 + 3*SS.ChordTolMm();
             umax += tol;
             vmax += tol;

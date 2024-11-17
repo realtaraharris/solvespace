@@ -469,9 +469,9 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir,
         }
 
         if(fabs(dotp[1]) < DOTP_TOL) {
-            swap(dotp[0],         dotp[1]);
-            swap(inter_surf_n[0], inter_surf_n[1]);
-            swap(inter_edge_n[0], inter_edge_n[1]);
+            std::swap(dotp[0],         dotp[1]);
+            std::swap(inter_surf_n[0], inter_surf_n[1]);
+            std::swap(inter_edge_n[0], inter_edge_n[1]);
         }
 
         Class coinc = (surf_n.Dot(inter_surf_n[0])) > 0 ? Class::COINC_SAME : Class::COINC_OPP;

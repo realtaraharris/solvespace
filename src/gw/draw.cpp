@@ -621,10 +621,10 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
         double uu = tpp.Dot(wu),
                vv = tpp.Dot(wv);
 
-        umin = min(uu, umin);
-        umax = max(uu, umax);
-        vmin = min(vv, vmin);
-        vmax = max(vv, vmax);
+        umin = std::min(uu, umin);
+        umax = std::max(uu, umax);
+        vmin = std::min(vv, vmin);
+        vmax = std::max(vv, vmax);
     }
 
     int i, j, i0, i1, j0, j1;

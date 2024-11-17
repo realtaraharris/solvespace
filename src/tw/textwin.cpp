@@ -426,7 +426,7 @@ void TextWindow::Printf(bool halfLine, const char *fmt, ...) {
                 }
                 case 's': {
                     char *s = va_arg(vl, char *);
-                    memcpy(buf, s, min(sizeof(buf), strlen(s)+1));
+                    memcpy(buf, s, std::min(sizeof(buf), strlen(s)+1));
                     break;
                 }
                 case 'c': {
@@ -596,8 +596,8 @@ void TextWindow::Resize()
     halfRows = (int)height / (LINE_HEIGHT/2);
 
     int bottom = top[rows-1] + 2;
-    scrollPos = min(scrollPos, bottom - halfRows);
-    scrollPos = max(scrollPos, 0);
+    scrollPos = std::min(scrollPos, bottom - halfRows);
+    scrollPos = std::max(scrollPos, 0);
 
     window->ConfigureScrollbar(0, top[rows - 1] + 1, halfRows);
     window->SetScrollbarPosition(scrollPos);
@@ -662,7 +662,7 @@ Vector TextWindow::HsvToRgb(Vector hsv) {
     Vector rgb;
     double hmod2 = hsv.x;
     while(hmod2 >= 2) hmod2 -= 2;
-    double x = (1 - fabs(hmod2 - 1));
+    double x = (1 - std::fabs(hmod2 - 1));
     if(hsv.x < 1) {
         rgb = Vector::From(1, x, 0);
     } else if(hsv.x < 2) {
@@ -764,7 +764,7 @@ bool TextWindow::DrawOrHitTestColorPicker(UiCanvas *uiCanvas, DrawOrHitHow how, 
     static const int WIDTH = 16, HEIGHT = 12;
     static const int PITCH = 18, SIZE = 15;
 
-    px = min(px, (int)width - (WIDTH*PITCH + 40));
+    px = std::min(px, (int)width - (WIDTH*PITCH + 40));
 
     int pxm = px + WIDTH*PITCH + 11,
         pym = py + HEIGHT*PITCH + 7;
@@ -964,7 +964,7 @@ void TextWindow::Paint() {
             if(ltop < (scrollPos-1)) continue;
             if(ltop > scrollPos+halfRows) break;
 
-            for(c = 0; c < min(((int)width/CHAR_WIDTH_)+1, (int) MAX_COLS); c++) {
+            for(c = 0; c < std::min(((int)width/CHAR_WIDTH_)+1, (int) MAX_COLS); c++) {
                 int x = LEFT_MARGIN + c*CHAR_WIDTH_;
                 int y = (ltop-scrollPos)*(LINE_HEIGHT/2) + 4;
 
@@ -1157,8 +1157,8 @@ void TextWindow::ScrollbarEvent(double newPos) {
     }
 
     int bottom = top[rows-1] + 2;
-    newPos = min((int)newPos, bottom - halfRows);
-    newPos = max((int)newPos, 0);
+    newPos = std::min((int)newPos, bottom - halfRows);
+    newPos = std::max((int)newPos, 0);
     if(newPos != scrollPos) {
         scrollPos = (int)newPos;
         window->SetScrollbarPosition(scrollPos);
@@ -1593,7 +1593,7 @@ void TextWindow::DescribeSelection() {
         while(theta > PI/2) theta -= PI;
         Printf(false, "      or angle = %Fi%2%E (mod 180)", theta*180/PI);
 
-        if(fabs(theta) < 0.01) {
+        if(std::fabs(theta) < 0.01) {
             double d = (p1.Minus(p0)).Dot(n0);
             Printf(true,  "      distance = %Fi%s", SS.MmToString(d).c_str());
         }

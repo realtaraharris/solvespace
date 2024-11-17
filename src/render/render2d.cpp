@@ -144,11 +144,11 @@ void SurfaceRenderer::DrawMesh(const SMesh &m,
                 // Compute lighting, since we're going to draw the shaded triangles.
                 Vector n = tr.Normal().WithMagnitude(1);
                 double intensity = lighting.ambientIntensity +
-                                        max(0.0, (lighting.lightIntensity[0])*(n.Dot(l0))) +
-                                        max(0.0, (lighting.lightIntensity[1])*(n.Dot(l1)));
-                double r = min(1.0, tr.meta.color.redF()   * intensity),
-                       g = min(1.0, tr.meta.color.greenF() * intensity),
-                       b = min(1.0, tr.meta.color.blueF()  * intensity);
+                                        std::max(0.0, (lighting.lightIntensity[0])*(n.Dot(l0))) +
+                                        std::max(0.0, (lighting.lightIntensity[1])*(n.Dot(l1)));
+                double r = std::min(1.0, tr.meta.color.redF()   * intensity),
+                       g = std::min(1.0, tr.meta.color.greenF() * intensity),
+                       b = std::min(1.0, tr.meta.color.blueF()  * intensity);
                 tr.meta.color = RGBf(r, g, b);
             } else {
                 // We're going to draw this triangle, but it's not shaded.

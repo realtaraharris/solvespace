@@ -431,7 +431,7 @@ bool Expr::DependsOn(hParam p) const {
 }
 
 bool Expr::Tol(double a, double b) {
-    return fabs(a - b) < 0.001;
+    return std::fabs(a - b) < 0.001;
 }
 
 bool Expr::IsZeroConst() const {

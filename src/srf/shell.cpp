@@ -17,7 +17,7 @@ void SShell::MakeFromExtrusionOf(SBezierLoopSet *sbls, Vector t0, Vector t1, Rgb
     // Make the extrusion direction consistent with respect to the normal
     // of the sketch we're extruding.
     if((t0.Minus(t1)).Dot(sbls->normal) < 0) {
-        swap(t0, t1);
+        std::swap(t0, t1);
     }
 
     // Define a coordinate system to contain the original sketch, and get
@@ -169,11 +169,11 @@ void SShell::MakeFromHelicalRevolutionOf(SBezierLoopSet *sbls, Vector pt, Vector
     int startMapping = Group::REMAP_LATHE_START, endMapping = Group::REMAP_LATHE_END;
 
     if(CheckNormalAxisRelationship(sbls, pt, axis, anglef-angles, distf-dists)) {
-        swap(angles, anglef);
-        swap(dists, distf);
+        std::swap(angles, anglef);
+        std::swap(dists, distf);
         dist  = -dist;
         wedge = -wedge;
-        swap(startMapping, endMapping);
+        std::swap(startMapping, endMapping);
     }
 
     // Define a coordinate system to contain the original sketch, and get
@@ -515,8 +515,8 @@ void SShell::MakeFirstOrderRevolvedSurfaces(Vector pt, Vector axis, int i0) {
                 srf->weight[1][1] = 1;
 
                 if(oldn.Dot(srf->NormalAt(0.5, 0.5)) < 0) {
-                    swap(srf->ctrl[0][0], srf->ctrl[1][0]);
-                    swap(srf->ctrl[0][1], srf->ctrl[1][1]);
+                    std::swap(srf->ctrl[0][0], srf->ctrl[1][0]);
+                    std::swap(srf->ctrl[0][1], srf->ctrl[1][1]);
                 }
                 continue;
             }

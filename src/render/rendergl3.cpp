@@ -376,23 +376,23 @@ void OpenGl3Renderer::DoStippledLine(const Vector &a, const Vector &b, hStroke h
                 break;
 
             case '-':
-                start = max(start - 0.5 * ss, 0.0);
-                end = max(start - 2.0 * ss, 0.0);
+                start = std::max(start - 0.5 * ss, 0.0);
+                end = std::max(start - 2.0 * ss, 0.0);
                 if(start == end) break;
                 DoLine(a.Plus(dir.ScaledBy(start)), a.Plus(dir.ScaledBy(end)), hcs);
-                end = max(end - 0.5 * ss, 0.0);
+                end = std::max(end - 0.5 * ss, 0.0);
                 break;
 
             case '_':
-                end = max(end - 4.0 * ss, 0.0);
+                end = std::max(end - 4.0 * ss, 0.0);
                 DoLine(a.Plus(dir.ScaledBy(start)), a.Plus(dir.ScaledBy(end)), hcs);
                 break;
 
             case '.':
-                end = max(end - 0.5 * ss, 0.0);
+                end = std::max(end - 0.5 * ss, 0.0);
                 if(end == 0.0) break;
                 DoPoint(a.Plus(dir.ScaledBy(end)), hcs);
-                end = max(end - 0.5 * ss, 0.0);
+                end = std::max(end - 0.5 * ss, 0.0);
                 break;
 
             case '~': {
@@ -402,7 +402,7 @@ void OpenGl3Renderer::DoStippledLine(const Vector &a, const Vector &b, hStroke h
                 abn = abn.Minus(gn.ScaledBy(gn.Dot(abn)));
                 double pws = 2.0 * stroke->width / camera.scale;
 
-                end = max(end - 0.5 * ss, 0.0);
+                end = std::max(end - 0.5 * ss, 0.0);
                 Vector aa = a.Plus(dir.ScaledBy(start));
                 Vector bb = a.Plus(dir.ScaledBy(end))
                              .Plus(abn.ScaledBy(pws * (start - end) / (0.5 * ss)));
@@ -410,7 +410,7 @@ void OpenGl3Renderer::DoStippledLine(const Vector &a, const Vector &b, hStroke h
                 if(end == 0.0) break;
 
                 start = end;
-                end = max(end - 1.0 * ss, 0.0);
+                end = std::max(end - 1.0 * ss, 0.0);
                 aa = a.Plus(dir.ScaledBy(end))
                       .Plus(abn.ScaledBy(pws))
                       .Minus(abn.ScaledBy(2.0 * pws * (start - end) / ss));
@@ -418,7 +418,7 @@ void OpenGl3Renderer::DoStippledLine(const Vector &a, const Vector &b, hStroke h
                 if(end == 0.0) break;
 
                 start = end;
-                end = max(end - 0.5 * ss, 0.0);
+                end = std::max(end - 0.5 * ss, 0.0);
                 bb = a.Plus(dir.ScaledBy(end))
                       .Minus(abn.ScaledBy(pws))
                       .Plus(abn.ScaledBy(pws * (start - end) / (0.5 * ss)));

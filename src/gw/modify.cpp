@@ -112,7 +112,7 @@ void GraphicsWindow::ParametricCurve::MakeFromEntity(hEntity he, bool reverse) {
         p0 = e->EndpointStart(),
         p1 = e->EndpointFinish();
         if(reverse) {
-            swap(p0, p1);
+            std::swap(p0, p1);
         }
     } else if(e->type == Entity::Type::ARC_OF_CIRCLE) {
         isLine = false;
@@ -121,7 +121,7 @@ void GraphicsWindow::ParametricCurve::MakeFromEntity(hEntity he, bool reverse) {
         r = (pe.Minus(p0)).Magnitude();
         e->ArcGetAngles(&theta0, &theta1, &dtheta);
         if(reverse) {
-            swap(theta0, theta1);
+            std::swap(theta0, theta1);
             dtheta = -dtheta;
         }
         Entity *wrkpln = SK.GetEntity(e->workplane)->Normal();
@@ -349,8 +349,8 @@ void GraphicsWindow::MakeTangentArc() {
             r = 200/scale;
             // Set the radius so that no more than one third of the
             // line segment disappears.
-            r = min(r, pc[0].LengthForAuto()*tan(theta/2));
-            r = min(r, pc[1].LengthForAuto()*tan(theta/2));;
+            r = std::min(r, pc[0].LengthForAuto()*tan(theta/2));
+            r = std::min(r, pc[1].LengthForAuto()*tan(theta/2));;
         }
         // We are source-stepping the radius, to improve convergence. So
         // ramp that for most of the iterations, and then do a few at

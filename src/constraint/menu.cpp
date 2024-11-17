@@ -511,7 +511,7 @@ void Constraint::MenuConstrain(Command id) {
                 if((l1->group != SS.GW.activeGroup) ||
                    (l1->construction && !(l0->construction)))
                 {
-                    swap(l0, l1);
+                    std::swap(l0, l1);
                 }
                 c.ptA = l1->point[0];
                 c.ptB = l1->point[1];
@@ -549,7 +549,7 @@ void Constraint::MenuConstrain(Command id) {
                 Vector dp = pa.Minus(pb);
                 Entity *norm = SK.GetEntity(c.workplane)->Normal();;
                 Vector u = norm->NormalU(), v = norm->NormalV();
-                if(fabs(dp.Dot(u)) > fabs(dp.Dot(v))) {
+                if(std::fabs(dp.Dot(u)) > std::fabs(dp.Dot(v))) {
                     c.type = Type::SYMMETRIC_HORIZ;
                 } else {
                     c.type = Type::SYMMETRIC_VERT;
@@ -618,7 +618,7 @@ void Constraint::MenuConstrain(Command id) {
             Entity *nfree = SK.GetEntity(c.entityA);
             Entity *nref  = SK.GetEntity(c.entityB);
             if(nref->group == SS.GW.activeGroup) {
-                swap(nref, nfree);
+                std::swap(nref, nfree);
             }
             if(nfree->group == SS.GW.activeGroup && nref->group != SS.GW.activeGroup) {
                 // nfree is free, and nref is locked (since it came from a
@@ -627,11 +627,11 @@ void Constraint::MenuConstrain(Command id) {
                 Vector ru = nref ->NormalU(), rv = nref ->NormalV();
                 Vector fu = nfree->NormalU(), fv = nfree->NormalV();
 
-                if(fabs(fu.Dot(ru)) < fabs(fu.Dot(rv))) {
+                if(std::fabs(fu.Dot(ru)) < std::fabs(fu.Dot(rv))) {
                     // There might be an odd*90 degree rotation about the
                     // normal vector; allow that, since the numerical
                     // constraint does
-                    swap(ru, rv);
+                    std::swap(ru, rv);
                 }
                 fu = fu.Dot(ru) > 0 ? ru : ru.ScaledBy(-1);
                 fv = fv.Dot(rv) > 0 ? rv : rv.ScaledBy(-1);
@@ -731,7 +731,7 @@ void Constraint::MenuConstrain(Command id) {
                 Entity *line = SK.GetEntity(gs.entity[0]),
                        *arc  = SK.GetEntity(gs.entity[1]);
                 if(line->type == Entity::Type::ARC_OF_CIRCLE) {
-                    swap(line, arc);
+                    std::swap(line, arc);
                 }
                 if(!ConstrainArcLineTangent(&c, line, arc)) {
                     return;
@@ -743,7 +743,7 @@ void Constraint::MenuConstrain(Command id) {
                 Entity *line  = SK.GetEntity(gs.entity[0]),
                        *cubic = SK.GetEntity(gs.entity[1]);
                 if(line->type == Entity::Type::CUBIC) {
-                    swap(line, cubic);
+                    std::swap(line, cubic);
                 }
                 if(!ConstrainCubicLineTangent(&c, line, cubic)) {
                     return;

@@ -556,11 +556,11 @@ void GraphicsWindow::HandlePointForZoomToFit(Vector p, Point2d *pmax, Point2d *p
         pp = pp.ScaledBy(1.0/w);
     }
 
-    pmax->x = max(pmax->x, pp.x);
-    pmax->y = max(pmax->y, pp.y);
-    pmin->x = min(pmin->x, pp.x);
-    pmin->y = min(pmin->y, pp.y);
-    *wmin = min(*wmin, w);
+    pmax->x = std::max(pmax->x, pp.x);
+    pmax->y = std::max(pmax->y, pp.y);
+    pmin->x = std::min(pmin->x, pp.x);
+    pmin->y = std::min(pmin->y, pp.y);
+    *wmin = std::min(*wmin, w);
 }
 void GraphicsWindow::LoopOverPoints(const std::vector<Entity *> &entities,
                                     const std::vector<Constraint *> &constraints,
@@ -698,10 +698,10 @@ double GraphicsWindow::ZoomToFit(const Camera &camera,
         double scalex = 1e12, scaley = 1e12;
         if(EXACT(dx != 0)) scalex = 0.9*camera.width /dx;
         if(EXACT(dy != 0)) scaley = 0.9*camera.height/dy;
-        scale = min(scalex, scaley);
+        scale = std::min(scalex, scaley);
 
-        scale = min(300.0, scale);
-        scale = max(0.003, scale);
+        scale = std::min(300.0, scale);
+        scale = std::max(0.003, scale);
     }
 
     // Then do another run, considering the perspective.
@@ -719,7 +719,7 @@ double GraphicsWindow::ZoomToFit(const Camera &camera,
         double zmin = (wmin - 1)/(k*scale);
         // 0.1 = 1 + k*scale*zmin
         // (0.1 - 1)/(k*zmin) = scale
-        scale = min(scale, (0.1 - 1)/(k*zmin));
+        scale = std::min(scale, (0.1 - 1)/(k*zmin));
     }
 
     return scale;
@@ -853,7 +853,7 @@ void GraphicsWindow::MenuView(Command id) {
                             }
 
                             Quaternion quatt = Quaternion::From(u, v);
-                            double d = min(
+                            double d = std::min(
                                 (quatt.Minus(quat0)).Magnitude(),
                                 (quatt.Plus(quat0)).Magnitude());
                             if(d < dmin) {

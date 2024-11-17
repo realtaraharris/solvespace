@@ -365,11 +365,11 @@ void TextWindow::ShowConfiguration() {
 bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
     switch(edit.meaning) {
         case Edit::LIGHT_INTENSITY:
-            SS.lightIntensity[edit.i] = min(1.0, max(0.0, atof(s.c_str())));
+            SS.lightIntensity[edit.i] = std::min(1.0, std::max(0.0, atof(s.c_str())));
             SS.GW.Invalidate();
             break;
         case Edit::LIGHT_AMBIENT:
-            SS.ambientIntensity = min(1.0, max(0.0, atof(s.c_str())));
+            SS.ambientIntensity = std::min(1.0, std::max(0.0, atof(s.c_str())));
             SS.GW.Invalidate();
             break;
         case Edit::LIGHT_DIRECTION: {
@@ -394,24 +394,24 @@ bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
         }
         case Edit::CHORD_TOLERANCE: {
             if(edit.i == 0) {
-                SS.chordTol = max(0.0, atof(s.c_str()));
+                SS.chordTol = std::max(0.0, atof(s.c_str()));
                 SS.GenerateAll(SolveSpaceUI::Generate::ALL);
             } else {
-                SS.exportChordTol = max(0.0, atof(s.c_str()));
+                SS.exportChordTol = std::max(0.0, atof(s.c_str()));
             }
             break;
         }
         case Edit::MAX_SEGMENTS: {
             if(edit.i == 0) {
-                SS.maxSegments = min(1000, max(7, atoi(s.c_str())));
+                SS.maxSegments = std::min(1000, std::max(7, atoi(s.c_str())));
                 SS.GenerateAll(SolveSpaceUI::Generate::ALL);
             } else {
-                SS.exportMaxSegments = min(1000, max(7, atoi(s.c_str())));
+                SS.exportMaxSegments = std::min(1000, std::max(7, atoi(s.c_str())));
             }
             break;
         }
         case Edit::CAMERA_TANGENT: {
-            SS.cameraTangent = (min(2.0, max(0.0, atof(s.c_str()))))/1000.0;
+            SS.cameraTangent = (std::min(2.0, std::max(0.0, atof(s.c_str()))))/1000.0;
             SS.GW.Invalidate();
             if(!SS.usePerspectiveProj) {
                 Message(_("The perspective factor will have no effect until you "
@@ -420,12 +420,12 @@ bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
             break;
         }
         case Edit::GRID_SPACING: {
-            SS.gridSpacing = (float)min(1e4, max(1e-3, SS.StringToMm(s)));
+            SS.gridSpacing = (float)std::min(1e4, std::max(1e-3, SS.StringToMm(s)));
             SS.GW.Invalidate();
             break;
         }
         case Edit::EXPLODE_DISTANCE: {
-            SS.explodeDistance = min(1e4, max(-1e4, SS.StringToMm(s)));
+            SS.explodeDistance = std::min(1e4, std::max(-1e4, SS.StringToMm(s)));
             SS.MarkGroupDirty(SS.GW.activeGroup, true);
             break;
         }
@@ -505,7 +505,7 @@ bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
         case Edit::G_CODE_PASSES: {
             Expr *e = Expr::From(s, /*popUpError=*/true);
             if(e) SS.gCode.passes = (int)(e->Eval());
-            SS.gCode.passes = max(1, min(1000, SS.gCode.passes));
+            SS.gCode.passes = std::max(1, std::min(1000, SS.gCode.passes));
             break;
         }
         case Edit::G_CODE_FEED: {

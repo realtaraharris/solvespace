@@ -145,7 +145,7 @@ void Style::FreezeDefaultStyles(Platform::SettingsRef settings) {
 
 uint32_t Style::CreateCustomStyle(bool rememberForUndo) {
     if(rememberForUndo) SS.UndoRemember();
-    uint32_t vs = max((uint32_t)Style::FIRST_CUSTOM, SK.style.MaximumId() + 1);
+    uint32_t vs = std::max((uint32_t)Style::FIRST_CUSTOM, SK.style.MaximumId() + 1);
     hStyle hs = { vs };
     (void)Style::Get(hs);
     return hs.v;

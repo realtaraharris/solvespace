@@ -10,7 +10,7 @@ location. The term "Type" refers to the type of transformation an entity was
 created from, and should not be confused with the 3 kinds of Entity (there are
 other entities but they rely on others of the 3 base types for position and
 orientation information, so they don't directly transform). A list of
-Types is at the top of the EntityBase class definition:
+Types is at the top of the Entity class definition:
 
     enum class Type : uint32_t {
         POINT_IN_3D            =  2000,
@@ -86,25 +86,25 @@ fundamental entities - points, normals, and surfaces.
 FUNCTIONS THAT MAY NEED TO BE EXTENDED when new entity types are defined:
 
 These functions have default cases, so they only need to be extended to return True:
-EntityBase::IsPoint()
-EntityBase::IsNormal()
+Entity::IsPoint()
+Entity::IsNormal()
 EntityBAse::IsFace()
 
 For new normal transforms the following should be filled in:
-Quaternion EntityBase::NormalGetNum()
-void EntityBase::NormalForceTo(Quaternion q)
-ExprQuaternion EntityBase::NormalGetExprs()
+Quaternion Entity::NormalGetNum()
+void Entity::NormalForceTo(Quaternion q)
+ExprQuaternion Entity::NormalGetExprs()
 
 For points:
-Vector EntityBase::PointGetNum()
-void EntityBase::PointForceTo(Vector p)
-ExprVector EntityBase::PointGetExprs()
+Vector Entity::PointGetNum()
+void Entity::PointForceTo(Vector p)
+ExprVector Entity::PointGetExprs()
 
 For Faces:
-ExprVector EntityBase::FaceGetNormalExprs()
-Vector EntityBase::FaceGetNormalNum()
-ExprVector EntityBase::FaceGetPointExprs()
-Vector EntityBase::FaceGetPointNum()
+ExprVector Entity::FaceGetNormalExprs()
+Vector Entity::FaceGetNormalNum()
+ExprVector Entity::FaceGetPointExprs()
+Vector Entity::FaceGetPointNum()
 
 The basic model for these transformed entities is that the group containing them
 will have parameters that define the transformed entity in terms of the one it

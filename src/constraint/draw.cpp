@@ -24,7 +24,7 @@ std::string Constraint::Label() const {
         }
     } else {
         // valA has units of distance
-        result = SS.MmToStringSI(fabs(valA));
+        result = SS.MmToStringSI(std::fabs(valA));
     }
     if(reference) {
         result += " REF";
@@ -149,8 +149,8 @@ int Constraint::DoLineTrimmedAgainstBox(Canvas *canvas, Canvas::hStroke hcs,
         if(j < 4) continue;
 
         double t = (p.Minus(a)).DivProjected(dl);
-        tmin = min(t, tmin);
-        tmax = max(t, tmax);
+        tmin = std::min(t, tmin);
+        tmax = std::max(t, tmax);
     }
 
     // Both in range; so there's pieces of the line on both sides of the label box.
@@ -346,7 +346,7 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs,
         double rda = rm.Dot(da), rdna = rm.Dot(dna);
 
         // Introduce minimal arc radius in pixels
-        double r = max(sqrt(rda*rda + rdna*rdna), 15.0 * pixels);
+        double r = std::max(sqrt(rda*rda + rdna*rdna), 15.0 * pixels);
 
         double th = Style::TextHeight(GetStyle()) / camera.scale;
         double swidth   = VectorFont::Builtin()->GetWidth(th, Label()) + 8*pixels,
@@ -670,7 +670,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                 double pixels = 1.0 / camera.scale;
                 Vector refClosest = ref.ClosestPointOnLine(lA, dl);
                 double ddl = dl.Dot(dl);
-                if(fabs(ddl) > LENGTH_EPS * LENGTH_EPS) {
+                if(std::fabs(ddl) > LENGTH_EPS * LENGTH_EPS) {
                     double t = refClosest.Minus(lA).Dot(dl) / ddl;
                     if(t < 0.0) {
                         DoLine(canvas, hcs, refClosest.Minus(dl.WithMagnitude(10.0 * pixels)), lA);
@@ -891,8 +891,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas,
                     v = (rn.Cross(u)).WithMagnitude(16/camera.scale);
                     // a bit of bias to stop it from flickering between the
                     // two possibilities
-                    if(fabs(u.Dot(ru)) < fabs(v.Dot(ru)) + LENGTH_EPS) {
-                        swap(u, v);
+                    if(std::fabs(u.Dot(ru)) < std::fabs(v.Dot(ru)) + LENGTH_EPS) {
+                        std::swap(u, v);
                     }
                     if(u.Dot(ru) < 0) u = u.ScaledBy(-1);
                 }

@@ -38,13 +38,13 @@ void SMesh::AddTriangle(const STriangle *st) {
 }
 
 void SMesh::DoBounding(Vector v, Vector *vmax, Vector *vmin) const {
-    vmax->x = max(vmax->x, v.x);
-    vmax->y = max(vmax->y, v.y);
-    vmax->z = max(vmax->z, v.z);
+    vmax->x = std::max(vmax->x, v.x);
+    vmax->y = std::max(vmax->y, v.y);
+    vmax->z = std::max(vmax->z, v.z);
 
-    vmin->x = min(vmin->x, v.x);
-    vmin->y = min(vmin->y, v.y);
-    vmin->z = min(vmin->z, v.z);
+    vmin->x = std::min(vmin->x, v.x);
+    vmin->y = std::min(vmin->y, v.y);
+    vmin->z = std::min(vmin->z, v.z);
 }
 void SMesh::GetBounding(Vector *vmax, Vector *vmin) const {
     int i;
@@ -72,9 +72,9 @@ void SMesh::MakeEdgesInPlaneInto(SEdgeList *sel, Vector n, double d) {
     for(i = 0; i < m.l.n; i++) {
         STriangle *tr = &(m.l[i]);
 
-        if((fabs(n.Dot(tr->a) - d) >= LENGTH_EPS) ||
-           (fabs(n.Dot(tr->b) - d) >= LENGTH_EPS) ||
-           (fabs(n.Dot(tr->c) - d) >= LENGTH_EPS))
+        if((std::fabs(n.Dot(tr->a) - d) >= LENGTH_EPS) ||
+           (std::fabs(n.Dot(tr->b) - d) >= LENGTH_EPS) ||
+           (std::fabs(n.Dot(tr->c) - d) >= LENGTH_EPS))
         {
             tr->tag  = 1;
         }
@@ -180,17 +180,17 @@ void SMesh::Simplify(int start) {
                     double bDot = (ab.Cross(bc)).Dot(n);
                     double dDot = (cd.Cross(de)).Dot(n);
 
-                    bDot /= min(ab.Magnitude(), bc.Magnitude());
-                    dDot /= min(cd.Magnitude(), de.Magnitude());
+                    bDot /= std::min(ab.Magnitude(), bc.Magnitude());
+                    dDot /= std::min(cd.Magnitude(), de.Magnitude());
 
-                    if(fabs(bDot) < LENGTH_EPS && fabs(dDot) < LENGTH_EPS) {
+                    if(std::fabs(bDot) < LENGTH_EPS && std::fabs(dDot) < LENGTH_EPS) {
                         conv[WRAP((j+1), convc)] = c;
                         // and remove the vertex at j, which is a dup
                         std::move(conv+j+1, conv+convc, conv+j);
                         convc--;
-                    } else if(fabs(bDot) < LENGTH_EPS && dDot > 0) {
+                    } else if(std::fabs(bDot) < LENGTH_EPS && dDot > 0) {
                         conv[j] = c;
-                    } else if(fabs(dDot) < LENGTH_EPS && bDot > 0) {
+                    } else if(std::fabs(dDot) < LENGTH_EPS && bDot > 0) {
                         conv[WRAP((j+1), convc)] = c;
                     } else if(bDot > 0 && dDot > 0) {
                         // conv[j] is unchanged, conv[j+1] goes to [j+2]
@@ -217,7 +217,7 @@ void SMesh::Simplify(int start) {
             Vector ab = b.Minus(a);
             Vector bc = c.Minus(b);
             double bDot = (ab.Cross(bc)).Dot(n);
-            bDot /= min(ab.Magnitude(), bc.Magnitude());
+            bDot /= std::min(ab.Magnitude(), bc.Magnitude());
 
             if(bDot < 0) return; // XXX, shouldn't happen
         }
@@ -326,7 +326,7 @@ void SMesh::MakeFromTransformationOf(SMesh *a, Vector trans,
         tt.c = (tt.c).ScaledBy(scale);
         if(scale < 0) {
             // The mirroring would otherwise turn a closed mesh inside out.
-            swap(tt.a, tt.b);
+            std::swap(tt.a, tt.b);
         }
         tt.a = (q.Rotate(tt.a)).Plus(trans);
         tt.b = (q.Rotate(tt.b)).Plus(trans);
@@ -390,7 +390,7 @@ SKdNode *SKdNode::From(SMesh *m) {
     while(n > 1) {
         int k = rand() % n;
         n--;
-        swap(tra[k], tra[n]);
+        std::swap(tra[k], tra[n]);
     }
 
     STriangleLl *tll = NULL;
@@ -1180,7 +1180,7 @@ double SMesh::CalculateVolume() const {
         n = tr.Normal().WithMagnitude(1);
 
         // Triangles on edge don't contribute
-        if(fabs(n.z) < LENGTH_EPS) continue;
+        if(std::fabs(n.z) < LENGTH_EPS) continue;
 
         // The plane has equation p dot n = a dot n
         double d = (tr.a).Dot(n);

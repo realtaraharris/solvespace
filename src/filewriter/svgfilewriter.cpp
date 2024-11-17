@@ -26,7 +26,7 @@ void SvgFileWriter::StartFile() {
     // crispEdges turns of anti-aliasing, which tends to cause hairline
     // cracks between triangles; but there still is some cracking, so
     // specify a stroke width too, hope for around a pixel
-    double sw = max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
+    double sw = std::max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
     fprintf(f, "stroke-width:%f;\r\n", sw);
     fprintf(f, "}\r\n");
 

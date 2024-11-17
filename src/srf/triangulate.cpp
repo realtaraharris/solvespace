@@ -507,7 +507,7 @@ double SSurface::ChordToleranceForEdge(Vector a, Vector b) const {
                ps = as.Plus((bs.Minus(as)).ScaledBy(i/4.0));
 
         Vector pps = PointAt(p.x, p.y);
-        worst = max(worst, (pps.Minus(ps)).MagSquared());
+        worst = std::max(worst, (pps.Minus(ps)).MagSquared());
     }
     return sqrt(worst);
 }
@@ -561,8 +561,8 @@ void SSurface::MakeTriangulationGridInto(List<double> *l, double vs, double vf,
                                NormalAtMaybeSwapped(u, vm2, swapped) );
         if (twist < worst_twist) worst_twist = twist;
 
-        worst = max(worst, pm1.DistanceToLine(ps, pf.Minus(ps)));
-        worst = max(worst, pm2.DistanceToLine(ps, pf.Minus(ps)));
+        worst = std::max(worst, pm1.DistanceToLine(ps, pf.Minus(ps)));
+        worst = std::max(worst, pm2.DistanceToLine(ps, pf.Minus(ps)));
     }
 
     double step = 1.0/SS.GetMaxSegments();

@@ -867,7 +867,7 @@ Vector Entity::EndpointFinish() const {
 }
 static bool PointInPlane(hEntity h, Vector norm, double distance) {
     Vector p = SK.GetEntity(h)->PointGetNum();
-    return (fabs(norm.Dot(p) - distance) < LENGTH_EPS);
+    return (std::fabs(norm.Dot(p) - distance) < LENGTH_EPS);
 }
 bool Entity::IsInPlane(Vector norm, double distance) const {
     switch(type) {
@@ -1474,7 +1474,7 @@ Vector Entity::ExplodeOffset() const {
 }
 
 Vector Entity::PointGetDrawNum() const {
-    // As per EntityBase::PointGetNum but specifically for when drawing/rendering the point
+    // As per Entity::PointGetNum but specifically for when drawing/rendering the point
     // (and not when solving), so we can potentially draw it somewhere different
     return PointGetNum().Plus(ExplodeOffset());
 }

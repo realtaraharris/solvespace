@@ -136,7 +136,7 @@ void PdfFileWriter::FinishAndCloseFile() {
 void PdfFileWriter::Background(RgbaColor color) {
     double width  = ptMax.x - ptMin.x;
     double height = ptMax.y - ptMin.y;
-    double sw     = max(width, height) / 1000;
+    double sw     = std::max(width, height) / 1000;
 
     fprintf(f,
 "1 J 1 j\r\n"
@@ -195,7 +195,7 @@ void PdfFileWriter::MaybeMoveTo(Vector st, Vector fi) {
 }
 
 void PdfFileWriter::Triangle(STriangle *tr) {
-    double sw = max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
+    double sw = std::max(ptMax.x - ptMin.x, ptMax.y - ptMin.y) / 1000;
 
     fprintf(f,
 "1 J 1 j\r\n"

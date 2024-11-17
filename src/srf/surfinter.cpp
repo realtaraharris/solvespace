@@ -157,11 +157,11 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
             // so u = up + t*ud
             //    v = vp + t*vd
             if(ud > LENGTH_EPS) {
-                tmin = max(tmin, -up/ud);
-                tmax = min(tmax, (1 - up)/ud);
+                tmin = std::max(tmin, -up/ud);
+                tmax = std::min(tmax, (1 - up)/ud);
             } else if(ud < -LENGTH_EPS) {
-                tmax = min(tmax, -up/ud);
-                tmin = max(tmin, (1 - up)/ud);
+                tmax = std::min(tmax, -up/ud);
+                tmin = std::max(tmin, (1 - up)/ud);
             } else {
                 if(up < -LENGTH_EPS || up > 1 + LENGTH_EPS) {
                     // u is constant, and outside [0, 1]
@@ -169,11 +169,11 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
                 }
             }
             if(vd > LENGTH_EPS) {
-                tmin = max(tmin, -vp/vd);
-                tmax = min(tmax, (1 - vp)/vd);
+                tmin = std::max(tmin, -vp/vd);
+                tmax = std::min(tmax, (1 - vp)/vd);
             } else if(vd < -LENGTH_EPS) {
-                tmax = min(tmax, -vp/vd);
-                tmin = max(tmin, (1 - vp)/vd);
+                tmax = std::min(tmax, -vp/vd);
+                tmin = std::max(tmin, (1 - vp)/vd);
             } else {
                 if(vp < -LENGTH_EPS || vp > 1 + LENGTH_EPS) {
                     // v is constant, and outside [0, 1]
@@ -264,11 +264,11 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
                b_axis0 = (b->ctrl[0][0]).Dot(axis),
                b_axis1 = (b->ctrl[0][1]).Dot(axis);
 
-        if(a_axis0 > a_axis1) swap(a_axis0, a_axis1);
-        if(b_axis0 > b_axis1) swap(b_axis0, b_axis1);
+        if(a_axis0 > a_axis1) std::swap(a_axis0, a_axis1);
+        if(b_axis0 > b_axis1) std::swap(b_axis0, b_axis1);
 
-        double ab_axis0 = max(a_axis0, b_axis0),
-               ab_axis1 = min(a_axis1, b_axis1);
+        double ab_axis0 = std::max(a_axis0, b_axis0),
+               ab_axis1 = std::min(a_axis1, b_axis1);
 
         if(fabs(ab_axis0 - ab_axis1) < LENGTH_EPS) {
             // The line would be zero-length
@@ -425,7 +425,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB,
 
             // Our chord tolerance is whatever the user specified
             double maxtol = SS.ChordTolMm();
-            int maxsteps = max(300, SS.GetMaxSegments()*3);
+            int maxsteps = std::max(300, SS.GetMaxSegments()*3);
 
             // The curve starts at our starting point.
             SCurvePt padd = {};

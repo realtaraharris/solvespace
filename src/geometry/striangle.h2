@@ -55,7 +55,7 @@ STriangle: type = {
 	altB: double = this.b.DistanceToLine(this.c, this.a.Minus(this.c));
 	altC: double = this.c.DistanceToLine(this.a, this.b.Minus(this.a));
 
-    return min(altA, min(altB, altC));
+    return std::min(altA, std::min(altB, altC));
   }
   ContainsPoint: (this, p: Vector) -> bool = {
     n: Vector = this.Normal();
@@ -100,10 +100,10 @@ STriangle: type = {
     edge1: Vector = this.b.Minus(this.a);
     edge2: Vector = this.c.Minus(this.a);
 
-    // begin calculating determinant - also used to calculate U parameter
+    // begin calculating deterstd::minant - also used to calculate U parameter
     pvec: Vector = rayDir.Cross(edge2);
 
-    // if determinant is near zero, ray lies in plane of triangle. also cull back-facing triangles here
+    // if deterstd::minant is near zero, ray lies in plane of triangle. also cull back-facing triangles here
     det: double = edge1.Dot(pvec);
     if (-det < LENGTH_EPS) { return; }
 	inv_det: double = 1.0f / det;
