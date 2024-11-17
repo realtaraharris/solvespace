@@ -6,6 +6,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "bandedmatrix.h"
 
 const hEntity  Entity::FREE_IN_3D = { 0 };
 const hEntity  Entity::NO_ENTITY = { 0 };

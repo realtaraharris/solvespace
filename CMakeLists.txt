@@ -30,6 +30,7 @@ configure_file(
 
 add_library(solvespace-core OBJECT
 	src/entity/entity.cpp
+	src/entity/bandedmatrix.cpp
 
 	src/expr.cpp
 	src/group.cpp
