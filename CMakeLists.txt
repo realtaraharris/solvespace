@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(ENABLE_COVERAGE ON)
+set(ENABLE_COVERAGE OFF)
 
 if (ENABLE_COVERAGE)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
@@ -29,23 +29,14 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
-	src/importdxf.cpp
-	src/ttf.cpp
 	src/bsp.cpp
-	src/confscreen.cpp
 	src/constraint.cpp
 	src/constraintbase.cpp
-	src/draw.cpp
 	src/entity.cpp
 	src/entitybase.cpp
 	src/expr.cpp
-	src/graphicswin.cpp
 	src/group.cpp
-    src/importidf.cpp
-    src/importmesh.cpp
 	src/mesh.cpp
-	src/modify.cpp
-	src/mouse.cpp
 	src/polygon.cpp
 	src/polyline.cpp
 	src/request.cpp
@@ -53,10 +44,22 @@ add_library(solvespace-core OBJECT
 	src/style.cpp
 	src/system.cpp
 	src/sketch.cpp
-	src/textscreens.cpp
-	src/textwin.cpp
+	src/ttf.cpp
 	src/util.cpp
-	src/view.cpp
+
+	src/importdxf.cpp
+	src/importidf.cpp
+	src/importmesh.cpp
+
+	src/tw/view.cpp
+	src/tw/textscreens.cpp
+	src/tw/textwin.cpp
+	src/tw/confscreen.cpp
+
+	src/gw/draw.cpp
+	src/gw/graphicswin.cpp
+	src/gw/mouse.cpp
+	src/gw/modify.cpp
 
 	src/render/render.cpp
 	src/render/render2d.cpp
@@ -158,68 +161,69 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:24:constrain-parallel-normals-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/constrain-parallel-normals-tool.hvif
 		-a VICN:25:other-supplementary-angle-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/other-supplementary-angle-tool.hvif
 		-a VICN:26:ref-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/ref-tool.hvif
-        COMMAND mimeset -f ${CMAKE_BINARY_DIR}/SolveSpace
+		COMMAND mimeset -f ${CMAKE_BINARY_DIR}/SolveSpace
 	DEPENDS solvespace/Resources.rdef
 )
 
 # test suite
 set(testsuite_sources
-    test/unit/striangle-test.cpp
-    test/analysis/contour_area/test.cpp
-    test/core/expr/test.cpp
-    test/core/locale/test.cpp
-    test/core/path/test.cpp
-    test/constraint/points_coincident/test.cpp
-    test/constraint/pt_pt_distance/test.cpp
-    test/constraint/pt_plane_distance/test.cpp
-    test/constraint/pt_line_distance/test.cpp
-    test/constraint/pt_face_distance/test.cpp
-    test/constraint/proj_pt_distance/test.cpp
-    test/constraint/pt_in_plane/test.cpp
-    test/constraint/pt_on_line/test.cpp
-    test/constraint/pt_on_face/test.cpp
-    test/constraint/equal_length_lines/test.cpp
-    test/constraint/length_ratio/test.cpp
-    test/constraint/eq_len_pt_line_d/test.cpp
-    test/constraint/eq_pt_ln_distances/test.cpp
-    test/constraint/equal_angle/test.cpp
-    test/constraint/equal_line_arc_len/test.cpp
-    test/constraint/length_difference/test.cpp
-    test/constraint/symmetric/test.cpp
-    test/constraint/symmetric_horiz/test.cpp
-    test/constraint/symmetric_vert/test.cpp
-    test/constraint/symmetric_line/test.cpp
-    test/constraint/at_midpoint/test.cpp
-    test/constraint/horizontal/test.cpp
-    test/constraint/vertical/test.cpp
-    test/constraint/diameter/test.cpp
-    test/constraint/pt_on_circle/test.cpp
-    test/constraint/same_orientation/test.cpp
-    test/constraint/angle/test.cpp # actually borken
-    test/constraint/parallel/test.cpp
-    test/constraint/perpendicular/test.cpp
-    test/constraint/arc_line_tangent/test.cpp
-    test/constraint/cubic_line_tangent/test.cpp
-    test/constraint/curve_curve_tangent/test.cpp
-    test/constraint/equal_radius/test.cpp
-    test/constraint/where_dragged/test.cpp
-    test/constraint/comment/test.cpp
-    test/request/arc_of_circle/test.cpp
-    test/request/circle/test.cpp
-    test/request/cubic/test.cpp
-    test/request/cubic_periodic/test.cpp
-    test/request/datum_point/test.cpp
-    test/request/image/test.cpp
-    test/request/line_segment/test.cpp
-    test/request/ttf_text/test.cpp
-    test/request/workplane/test.cpp
-    test/group/link/test.cpp
-    test/group/translate_asy/test.cpp
-    test/group/translate_nd/test.cpp
+	test/unit/striangle-test.cpp
+	test/unit/constraint-test.cpp
+	test/analysis/contour_area/test.cpp
+	test/core/expr/test.cpp
+	test/core/locale/test.cpp
+	test/core/path/test.cpp
+	test/constraint/points_coincident/test.cpp
+	test/constraint/pt_pt_distance/test.cpp
+	test/constraint/pt_plane_distance/test.cpp
+	test/constraint/pt_line_distance/test.cpp
+	test/constraint/pt_face_distance/test.cpp
+	test/constraint/proj_pt_distance/test.cpp
+	test/constraint/pt_in_plane/test.cpp
+	test/constraint/pt_on_line/test.cpp
+	test/constraint/pt_on_face/test.cpp
+	test/constraint/equal_length_lines/test.cpp
+	test/constraint/length_ratio/test.cpp
+	test/constraint/eq_len_pt_line_d/test.cpp
+	test/constraint/eq_pt_ln_distances/test.cpp
+	test/constraint/equal_angle/test.cpp
+	test/constraint/equal_line_arc_len/test.cpp
+	test/constraint/length_difference/test.cpp
+	test/constraint/symmetric/test.cpp
+	test/constraint/symmetric_horiz/test.cpp
+	test/constraint/symmetric_vert/test.cpp
+	test/constraint/symmetric_line/test.cpp
+	test/constraint/at_midpoint/test.cpp
+	test/constraint/horizontal/test.cpp
+	test/constraint/vertical/test.cpp
+	test/constraint/diameter/test.cpp
+	test/constraint/pt_on_circle/test.cpp
+	test/constraint/same_orientation/test.cpp
+	test/constraint/angle/test.cpp
+	test/constraint/parallel/test.cpp
+	test/constraint/perpendicular/test.cpp
+	test/constraint/arc_line_tangent/test.cpp
+	test/constraint/cubic_line_tangent/test.cpp
+	test/constraint/curve_curve_tangent/test.cpp
+	test/constraint/equal_radius/test.cpp
+	test/constraint/where_dragged/test.cpp
+	test/constraint/comment/test.cpp
+	test/request/arc_of_circle/test.cpp
+	test/request/circle/test.cpp
+	test/request/cubic/test.cpp
+	test/request/cubic_periodic/test.cpp
+	test/request/datum_point/test.cpp
+	test/request/image/test.cpp
+	test/request/line_segment/test.cpp
+	test/request/ttf_text/test.cpp
+	test/request/workplane/test.cpp
+	test/group/link/test.cpp
+	test/group/translate_asy/test.cpp
+	test/group/translate_nd/test.cpp
 )
 
 add_executable(solvespace-testsuite
-    test/harness.cpp
+	test/harness.cpp
 	${testsuite_sources}
 	src/platform/guinone.cpp
 	$<TARGET_OBJECTS:solvespace-core>
@@ -239,16 +243,16 @@ target_include_directories(solvespace-testsuite
 add_dependencies(solvespace-testsuite resources)
 
 add_custom_target(test_solvespace
-    COMMAND $<TARGET_FILE:solvespace-testsuite>
-    COMMENT "Testing SolveSpace"
-    VERBATIM)
+	COMMAND $<TARGET_FILE:solvespace-testsuite>
+	COMMENT "Testing SolveSpace"
+	VERBATIM)
 
 # debug runner
 add_executable(solvespace-debugtool
-    test/debugtool.cpp
+	test/debugtool.cpp
 	src/platform/guinone.cpp
 	$<TARGET_OBJECTS:solvespace-core>
-    $<TARGET_PROPERTY:resources>)
+	$<TARGET_PROPERTY:resources>)
 
 target_link_libraries(solvespace-debugtool solvespace-core dxfrw agg ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
 
@@ -262,39 +266,39 @@ add_dependencies(solvespace-debugtool resources)
 
 # coverage reports
 if(ENABLE_COVERAGE)
-    find_program(GCOV gcov)
-    find_program(LCOV lcov)
-    find_program(GENHTML genhtml)
+	find_program(GCOV gcov)
+	find_program(LCOV lcov)
+	find_program(GENHTML genhtml)
 
-    set(LCOV_FLAGS   -q --gcov-tool ${GCOV})
-    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc lcov_branch_coverage=1)
-    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_line=(ssassert|switch)")
-    set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_br_line=BRANCH_ALWAYS_TAKEN")
-    set(LCOV_COLLECT -c -b ${CMAKE_SOURCE_DIR}/src --no-external -d ${CMAKE_CURRENT_BINARY_DIR}/)
+	set(LCOV_FLAGS   -q --gcov-tool ${GCOV})
+	set(LCOV_FLAGS   ${LCOV_FLAGS} --rc lcov_branch_coverage=1)
+	set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_line=(ssassert|switch)")
+	set(LCOV_FLAGS   ${LCOV_FLAGS} --rc "lcov_excl_br_line=BRANCH_ALWAYS_TAKEN")
+	set(LCOV_COLLECT -c -b ${CMAKE_SOURCE_DIR}/src --no-external -d ${CMAKE_CURRENT_BINARY_DIR}/)
 
-    add_custom_command(
-        OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
-        COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
-            -o ${CMAKE_BINARY_DIR}/coverage_base.info -i
-        DEPENDS solvespace-testsuite
-        COMMENT "Importing baseline coverage data"
-        VERBATIM)
+	add_custom_command(
+		OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
+		COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
+			-o ${CMAKE_BINARY_DIR}/coverage_base.info -i
+		DEPENDS solvespace-testsuite
+		COMMENT "Importing baseline coverage data"
+		VERBATIM)
 
-    add_custom_target(coverage_solvespace ALL
-        COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
-            -o ${CMAKE_BINARY_DIR}/coverage_test.info
-        COMMAND ${LCOV} ${LCOV_FLAGS}
-            -o ${CMAKE_BINARY_DIR}/coverage_full.info
-            -a ${CMAKE_BINARY_DIR}/coverage_base.info
-            -a ${CMAKE_BINARY_DIR}/coverage_test.info
-        COMMAND ${LCOV} ${LCOV_FLAGS} --summary
-            ${CMAKE_BINARY_DIR}/coverage_full.info
-        COMMAND ${GENHTML} -q --branch-coverage --demangle-cpp --legend --ignore-errors source
-            ${CMAKE_BINARY_DIR}/coverage_full.info
-            -o ${CMAKE_BINARY_DIR}/coverage/
-            -t "SolveSpace testbench"
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
-        DEPENDS test_solvespace
-        COMMENT "Generating coverage report"
-        VERBATIM)
+	add_custom_target(coverage_solvespace ALL
+		COMMAND ${LCOV} ${LCOV_FLAGS} ${LCOV_COLLECT}
+			-o ${CMAKE_BINARY_DIR}/coverage_test.info
+		COMMAND ${LCOV} ${LCOV_FLAGS}
+			-o ${CMAKE_BINARY_DIR}/coverage_full.info
+			-a ${CMAKE_BINARY_DIR}/coverage_base.info
+			-a ${CMAKE_BINARY_DIR}/coverage_test.info
+		COMMAND ${LCOV} ${LCOV_FLAGS} --summary
+			${CMAKE_BINARY_DIR}/coverage_full.info
+		COMMAND ${GENHTML} -q --branch-coverage --demangle-cpp --legend --ignore-errors source
+			${CMAKE_BINARY_DIR}/coverage_full.info
+			-o ${CMAKE_BINARY_DIR}/coverage/
+			-t "SolveSpace testbench"
+		DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
+		DEPENDS test_solvespace
+		COMMENT "Generating coverage report"
+		VERBATIM)
 endif()
