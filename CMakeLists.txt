@@ -29,9 +29,6 @@ configure_file(
 )
 
 add_library(solvespace-core OBJECT
-	src/entity/entity.cpp
-	src/entity/bandedmatrix.cpp
-
 	src/expr.cpp
 	src/group.cpp
 	src/request.cpp
@@ -41,6 +38,9 @@ add_library(solvespace-core OBJECT
 	src/style.cpp
 	src/system.cpp
 	src/util.cpp
+
+	src/entity/entity.cpp
+	src/entity/bandedmatrix.cpp
 
 	src/geometry/bsp.cpp
 	src/geometry/mesh.cpp
@@ -61,7 +61,7 @@ add_library(solvespace-core OBJECT
 
 	src/tw/view.cpp
 	src/tw/textscreens.cpp
-	src/tw/textwin.cpp
+	src/tw/textwindow.cpp
 	src/tw/confscreen.cpp
 	src/tw/style.cpp
 
