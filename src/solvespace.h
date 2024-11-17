@@ -215,7 +215,6 @@ void MessageAndRun(std::function<void()> onDismiss, const char *fmt, ...);
 void Error(const char *fmt, ...);
 
 #include "system.h"
-#include "ttf.h"
 #include "sketch.h"
 #include "ssui/solvespaceui.h"
 
