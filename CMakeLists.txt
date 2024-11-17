@@ -45,6 +45,7 @@ add_library(solvespace-core OBJECT
 	src/geometry/mesh.cpp
 	src/geometry/polygon.cpp
 	src/geometry/polyline.cpp
+	src/geometry/quaternion.cpp
 
 	src/constraint/constraint.cpp
 	src/constraint/draw.cpp
