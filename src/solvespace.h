@@ -181,7 +181,7 @@ enum class SolveResult : uint32_t {
 };
 
 #include "entitymain.h"
-#include "ui.h"
+#include "ssui/ui.h"
 #include "expr.h"
 
 // Utility functions that are provided in the platform-independent code.
