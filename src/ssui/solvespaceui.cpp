@@ -19,10 +19,8 @@
 Sketch SolveSpace::SK = {};
 
 void SolveSpaceUI::Init() {
-#if !defined(HEADLESS)
-    // Check that the resource system works.
+    // check that the resource system works
     dbp("%s", LoadString("banner.txt").data());
-#endif
 
     Platform::SettingsRef settings = Platform::GetSettings();
 

@@ -66,7 +66,7 @@ add_library(solvespace-core OBJECT
 	src/tw/style.cpp
 
 	src/gw/draw.cpp
-	src/gw/graphicswin.cpp
+	src/gw/graphicswindow.cpp
 	src/gw/mouse.cpp
 	src/gw/modify.cpp
 
@@ -139,6 +139,7 @@ target_include_directories(SolveSpace PRIVATE
 )
 
 target_link_libraries(SolveSpace be agg translation tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
+target_compile_definitions(SolveSpace PRIVATE HAIKU_GUI=1)
 
 add_custom_command(TARGET SolveSpace POST_BUILD
 	COMMENT "rebuilding icon resources"

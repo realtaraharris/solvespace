@@ -224,7 +224,7 @@ bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *s
 bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 
 #if defined(HAIKU_GUI)
-	#include "platform/haiku/ui/HaikuSpaceUI.h"
+	#include "platform/haiku/HaikuSpaceUI.h"
     extern HaikuSpaceUI SS;
 #else
     extern SolveSpaceUI SS;
