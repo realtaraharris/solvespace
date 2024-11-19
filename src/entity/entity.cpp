@@ -1627,11 +1627,7 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
                     double s = camera.scale;
                     double h = 60 - camera.height / 2.0;
                     double w = 60 - camera.width  / 2.0;
-                    // Shift the axis to the right if they would overlap with the toolbar.
-                    if(SS.showToolbar) {
-                        if(h + 30 > -(32*18 + 3*16 + 8) / 2)
-                            w += 60;
-                    }
+
                     tail = camera.projRight.ScaledBy(w/s).Plus(
                            camera.projUp.   ScaledBy(h/s)).Minus(camera.offset);
                 } else {
