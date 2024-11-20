@@ -4,6 +4,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "platform/EventHooks.h"
 
 void GraphicsWindow::UpdateDraggedPoint(hEntity hp, double mx, double my) {
     Entity *p = SK.GetEntity(hp);
@@ -1192,6 +1193,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                         // If we constrained by the hovered point, then we
                         // would create a zero-length line segment. That's
                         // not good, so just stop drawing.
+                        ButtonUnclickedEventHook();
                         ClearPending();
                         break;
                     }
@@ -1207,6 +1209,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
             }
 
             if(doneDragging) {
+                ButtonUnclickedEventHook();
                 ClearPending();
                 break;
             }
@@ -1236,6 +1239,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
 
         case Pending::NONE:
         default:
+            ButtonUnclickedEventHook();
             ClearPending();
             if(!hover.IsEmpty()) {
                 if(!ctrlDown) {

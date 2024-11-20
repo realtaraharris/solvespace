@@ -97,12 +97,12 @@ AppToolbar::AppToolbar(BRect rect, BSize toolbarIconSize)
         LoadIconFromResource("other-supplementary-angle-tool", iconSize);
     static BBitmap *refToolIcon = LoadIconFromResource("ref-tool", iconSize);
 
+    lineToolButton = MakeButton(toolbarIconSize, lineToolIcon,
+      new BMessage(LINE_TOOL_BTN_CLICKED), "Sketch line segment (S)");
+
     BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
         .AddGrid(0.0, 0.0)
-            .Add(MakeButton(toolbarIconSize, lineToolIcon,
-                           new BMessage(LINE_TOOL_BTN_CLICKED),
-                           "Sketch line segment (S)"),
-                 0, 0)
+            .Add(lineToolButton, 0, 0)
             .Add(MakeButton(toolbarIconSize, rectToolIcon,
                            new BMessage(RECT_TOOL_BTN_CLICKED),
                            "Sketch rectangle (R)"),
@@ -203,6 +203,15 @@ AppToolbar::AppToolbar(BRect rect, BSize toolbarIconSize)
         .End();
 }
 
-void AppToolbar::MessageReceived(BMessage *msg) {
-    be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
+void AppToolbar::MessageReceived(BMessage *message) {
+  switch (message->what) {
+    case LINE_TOOL_BTN_UNCLICKED: {
+      lineToolButton->SetValue(0);
+      break;
+    }
+    default: {
+      be_app->WindowAt(MAIN_WINDOW)->PostMessage(message);
+      break;
+    }
+  }
 }

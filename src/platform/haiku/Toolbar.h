@@ -14,6 +14,7 @@ class AppToolbar : public BWindow {
     void MessageReceived(BMessage *msg);
 
   private:
+		BButton *lineToolButton;
 };
 
 #endif
