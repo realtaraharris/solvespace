@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "platform/EventHooks.h"
 
 void SolveSpace::AssertFailure(const char *file, unsigned line, const char *function,
                                const char *condition, const char *message) {
@@ -107,38 +108,11 @@ static void MessageBox(const char *fmt, va_list va, bool error,
         description = description.substr(it - description.begin());
     }
 
-    Platform::MessageDialogRef dialog = CreateMessageDialog(SS.GW.window);
-    if (!dialog) {
-        if (error) {
-            fprintf(stderr, "Error: %s\n", message.c_str());
-        } else {
-            fprintf(stderr, "Message: %s\n", message.c_str());
-        }
-        if(onDismiss) {
-            onDismiss();
-        }
-        return;
-    }
-    using Platform::MessageDialog;
-    if(error) {
-        dialog->SetType(MessageDialog::Type::ERROR);
+    if (error) {
+      WarningDialog(message, description, onDismiss);
     } else {
-        dialog->SetType(MessageDialog::Type::INFORMATION);
+      ErrorDialog(message, description, onDismiss);
     }
-    dialog->SetTitle(error ? C_("title", "Error") : C_("title", "Message"));
-    dialog->SetMessage(message);
-    if(!description.empty()) {
-        dialog->SetDescription(description);
-    }
-    dialog->AddButton(C_("button", "&OK"), MessageDialog::Response::OK,
-                      /*isDefault=*/true);
-
-    dialog->onResponse = [=](MessageDialog::Response _response) {
-        if(onDismiss) {
-            onDismiss();
-        }
-    };
-    dialog->ShowModal();
 }
 void SolveSpace::Error(const char *fmt, ...)
 {
