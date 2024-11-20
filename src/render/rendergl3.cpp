@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 #include "gl3shader.h"
+#include "matrix.h"
 
 namespace SolveSpace {
 

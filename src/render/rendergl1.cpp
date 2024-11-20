@@ -4,6 +4,7 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "matrix.h"
 
 #ifdef WIN32
 // Include after solvespace.h to avoid identifier clashes.

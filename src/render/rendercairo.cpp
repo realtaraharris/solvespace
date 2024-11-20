@@ -4,7 +4,7 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include <cairo.h>
-#include "solvespace.h"
+#include "render.h"
 
 namespace SolveSpace {
 

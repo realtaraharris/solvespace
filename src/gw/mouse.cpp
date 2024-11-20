@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 #include "platform/EventHooks.h"
+#define arraylen(x) (sizeof((x))/sizeof((x)[0]))
 
 void GraphicsWindow::UpdateDraggedPoint(hEntity hp, double mx, double my) {
     Entity *p = SK.GetEntity(hp);

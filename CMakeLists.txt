@@ -73,6 +73,7 @@ add_library(solvespace-core OBJECT
 	src/render/render.cpp
 	src/render/render2d.cpp
 	src/render/renderagg.cpp
+	src/render/matrix.cpp
 
 	src/ssui/clipboard.cpp
 	src/ssui/export.cpp
@@ -83,7 +84,7 @@ add_library(solvespace-core OBJECT
 
 	src/platform/gui.cpp
 	src/platform/platform.cpp
-	src/platform/EventHooks.cpp
+#	src/platform/EventHooks.cpp
 
 	src/srf/boolean.cpp
 	src/srf/curve.cpp

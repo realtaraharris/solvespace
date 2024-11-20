@@ -12,6 +12,9 @@
 #include "agg_rasterizer_scanline_aa.h"
 #include "agg_trans_viewport.h"
 
+typedef struct _cairo cairo_t;
+typedef struct _cairo_surface cairo_surface_t;
+
 //-----------------------------------------------------------------------------
 // Interfaces common for all renderers
 //-----------------------------------------------------------------------------
