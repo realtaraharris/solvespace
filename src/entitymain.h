@@ -1,12 +1,10 @@
 //-----------------------------------------------------------------------------
-// The parametric structure of our sketch, in multiple groups, that generate
-// geometric entities and surfaces.
+// the parametric structure of our sketch, in multiple groups, that generate geometric entities and surfaces
 //
-// Copyright 2008-2013 Jonathan Westhues.
+// copyright 2008-2013 Jonathan Westhues
 //-----------------------------------------------------------------------------
-
-#ifndef SOLVESPACE_SKETCH_H
-#define SOLVESPACE_SKETCH_H
+#ifndef ENTITY_MAIN_H
+#define ENTITY_MAIN_H
 
 class hGroup;
 class hRequest;
@@ -246,4 +244,4 @@ inline bool hEquation::isFromConstraint() const
 inline hConstraint hEquation::constraint() const
     { hConstraint r; r.v = (v >> 16); return r; }
 
-#endif
+#endif // ENTITY_MAIN

@@ -1,5 +1,7 @@
-// A user request for some primitive or derived operation; for example a
-// line, or a step and repeat.
+#ifndef REQUEST_H
+#define REQUEST_H
+// a user request for some primitive or derived operation; for example a line, or a step and repeat
+
 class Request {
 public:
     // Some predefined requests, that are present in every sketch.
@@ -46,3 +48,5 @@ public:
 
     void Clear() {}
 };
+
+#endif // REQUEST_H

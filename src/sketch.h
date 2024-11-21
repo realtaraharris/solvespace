@@ -1,3 +1,6 @@
+#ifndef SKETCH_H
+#define SKETCH_H
+
 class Sketch {
 public:
     // these are user-editable, and define the sketch
@@ -23,3 +26,5 @@ public:
     BBox CalculateEntityBBox(bool includingInvisible);
     Group *GetRunningMeshGroupFor(hGroup h);
 };
+
+#endif // SKETCH_H

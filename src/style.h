@@ -1,3 +1,6 @@
+#ifndef STYLE_H
+#define STYLE_H
+
 class Style {
 public:
     int         tag;
@@ -112,3 +115,5 @@ public:
 
     void Clear() {}
 };
+
+#endif // STYLE_H

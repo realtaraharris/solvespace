@@ -1,3 +1,6 @@
+#ifndef SYSTEM_H
+#define SYSTEM_H
+
 class System {
 public:
     enum { MAX_UNKNOWNS = 2048 };
@@ -80,3 +83,5 @@ public:
     void SubstituteParamsByLast(Expr *e);
     void SortSubstitutionByDragged(Param *p);
 };
+
+#endif // SYSTEM_H

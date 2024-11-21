@@ -1,4 +1,7 @@
-// A set of requests. Every request must have an associated group.
+// a set of requests. Every request must have an associated group
+#ifndef GROUP_H
+#define GROUP_H
+
 class Group {
 public:
     static const hGroup     HGROUP_REFERENCES;
@@ -195,3 +198,5 @@ public:
     static void MenuGroup(Command id);
     static void MenuGroup(Command id, Platform::Path linkFile);
 };
+
+#endif // GROUP_H

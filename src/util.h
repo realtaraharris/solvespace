@@ -1,6 +1,6 @@
+// utility functions that are provided in the platform-independent code
 #ifndef UTIL_H
 #define UTIL_H
-// utility functions that are provided in the platform-independent code
 
 class utf8_iterator : std::iterator<std::forward_iterator_tag, char32_t> {
   const char *p, *n;

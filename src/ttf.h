@@ -1,13 +1,12 @@
 //-----------------------------------------------------------------------------
-// Routines to read a TrueType font as vector outlines, and generate them
+// routines to read a TrueType font as vector outlines, and generate them
 // as entities, since they're always representable as either lines or
-// quadratic Bezier curves.
+// quadratic Bezier curves
 //
-// Copyright 2016 whitequark, Peter Barfuss.
+// copyright 2016 whitequark, Peter Barfuss.
 //-----------------------------------------------------------------------------
-
-#ifndef SOLVESPACE_TTF_H
-#define SOLVESPACE_TTF_H
+#ifndef TTF_H
+#define TTF_H
 
 class TtfFont {
 public:
@@ -47,4 +46,4 @@ public:
     double AspectRatio(const std::string &font, const std::string &str);
 };
 
-#endif
+#endif // TTF_H

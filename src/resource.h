@@ -1,11 +1,10 @@
 //-----------------------------------------------------------------------------
-// Discovery and loading of our resources (icons, fonts, templates, etc).
+// discovery and loading of our resources (icons, fonts, templates, etc)
 //
-// Copyright 2016 whitequark
+// copyright 2016 whitequark
 //-----------------------------------------------------------------------------
-
-#ifndef SOLVESPACE_RESOURCE_H
-#define SOLVESPACE_RESOURCE_H
+#ifndef RESOURCE_H
+#define RESOURCE_H
 
 #include <functional>
 #include <map>
@@ -122,4 +121,5 @@ public:
 };
 
 }
-#endif
+
+#endif // RESOURCE_H

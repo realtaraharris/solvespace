@@ -1,6 +1,6 @@
 #ifndef DEBUGGING_H
 #define DEBUGGING_H
-// Debugging functions
+// debugging functions
 
 #if defined(__GNUC__)
 #define ssassert(condition, message) \
@@ -19,9 +19,9 @@
         } \
     } while(0)
 #endif
-
 #define dbp SolveSpace::Platform::DebugPrint
 #define DBPTRI(tri) \
     dbp("tri: (%.3f %.3f %.3f) (%.3f %.3f %.3f) (%.3f %.3f %.3f)", \
         CO((tri).a), CO((tri).b), CO((tri).c))
+
 #endif // DEBUGGING_H

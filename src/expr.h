@@ -4,8 +4,8 @@
 //
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
-#ifndef SOLVESPACE_EXPR_H
-#define SOLVESPACE_EXPR_H
+#ifndef EXPR_H
+#define EXPR_H
 
 class Expr {
 public:
@@ -138,4 +138,5 @@ public:
 
     Expr *Magnitude() const;
 };
-#endif
+
+#endif // EXPR_H

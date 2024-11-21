@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------
-// Data structures used frequently in the program, various kinds of vectors
-// (of real numbers, not symbolic algebra stuff) and our templated lists.
+// data structures used frequently in the program, various kinds of vectors
+// (of real numbers, not symbolic algebra stuff) and our templated lists
 //
-// Copyright 2008-2013 Jonathan Westhues.
+// copyright 2008-2013 Jonathan Westhues
 //-----------------------------------------------------------------------------
-#ifndef SOLVESPACE_DSC_H
-#define SOLVESPACE_DSC_H
+#ifndef DATASTRUCTURES_H
+#define DATASTRUCTURES_H
 
 #include "solvespace.h"
 
@@ -525,4 +525,4 @@ struct RgbaColorCompare {
 
 #include "geometry/bbox.h"
 
-#endif
+#endif // DATASTRUCTURES_H
