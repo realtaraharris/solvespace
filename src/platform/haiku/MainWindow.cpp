@@ -184,10 +184,10 @@ MainWindow::MainWindow(void)
                                      'D', B_SHIFT_KEY)); // Command::REF_DISTANCE
     constrainMenu->AddItem(new BMenuItem("Angle",
                                      new BMessage(M_ANGLE),
-                                     'N', B_OPTION_KEY)); // Command::ANGLE
+                                     'N', B_CONTROL_KEY)); // Command::ANGLE
     constrainMenu->AddItem(new BMenuItem("Reference angle",
                                      new BMessage(M_REF_ANGLE),
-                                     'N', B_SHIFT_KEY)); // Command::REF_ANGLE
+                                     'N', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::REF_ANGLE
     constrainMenu->AddItem(new BMenuItem("Other supplementary angle",
                                      new BMessage(M_OTHER_ANGLE),
                                      'U')); // Command::OTHER_ANGLE
