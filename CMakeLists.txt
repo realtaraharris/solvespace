@@ -84,7 +84,6 @@ add_library(solvespace-core OBJECT
 
 	src/platform/gui.cpp
 	src/platform/platform.cpp
-#	src/platform/EventHooks.cpp
 
 	src/srf/boolean.cpp
 	src/srf/curve.cpp
@@ -116,7 +115,7 @@ target_include_directories(solvespace-core PRIVATE
 	extlib/libdxfrw/
 	${CMAKE_CURRENT_BINARY_DIR} # adds config.h/config.in.h
 )
-target_compile_definitions(solvespace-core PRIVATE HAIKU_GUI=1)
+target_compile_definitions(solvespace-core PRIVATE)
 
 add_executable(SolveSpace
 	src/platform/haiku/App.cpp
@@ -240,6 +239,7 @@ add_executable(solvespace-testsuite
 	test/harness.cpp
 	${testsuite_sources}
 	src/platform/guinone.cpp
+	src/platform/EventHooks.cpp
 	$<TARGET_OBJECTS:solvespace-core>
 	$<TARGET_PROPERTY:resources,EXTRA_SOURCES>)
 

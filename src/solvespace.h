@@ -7,32 +7,10 @@
 #ifndef SOLVESPACE_H
 #define SOLVESPACE_H
 
+#include "debugging.h"
 #include "resource.h"
 #include "platform/platform.h"
 #include "platform/gui.h"
-
-#include <cctype>
-#include <climits>
-#include <cmath>
-#include <csetjmp>
-#include <cstdarg>
-#include <cstddef>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <algorithm>
-#include <chrono>
-#include <functional>
-#include <locale>
-#include <map>
-#include <memory>
-#include <set>
-#include <sstream>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
 
 #define EIGEN_NO_DEBUG
 #undef Success
@@ -56,30 +34,6 @@ struct FT_FaceRec_;
 #else
 #   define EXACT(expr) (expr)
 #endif
-
-// Debugging functions
-#if defined(__GNUC__)
-#define ssassert(condition, message) \
-    do { \
-        if(__builtin_expect((condition), true) == false) { \
-            SolveSpace::AssertFailure(__FILE__, __LINE__, __func__, #condition, message); \
-            __builtin_unreachable(); \
-        } \
-    } while(0)
-#else
-#define ssassert(condition, message) \
-    do { \
-        if((condition) == false) { \
-            SolveSpace::AssertFailure(__FILE__, __LINE__, __func__, #condition, message); \
-            abort(); \
-        } \
-    } while(0)
-#endif
-
-#define dbp SolveSpace::Platform::DebugPrint
-#define DBPTRI(tri) \
-    dbp("tri: (%.3f %.3f %.3f) (%.3f %.3f %.3f) (%.3f %.3f %.3f)", \
-        CO((tri).a), CO((tri).b), CO((tri).c))
 
 namespace SolveSpace {
   [[noreturn]] void AssertFailure(const char *file, unsigned line, const char *function, const char *condition, const char *message);
@@ -171,46 +125,15 @@ namespace SolveSpace {
   };
 
   #include "entitymain.h"
-  #include "ssui/ui.h"
   #include "expr.h"
-
-  // Utility functions that are provided in the platform-independent code.
-  class utf8_iterator : std::iterator<std::forward_iterator_tag, char32_t> {
-    const char *p, *n;
-  public:
-    utf8_iterator(const char *p) : p(p), n(NULL) {}
-    bool           operator==(const utf8_iterator &i) const { return p==i.p; }
-    bool           operator!=(const utf8_iterator &i) const { return p!=i.p; }
-    ptrdiff_t      operator- (const utf8_iterator &i) const { return p -i.p; }
-    utf8_iterator& operator++()    { **this; p=n; n=NULL; return *this; }
-    utf8_iterator  operator++(int) { utf8_iterator t(*this); operator++(); return t; }
-    char32_t       operator*();
-    const char*    ptr() const { return p; }
-  };
-
-  class ReadUTF8 {
-    const std::string &str;
-  public:
-    ReadUTF8(const std::string &str) : str(str) {}
-    utf8_iterator begin() const { return utf8_iterator(&str[0]); }
-    utf8_iterator end()   const { return utf8_iterator(&str[0] + str.length()); }
-  };
-
-  #define PI (3.1415926535897931)
-
-  int64_t GetMilliseconds();
-  void Message(const char *fmt, ...);
-	void MessageAndRun(std::function<void()> onDismiss, const char *fmt, ...);
-  void Error(const char *fmt, ...);
-
   #include "system.h"
-  #include "sketch.h"
-  #include "ssui/solvespaceui.h"
+	#include "util.h"
 
-  void ImportDxf(const Platform::Path &file);
-  void ImportDwg(const Platform::Path &file);
-  bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
-  bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
+  #include "sketch.h"
+  extern Sketch SK;
+
+  #include "ssui/ui.h"
+  #include "ssui/solvespaceui.h"
 
   #if defined(HAIKU_GUI)
 	  #include "platform/haiku/HaikuSpaceUI.h"
@@ -218,8 +141,6 @@ namespace SolveSpace {
   #else
       extern SolveSpaceUI SS;
   #endif
-
-  extern Sketch SK;
 }
 using namespace SolveSpace;
 #endif

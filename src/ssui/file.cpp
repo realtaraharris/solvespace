@@ -5,6 +5,10 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
+namespace SolveSpace {
+  bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
+  bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
+}
 #define VERSION_STRING "\261\262\263" "SolveSpaceREVa"
 
 static int StrStartsWith(const char *str, const char *start) {

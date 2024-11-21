@@ -18,6 +18,10 @@
 
 Sketch SolveSpace::SK = {};
 
+namespace SolveSpace {
+  void ImportDxf(const Platform::Path &file);
+  void ImportDwg(const Platform::Path &file);
+}
 void SolveSpaceUI::Init() {
     // check that the resource system works
     dbp("%s", LoadString("banner.txt").data());
