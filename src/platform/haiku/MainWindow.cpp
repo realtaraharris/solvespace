@@ -106,22 +106,22 @@ MainWindow::MainWindow(void)
                                      '3')); // Command::GROUP_3D
     groupMenu->AddItem(new BMenuItem("Sketch in new workplane",
                                      new BMessage(M_GROUP_WRKPL),
-                                     'w')); // Command::GROUP_WRKPL
+                                     'W')); // Command::GROUP_WRKPL
     groupMenu->AddSeparatorItem();
     groupMenu->AddItem(new BMenuItem("Step translating",
                                      new BMessage(M_GROUP_TRANS),
-                                     't')); // Command::GROUP_TRANS
+                                     'T')); // Command::GROUP_TRANS
     groupMenu->AddItem(new BMenuItem("Step rotating", new BMessage(M_GROUP_ROT),
-                                     'r')); // Command::GROUP_ROT
+                                     'R')); // Command::GROUP_ROT
     groupMenu->AddSeparatorItem();
     groupMenu->AddItem(new BMenuItem("Extrude", new BMessage(M_GROUP_EXTRUDE),
-                                     'x')); // Command::GROUP_EXTRUDE
+                                     'X')); // Command::GROUP_EXTRUDE
     groupMenu->AddItem(new BMenuItem("Helix", new BMessage(M_GROUP_HELIX),
-                                     'h')); // Command::GROUP_HELIX
+                                     'H')); // Command::GROUP_HELIX
     groupMenu->AddItem(new BMenuItem("Lathe", new BMessage(M_GROUP_LATHE),
-                                     'l')); // Command::GROUP_LATHE
+                                     'L')); // Command::GROUP_LATHE
     groupMenu->AddItem(new BMenuItem("Revolve", new BMessage(M_GROUP_REVOLVE),
-                                     'v')); // Command::GROUP_REVOLVE
+                                     'V')); // Command::GROUP_REVOLVE
     groupMenu->AddSeparatorItem();
     groupMenu->AddItem(new BMenuItem("Link/Assemble…",
                                      new BMessage(M_GROUP_LINK),
@@ -130,6 +130,145 @@ MainWindow::MainWindow(void)
                                      new BMessage(M_GROUP_RECENT),
                                      NULL)); // Command::GROUP_RECENT
     menuBar->AddItem(groupMenu);
+
+    BMenu *sketchMenu = new BMenu("Sketch");
+    sketchMenu->AddItem(new BMenuItem("In workplane", new BMessage(M_SEL_WORKPLANE),
+                                     '2')); // Command::SEL_WORKPLANE
+    sketchMenu->AddItem(new BMenuItem("Anywhere in 3D",
+                                     new BMessage(M_FREE_IN_3D),
+                                     '3')); // Command::FREE_IN_3D
+    sketchMenu->AddSeparatorItem();
+    sketchMenu->AddItem(new BMenuItem("Datum point",
+                                     new BMessage(M_DATUM_POINT),
+                                     'P')); // Command::DATUM_POINT
+    sketchMenu->AddItem(new BMenuItem("Workplane", new BMessage(M_WORKPLANE),
+                                     NULL)); // Command::WORKPLANE
+    sketchMenu->AddSeparatorItem();
+    sketchMenu->AddItem(new BMenuItem("Line segment", new BMessage(M_LINE_SEGMENT),
+                                     'S')); // Command::LINE_SEGMENT
+    sketchMenu->AddItem(new BMenuItem("Construction line segment", new BMessage(M_CONSTR_SEGMENT),
+                                     'S', B_SHIFT_KEY)); // Command::CONSTR_SEGMENT
+    sketchMenu->AddItem(new BMenuItem("Rectangle", new BMessage(M_RECTANGLE),
+                                     'R')); // Command::RECTANGLE
+    sketchMenu->AddItem(new BMenuItem("Circle", new BMessage(M_CIRCLE),
+                                     'C')); // Command::CIRCLE
+    sketchMenu->AddItem(new BMenuItem("Arc of a circle", new BMessage(M_ARC),
+                                     'A')); // Command::ARC
+    sketchMenu->AddItem(new BMenuItem("Bezier cubic spline", new BMessage(M_CUBIC),
+                                     'B')); // Command::CUBIC
+    sketchMenu->AddSeparatorItem();
+    sketchMenu->AddItem(new BMenuItem("Text in font",
+                                     new BMessage(M_TTF_TEXT),
+                                     'T')); // Command::TTF_TEXT
+    sketchMenu->AddItem(new BMenuItem("Image…",
+                                     new BMessage(M_IMAGE),
+                                     NULL)); // Command::IMAGE
+    sketchMenu->AddSeparatorItem();
+    sketchMenu->AddItem(new BMenuItem("Toggle construction",
+                                     new BMessage(M_CONSTRUCTION),
+                                     'G')); // Command::CONSTRUCTION
+    sketchMenu->AddItem(new BMenuItem("Tangent arc at point",
+                                     new BMessage(M_TANGENT_ARC),
+                                     'A')); // Command::TANGENT_ARC
+    sketchMenu->AddItem(new BMenuItem("Split curves at intersection",
+                                     new BMessage(M_SPLIT_CURVES),
+                                     'I')); // Command::SPLIT_CURVES
+
+    menuBar->AddItem(sketchMenu);
+
+    BMenu *constrainMenu = new BMenu("Constrain");
+    constrainMenu->AddItem(new BMenuItem("Distance / diameter", new BMessage(M_DISTANCE_DIA),
+                                     'D')); // Command::DISTANCE_DIA
+    constrainMenu->AddItem(new BMenuItem("Reference dimension",
+                                     new BMessage(M_REF_DISTANCE),
+                                     'D', B_SHIFT_KEY)); // Command::REF_DISTANCE
+    constrainMenu->AddItem(new BMenuItem("Angle",
+                                     new BMessage(M_ANGLE),
+                                     'N', B_OPTION_KEY)); // Command::ANGLE
+    constrainMenu->AddItem(new BMenuItem("Reference angle",
+                                     new BMessage(M_REF_ANGLE),
+                                     'N', B_SHIFT_KEY)); // Command::REF_ANGLE
+    constrainMenu->AddItem(new BMenuItem("Other supplementary angle",
+                                     new BMessage(M_OTHER_ANGLE),
+                                     'U')); // Command::OTHER_ANGLE
+    constrainMenu->AddItem(new BMenuItem("Toggle reference dim",
+                                     new BMessage(M_REFERENCE),
+                                     'E')); // Command::REFERENCE
+    constrainMenu->AddSeparatorItem();
+    constrainMenu->AddItem(new BMenuItem("Horizontal",
+                                     new BMessage(M_HORIZONTAL),
+                                     'H')); // Command::HORIZONTAL
+    constrainMenu->AddItem(new BMenuItem("Vertical",
+                                     new BMessage(M_VERTICAL),
+                                     'V')); // Command::VERTICAL
+    constrainMenu->AddSeparatorItem();
+    constrainMenu->AddItem(new BMenuItem("On point / curve /plane",
+                                     new BMessage(M_ON_ENTITY),
+                                     'O')); // Command::ON_ENTITY
+    constrainMenu->AddItem(new BMenuItem("Equal length / radius / angle",
+                                     new BMessage(M_EQUAL),
+                                     'Q', B_SHIFT_KEY)); // Command::EQUAL
+    constrainMenu->AddItem(new BMenuItem("Length / arc ratio",
+                                     new BMessage(M_RATIO),
+                                     'Z')); // Command::RATIO
+    constrainMenu->AddItem(new BMenuItem("Length / arc difference",
+                                     new BMessage(M_DIFFERENCE),
+                                     'J')); // Command::DIFFERENCE
+    constrainMenu->AddItem(new BMenuItem("At midpoint",
+                                     new BMessage(M_AT_MIDPOINT),
+                                     'M')); // Command::AT_MIDPOINT
+    constrainMenu->AddItem(new BMenuItem("Symmetric",
+                                     new BMessage(M_SYMMETRIC),
+                                     'Y')); // Command::SYMMETRIC
+    constrainMenu->AddItem(new BMenuItem("Parallel / tangent",
+                                     new BMessage(M_PARALLEL),
+                                     'L')); // Command::PARALLEL
+    constrainMenu->AddItem(new BMenuItem("Perpendicular",
+                                     new BMessage(M_PERPENDICULAR),
+                                     '[')); // Command::PERPENDICULAR
+    constrainMenu->AddItem(new BMenuItem("Same orientation",
+                                     new BMessage(M_ORIENTED_SAME),
+                                     'X')); // Command::ORIENTED_SAME
+    constrainMenu->AddItem(new BMenuItem("Lock point where dragged",
+                                     new BMessage(M_WHERE_DRAGGED),
+                                     ']')); // Command::WHERE_DRAGGED
+    constrainMenu->AddSeparatorItem();
+    constrainMenu->AddItem(new BMenuItem("Comment",
+                                     new BMessage(M_COMMENT),
+                                     ';')); // Command::COMMENT
+
+    menuBar->AddItem(constrainMenu);
+
+    BMenu *analyzeMenu = new BMenu("Analyze");
+    analyzeMenu->AddItem(new BMenuItem("Measure volume", new BMessage(M_VOLUME),
+                                     'V', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::VOLUME
+    analyzeMenu->AddItem(new BMenuItem("Measure area", new BMessage(M_AREA),
+                                     'A', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::AREA
+    analyzeMenu->AddItem(new BMenuItem("Measure perimeter", new BMessage(M_PERIMETER),
+                                     'P', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::PERIMETER
+    analyzeMenu->AddItem(new BMenuItem("Show interfering parts", new BMessage(M_INTERFERENCE),
+                                     'I', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::INTERFERENCE
+    analyzeMenu->AddItem(new BMenuItem("Show naked edges", new BMessage(M_NAKED_EDGES),
+                                     'N', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::NAKED_EDGES
+    analyzeMenu->AddItem(new BMenuItem("Show center of mass", new BMessage(M_CENTER_OF_MASS),
+                                     'C', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::CENTER_OF_MASS
+    analyzeMenu->AddSeparatorItem();
+    analyzeMenu->AddItem(new BMenuItem("Show underconstrained points", new BMessage(M_SHOW_DOF),
+                                     'F', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::SHOW_DOF
+    analyzeMenu->AddSeparatorItem();
+    analyzeMenu->AddItem(new BMenuItem("Trace point", new BMessage(M_TRACE_PT),
+                                     'T', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::TRACE_PT
+    analyzeMenu->AddItem(new BMenuItem("Stop tracing…", new BMessage(M_STOP_TRACING),
+                                     'D', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::STOP_TRACING
+    analyzeMenu->AddItem(new BMenuItem("Step dimension…", new BMessage(M_STEP_DIM),
+                                     'S', B_CONTROL_KEY | B_SHIFT_KEY)); // Command::STEP_DIM
+    menuBar->AddItem(analyzeMenu);
+
+    BMenu *helpMenu = new BMenu("Help");
+    helpMenu->AddItem(new BMenuItem("About",
+		                                 new BMessage(M_ABOUT),
+                                     NULL)); // Command::ABOUT
+    menuBar->AddItem(helpMenu);
 
     editorView = new EditorView();
 

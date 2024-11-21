@@ -100,6 +100,56 @@ enum {
     M_GROUP_LINK = 'grlk', // Command::GROUP_LINK
     M_GROUP_RECENT = 'grct', // Command::GROUP_RECENT
 
+    M_SEL_WORKPLANE = 'mswp', // Command::SEL_WORKPLANE
+    M_FREE_IN_3D = 'mf3d', // Command::FREE_IN_3D
+    M_DATUM_POINT = 'mdpt', // Command::DATUM_POINT
+    M_WORKPLANE = 'mwkp', // Command::WORKPLANE
+    M_LINE_SEGMENT = 'mlis', // Command::LINE_SEGMENT
+    M_CONSTR_SEGMENT = 'mcrs', // Command::CONSTR_SEGMENT
+    M_RECTANGLE = 'mrec', // Command::RECTANGLE
+    M_CIRCLE = 'mcir', // Command::CIRCLE
+    M_ARC = 'marc', // Command::ARC
+    M_CUBIC = 'mcub', // Command::CUBIC
+
+    M_TTF_TEXT = 'mttt', // Command::TTF_TEXT
+    M_IMAGE = 'mimg', // Command::IMAGE
+    M_CONSTRUCTION = 'mcon', // Command::CONSTRUCTION
+    M_TANGENT_ARC = 'mtar', // Command::TANGENT_ARC
+    M_SPLIT_CURVES = 'mspc', // Command::SPLIT_CURVES
+
+    M_DISTANCE_DIA = 'dida', // Command::DISTANCE_DIA
+    M_REF_DISTANCE = 'rdia', // Command::REF_DISTANCE
+    M_ANGLE = 'angl', // Command::ANGLE
+    M_REF_ANGLE = 'rang', // Command::REF_ANGLE
+    M_OTHER_ANGLE = 'oang', // Command::OTHER_ANGLE
+    M_REFERENCE = 'mref', // Command::REFERENCE
+    M_HORIZONTAL = 'horz', // Command::HORIZONTAL
+    M_VERTICAL = 'vert', // Command::VERTICAL
+    M_ON_ENTITY = 'oent', // Command::ON_ENTITY
+    M_EQUAL = 'equl', // Command::EQUAL
+    M_RATIO = 'rato', // Command::RATIO
+    M_DIFFERENCE = 'diff', // Command::DIFFERENCE
+    M_AT_MIDPOINT = 'atmd', // Command::AT_MIDPOINT
+    M_SYMMETRIC = 'symm', // Command::SYMMETRIC
+    M_PARALLEL = 'para', // Command::PARALLEL
+    M_PERPENDICULAR = 'perp', // Command::PERPENDICULAR
+    M_ORIENTED_SAME = 'osam', // Command::ORIENTED_SAME
+    M_WHERE_DRAGGED = 'wdra', // Command::WHERE_DRAGGED
+    M_COMMENT = 'comm', // Command::COMMENT
+
+    M_VOLUME = 'mvol', // Command::VOLUME
+    M_AREA = 'area', // Command::AREA
+    M_PERIMETER = 'peri', // Command::PERIMETER
+    M_INTERFERENCE = 'intf', // Command::INTERFERENCE
+    M_NAKED_EDGES = 'nked', // Command::NAKED_EDGES
+    M_CENTER_OF_MASS = 'ceom', // Command::CENTER_OF_MASS
+    M_SHOW_DOF = 'shdf', // Command::SHOW_DOF
+    M_TRACE_PT = 'trpt', // Command::TRACE_PT
+    M_STOP_TRACING = 'sttr', // Command::STOP_TRACING
+    M_STEP_DIM = 'stdi', // Command::STEP_DIM
+
+    M_ABOUT = 'mabu', // Command::ABOUT
+
     M_NOT_IMPL = 'mnti'
 };
 
