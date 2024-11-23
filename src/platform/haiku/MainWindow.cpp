@@ -169,7 +169,7 @@ MainWindow::MainWindow(void)
                                      'G')); // Command::CONSTRUCTION
     sketchMenu->AddItem(new BMenuItem("Tangent arc at point",
                                      new BMessage(M_TANGENT_ARC),
-                                     'A')); // Command::TANGENT_ARC
+                                     'A', B_SHIFT_KEY)); // Command::TANGENT_ARC
     sketchMenu->AddItem(new BMenuItem("Split curves at intersection",
                                      new BMessage(M_SPLIT_CURVES),
                                      'I')); // Command::SPLIT_CURVES
@@ -323,53 +323,52 @@ void MainWindow::MessageReceived(BMessage *msg) {
             break;
         }
         case 's': {
-            // TODO: tell the toolbar to toggle the line tool button
-            be_app->WindowAt(MAIN_WINDOW)
-                ->PostMessage(new BMessage(LINE_TOOL_BTN_CLICKED));
+						be_app->WindowAt(TOOLBAR)
+								->PostMessage(new BMessage(LINE_TOOL_BTN_CLICKED));
             break;
         }
         case 'r': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(RECT_TOOL_BTN_CLICKED));
             break;
         }
         case 'c': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(CIRCLE_TOOL_BTN_CLICKED));
             break;
         }
         case 'a': {
             if (mods & B_SHIFT_KEY) {
-                be_app->WindowAt(MAIN_WINDOW)
+                be_app->WindowAt(TOOLBAR)
                     ->PostMessage(new BMessage(TANGENT_ARC_TOOL_BTN_CLICKED));
             } else {
-                be_app->WindowAt(MAIN_WINDOW)
+                be_app->WindowAt(TOOLBAR)
                     ->PostMessage(new BMessage(ARC_TOOL_BTN_CLICKED));
             }
             break;
         }
         case 'b': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(CUBIC_SPLINE_TOOL_BTN_CLICKED));
             break;
         }
         case 'p': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(DATUM_POINT_TOOL_BTN_CLICKED));
             break;
         }
         case 'g': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(CONSTRUCTION_TOOL_BTN_CLICKED));
             break;
         }
         case 'i': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(SPLIT_CURVES_TOOL_BTN_CLICKED));
             break;
         }
         case 't': {
-            be_app->WindowAt(MAIN_WINDOW)
+            be_app->WindowAt(TOOLBAR)
                 ->PostMessage(new BMessage(TEXT_TOOL_BTN_CLICKED));
             break;
         }
@@ -482,10 +481,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         }
         break;
     }
-    case LINE_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::LINE_SEGMENT);
-        break;
-    }
+
     case RECT_TOOL_BTN_CLICKED: {
         SS.GW.MenuRequest(SolveSpace::Command::RECTANGLE);
         break;

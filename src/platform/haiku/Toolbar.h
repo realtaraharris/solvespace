@@ -15,6 +15,31 @@ class AppToolbar : public BWindow {
 
   private:
 		BButton *lineToolButton;
+		BButton *rectToolButton;
+		BButton *circleToolButton;
+		BButton *arcToolButton;
+    BButton *tangentArcToolButton;
+    BButton *cubicSplineToolButton;
+    BButton *datumPointToolButton;
+    BButton *constructionToolButton;
+    BButton *splitCurvesToolButton;
+		BButton *textToolButton;
+
+    BButton *distanceToolButton;
+    BButton *angleToolButton;
+    BButton *horizontalToolButton;
+    BButton *verticalToolButton;
+    BButton *parallelToolButton;
+    BButton *constrainPerpendicularToolButton;
+    BButton *constrainPointOnLineToolButton;
+    BButton *constrainSymmetricToolButton;
+    BButton *constrainEqualToolButton;
+    BButton *constrainParallelNormalsToolButton;
+    BButton *otherSupplementaryAngleToolButton;
+    BButton *refToolButton;
+
+    BButton *nearestIsoToolButton;
+    BButton *nearestOrthoToolButton;
 };
 
 #endif

@@ -323,7 +323,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
             SS.TW.ClearSuper();
         }
         ScheduleShowTW();
-        GW.ClearSuper();
+        GW.ClearSuper(20);
 
         // People get annoyed if I complain whenever they delete any request,
         // and I otherwise will, since those always come with pt-coincident

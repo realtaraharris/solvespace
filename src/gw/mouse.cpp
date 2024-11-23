@@ -107,7 +107,7 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown, bool middleDo
     if(!leftDown && (pending.operation == Pending::DRAGGING_POINTS ||
                      pending.operation == Pending::DRAGGING_MARQUEE))
     {
-        ClearPending();
+        ClearPending(1);
         Invalidate();
     }
 
@@ -444,13 +444,60 @@ void GraphicsWindow::MouseMoved(double x, double y, bool leftDown, bool middleDo
     }
 }
 
-void GraphicsWindow::ClearPending(bool scheduleShowTW) {
-    pending.points.Clear();
-    pending.requests.Clear();
-    pending = {};
-    if(scheduleShowTW) {
-        SS.ScheduleShowTW();
+void GraphicsWindow::ClearPending(int which, bool scheduleShowTW) {
+  // std::cout << "in ClearPending, which: " << which << ", pending.command: " << uint32_t(pending.command) << ", pending.operation: " << uint32_t(pending.operation) << std::endl;
+  switch (pending.command) {
+    case Command::LINE_SEGMENT: {
+      LineToolButtonUnclickedEventHook();
+      break;
     }
+    case Command::RECTANGLE: {
+      RectToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::CIRCLE: {
+      CircleToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::ARC: {
+      ArcToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::TANGENT_ARC: {
+      TangentArcToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::CUBIC: {
+      CubicSplineToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::DATUM_POINT: {
+      DatumPointToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::CONSTRUCTION: {
+      ConstructionToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::SPLIT_CURVES: {
+      SplitCurvesToolButtonUnclickedEventHook();
+      break;
+    }
+    case Command::TTF_TEXT: {
+      TextToolButtonUnclickedEventHook();
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  pending.points.Clear();
+  pending.requests.Clear();
+  pending = {};
+  if (scheduleShowTW) {
+    SS.ScheduleShowTW();
+  }
 }
 
 bool GraphicsWindow::IsFromPending(hRequest r) {
@@ -506,7 +553,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
         // a left click would draw another one. This is quicker and more
         // intuitive than hitting escape. Likewise for other entities
         // for consistency.
-        ClearPending();
+        ClearPending(2);
         return;
     }
 
@@ -927,7 +974,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     SK.GetEntity(hr.entity(0))->PointForceTo(v);
                     ConstrainPointByHovered(hr.entity(0), &mouse);
 
-                    ClearSuper();
+                    ClearSuper(9);
                     break;
 
                 case Command::LINE_SEGMENT:
@@ -937,7 +984,6 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     SK.GetEntity(hr.entity(1))->PointForceTo(v);
                     ConstrainPointByHovered(hr.entity(1), &mouse);
 
-                    ClearSuper();
                     AddToPending(hr);
 
                     pending.operation = Pending::DRAGGING_NEW_LINE_POINT;
@@ -951,7 +997,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     if(!SS.GW.LockedInWorkplane()) {
                         Error(_("Can't draw rectangle in 3d; first, activate a workplane "
                                 "with Sketch -> In Workplane."));
-                        ClearSuper();
+                        ClearSuper(18);
                         break;
                     }
                     hRequest lns[4];
@@ -999,7 +1045,6 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
 
                     ConstrainPointByHovered(hr.entity(1), &mouse);
 
-                    ClearSuper();
                     AddToPending(hr);
 
                     pending.operation = Pending::DRAGGING_NEW_RADIUS;
@@ -1011,7 +1056,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     if(!SS.GW.LockedInWorkplane()) {
                         Error(_("Can't draw arc in 3d; first, activate a workplane "
                                 "with Sketch -> In Workplane."));
-                        ClearPending();
+                        ClearPending(3);
                         break;
                     }
                     hr = AddRequest(Request::Type::ARC_OF_CIRCLE);
@@ -1023,7 +1068,6 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     SK.GetEntity(hr.entity(3))->PointForceTo(v);
                     ConstrainPointByHovered(hr.entity(2), &mouse);
 
-                    ClearSuper();
                     AddToPending(hr);
 
                     pending.operation = Pending::DRAGGING_NEW_ARC_POINT;
@@ -1039,7 +1083,6 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     SK.GetEntity(hr.entity(4))->PointForceTo(v);
                     ConstrainPointByHovered(hr.entity(1), &mouse);
 
-                    ClearSuper();
                     AddToPending(hr);
 
                     pending.operation = Pending::DRAGGING_NEW_CUBIC_POINT;
@@ -1051,7 +1094,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     if(LockedInWorkplane()) {
                         Error(_("Sketching in a workplane already; sketch in 3d before "
                                 "creating new workplane."));
-                        ClearSuper();
+                        ClearSuper(14);
                         break;
                     }
                     hr = AddRequest(Request::Type::WORKPLANE);
@@ -1060,14 +1103,14 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                         Quaternion::From(SS.GW.projRight, SS.GW.projUp));
                     ConstrainPointByHovered(hr.entity(1), &mouse);
 
-                    ClearSuper();
+                    ClearSuper(19);
                     break;
 
                 case Command::TTF_TEXT: {
                     if(!SS.GW.LockedInWorkplane()) {
                         Error(_("Can't draw text in 3d; first, activate a workplane "
                                 "with Sketch -> In Workplane."));
-                        ClearSuper();
+                        ClearSuper(15);
                         break;
                     }
                     hr = AddRequest(Request::Type::TTF_TEXT);
@@ -1090,7 +1133,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                     if(!SS.GW.LockedInWorkplane()) {
                         Error(_("Can't draw image in 3d; first, activate a workplane "
                                 "with Sketch -> In Workplane."));
-                        ClearSuper();
+                        ClearSuper(16);
                         break;
                     }
                     hr = AddRequest(Request::Type::IMAGE);
@@ -1109,7 +1152,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                 }
 
                 case Command::COMMENT: {
-                    ClearSuper();
+                    ClearSuper(17);
                     Constraint c = {};
                     c.group       = SS.GW.activeGroup;
                     c.workplane   = SS.GW.ActiveWorkplane();
@@ -1124,13 +1167,13 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
             break;
 
         case Pending::DRAGGING_RADIUS:
-            ClearPending();
+            ClearPending(4);
             break;
 
         case Pending::DRAGGING_NEW_POINT:
         case Pending::DRAGGING_NEW_ARC_POINT:
             ConstrainPointByHovered(pending.point, &mouse);
-            ClearPending();
+            ClearPending(5);
             break;
 
         case Pending::DRAGGING_NEW_CUBIC_POINT: {
@@ -1154,18 +1197,18 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                 r->extraPoints -= 2;
                 // And we're done.
                 SS.MarkGroupDirty(r->group);
-                ClearPending();
+                ClearPending(6);
                 break;
             }
 
             if(ConstrainPointByHovered(pending.point, &mouse)) {
-	            ClearPending();
+	            ClearPending(7);
                 break;
             }
 
             Entity e;
             if(r->extraPoints >= (int)arraylen(e.point) - 4) {
-	            ClearPending();
+	            ClearPending(8);
                 break;
             }
 
@@ -1194,8 +1237,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
                         // If we constrained by the hovered point, then we
                         // would create a zero-length line segment. That's
                         // not good, so just stop drawing.
-                        ButtonUnclickedEventHook();
-                        ClearPending();
+                        ClearPending(9);
                         break;
                     }
                 }
@@ -1210,8 +1252,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
             }
 
             if(doneDragging) {
-                ButtonUnclickedEventHook();
-                ClearPending();
+                ClearPending(10);
                 break;
             }
 
@@ -1240,8 +1281,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
 
         case Pending::NONE:
         default:
-            ButtonUnclickedEventHook();
-            ClearPending();
+            ClearPending(11);
             if(!hover.IsEmpty()) {
                 if(!ctrlDown) {
                     hoverWasSelectedOnMousedown = IsSelected(&hover);
@@ -1285,13 +1325,13 @@ void GraphicsWindow::MouseLeftUp(double mx, double my, bool shiftDown, bool ctrl
             }
             hoverWasSelectedOnMousedown = false;
             SS.extraLine.draw = false;
-            ClearPending();
+            ClearPending(12);
             Invalidate();
             break;
 
         case Pending::DRAGGING_MARQUEE:
             SelectByMarquee();
-            ClearPending();
+            ClearPending(13);
             Invalidate();
             break;
 
@@ -1308,7 +1348,7 @@ void GraphicsWindow::MouseLeftUp(double mx, double my, bool shiftDown, bool ctrl
 
 void GraphicsWindow::EditConstraint(hConstraint constraint) {
     constraintBeingEdited = constraint;
-    ClearSuper();
+    ClearSuper(20);
 
     Constraint *c = SK.GetConstraint(constraintBeingEdited);
     if(!c->HasLabel()) {

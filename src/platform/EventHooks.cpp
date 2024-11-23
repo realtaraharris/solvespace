@@ -6,7 +6,8 @@
 #include <functional>
 #include <iostream>
 
-void ButtonUnclickedEventHook () {}
+void LineToolButtonUnclickedEventHook () {}
+void RectToolButtonUnclickedEventHook () {}
 void ErrorDialog(std::string message, std::string description,
   std::function<void()> onDismiss = std::function<void()>()
 ) {}

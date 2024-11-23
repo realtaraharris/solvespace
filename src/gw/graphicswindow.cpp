@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "platform/EventHooks.h"
 
 typedef void MenuHandler(Command id);
 using MenuKind = Platform::MenuItem::Indicator;
@@ -1060,7 +1061,7 @@ void GraphicsWindow::DeleteTaggedRequests() {
 //    window->HideEditor();
 //    SS.TW.HideEditControl();
     // And clear out the selection, which could contain that item.
-    ClearSuper();
+    ClearSuper(6);
     // And regenerate to get rid of what it generates, plus anything
     // that references it (since the regen code checks for that).
     SS.GenerateAll(SolveSpaceUI::Generate::ALL);
@@ -1107,7 +1108,7 @@ void GraphicsWindow::MenuEdit(Command id) {
                     }
                 }
             }
-            SS.GW.ClearSuper();
+            SS.GW.ClearSuper(7);
             SS.TW.HideEditControl();
             SS.nakedEdges.Clear();
             SS.justExportedInfo.draw = false;
@@ -1311,7 +1312,7 @@ void GraphicsWindow::MenuRequest(Command id) {
                 g->activeWorkplane = g->h.entity(0);
                 MessageAndRun([] {
                     // Align the view with the selected workplane
-                    SS.GW.ClearSuper();
+                    SS.GW.ClearSuper(8);
                     SS.GW.AnimateOntoWorkplane();
                 }, _("No workplane selected. Activating default workplane "
                      "for this group."));
@@ -1334,18 +1335,15 @@ void GraphicsWindow::MenuRequest(Command id) {
 
         case Command::TANGENT_ARC:
             SS.GW.GroupSelection();
-            if(SS.GW.gs.n == 1 && SS.GW.gs.points == 1) {
+
+            if (SS.GW.gs.n == 1 && SS.GW.gs.points == 1) {
                 SS.GW.MakeTangentArc();
-            } else if(SS.GW.gs.n != 0) {
+            } else {
                 Error(_("Bad selection for tangent arc at point. Select a "
                         "single point, or select nothing to set up arc "
                         "parameters."));
-            } else {
-                SS.TW.GoToScreen(TextWindow::Screen::TANGENT_ARC);
-                SS.GW.ForceTextWindowShown();
-                SS.ScheduleShowTW();
-                SS.GW.Invalidate(); // repaint toolbar
             }
+						TangentArcToolButtonUnclickedEventHook();
             break;
 
         case Command::ARC: s = _("click point on arc (draws anti-clockwise)"); goto c;
@@ -1403,20 +1401,23 @@ c:
                 SS.MarkGroupDirty(r->group);
             }
             SS.GW.ClearSelection();
+						ConstructionToolButtonUnclickedEventHook();
             break;
         }
 
         case Command::SPLIT_CURVES:
             SS.GW.SplitLinesOrCurves();
+						SplitCurvesToolButtonUnclickedEventHook();
             break;
 
         default: ssassert(false, "Unexpected menu ID");
     }
 }
 
-void GraphicsWindow::ClearSuper() {
+void GraphicsWindow::ClearSuper(int which) {
+		std::cout << "in ClearSuper, which: " << which << std::endl;
     if(window) window->HideEditor();
-    ClearPending();
+    ClearPending(0);
     ClearSelection();
     hover.Clear();
     EnsureValidActives();

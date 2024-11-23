@@ -68,10 +68,9 @@ void TextWindow::ScreenShowGroupsSpecial(int link, uint32_t v) {
 void TextWindow::ScreenActivateGroup(int link, uint32_t v) {
     SS.GW.activeGroup.v = v;
     SK.GetGroup(SS.GW.activeGroup)->Activate();
-    SS.GW.ClearSuper();
+    SS.GW.ClearSuper(0);
 }
 void TextWindow::ReportHowGroupSolved(hGroup hg) {
-    SS.GW.ClearSuper();
     SS.TW.GoToScreen(Screen::GROUP_SOLVE_INFO);
     SS.TW.shown.group = hg;
     SS.ScheduleShowTW();
@@ -271,7 +270,7 @@ void TextWindow::ScreenChangeGroupOption(int link, uint32_t v) {
     }
 
     SS.MarkGroupDirty(g->h);
-    SS.GW.ClearSuper();
+    SS.GW.ClearSuper(2);
 }
 
 void TextWindow::ScreenColor(int link, uint32_t v) {
@@ -343,7 +342,7 @@ void TextWindow::ScreenDeleteGroup(int link, uint32_t v) {
 
     // Reset the graphics window. This will also recreate the default
     // group if it was removed.
-    SS.GW.ClearSuper();
+    SS.GW.ClearSuper(3);
 }
 void TextWindow::ShowGroupInfo() {
     Group *g = SK.GetGroup(shown.group);
@@ -859,7 +858,7 @@ void TextWindow::EditControlDone(std::string s) {
                                                 g->color.alphaF());
 
                 SS.MarkGroupDirty(g->h);
-                SS.GW.ClearSuper();
+                SS.GW.ClearSuper(4);
             } else {
                 Error(_("Bad format: specify color as r, g, b"));
             }
@@ -874,7 +873,7 @@ void TextWindow::EditControlDone(std::string s) {
                     Group *g = SK.GetGroup(edit.group);
                     g->color.alpha = (int)(255.1f * alpha);
                     SS.MarkGroupDirty(g->h);
-                    SS.GW.ClearSuper();
+                    SS.GW.ClearSuper(5);
                 }
             }
             break;

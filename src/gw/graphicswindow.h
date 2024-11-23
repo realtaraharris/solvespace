@@ -158,7 +158,7 @@ public:
         bool                 hasSuggestion;
         Constraint::Type     suggestion;
     } pending;
-    void ClearPending(bool scheduleShowTW = true);
+    void ClearPending(int which, bool scheduleShowTW = true);
     bool IsFromPending(hRequest r);
     void AddToPending(hRequest r);
     void ReplacePending(hRequest before, hRequest after);
@@ -273,7 +273,7 @@ public:
     void MakeUnselected(hEntity he, bool coincidentPointTrick);
     void MakeUnselected(Selection *s, bool coincidentPointTrick);
     void SelectByMarquee();
-    void ClearSuper();
+    void ClearSuper(int which);
 
     // This sets what gets displayed.
     bool    showWorkplanes;
