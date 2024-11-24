@@ -319,7 +319,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         }
         switch ((char)raw) {
         case B_DELETE: {
-            SS.GW.MenuClipboard(SolveSpace::Command::DELETE);
+            SS.MenuClipboard(SolveSpace::Command::DELETE);
             break;
         }
         case 's': {
@@ -442,25 +442,25 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case ZOOM_IN: {
-        SS.GW.MenuView(SolveSpace::Command::ZOOM_IN);
+        SS.MenuView(SolveSpace::Command::ZOOM_IN);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_OUT: {
-        SS.GW.MenuView(SolveSpace::Command::ZOOM_OUT);
+        SS.MenuView(SolveSpace::Command::ZOOM_OUT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case ZOOM_TO_FIT: {
-        SS.GW.MenuView(SolveSpace::Command::ZOOM_TO_FIT);
+        SS.MenuView(SolveSpace::Command::ZOOM_TO_FIT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case CENTER_VIEW_AT_POINT: {
-        SS.GW.MenuView(SolveSpace::Command::CENTER_VIEW);
+        SS.MenuView(SolveSpace::Command::CENTER_VIEW);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
@@ -483,205 +483,157 @@ void MainWindow::MessageReceived(BMessage *msg) {
     }
 
     case RECT_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::RECTANGLE);
+        SS.MenuRequest(SolveSpace::Command::RECTANGLE);
         break;
     }
     case CIRCLE_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::CIRCLE);
+        SS.MenuRequest(SolveSpace::Command::CIRCLE);
         break;
     }
     case ARC_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::ARC);
+        SS.MenuRequest(SolveSpace::Command::ARC);
         break;
     }
     case TANGENT_ARC_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::TANGENT_ARC);
+        SS.MenuRequest(SolveSpace::Command::TANGENT_ARC);
         break;
     }
     case CUBIC_SPLINE_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::CUBIC);
+        SS.MenuRequest(SolveSpace::Command::CUBIC);
         break;
     }
     case DATUM_POINT_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::DATUM_POINT);
+        SS.MenuRequest(SolveSpace::Command::DATUM_POINT);
         break;
     }
     case CONSTRUCTION_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::CONSTRUCTION);
+        SS.MenuRequest(SolveSpace::Command::CONSTRUCTION);
         break;
     }
     case SPLIT_CURVES_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
+        SS.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
         break;
     }
     case TEXT_TOOL_BTN_CLICKED: {
-        SS.GW.MenuRequest(SolveSpace::Command::TTF_TEXT);
+        SS.MenuRequest(SolveSpace::Command::TTF_TEXT);
         break;
     }
     case DISTANCE_DIA_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::DISTANCE_DIA);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::DISTANCE_DIA);
         break;
     }
     case ANGLE_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::ANGLE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::ANGLE);
         break;
     }
     case HORIZONTAL_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::HORIZONTAL);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::HORIZONTAL);
         break;
     }
     case VERTICAL_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::VERTICAL);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::VERTICAL);
         break;
     }
     case PARALLEL_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::PARALLEL);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::PARALLEL);
         break;
     }
     case CONSTRAIN_PERP_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::PERPENDICULAR);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::PERPENDICULAR);
         break;
     }
     case PT_ON_LINE_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::ON_ENTITY);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::ON_ENTITY);
         break;
     }
     case CONSTRAIN_SYMMETRIC_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::SYMMETRIC);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::SYMMETRIC);
         break;
     }
     case CONSTRAIN_EQUAL_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EQUAL);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::EQUAL);
         break;
     }
     case CONSTRAIN_ORIENTED_SAME_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::ORIENTED_SAME);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::ORIENTED_SAME);
         break;
     }
     case OTHER_ANGLE_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::OTHER_ANGLE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::OTHER_ANGLE);
         break;
     }
     case REF_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::REFERENCE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::REFERENCE);
         break;
     }
     case NEAREST_ISO_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ISO);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::NEAREST_ISO);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case NEAREST_ORTHO_TOOL_BTN_CLICKED: {
-        SS.GW.ActivateCommand(SolveSpace::Command::NEAREST_ORTHO);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::NEAREST_ORTHO);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_3D: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_3D);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_3D);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_WRKPL: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_WRKPL);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_WRKPL);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_TRANS: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_TRANS);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_TRANS);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_ROT: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_ROT);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_ROT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_EXTRUDE: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_EXTRUDE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_EXTRUDE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_HELIX: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_HELIX);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_HELIX);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_LATHE: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LATHE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_LATHE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_REVOLVE: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_REVOLVE);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_REVOLVE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_LINK: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_LINK);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_LINK);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_RECENT: {
-        SS.GW.ActivateCommand(SolveSpace::Command::GROUP_RECENT);
-        SS.GW.Invalidate();
-        editorView->Invalidate();
+        SS.MenuConstrain(SolveSpace::Command::GROUP_RECENT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;

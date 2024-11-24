@@ -11,7 +11,7 @@ void TextWindow::ScreenShowListOfStyles(int link, uint32_t v) {
     SS.TW.GoToScreen(Screen::LIST_OF_STYLES);
 }
 void TextWindow::ScreenShowStyleInfo(int link, uint32_t v) {
-    GraphicsWindow::MenuEdit(Command::UNSELECT_ALL);
+    SolveSpaceUI::MenuEdit(Command::UNSELECT_ALL);
     SS.TW.GoToScreen(Screen::STYLE_INFO);
     SS.TW.shown.style.v = v;
 }

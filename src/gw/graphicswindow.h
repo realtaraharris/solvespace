@@ -10,13 +10,9 @@ public:
     Platform::KeyboardEvent AcceleratorForCommand(Command id);
     void ActivateCommand(Command id);
 
-    static void MenuView(Command id);
-    static void MenuEdit(Command id);
-    static void MenuRequest(Command id);
     void DeleteSelection();
     void CopySelection();
     void PasteClipboard(Vector trans, double theta, double scale);
-    static void MenuClipboard(Command id);
 
     Platform::MenuRef openRecentMenu;
     Platform::MenuRef linkRecentMenu;

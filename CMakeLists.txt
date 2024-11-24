@@ -81,6 +81,7 @@ add_library(solvespace-core OBJECT
 	src/ssui/generate.cpp
 	src/ssui/solvespaceui.cpp
 	src/ssui/undoredo.cpp
+	src/ssui/menu.cpp
 
 	src/platform/gui.cpp
 	src/platform/platform.cpp

@@ -1177,7 +1177,7 @@ void TextWindow::ScrollbarEvent(double newPos) {
 #include "solvespace.h"
 
 void TextWindow::ScreenUnselectAll(int link, uint32_t v) {
-    GraphicsWindow::MenuEdit(Command::UNSELECT_ALL);
+    SolveSpaceUI::MenuEdit(Command::UNSELECT_ALL);
 }
 
 void TextWindow::ScreenEditTtfText(int link, uint32_t v) {

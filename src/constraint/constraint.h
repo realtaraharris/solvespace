@@ -146,7 +146,6 @@ public:
     bool ShouldDrawExploded() const;
 
     static hConstraint AddConstraint(Constraint *c, bool rememberForUndo = true);
-    static void MenuConstrain(Command id);
     static void DeleteAllConstraintsFor(Constraint::Type type, hEntity entityA, hEntity ptA);
 
     static hConstraint ConstrainCoincident(hEntity ptA, hEntity ptB);

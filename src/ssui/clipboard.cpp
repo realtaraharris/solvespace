@@ -304,62 +304,6 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
     }
 }
 
-void GraphicsWindow::MenuClipboard(Command id) {
-    if(id != Command::DELETE && !SS.GW.LockedInWorkplane()) {
-        Error(_("Cut, paste, and copy work only in a workplane.\n\n"
-                "Activate one with Sketch -> In Workplane."));
-        return;
-    }
-
-    switch(id) {
-        case Command::PASTE: {
-            SS.UndoRemember();
-            Vector trans = SS.GW.projRight.ScaledBy(80/SS.GW.scale).Plus(
-                           SS.GW.projUp   .ScaledBy(40/SS.GW.scale));
-            SS.GW.ClearSelection();
-            SS.GW.PasteClipboard(trans, 0, 1);
-            break;
-        }
-
-        case Command::PASTE_TRANSFORM: {
-            if(SS.clipboard.r.IsEmpty()) {
-                Error(_("Clipboard is empty; nothing to paste."));
-                break;
-            }
-
-            Entity *wrkpl  = SK.GetEntity(SS.GW.ActiveWorkplane());
-            Vector p = SK.GetEntity(wrkpl->point[0])->PointGetNum();
-            SS.TW.shown.paste.times  = 1;
-            SS.TW.shown.paste.trans  = Vector::From(0, 0, 0);
-            SS.TW.shown.paste.theta  = 0;
-            SS.TW.shown.paste.origin = p;
-            SS.TW.shown.paste.scale  = 1;
-            SS.TW.GoToScreen(TextWindow::Screen::PASTE_TRANSFORMED);
-            SS.GW.ForceTextWindowShown();
-            SS.ScheduleShowTW();
-            break;
-        }
-
-        case Command::COPY:
-            SS.GW.CopySelection();
-            SS.GW.ClearSelection();
-            break;
-
-        case Command::CUT:
-            SS.UndoRemember();
-            SS.GW.CopySelection();
-            SS.GW.DeleteSelection();
-            break;
-
-        case Command::DELETE:
-            SS.UndoRemember();
-            SS.GW.DeleteSelection();
-            break;
-
-        default: ssassert(false, "Unexpected menu ID");
-    }
-}
-
 bool TextWindow::EditControlDoneForPaste(const std::string &s) {
     Expr *e;
     switch(edit.meaning) {

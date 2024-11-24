@@ -292,7 +292,14 @@ public:
     void ScheduleGenerateAll();
     void ScheduleAutosave();
 
+    static void MenuView(Command id);
+    static void MenuEdit(Command id);
+    static void MenuClipboard(Command id);
+    static void MenuRequest(Command id);
+    static void MenuConstrain(Command id);
     static void MenuHelp(Command id);
+    static void MenuGroup(Command id);
+    static void MenuGroup(Command id, Platform::Path linkFile);
 
     void Clear();
 

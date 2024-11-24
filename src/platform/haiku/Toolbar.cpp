@@ -189,7 +189,7 @@ AppToolbar::AppToolbar(BRect rect, BSize toolbarIconSize)
 void AppToolbar::MessageReceived(BMessage *message) {
   switch (message->what) {
     case LINE_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::LINE_SEGMENT);
+		  SS.MenuRequest(SolveSpace::Command::LINE_SEGMENT);
 			lineToolButton->SetValue(1);
       break;
     }
@@ -198,7 +198,7 @@ void AppToolbar::MessageReceived(BMessage *message) {
       break;
     }
     case RECT_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::RECTANGLE);
+		  SS.MenuRequest(SolveSpace::Command::RECTANGLE);
       rectToolButton->SetValue(1);
       break;
     }
@@ -207,7 +207,7 @@ void AppToolbar::MessageReceived(BMessage *message) {
       break;
     }
     case CIRCLE_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::CIRCLE);
+		  SS.MenuRequest(SolveSpace::Command::CIRCLE);
       circleToolButton->SetValue(1);
       break;
     }
@@ -216,7 +216,7 @@ void AppToolbar::MessageReceived(BMessage *message) {
       break;
     }
     case ARC_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::ARC);
+		  SS.MenuRequest(SolveSpace::Command::ARC);
       arcToolButton->SetValue(1);
       break;
     }
@@ -225,8 +225,7 @@ void AppToolbar::MessageReceived(BMessage *message) {
       break;
     }		
     case TANGENT_ARC_TOOL_BTN_CLICKED: {
-std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
-		  SS.GW.MenuRequest(SolveSpace::Command::TANGENT_ARC);
+		  SS.MenuRequest(SolveSpace::Command::TANGENT_ARC);
       tangentArcToolButton->SetValue(1);
       break;
     }
@@ -235,7 +234,7 @@ std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
       break;
     }
 		case CUBIC_SPLINE_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::CUBIC);
+		  SS.MenuRequest(SolveSpace::Command::CUBIC);
       cubicSplineToolButton->SetValue(1);
       break;
     }
@@ -244,7 +243,7 @@ std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
       break;
     }		
 		case DATUM_POINT_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::DATUM_POINT);
+		  SS.MenuRequest(SolveSpace::Command::DATUM_POINT);
       datumPointToolButton->SetValue(1);
       break;
     }
@@ -253,7 +252,7 @@ std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
       break;
     }
 		case CONSTRUCTION_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::CONSTRUCTION);
+		  SS.MenuRequest(SolveSpace::Command::CONSTRUCTION);
       constructionToolButton->SetValue(1);
       break;
     }
@@ -262,7 +261,7 @@ std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
       break;
     }
 		case SPLIT_CURVES_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
+		  SS.MenuRequest(SolveSpace::Command::SPLIT_CURVES);
       splitCurvesToolButton->SetValue(1);
       break;
     }
@@ -271,7 +270,7 @@ std::cout << "IN TANGENT_ARC_TOOL_BTN_CLICKED" << std::endl;
       break;
     }
 		case TEXT_TOOL_BTN_CLICKED: {
-		  SS.GW.MenuRequest(SolveSpace::Command::TTF_TEXT);
+		  SS.MenuRequest(SolveSpace::Command::TTF_TEXT);
       textToolButton->SetValue(1);
       break;
     }
