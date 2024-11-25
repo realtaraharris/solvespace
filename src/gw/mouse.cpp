@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 #include "platform/EventHooks.h"
-#define arraylen(x) (sizeof((x))/sizeof((x)[0]))
 
 void GraphicsWindow::UpdateDraggedPoint(hEntity hp, double mx, double my) {
     Entity *p = SK.GetEntity(hp);
@@ -1207,6 +1206,7 @@ void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ct
             }
 
             Entity e;
+#define arraylen(x) (sizeof((x))/sizeof((x)[0]))
             if(r->extraPoints >= (int)arraylen(e.point) - 4) {
 	            ClearPending(8);
                 break;

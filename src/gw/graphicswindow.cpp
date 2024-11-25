@@ -7,8 +7,6 @@
 #include "solvespace.h"
 #include "platform/EventHooks.h"
 
-typedef void MenuHandler(Command id);
-
 void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
     width = 500;
     height = 500;
