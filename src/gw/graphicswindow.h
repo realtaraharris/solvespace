@@ -4,11 +4,6 @@ public:
 
     Platform::WindowRef   window;
 
-    void PopulateMainMenu();
-    void PopulateRecentFiles();
-
-    Platform::KeyboardEvent AcceleratorForCommand(Command id);
-
     void DeleteSelection();
     void CopySelection();
     void PasteClipboard(Vector trans, double theta, double scale);

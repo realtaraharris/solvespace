@@ -541,7 +541,6 @@ void SolveSpaceUI::AddToRecentList(const Platform::Path &filename) {
     }
 
     recentFiles.insert(recentFiles.begin(), filename);
-    GW.PopulateRecentFiles();
 }
 
 bool SolveSpaceUI::GetFilenameAndSave(bool saveAs) {
