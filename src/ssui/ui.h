@@ -52,8 +52,7 @@ inline const char *C_(const char *msgctxt, const char *msgid) {
 
 // This table describes the top-level menus in the graphics window.
 enum class Command : uint32_t {
-    NONE = 0,
-    // File
+    NONE = 0, // File
     NEW = 100,
     OPEN,
     OPEN_RECENT,
@@ -67,8 +66,7 @@ enum class Command : uint32_t {
     EXPORT_WIREFRAME,
     IMPORT,
     EXIT,
-    // View
-    ZOOM_IN,
+    ZOOM_IN, // View
     ZOOM_OUT,
     ZOOM_TO_FIT,
     SHOW_GRID,
@@ -86,8 +84,7 @@ enum class Command : uint32_t {
     UNITS_MM,
     UNITS_METERS,
     FULL_SCREEN,
-    // Edit
-    UNDO,
+    UNDO, // Edit
     REDO,
     CUT,
     COPY,
@@ -102,8 +99,7 @@ enum class Command : uint32_t {
     REGEN_ALL,
     EDIT_LINE_STYLES,
     VIEW_PROJECTION,
-    CONFIGURATION,
-    // Request
+    CONFIGURATION, // Request
     SEL_WORKPLANE,
     FREE_IN_3D,
     DATUM_POINT,
@@ -118,8 +114,7 @@ enum class Command : uint32_t {
     IMAGE,
     SPLIT_CURVES,
     TANGENT_ARC,
-    CONSTRUCTION,
-    // Group
+    CONSTRUCTION, // Group
     GROUP_3D,
     GROUP_WRKPL,
     GROUP_EXTRUDE,
@@ -129,8 +124,7 @@ enum class Command : uint32_t {
     GROUP_ROT,
     GROUP_TRANS,
     GROUP_LINK,
-    GROUP_RECENT,
-    // Constrain
+    GROUP_RECENT, // Constrain
     DISTANCE_DIA,
     REF_DISTANCE,
     ANGLE,
@@ -149,8 +143,7 @@ enum class Command : uint32_t {
     PERPENDICULAR,
     ORIENTED_SAME,
     WHERE_DRAGGED,
-    COMMENT,
-    // Analyze
+    COMMENT, // Analyze
     VOLUME,
     AREA,
     PERIMETER,
@@ -160,8 +153,7 @@ enum class Command : uint32_t {
     CENTER_OF_MASS,
     TRACE_PT,
     STOP_TRACING,
-    STEP_DIM,
-    // Help
+    STEP_DIM, // Help
     LOCALE,
     WEBSITE,
     GITHUB,

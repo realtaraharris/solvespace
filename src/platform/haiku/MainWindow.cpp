@@ -115,7 +115,7 @@ MainWindow::MainWindow(void)
                                      'R')); // Command::GROUP_ROT
     groupMenu->AddSeparatorItem();
     groupMenu->AddItem(new BMenuItem("Extrude", new BMessage(M_GROUP_EXTRUDE),
-                                     'X')); // Command::GROUP_EXTRUDE
+                                     'X', B_SHIFT_KEY)); // Command::GROUP_EXTRUDE
     groupMenu->AddItem(new BMenuItem("Helix", new BMessage(M_GROUP_HELIX),
                                      'H')); // Command::GROUP_HELIX
     groupMenu->AddItem(new BMenuItem("Lathe", new BMessage(M_GROUP_LATHE),
@@ -210,7 +210,7 @@ MainWindow::MainWindow(void)
                                      'Q', B_SHIFT_KEY)); // Command::EQUAL
     constrainMenu->AddItem(new BMenuItem("Length / arc ratio",
                                      new BMessage(M_RATIO),
-                                     'Z')); // Command::RATIO
+                                     'Z', B_SHIFT_KEY)); // Command::RATIO
     constrainMenu->AddItem(new BMenuItem("Length / arc difference",
                                      new BMessage(M_DIFFERENCE),
                                      'J')); // Command::DIFFERENCE
@@ -300,6 +300,8 @@ MainWindow::MainWindow(void)
     toolWindow->Show();
     propertyBrowser->Show();
     viewParameters->Show();
+
+    editorView->New();
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
@@ -573,67 +575,67 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case NEAREST_ORTHO_TOOL_BTN_CLICKED: {
-        SS.MenuConstrain(SolveSpace::Command::NEAREST_ORTHO);
+        SS.MenuView(SolveSpace::Command::NEAREST_ORTHO);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_3D: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_3D);
+        SS.MenuGroup(SolveSpace::Command::GROUP_3D);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_WRKPL: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_WRKPL);
+        SS.MenuGroup(SolveSpace::Command::GROUP_WRKPL);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_TRANS: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_TRANS);
+        SS.MenuGroup(SolveSpace::Command::GROUP_TRANS);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_ROT: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_ROT);
+        SS.MenuGroup(SolveSpace::Command::GROUP_ROT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_EXTRUDE: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_EXTRUDE);
+        SS.MenuGroup(SolveSpace::Command::GROUP_EXTRUDE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_HELIX: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_HELIX);
+        SS.MenuGroup(SolveSpace::Command::GROUP_HELIX);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_LATHE: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_LATHE);
+        SS.MenuGroup(SolveSpace::Command::GROUP_LATHE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_REVOLVE: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_REVOLVE);
+        SS.MenuGroup(SolveSpace::Command::GROUP_REVOLVE);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_LINK: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_LINK);
+        SS.MenuGroup(SolveSpace::Command::GROUP_LINK);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_GROUP_RECENT: {
-        SS.MenuConstrain(SolveSpace::Command::GROUP_RECENT);
+        SS.MenuGroup(SolveSpace::Command::GROUP_RECENT);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
@@ -647,9 +649,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_NEW_FILE: {
-        SS.GW.ActivateCommand(SolveSpace::Command::NEW);
-		editorView->New();
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::NEW);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
@@ -730,46 +730,38 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_EXPORT_VIEW: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_VIEW);
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::EXPORT_VIEW);
         break;
     }
     case M_EXPORT_SECTION: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_SECTION);
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::EXPORT_SECTION);
         break;
     }
     case M_EXPORT_WIREFRAME: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_WIREFRAME);
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::EXPORT_WIREFRAME);
         break;
     }
     case M_EXPORT_MESH: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_MESH);
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::EXPORT_MESH);
         break;
     }
     case M_EXPORT_SURFACES: {
-        SS.GW.ActivateCommand(SolveSpace::Command::EXPORT_SURFACES);
-        SS.GW.Invalidate();
+        SS.MenuFile(SolveSpace::Command::EXPORT_SURFACES);
         break;
     }
     case M_IMPORT: {
-        SS.GW.ActivateCommand(SolveSpace::Command::IMPORT);
-        SS.GW.Invalidate();
+				SS.MenuFile(SolveSpace::Command::IMPORT);
         break;
     }
 
     case M_UNDO: {
-        SS.GW.ActivateCommand(SolveSpace::Command::UNDO);
-        SS.GW.Invalidate();
+		    SS.MenuEdit(SolveSpace::Command::UNDO);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_REDO: {
-        SS.GW.ActivateCommand(SolveSpace::Command::REDO);
-        SS.GW.Invalidate();
+        SS.MenuEdit(SolveSpace::Command::REDO);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;

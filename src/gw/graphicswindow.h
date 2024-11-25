@@ -8,7 +8,6 @@ public:
     void PopulateRecentFiles();
 
     Platform::KeyboardEvent AcceleratorForCommand(Command id);
-    void ActivateCommand(Command id);
 
     void DeleteSelection();
     void CopySelection();

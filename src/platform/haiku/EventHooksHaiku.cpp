@@ -12,41 +12,45 @@
 
 extern BApplication* be_app;
 
-void LineToolButtonUnclickedEventHook () {
+void LineToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(LINE_TOOL_BTN_UNCLICKED));
 }
 
-void RectToolButtonUnclickedEventHook () {
+void RectToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(RECT_TOOL_BTN_UNCLICKED));
 }
 
-void CircleToolButtonUnclickedEventHook () {
+void CircleToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CIRCLE_TOOL_BTN_UNCLICKED));
 }
 
-void ArcToolButtonUnclickedEventHook () {
+void ArcToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(ARC_TOOL_BTN_UNCLICKED));
 }
 
 void TangentArcToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(TANGENT_ARC_TOOL_BTN_UNCLICKED));
 }
+
 void CubicSplineToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CUBIC_SPLINE_TOOL_BTN_UNCLICKED));
 }
+
 void DatumPointToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(DATUM_POINT_TOOL_BTN_UNCLICKED));
 }
+
 void ConstructionToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CONSTRUCTION_TOOL_BTN_UNCLICKED));
 }
+
 void SplitCurvesToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(SPLIT_CURVES_TOOL_BTN_UNCLICKED));
 }
+
 void TextToolButtonUnclickedEventHook() {
   be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(TEXT_TOOL_BTN_UNCLICKED));
 }
-
 
 void HaikuDialog(
   std::string title,

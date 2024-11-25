@@ -197,15 +197,6 @@ const MenuEntry Menu[] = {
 #undef KC
 #undef KR
 
-void GraphicsWindow::ActivateCommand(Command cmd) {
-    for(int i = 0; Menu[i].level >= 0; i++) {
-        if(cmd == Menu[i].cmd) {
-            (Menu[i].fn)((Command)Menu[i].cmd);
-            break;
-        }
-    }
-}
-
 Platform::KeyboardEvent GraphicsWindow::AcceleratorForCommand(Command cmd) {
     int rawAccel = 0;
     for(int i = 0; Menu[i].level >= 0; i++) {
@@ -251,15 +242,6 @@ bool GraphicsWindow::KeyboardEvent(Platform::KeyboardEvent event) {
             // Ideally we'd have a platform-independent way of binding to a particular
             // physical key regardless of shift status...
             SolveSpaceUI::MenuView(Command::ZOOM_IN);
-            return true;
-        }
-    }
-
-    // On some platforms, the OS does not handle some or all keyboard accelerators,
-    // so handle them here.
-    for(int i = 0; Menu[i].level >= 0; i++) {
-        if(AcceleratorForCommand(Menu[i].cmd).Equals(event)) {
-            ActivateCommand(Menu[i].cmd);
             return true;
         }
     }
