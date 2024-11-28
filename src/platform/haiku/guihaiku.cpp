@@ -135,7 +135,7 @@ public:
     virtual void ShowEditor(double x, double y, double fontHeight, double minWidth,
                             bool isMonospace, const std::string &text) override {
         dbp("in ShowEditor!");
-        be_app->WindowAt(0)->PostMessage(new BMessage(M_SHOW_EDITOR));
+        be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(M_SHOW_EDITOR));
     }
     virtual void HideEditor() override {}
 
