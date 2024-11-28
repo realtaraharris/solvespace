@@ -1892,3 +1892,34 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
     TextWindow::ScreenSelectGroup(0, gg->h.v);
     SS.GW.AnimateOntoWorkplane();
 }
+
+void SolveSpaceUI::MenuHelp(Command id) {
+    switch(id) {
+        case Command::WEBSITE:
+            Platform::OpenInBrowser("http://solvespace.com/helpmenu");
+            break;
+
+        case Command::ABOUT:
+            Message(_(
+"This is SolveSpace version %s.\n"
+"\n"
+"For more information, see http://solvespace.com/\n"
+"\n"
+"SolveSpace is free software: you are free to modify\n"
+"and/or redistribute it under the terms of the GNU\n"
+"General Public License (GPL) version 3 or later.\n"
+"\n"
+"There is NO WARRANTY, to the extent permitted by\n"
+"law. For details, visit http://gnu.org/licenses/\n"
+"\n"
+"© 2008-%d Jonathan Westhues and other authors.\n"),
+PACKAGE_VERSION, 2022);
+            break;
+
+        case Command::GITHUB:
+            Platform::OpenInBrowser(GIT_HASH_URL);
+            break;
+
+        default: ssassert(false, "Unexpected menu ID");
+    }
+}
