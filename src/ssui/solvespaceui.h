@@ -141,6 +141,7 @@ public:
     Platform::Path saveFile;
     bool        fileLoadError;
     bool        unsaved;
+		bool okayToStartNewFile;
     typedef struct {
         char        type;
         const char *desc;
@@ -172,13 +173,14 @@ public:
     void ClearExisting();
     void NewFile();
     bool SaveToFile(const Platform::Path &filename);
-    bool LoadAutosaveFor(const Platform::Path &filename);
+    virtual bool LoadAutosaveFor(const Platform::Path &filename);
     bool LoadFromFile(const Platform::Path &filename, bool canCancel = false);
     void UpgradeLegacyData();
     bool LoadEntitiesFromFile(const Platform::Path &filename, EntityList *le,
                               SMesh *m, SShell *sh);
     bool LoadEntitiesFromSlvs(const Platform::Path &filename, EntityList *le,
                               SMesh *m, SShell *sh);
+		virtual int LocateImportedFile(const Platform::Path &filename, bool canCancel);
     bool ReloadAllLinked(const Platform::Path &filename, bool canCancel = false);
     // And the various export options
     void ExportAsPngTo(const Platform::Path &filename);

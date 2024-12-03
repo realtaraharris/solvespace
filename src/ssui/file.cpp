@@ -862,27 +862,8 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
     return true;
 }
 
-static Platform::MessageDialog::Response LocateImportedFile(const Platform::Path &filename,
-                                                            bool canCancel) {
-    Platform::MessageDialogRef dialog = CreateMessageDialog(SS.GW.window);
-
-    using Platform::MessageDialog;
-    dialog->SetType(MessageDialog::Type::QUESTION);
-    dialog->SetTitle(C_("title", "Missing File"));
-    dialog->SetMessage(ssprintf(C_("dialog", "The linked file “%s” is not present."),
-                                filename.raw.c_str()));
-    dialog->SetDescription(C_("dialog", "Do you want to locate it manually?\n\n"
-                                        "If you decline, any geometry that depends on "
-                                        "the missing file will be permanently removed."));
-    dialog->AddButton(C_("button", "&Yes"), MessageDialog::Response::YES,
-                      /*isDefault=*/true);
-    dialog->AddButton(C_("button", "&No"), MessageDialog::Response::NO);
-    if(canCancel) {
-        dialog->AddButton(C_("button", "&Cancel"), MessageDialog::Response::CANCEL);
-    }
-
-    // FIXME(async): asyncify this call
-    return dialog->RunModal();
+static int SolveSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCancel) {
+		assert("SolveSpaceUI::LocateImportedFile() shouldn't be called");
 }
 
 bool SolveSpaceUI::ReloadAllLinked(const Platform::Path &saveFile, bool canCancel) {
@@ -920,7 +901,7 @@ try_again:
             // The file was moved; prompt the user for its new location.
             const auto linkFileRelative = g.linkFile.RelativeTo(saveFile);
             switch(LocateImportedFile(linkFileRelative, canCancel)) {
-                case Platform::MessageDialog::Response::YES: {
+                case 0: { // YES
                     Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog(SS.GW.window);
                     dialog->AddFilters(Platform::SolveSpaceModelFileFilters);
                     dialog->ThawChoices(settings, "LinkSketch");
@@ -936,12 +917,12 @@ try_again:
                     }
                 }
 
-                case Platform::MessageDialog::Response::NO:
+                case 1: // NO:
                     linkMap[g.linkFile].Clear();
                     // Geometry will be pruned by GenerateAll().
                     break;
 
-                case Platform::MessageDialog::Response::CANCEL:
+                case 2: // CANCEL:
                     return false;
 
                 default:
@@ -980,15 +961,15 @@ bool SolveSpaceUI::ReloadLinkedImage(const Platform::Path &saveFile,
         if(pixmap == NULL) {
             // The file was moved; prompt the user for its new location.
             switch(LocateImportedFile(filename->RelativeTo(saveFile), canCancel)) {
-                case Platform::MessageDialog::Response::YES:
+                case 0: // YES
                     promptOpenFile = true;
                     break;
 
-                case Platform::MessageDialog::Response::NO:
+                case 1: // NO
                     // We don't know where the file is, record it as absent.
                     break;
 
-                case Platform::MessageDialog::Response::CANCEL:
+                case 2: // CANCEL
                     return false;
 
                 default:

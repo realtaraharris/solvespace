@@ -644,11 +644,13 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_QUIT_APP: {
+				if (!SS.OkayToStartNewFile()) { break; }
         FreeAllTemporary();
         be_app->PostMessage(B_QUIT_REQUESTED);
         break;
     }
     case M_NEW_FILE: {
+				if (!SS.OkayToStartNewFile()) { break; }
         SS.MenuFile(SolveSpace::Command::NEW);
         be_app->WindowAt(VIEW_PARAMETERS)
             ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -678,6 +680,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_OPEN_FILE: {
+				if (!SS.OkayToStartNewFile()) { break; }
         BFilePanel *fp =
             new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL,
                            B_FILE_NODE, false, new BMessage(READ_FILE));

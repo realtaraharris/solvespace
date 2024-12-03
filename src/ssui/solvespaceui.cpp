@@ -23,6 +23,7 @@ void SolveSpaceUI::Init() {
 
     Platform::SettingsRef settings = Platform::GetSettings();
 
+    okayToStartNewFile = true;
     SS.tangentArcRadius = 10.0;
     SS.explodeDistance = 1.0;
 
@@ -147,31 +148,7 @@ void SolveSpaceUI::Init() {
 }
 
 bool SolveSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {
-    Platform::Path autosaveFile = filename.WithExtension(BACKUP_EXT);
-
-    FILE *f = OpenFile(autosaveFile, "rb");
-    if(!f)
-        return false;
-    fclose(f);
-
-    Platform::MessageDialogRef dialog = CreateMessageDialog(GW.window);
-
-    using Platform::MessageDialog;
-    dialog->SetType(MessageDialog::Type::QUESTION);
-    dialog->SetTitle(C_("title", "Autosave Available"));
-    dialog->SetMessage(C_("dialog", "An autosave file is available for this sketch."));
-    dialog->SetDescription(C_("dialog", "Do you want to load the autosave file instead?"));
-    dialog->AddButton(C_("button", "&Load autosave"), MessageDialog::Response::YES,
-                      /*isDefault=*/true);
-    dialog->AddButton(C_("button", "Do&n't Load"), MessageDialog::Response::NO);
-
-    // FIXME(async): asyncify this call
-    if(dialog->RunModal() == MessageDialog::Response::YES) {
-        unsaved = true;
-        return LoadFromFile(autosaveFile, /*canCancel=*/true);
-    }
-
-    return false;
+		assert("SolveSpaceUI::LoadAutosaveFor() shouldn't be called");
 }
 
 bool SolveSpaceUI::Load(const Platform::Path &filename) {
@@ -543,36 +520,6 @@ void SolveSpaceUI::AddToRecentList(const Platform::Path &filename) {
     recentFiles.insert(recentFiles.begin(), filename);
 }
 
-bool SolveSpaceUI::GetFilenameAndSave(bool saveAs) {
-    Platform::SettingsRef settings = Platform::GetSettings();
-    Platform::Path newSaveFile = saveFile;
-
-    if(saveAs || saveFile.IsEmpty()) {
-        Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog(GW.window);
-        dialog->AddFilter(C_("file-type", "SolveSpace models"), { SKETCH_EXT });
-        dialog->ThawChoices(settings, "Sketch");
-        if(!newSaveFile.IsEmpty()) {
-            dialog->SetFilename(newSaveFile);
-        }
-        if(dialog->RunModal()) {
-            dialog->FreezeChoices(settings, "Sketch");
-            newSaveFile = dialog->GetFilename();
-        } else {
-            return false;
-        }
-    }
-
-    if(SaveToFile(newSaveFile)) {
-        AddToRecentList(newSaveFile);
-        RemoveAutosave();
-        saveFile = newSaveFile;
-        unsaved = false;
-        return true;
-    } else {
-        return false;
-    }
-}
-
 void SolveSpaceUI::Autosave()
 {
     ScheduleAutosave();
@@ -589,38 +536,7 @@ void SolveSpaceUI::RemoveAutosave()
 }
 
 bool SolveSpaceUI::OkayToStartNewFile() {
-    if(!unsaved) return true;
-
-    Platform::MessageDialogRef dialog = CreateMessageDialog(GW.window);
-
-    using Platform::MessageDialog;
-    dialog->SetType(MessageDialog::Type::QUESTION);
-    dialog->SetTitle(C_("title", "Modified File"));
-    if(!SolveSpace::SS.saveFile.IsEmpty()) {
-        dialog->SetMessage(ssprintf(C_("dialog", "Do you want to save the changes you made to "
-                                                 "the sketch “%s”?"), saveFile.raw.c_str()));
-    } else {
-        dialog->SetMessage(C_("dialog", "Do you want to save the changes you made to "
-                                        "the new sketch?"));
-    }
-    dialog->SetDescription(C_("dialog", "Your changes will be lost if you don't save them."));
-    dialog->AddButton(C_("button", "&Save"), MessageDialog::Response::YES,
-                      /*isDefault=*/true);
-    dialog->AddButton(C_("button", "Do&n't Save"), MessageDialog::Response::NO);
-    dialog->AddButton(C_("button", "&Cancel"), MessageDialog::Response::CANCEL);
-
-    // FIXME(async): asyncify this call
-    switch(dialog->RunModal()) {
-        case MessageDialog::Response::YES:
-            return GetFilenameAndSave(/*saveAs=*/false);
-
-        case MessageDialog::Response::NO:
-            RemoveAutosave();
-            return true;
-
-        default:
-            return false;
-    }
+		assert("SolveSpaceUI::OkayToStartNewFile() shouldn't be called");
 }
 
 void SolveSpaceUI::ShowNakedEdges(bool reportOnlyWhenNotOkay) {

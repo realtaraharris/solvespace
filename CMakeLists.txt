@@ -116,7 +116,7 @@ target_include_directories(solvespace-core PRIVATE
 	extlib/libdxfrw/
 	${CMAKE_CURRENT_BINARY_DIR} # adds config.h/config.in.h
 )
-target_compile_definitions(solvespace-core PRIVATE)
+target_compile_definitions(solvespace-core PRIVATE HAIKU_GUI=1)
 
 add_executable(SolveSpace
 	src/platform/haiku/App.cpp

@@ -2,6 +2,7 @@
 #include "../platform/EventHooks.h"
 #include "filewriter/stepfilewriter.h"
 #include "filewriter/vectorfilewriter.h"
+#include "config.h"
 
 namespace SolveSpace {
   void ImportDxf(const Platform::Path &file);
@@ -34,11 +35,11 @@ void SolveSpaceUI::MenuFile(Command id) {
         }
 
         case Command::SAVE:
-            SS.GetFilenameAndSave(/*saveAs=*/false);
+            //SS.GetFilenameAndSave(/*saveAs=*/false);
             break;
 
         case Command::SAVE_AS:
-            SS.GetFilenameAndSave(/*saveAs=*/true);
+            //SS.GetFilenameAndSave(/*saveAs=*/true);
             break;
 
         case Command::EXPORT_IMAGE: {

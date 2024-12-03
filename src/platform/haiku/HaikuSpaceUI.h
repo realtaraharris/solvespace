@@ -8,9 +8,12 @@
 
 class HaikuSpaceUI : public SolveSpaceUI {
 public:
-    void UndoEnableMenus();
+	void UndoEnableMenus();
 	bool OkayToStartNewFile();
-	bool GetFilenameAndSave(bool);
+	void GetFilenameAndSave(bool);
+	bool SaveNewFile(Platform::Path newSaveFile);
+	bool LoadAutosaveFor(const Platform::Path &filename);
+	int LocateImportedFile(const Platform::Path &filename, bool canCancel);
 };
 
 #endif // HAIKUSPACEUI_H
