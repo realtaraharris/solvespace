@@ -281,48 +281,6 @@ void Open3DConnexion();
 void Close3DConnexion();
 void Request3DConnexionEventsForWindow(WindowRef window);
 
-// A native dialog that asks for one choice out of several.
-class MessageDialog {
-public:
-    enum class Type {
-        INFORMATION,
-        QUESTION,
-        WARNING,
-        ERROR
-    };
-
-    enum class Response {
-        NONE,
-        OK,
-        YES,
-        NO,
-        CANCEL
-    };
-
-    std::function<void(Response)> onResponse;
-
-    virtual ~MessageDialog() = default;
-
-    virtual void SetType(Type type) = 0;
-    virtual void SetTitle(std::string title) = 0;
-    virtual void SetMessage(std::string message) = 0;
-    virtual void SetDescription(std::string description) = 0;
-
-    virtual void AddButton(std::string label, Response response, bool isDefault = false) = 0;
-
-    virtual Response RunModal() = 0;
-    virtual void ShowModal() {
-        Response response = RunModal();
-        if(onResponse) {
-            onResponse(response);
-        }
-    }
-};
-
-typedef std::shared_ptr<MessageDialog> MessageDialogRef;
-
-MessageDialogRef CreateMessageDialog(WindowRef parentWindow);
-
 // A file filter.
 struct FileFilter {
     std::string                 name;
