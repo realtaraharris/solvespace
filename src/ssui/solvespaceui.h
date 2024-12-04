@@ -166,12 +166,14 @@ public:
     static constexpr const char *SKETCH_EXT = "slvs";
     static constexpr const char *BACKUP_EXT = "slvs~";
     std::vector<Platform::Path> recentFiles;
+ 		Platform::Path pngExportImageFilename;
     bool Load(const Platform::Path &filename);
     bool GetFilenameAndSave(bool saveAs);
     virtual bool OkayToStartNewFile();
     hGroup CreateDefaultDrawingGroup();
     void ClearExisting();
     void NewFile();
+		virtual void OpenSolveSpaceFile();
     bool SaveToFile(const Platform::Path &filename);
     virtual bool LoadAutosaveFor(const Platform::Path &filename);
     bool LoadFromFile(const Platform::Path &filename, bool canCancel = false);
@@ -181,6 +183,8 @@ public:
     bool LoadEntitiesFromSlvs(const Platform::Path &filename, EntityList *le,
                               SMesh *m, SShell *sh);
 		virtual int LocateImportedFile(const Platform::Path &filename, bool canCancel);
+		virtual void GetPngExportImageFilename();
+
     bool ReloadAllLinked(const Platform::Path &filename, bool canCancel = false);
     // And the various export options
     void ExportAsPngTo(const Platform::Path &filename);

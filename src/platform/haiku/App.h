@@ -84,7 +84,7 @@ enum {
     M_SAVE_FILE = 'msf',
     M_SAVE_AS_FILE = 'msaf',
     M_EXPORT_IMAGE = 'mexi',
-    EXPORT_IMAGE = 'exim',
+    PNG_EXPORT_IMAGE = 'pexi',
     M_EXPORT_VIEW = 'mexv',
     M_EXPORT_SECTION = 'mese',
     M_EXPORT_WIREFRAME = 'mexw',

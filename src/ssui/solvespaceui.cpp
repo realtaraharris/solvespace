@@ -147,8 +147,13 @@ void SolveSpaceUI::Init() {
     AfterNewFile();
 }
 
+void SolveSpaceUI::OpenSolveSpaceFile() {
+  		assert("SolveSpaceUI::OpenSolveSpaceFile() shouldn't be called");
+}
+
 bool SolveSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {
 		assert("SolveSpaceUI::LoadAutosaveFor() shouldn't be called");
+		return false;
 }
 
 bool SolveSpaceUI::Load(const Platform::Path &filename) {
@@ -537,6 +542,11 @@ void SolveSpaceUI::RemoveAutosave()
 
 bool SolveSpaceUI::OkayToStartNewFile() {
 		assert("SolveSpaceUI::OkayToStartNewFile() shouldn't be called");
+		return false;
+}
+
+void SolveSpaceUI::GetPngExportImageFilename() {
+		assert("SolveSpaceUI::GetPngExportImageFilename() shouldn't be called");
 }
 
 void SolveSpaceUI::ShowNakedEdges(bool reportOnlyWhenNotOkay) {

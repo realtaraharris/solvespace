@@ -862,8 +862,9 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
     return true;
 }
 
-static int SolveSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCancel) {
+int SolveSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCancel) {
 		assert("SolveSpaceUI::LocateImportedFile() shouldn't be called");
+		return false;
 }
 
 bool SolveSpaceUI::ReloadAllLinked(const Platform::Path &saveFile, bool canCancel) {

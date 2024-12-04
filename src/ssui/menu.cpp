@@ -22,37 +22,29 @@ void SolveSpaceUI::MenuFile(Command id) {
             break;
 
         case Command::OPEN: {
-            if(!SS.OkayToStartNewFile()) break;
-
-            Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog(SS.GW.window);
-            dialog->AddFilters(Platform::SolveSpaceModelFileFilters);
-            dialog->ThawChoices(settings, "Sketch");
-            if(dialog->RunModal()) {
-                dialog->FreezeChoices(settings, "Sketch");
-                SS.Load(dialog->GetFilename());
-            }
+            if (!SS.OkayToStartNewFile()) { break; }
+						
+						SS.OpenSolveSpaceFile();
             break;
         }
 
         case Command::SAVE:
-            //SS.GetFilenameAndSave(/*saveAs=*/false);
+            SS.GetFilenameAndSave(/*saveAs=*/false);
             break;
 
         case Command::SAVE_AS:
-            //SS.GetFilenameAndSave(/*saveAs=*/true);
+            SS.GetFilenameAndSave(/*saveAs=*/true);
             break;
 
-        case Command::EXPORT_IMAGE: {
-            Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog(SS.GW.window);
-            dialog->AddFilters(Platform::RasterFileFilters);
-            dialog->ThawChoices(settings, "ExportImage");
-            dialog->SuggestFilename(SS.saveFile);
-            if(dialog->RunModal()) {
-                dialog->FreezeChoices(settings, "ExportImage");
-                SS.ExportAsPngTo(dialog->GetFilename());
-            }
-            break;
+        case Command::GET_PNG_EXPORT_IMAGE_FILENAME: {
+						SS.GetPngExportImageFilename();
+						break;
         }
+				
+				case Command::EXPORT_PNG_IMAGE: {
+						SS.ExportAsPngTo(SS.pngExportImageFilename);
+						break;
+				}
 
         case Command::EXPORT_VIEW: {
             Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog(SS.GW.window);

@@ -12,6 +12,11 @@
 #include "HaikuSpaceUI.h"
 #include <FilePanel.h>
 
+void HaikuSpaceUI::OpenSolveSpaceFile() {
+	BFilePanel *fp = new BFilePanel(B_OPEN_PANEL, &be_app_messenger, NULL, B_FILE_NODE, false, new BMessage(READ_FILE));
+	fp->Show();
+}
+
 void HaikuSpaceUI::UndoEnableMenus() {
     be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(undo.cnt > 0 ? SET_UNDO_ENABLED : SET_UNDO_DISABLED));
     be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(redo.cnt > 0 ? SET_REDO_ENABLED : SET_REDO_DISABLED));
@@ -109,4 +114,19 @@ int HaikuSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCan
 
     // FIXME(async): asyncify this call
 		return alert->Go(); // 0: YES, 1: NO, 2: CANCEL
+}
+
+void HaikuSpaceUI::GetPngExportImageFilename() {
+	  BFilePanel *fp = new BFilePanel(
+		  B_SAVE_PANEL, &be_app_messenger, NULL,
+		  B_FILE_NODE, false, new BMessage(PNG_EXPORT_IMAGE) // calls HaikuSpaceUI::PngExportImage
+		);
+    if (!saveFile.IsEmpty()) {
+		  fp->SetSaveText(pngExportImageFilename.raw.c_str());
+		}
+		fp->Show();
+}
+
+void HaikuSpaceUI::PngExportImage() {
+		SS.ExportAsPngTo(pngExportImageFilename);
 }

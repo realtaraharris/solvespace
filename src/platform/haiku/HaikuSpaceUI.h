@@ -8,12 +8,15 @@
 
 class HaikuSpaceUI : public SolveSpaceUI {
 public:
+  void OpenSolveSpaceFile();
 	void UndoEnableMenus();
 	bool OkayToStartNewFile();
 	void GetFilenameAndSave(bool);
 	bool SaveNewFile(Platform::Path newSaveFile);
 	bool LoadAutosaveFor(const Platform::Path &filename);
 	int LocateImportedFile(const Platform::Path &filename, bool canCancel);
+	void GetPngExportImageFilename();
+	void PngExportImage();
 };
 
 #endif // HAIKUSPACEUI_H

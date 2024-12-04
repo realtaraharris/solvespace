@@ -680,11 +680,9 @@ void MainWindow::MessageReceived(BMessage *msg) {
         break;
     }
     case M_OPEN_FILE: {
-				if (!SS.OkayToStartNewFile()) { break; }
-        BFilePanel *fp =
-            new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL,
-                           B_FILE_NODE, false, new BMessage(READ_FILE));
-        fp->Show();
+				SS.MenuFile(SolveSpace::Command::OPEN);
+        be_app->WindowAt(VIEW_PARAMETERS)
+            ->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
         break;
     }
     case M_SAVE_FILE: {
@@ -709,11 +707,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
     case M_EXPORT_IMAGE: {
         BFilePanel *fp =
             new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL,
-                           B_FILE_NODE, false, new BMessage(EXPORT_IMAGE));
+                           B_FILE_NODE, false, new BMessage(PNG_EXPORT_IMAGE));
         fp->SetSaveText(currentFilePath->Leaf()); // TODO: strip extension and replace with png
         fp->Show();
         break;
     }
+/*
     case EXPORT_IMAGE: {
         // TODO: extract identical code used elsewhere, e.g., the SAVE_AS_FILE case handler
         if (!msg->HasRef("directory") || !msg->HasString("name")) { break; }
@@ -731,7 +730,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
         );
 
         break;
-    }
+    }*/
     case M_EXPORT_VIEW: {
         SS.MenuFile(SolveSpace::Command::EXPORT_VIEW);
         break;
