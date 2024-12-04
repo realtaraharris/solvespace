@@ -4,6 +4,6 @@
 #include <IconUtils.h>
 #include <Resources.h>
 
-BBitmap *LoadIconFromResource(const char *name, float iconSize);
+BBitmap *LoadIconFromResource (const char *name, float iconSize);
 
 #endif

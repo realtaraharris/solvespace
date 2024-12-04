@@ -9,41 +9,40 @@
 #define TTF_H
 
 class TtfFont {
-public:
-    Platform::Path  fontFile; // or resource path/name as res://<path>
-    std::string     name;
-    FT_FaceRec_    *fontFace;
-    double          capHeight;
+  public:
+  Platform::Path fontFile; // or resource path/name as res://<path>
+  std::string    name;
+  FT_FaceRec_   *fontFace;
+  double         capHeight;
 
-    void SetResourceID(const std::string &resource);
-    bool IsResource() const;
+  void SetResourceID (const std::string &resource);
+  bool IsResource () const;
 
-    std::string FontFileBaseName() const;
-    bool LoadFromFile(FT_LibraryRec_ *fontLibrary, bool keepOpen = false);
-    bool LoadFromResource(FT_LibraryRec_ *fontLibrary, bool keepOpen = false);
+  std::string FontFileBaseName () const;
+  bool        LoadFromFile (FT_LibraryRec_ *fontLibrary, bool keepOpen = false);
+  bool        LoadFromResource (FT_LibraryRec_ *fontLibrary, bool keepOpen = false);
 
-    void PlotString(const std::string &str,
-                    SBezierList *sbl, Vector origin, Vector u, Vector v);
-    double AspectRatio(const std::string &str);
+  void   PlotString (const std::string &str, SBezierList *sbl, Vector origin, Vector u, Vector v);
+  double AspectRatio (const std::string &str);
 
-    bool ExtractTTFData(bool keepOpen);
+  bool ExtractTTFData (bool keepOpen);
 };
 
 class TtfFontList {
-public:
-    FT_LibraryRec_ *fontLibrary;
-    bool            loaded;
-    List<TtfFont>   l;
+  public:
+  FT_LibraryRec_ *fontLibrary;
+  bool            loaded;
+  List<TtfFont>   l;
 
-    TtfFontList();
-    ~TtfFontList();
+  TtfFontList ();
+  ~TtfFontList ();
 
-    void LoadAll();
-    TtfFont *LoadFont(const std::string &font);
+  void     LoadAll ();
+  TtfFont *LoadFont (const std::string &font);
 
-    void PlotString(const std::string &font, const std::string &str,
-                    SBezierList *sbl, Vector origin, Vector u, Vector v);
-    double AspectRatio(const std::string &font, const std::string &str);
+  void PlotString (const std::string &font, const std::string &str, SBezierList *sbl, Vector origin,
+                   Vector u, Vector v);
+  double AspectRatio (const std::string &font, const std::string &str);
 };
 
 #endif // TTF_H

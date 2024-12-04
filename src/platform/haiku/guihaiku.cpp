@@ -8,197 +8,197 @@
 
 #include "App.h"
 
-extern BApplication* be_app;
+extern BApplication *be_app;
 
 namespace SolveSpace {
 
-//-----------------------------------------------------------------------------
-// Rendering
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
+  // Rendering
+  //-----------------------------------------------------------------------------
 
-std::shared_ptr<ViewportCanvas> CreateRenderer() {
-    return std::make_shared<AggPixmapRenderer>();
-}
+  std::shared_ptr<ViewportCanvas> CreateRenderer () {
+    return std::make_shared<AggPixmapRenderer> ();
+  }
 
-namespace Platform {
+  namespace Platform {
 
-//-----------------------------------------------------------------------------
-// Fatal errors
-//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
+    // Fatal errors
+    //-----------------------------------------------------------------------------
 
-void FatalError(const std::string &message) {
-    fprintf(stderr, "%s", message.c_str());
-    abort();
-}
-
-//-----------------------------------------------------------------------------
-// Settings
-//-----------------------------------------------------------------------------
-
-class SettingsImplDummy final : public Settings {
-public:
-    void FreezeInt(const std::string &key, uint32_t value) override {
+    void FatalError (const std::string &message) {
+      fprintf (stderr, "%s", message.c_str ());
+      abort ();
     }
 
-    uint32_t ThawInt(const std::string &key, uint32_t defaultValue = 0) override {
+    //-----------------------------------------------------------------------------
+    // Settings
+    //-----------------------------------------------------------------------------
+
+    class SettingsImplDummy final : public Settings {
+  public:
+      void FreezeInt (const std::string &key, uint32_t value) override {}
+
+      uint32_t ThawInt (const std::string &key, uint32_t defaultValue = 0) override {
         return defaultValue;
-    }
+      }
 
-    void FreezeFloat(const std::string &key, double value) override {
-    }
+      void FreezeFloat (const std::string &key, double value) override {}
 
-    double ThawFloat(const std::string &key, double defaultValue = 0.0) override {
+      double ThawFloat (const std::string &key, double defaultValue = 0.0) override {
         return defaultValue;
-    }
+      }
 
-    void FreezeString(const std::string &key, const std::string &value) override {
-    }
+      void FreezeString (const std::string &key, const std::string &value) override {}
 
-    std::string ThawString(const std::string &key, const std::string &defaultValue = "") override {
+      std::string ThawString (const std::string &key,
+                              const std::string &defaultValue = "") override {
         return defaultValue;
+      }
+    };
+
+    SettingsRef GetSettings () {
+      static std::shared_ptr<SettingsImplDummy> settings = std::make_shared<SettingsImplDummy> ();
+      return settings;
     }
-};
 
-SettingsRef GetSettings() {
-    static std::shared_ptr<SettingsImplDummy> settings =
-                std::make_shared<SettingsImplDummy>();
-    return settings;
-}
+    //-----------------------------------------------------------------------------
+    // Timers
+    //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Timers
-//-----------------------------------------------------------------------------
+    class TimerImplDummy final : public Timer {
+  public:
+      void RunAfter (unsigned milliseconds) override {}
+    };
 
-class TimerImplDummy final : public Timer {
-public:
-    void RunAfter(unsigned milliseconds) override {}
-};
+    TimerRef CreateTimer () {
+      return std::make_shared<TimerImplDummy> ();
+    }
 
-TimerRef CreateTimer() {
-    return std::make_shared<TimerImplDummy>();
-}
+    //-----------------------------------------------------------------------------
+    // Menus
+    //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Menus
-//-----------------------------------------------------------------------------
+    MenuRef CreateMenu () {
+      return std::shared_ptr<Menu> ();
+    }
 
-MenuRef CreateMenu() {
-    return std::shared_ptr<Menu>();
-}
+    MenuBarRef GetOrCreateMainMenu (bool *unique) {
+      *unique = false;
+      return std::shared_ptr<MenuBar> ();
+    }
 
-MenuBarRef GetOrCreateMainMenu(bool *unique) {
-    *unique = false;
-    return std::shared_ptr<MenuBar>();
-}
+    // Don't do put much functionality in here; just stub this out to aid future
+    // removal
+    class WindowImplHaiku final : public Window {
+      //    HaikuWindow       haikuWindow;
+  public:
+      WindowImplHaiku (Window::Kind kind) {}
 
-// Don't do put much functionality in here; just stub this out to aid future removal
-class WindowImplHaiku final : public Window {
-//    HaikuWindow       haikuWindow;
-public:
-    WindowImplHaiku(Window::Kind kind) {}
+      virtual double GetPixelDensity () override { return 1.0; }
 
-    virtual double GetPixelDensity() override { return 1.0; }
-
-    // TODO: rip this method out and just make the internals read SS.GW.width/height instead
-    virtual void GetContentSize(double *width, double *height) override {
-        *width = SS.GW.width;
+      // TODO: rip this method out and just make the internals read
+      // SS.GW.width/height instead
+      virtual void GetContentSize (double *width, double *height) override {
+        *width  = SS.GW.width;
         *height = SS.GW.height;
+      }
+
+      virtual int GetDevicePixelRatio () override { return 1; }
+      // Returns (fractional) font scale, to be applied on top of (integral)
+      // device pixel ratio.
+      virtual double GetDeviceFontScale () {
+        return GetPixelDensity () / GetDevicePixelRatio () / 96.0;
+      }
+
+      virtual bool IsVisible () override { return true; }
+      virtual void SetVisible (bool visible) override {}
+      virtual void Focus () override {}
+
+      virtual bool IsFullScreen () override { return false; }
+      virtual void SetFullScreen (bool fullScreen) override {}
+
+      virtual void SetTitle (const std::string &title) override {}
+      virtual bool SetTitleForFilename (const Path &filename) { return false; }
+
+      virtual void SetMenuBar (MenuBarRef menuBar) override {}
+      virtual void SetMinContentSize (double width, double height) override {}
+
+      virtual void FreezePosition (SettingsRef settings, const std::string &key) override {}
+      virtual void ThawPosition (SettingsRef settings, const std::string &key) override {}
+
+      virtual void SetCursor (Cursor cursor) override {}
+      virtual void SetTooltip (const std::string &text, double x, double y, double width,
+                               double height) override {}
+
+      virtual bool IsEditorVisible () override { return true; }
+      virtual void ShowEditor (double x, double y, double fontHeight, double minWidth,
+                               bool isMonospace, const std::string &text) override {
+        dbp ("in ShowEditor!");
+        be_app->WindowAt (MAIN_WINDOW)->PostMessage (new BMessage (M_SHOW_EDITOR));
+      }
+      virtual void HideEditor () override {}
+
+      virtual void   SetScrollbarVisible (bool visible) override {}
+      virtual void   ConfigureScrollbar (double min, double max, double pageSize) override {}
+      virtual double GetScrollbarPosition () override { return 0; }
+      virtual void   SetScrollbarPosition (double pos) override {}
+
+      virtual void Invalidate () override {}
+    };
+
+    //-----------------------------------------------------------------------------
+    // Windows
+    //-----------------------------------------------------------------------------
+
+    WindowRef CreateWindow (Window::Kind kind, WindowRef parentWindow) {
+      //    return std::shared_ptr<Window>();
+
+      auto window = std::make_shared<WindowImplHaiku> (kind);
+      /*  if(parentWindow) {
+              window->haikuWindow.set_transient_for(
+                  std::static_pointer_cast<WindowImplHaiku>(parentWindow)->haikuWindow);
+          } */
+      return window;
     }
 
-    virtual int GetDevicePixelRatio() override { return 1; }
-    // Returns (fractional) font scale, to be applied on top of (integral) device pixel ratio.
-    virtual double GetDeviceFontScale() {
-        return GetPixelDensity() / GetDevicePixelRatio() / 96.0;
+    void Request3DConnexionEventsForWindow (WindowRef window) {}
+
+    //-----------------------------------------------------------------------------
+    // File dialogs
+    //-----------------------------------------------------------------------------
+
+    FileDialogRef CreateOpenFileDialog (WindowRef parentWindow) {
+      return std::shared_ptr<FileDialog> ();
     }
 
-    virtual bool IsVisible() override { return true; }
-    virtual void SetVisible(bool visible) override {}
-    virtual void Focus() override {}
-
-    virtual bool IsFullScreen() override { return false; }
-    virtual void SetFullScreen(bool fullScreen) override {}
-
-    virtual void SetTitle(const std::string &title) override {}
-    virtual bool SetTitleForFilename(const Path &filename) { return false; }
-
-    virtual void SetMenuBar(MenuBarRef menuBar) override {}
-    virtual void SetMinContentSize(double width, double height) override {}
-
-    virtual void FreezePosition(SettingsRef settings, const std::string &key) override {}
-    virtual void ThawPosition(SettingsRef settings, const std::string &key) override {}
-
-    virtual void SetCursor(Cursor cursor) override {}
-    virtual void SetTooltip(const std::string &text, double x, double y,
-                            double width, double height) override {}
-
-    virtual bool IsEditorVisible() override { return true; }
-    virtual void ShowEditor(double x, double y, double fontHeight, double minWidth,
-                            bool isMonospace, const std::string &text) override {
-        dbp("in ShowEditor!");
-        be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(M_SHOW_EDITOR));
+    FileDialogRef CreateSaveFileDialog (WindowRef parentWindow) {
+      return std::shared_ptr<FileDialog> ();
     }
-    virtual void HideEditor() override {}
 
-    virtual void SetScrollbarVisible(bool visible) override {}
-    virtual void ConfigureScrollbar(double min, double max, double pageSize) override {}
-    virtual double GetScrollbarPosition() override { return 0; }
-    virtual void SetScrollbarPosition(double pos) override {}
+    //-----------------------------------------------------------------------------
+    // Application-wide APIs
+    //-----------------------------------------------------------------------------
 
-    virtual void Invalidate() override {}
-};
+    std::vector<Platform::Path> fontFiles;
+    std::vector<Platform::Path> GetFontFiles () {
+      return fontFiles;
+    }
 
-//-----------------------------------------------------------------------------
-// Windows
-//-----------------------------------------------------------------------------
+    void OpenInBrowser (const std::string &url) {}
 
-WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
-//    return std::shared_ptr<Window>();
+    std::vector<std::string> InitGui (int argc, char **argv) {
+      return {};
+    }
 
-    auto window = std::make_shared<WindowImplHaiku>(kind);
-/*  if(parentWindow) {
-        window->haikuWindow.set_transient_for(
-            std::static_pointer_cast<WindowImplHaiku>(parentWindow)->haikuWindow);
-    } */
-    return window;
-}
+    void RunGui () {}
 
-void Request3DConnexionEventsForWindow(WindowRef window) {}
+    void ExitGui () {
+      exit (0);
+    }
 
-//-----------------------------------------------------------------------------
-// File dialogs
-//-----------------------------------------------------------------------------
+    void ClearGui () {}
 
-FileDialogRef CreateOpenFileDialog(WindowRef parentWindow) {
-    return std::shared_ptr<FileDialog>();
-}
+  } // namespace Platform
 
-FileDialogRef CreateSaveFileDialog(WindowRef parentWindow) {
-    return std::shared_ptr<FileDialog>();
-}
-
-//-----------------------------------------------------------------------------
-// Application-wide APIs
-//-----------------------------------------------------------------------------
-
-std::vector<Platform::Path> fontFiles;
-std::vector<Platform::Path> GetFontFiles() {
-    return fontFiles;
-}
-
-void OpenInBrowser(const std::string &url) {}
-
-std::vector<std::string> InitGui(int argc, char **argv) {
-    return {};
-}
-
-void RunGui() {}
-
-void ExitGui() {
-    exit(0);
-}
-
-void ClearGui() {}
-
-}
-
-}
+} // namespace SolveSpace

@@ -1,6 +1,7 @@
 /*
- * Copyright 2023, 2024 Tara Harris <3769985+realtaraharris@users.noreply.github.com>
- * All rights reserved. Distributed under the terms of the GPLv3 and MIT licenses.
+ * Copyright 2023, 2024 Tara Harris
+ * <3769985+realtaraharris@users.noreply.github.com> All rights reserved.
+ * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
 #ifndef MAINWINDOW_H
@@ -15,24 +16,25 @@
 
 class MainWindow : public BWindow {
   public:
-    MainWindow(void);
-    void MessageReceived(BMessage *msg);
-    bool QuitRequested(void);
-    void LoadSettings();
-    void SaveSettings();
+  MainWindow (void);
+  void MessageReceived (BMessage *msg);
+  bool QuitRequested (void);
+  void LoadSettings ();
+  void SaveSettings ();
+
   private:
-    BMenuBar *menuBar;
+  BMenuBar *menuBar;
 
-    BMenuItem *undoMenuItem;
-    BMenuItem *redoMenuItem;
+  BMenuItem *undoMenuItem;
+  BMenuItem *redoMenuItem;
 
-    BWindow *toolWindow;
-    PropertyBrowser *propertyBrowser;
-    ViewParameters *viewParameters;
-    EditorView *editorView;
-    BPath *currentFilePath; // TODO: remove
+  BWindow         *toolWindow;
+  PropertyBrowser *propertyBrowser;
+  ViewParameters  *viewParameters;
+  EditorView      *editorView;
+  BPath           *currentFilePath; // TODO: remove
 
-    BMessage* settings;
+  BMessage *settings;
 };
 
 #endif

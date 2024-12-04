@@ -2,86 +2,82 @@
 #define SYSTEM_H
 
 class System {
-public:
-    enum { MAX_UNKNOWNS = 2048 };
+  public:
+  enum { MAX_UNKNOWNS = 2048 };
 
-    EntityList                      entity;
-    ParamList                       param;
-    IdList<Equation,hEquation>      eq;
+  EntityList                  entity;
+  ParamList                   param;
+  IdList<Equation, hEquation> eq;
 
-    // A list of parameters that are being dragged; these are the ones that
-    // we should put as close as possible to their initial positions.
-    List<hParam>                    dragged;
+  // A list of parameters that are being dragged; these are the ones that
+  // we should put as close as possible to their initial positions.
+  List<hParam> dragged;
 
-    enum {
-        // In general, the tag indicates the subsys that a variable/equation
-        // has been assigned to; these are exceptions for variables:
-        VAR_SUBSTITUTED      = 10000,
-        VAR_DOF_TEST         = 10001,
-        // and for equations:
-        EQ_SUBSTITUTED       = 20000
-    };
+  enum {
+    // In general, the tag indicates the subsys that a variable/equation
+    // has been assigned to; these are exceptions for variables:
+    VAR_SUBSTITUTED = 10000,
+    VAR_DOF_TEST    = 10001,
+    // and for equations:
+    EQ_SUBSTITUTED = 20000
+  };
 
-    // The system Jacobian matrix
+  // The system Jacobian matrix
+  struct {
+    // The corresponding equation for each row
+    std::vector<Equation *> eq;
+
+    // The corresponding parameter for each column
+    std::vector<hParam> param;
+
+    // We're solving AX = B
+    int m, n;
     struct {
-        // The corresponding equation for each row
-        std::vector<Equation *> eq;
+      // This only observes the Expr - does not own them!
+      Eigen::SparseMatrix<Expr *> sym;
+      Eigen::SparseMatrix<double> num;
+    } A;
 
-        // The corresponding parameter for each column
-        std::vector<hParam>     param;
+    Eigen::VectorXd scale;
+    Eigen::VectorXd X;
 
-        // We're solving AX = B
-        int m, n;
-        struct {
-            // This only observes the Expr - does not own them!
-            Eigen::SparseMatrix<Expr *> sym;
-            Eigen::SparseMatrix<double> num;
-        } A;
+    struct {
+      // This only observes the Expr - does not own them!
+      std::vector<Expr *> sym;
+      Eigen::VectorXd     num;
+    } B;
+  } mat;
 
-        Eigen::VectorXd scale;
-        Eigen::VectorXd X;
+  static const double CONVERGE_TOLERANCE;
+  int                 CalculateRank ();
+  bool                TestRank (int *dof = NULL);
+  static bool SolveLinearSystem (const Eigen::SparseMatrix<double> &A, const Eigen::VectorXd &B,
+                                 Eigen::VectorXd *X);
+  bool        SolveLeastSquares ();
 
-        struct {
-            // This only observes the Expr - does not own them!
-            std::vector<Expr *> sym;
-            Eigen::VectorXd     num;
-        } B;
-    } mat;
+  bool WriteJacobian (int tag);
+  void EvalJacobian ();
 
-    static const double CONVERGE_TOLERANCE;
-    int CalculateRank();
-    bool TestRank(int *dof = NULL);
-    static bool SolveLinearSystem(const Eigen::SparseMatrix<double> &A,
-                                  const Eigen::VectorXd &B, Eigen::VectorXd *X);
-    bool SolveLeastSquares();
+  void WriteEquationsExceptFor (hConstraint hc, Group *g);
+  void FindWhichToRemoveToFixJacobian (Group *g, List<hConstraint> *bad, bool forceDofCheck);
+  void SolveBySubstitution ();
 
-    bool WriteJacobian(int tag);
-    void EvalJacobian();
+  bool IsDragged (hParam p);
 
-    void WriteEquationsExceptFor(hConstraint hc, Group *g);
-    void FindWhichToRemoveToFixJacobian(Group *g, List<hConstraint> *bad,
-                                        bool forceDofCheck);
-    void SolveBySubstitution();
+  bool NewtonSolve (int tag);
 
-    bool IsDragged(hParam p);
+  void MarkParamsFree (bool findFree);
 
-    bool NewtonSolve(int tag);
+  SolveResult Solve (Group *g, int *rank = NULL, int *dof = NULL, List<hConstraint> *bad = NULL,
+                     bool andFindBad = false, bool andFindFree = false, bool forceDofCheck = false);
 
-    void MarkParamsFree(bool findFree);
+  SolveResult SolveRank (Group *g, int *rank = NULL, int *dof = NULL, List<hConstraint> *bad = NULL,
+                         bool andFindBad = false, bool andFindFree = false);
 
-    SolveResult Solve(Group *g, int *rank = NULL, int *dof = NULL,
-                      List<hConstraint> *bad = NULL,
-                      bool andFindBad = false, bool andFindFree = false,
-                      bool forceDofCheck = false);
-
-    SolveResult SolveRank(Group *g, int *rank = NULL, int *dof = NULL,
-                          List<hConstraint> *bad = NULL,
-                          bool andFindBad = false, bool andFindFree = false);
-
-    void Clear();
-    Param *GetLastParamSubstitution(Param *p);
-    void SubstituteParamsByLast(Expr *e);
-    void SortSubstitutionByDragged(Param *p);
+  void   Clear ();
+  Param *GetLastParamSubstitution (Param *p);
+  void   SubstituteParamsByLast (Expr *e);
+  void   SortSubstitutionByDragged (Param *p);
 };
 
 #endif // SYSTEM_H

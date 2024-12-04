@@ -1,6 +1,7 @@
 /*
- * Copyright 2023, 2024 Tara Harris <3769985+realtaraharris@users.noreply.github.com>
- * All rights reserved. Distributed under the terms of the GPLv3 and MIT licenses.
+ * Copyright 2023, 2024 Tara Harris
+ * <3769985+realtaraharris@users.noreply.github.com> All rights reserved.
+ * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
 #ifndef EDITORVIEW_H
@@ -28,39 +29,39 @@
 
 class EditorView : public BView {
   public:
-    EditorView();
-    ~EditorView();
-    //  void AttachedToWindow();
-    //  void DetachedFromWindow();
-    void Draw(BRect updateRect);
-    void FrameResized(float width, float height);
-    void SaveToPng();
-    void Load(std::string path);
-	void New();
+  EditorView ();
+  ~EditorView ();
+  //  void AttachedToWindow();
+  //  void DetachedFromWindow();
+  void Draw (BRect updateRect);
+  void FrameResized (float width, float height);
+  void SaveToPng ();
+  void Load (std::string path);
+  void New ();
 
-    void MouseDown(BPoint point);
-    void MouseMoved(BPoint point, uint32 transit, const BMessage *message);
-    void MouseUp(BPoint point);
+  void MouseDown (BPoint point);
+  void MouseMoved (BPoint point, uint32 transit, const BMessage *message);
+  void MouseUp (BPoint point);
 
   private:
-    AggPixmapRenderer pixmapCanvas;
-    Camera camera;
-    Lighting lighting;
-    BPoint currentMousePosition;
+  AggPixmapRenderer pixmapCanvas;
+  Camera            camera;
+  Lighting          lighting;
+  BPoint            currentMousePosition;
 
-    BBitmap *retainedBitmap;
-    agg::rendering_buffer buffer;
+  BBitmap              *retainedBitmap;
+  agg::rendering_buffer buffer;
 
-    // These parameters define the map from 2d screen coordinates to the
-    // coordinates of the 3d sketch points. We will use an axonometric
-    // projection.
-    Vector offset;
-    Vector projRight;
-    Vector projUp;
-    double scale;
+  // These parameters define the map from 2d screen coordinates to the
+  // coordinates of the 3d sketch points. We will use an axonometric
+  // projection.
+  Vector offset;
+  Vector projRight;
+  Vector projUp;
+  double scale;
 
-    void InitBitmapAndBuffer();
-    SolveSpace::Platform::MouseEvent::Button GetMouseButton();
+  void                                     InitBitmapAndBuffer ();
+  SolveSpace::Platform::MouseEvent::Button GetMouseButton ();
 };
 
 #endif // EDITORVIEW_H
