@@ -572,9 +572,7 @@ bool SolveSpaceUI::LoadFromFile (const Platform::Path &filename, bool canCancel)
       NewFile ();
     }
   }
-  if (!ReloadAllLinked (filename, canCancel)) {
-    return false;
-  }
+  ReloadAllLinked (filename, canCancel); // TODO: check for errors without breaking async
   UpgradeLegacyData ();
 
   return true;
@@ -870,122 +868,136 @@ int SolveSpaceUI::LocateImportedFile (const Platform::Path &filename, bool canCa
   return false;
 }
 
+// this is a bigger challenge to asyncify. the best thing is to temporarily disable it
+// maybe this needs a different UI, where it's like a list the user can see
 bool SolveSpaceUI::ReloadAllLinked (const Platform::Path &saveFile, bool canCancel) {
-  Platform::SettingsRef settings = Platform::GetSettings ();
+  /*
+    Platform::SettingsRef settings = Platform::GetSettings ();
 
-  std::map<Platform::Path, Platform::Path, Platform::PathLess> linkMap;
+    std::map<Platform::Path, Platform::Path, Platform::PathLess> linkMap;
 
-  allConsistent = false;
+    allConsistent = false;
 
-  for (Group &g : SK.group) {
-    if (g.type != Group::Type::LINKED)
-      continue;
-
-    g.impEntity.Clear ();
-    g.impMesh.Clear ();
-    g.impShell.Clear ();
-
-    // If we prompted for this specific file before, don't ask again.
-    if (linkMap.count (g.linkFile)) {
-      g.linkFile = linkMap[g.linkFile];
-    }
-
-  try_again:
-    if (LoadEntitiesFromFile (g.linkFile, &g.impEntity, &g.impMesh, &g.impShell)) {
-      // We loaded the data, good. Now import its dependencies as well.
-      for (Entity &e : g.impEntity) {
-        if (e.type != Entity::Type::IMAGE)
-          continue;
-        if (!ReloadLinkedImage (g.linkFile, &e.file, canCancel)) {
-          return false;
-        }
+    for (Group &g : SK.group) {
+      if (g.type != Group::Type::LINKED) {
+        continue;
       }
-      if (g.IsTriangleMeshAssembly ())
-        g.forceToMesh = true;
-    } else if (linkMap.count (g.linkFile) == 0) {
-      dbp ("Missing file for group: %s", g.name.c_str ());
-      // The file was moved; prompt the user for its new location.
-      const auto linkFileRelative = g.linkFile.RelativeTo (saveFile);
-      switch (LocateImportedFile (linkFileRelative, canCancel)) {
-      case 0: { // YES
-        Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog (SS.GW.window);
-        dialog->AddFilters (Platform::SolveSpaceModelFileFilters);
-        dialog->ThawChoices (settings, "LinkSketch");
-        dialog->SuggestFilename (linkFileRelative);
-        if (dialog->RunModal ()) {
-          dialog->FreezeChoices (settings, "LinkSketch");
-          linkMap[g.linkFile] = dialog->GetFilename ();
-          g.linkFile          = dialog->GetFilename ();
-          goto try_again;
-        } else {
-          if (canCancel)
+
+      g.impEntity.Clear ();
+      g.impMesh.Clear ();
+      g.impShell.Clear ();
+
+      // If we prompted for this specific file before, don't ask again.
+      if (linkMap.count (g.linkFile)) {
+        g.linkFile = linkMap[g.linkFile];
+      }
+
+    try_again:
+      if (LoadEntitiesFromFile (g.linkFile, &g.impEntity, &g.impMesh, &g.impShell)) {
+        // We loaded the data, good. Now import its dependencies as well.
+        for (Entity &e : g.impEntity) {
+          if (e.type != Entity::Type::IMAGE) {
+            continue;
+          }
+          if (!ReloadLinkedImage (g.linkFile, &e.file, canCancel)) {
             return false;
-          break;
+          }
         }
+        if (g.IsTriangleMeshAssembly ()) {
+          g.forceToMesh = true;
+        }
+      } else if (linkMap.count (g.linkFile) == 0) {
+        dbp ("Missing file for group: %s", g.name.c_str ());
+        // the file was moved; prompt the user for its new location
+        const auto linkFileRelative = g.linkFile.RelativeTo (saveFile);
+        switch (LocateImportedFile (linkFileRelative, canCancel)) {
+        case 0: { // YES
+          Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog (SS.GW.window);
+          dialog->AddFilters (Platform::SolveSpaceModelFileFilters);
+          dialog->ThawChoices (settings, "LinkSketch");
+          dialog->SuggestFilename (linkFileRelative);
+          if (dialog->RunModal ()) {
+            dialog->FreezeChoices (settings, "LinkSketch");
+            linkMap[g.linkFile] = dialog->GetFilename ();
+            g.linkFile          = dialog->GetFilename ();
+            goto try_again;
+          } else {
+            if (canCancel) {
+              return false;
+            }
+            break;
+          }
+        }
+
+        case 1: // NO:
+          linkMap[g.linkFile].Clear ();
+          // Geometry will be pruned by GenerateAll().
+          break;
+
+        case 2: // CANCEL:
+          return;
+
+        default: ssassert (false, "Unexpected dialog response");
+        }
+      } else {
+        // user was already asked to and refused to locate a missing linked file
+      }
+    }
+
+    for (Request &r : SK.request) {
+      if (r.type != Request::Type::IMAGE) {
+        continue;
       }
 
-      case 1: // NO:
-        linkMap[g.linkFile].Clear ();
-        // Geometry will be pruned by GenerateAll().
-        break;
-
-      case 2: // CANCEL:
-        return false;
-
-      default: ssassert (false, "Unexpected dialog response");
+      if (!ReloadLinkedImage (saveFile, &r.file, canCancel)) {
+        return;
       }
-    } else {
-      // User was already asked to and refused to locate a missing linked file.
     }
-  }
 
-  for (Request &r : SK.request) {
-    if (r.type != Request::Type::IMAGE)
-      continue;
+          */
 
-    if (!ReloadLinkedImage (saveFile, &r.file, canCancel)) {
-      return false;
-    }
-  }
-
-  return true;
+  return;
 }
 
-bool SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::Path *filename,
+// 0: success, 1: failure, 2: promptOpenFile
+uint SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::Path *filename,
                                       bool canCancel) {
-  Platform::SettingsRef settings = Platform::GetSettings ();
-
-  std::shared_ptr<Pixmap> pixmap;
-  bool                    promptOpenFile = false;
   if (filename->IsEmpty ()) {
-    // We're prompting the user for a new image.
-    promptOpenFile = true;
-  } else {
-    auto image = SS.images.find (*filename);
-    if (image != SS.images.end ())
-      return true;
-
-    pixmap = Pixmap::ReadPng (*filename);
-    if (pixmap == NULL) {
-      // The file was moved; prompt the user for its new location.
-      switch (LocateImportedFile (filename->RelativeTo (saveFile), canCancel)) {
-      case 0: // YES
-        promptOpenFile = true;
-        break;
-
-      case 1: // NO
-        // We don't know where the file is, record it as absent.
-        break;
-
-      case 2: // CANCEL
-        return false;
-
-      default: ssassert (false, "Unexpected dialog response");
-      }
-    }
+    // this is a new image and the user needs to be prompted
+    return 2;
   }
 
-  if (promptOpenFile) {
+  auto image = SS.images.find (*filename);
+  if (image != SS.images.end ()) {
+    // we already have the image
+    return 0;
+  }
+
+  std::shared_ptr<Pixmap> pixmap = Pixmap::ReadPng (*filename);
+  if (pixmap != NULL) {
+    // the filename is correct, and now we actually load it into the images array on this pass
+    SS.images[*filename] = pixmap;
+    return 0;
+  }
+
+  // the file was moved; prompt the user for its new location
+  switch (LocateImportedFile (filename->RelativeTo (saveFile), canCancel)) {
+  case 0: // YES
+    return 2;
+
+  case 1: // NO
+          // we don't know where the file is, record it as absent
+    SS.images[*filename] = NULL;
+    return 0;
+
+  case 2: // CANCEL
+    return 1;
+
+  default: ssassert (false, "Unexpected dialog response");
+  }
+}
+
+/*
     Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog (SS.GW.window);
     dialog->AddFilters (Platform::RasterFileFilters);
     dialog->ThawChoices (settings, "LinkImage");
@@ -996,14 +1008,11 @@ bool SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::
       pixmap    = Pixmap::ReadPng (*filename);
       if (pixmap == NULL) {
         Error ("The image '%s' is corrupted.", filename->raw.c_str ());
+      } else {
+        // we know where the file is now, good
+        SS.images[*filename] = pixmap;
       }
-      // We know where the file is now, good.
     } else if (canCancel) {
       return false;
     }
-  }
-
-  // We loaded the data, good.
-  SS.images[*filename] = pixmap;
-  return true;
-}
+*/

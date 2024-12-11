@@ -21,6 +21,16 @@ class App : public BApplication {
 enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2, VIEW_PARAMETERS = 3 };
 
 enum {
+  LINKED_FILE_IMAGE = 'limf',
+  IMPORT_FILE       = 'imfi',
+  GROUP_LINK_FILE   = 'glfi',
+  EXPORT_VIEW       = 'exvi',
+  EXPORT_WIREFRAME  = 'exwi',
+  EXPORT_SECTION    = 'exse',
+  EXPORT_MESH       = 'exme',
+  EXPORT_SURFACES   = 'exsu',
+  STOP_TRACING      = 'sttr',
+
   LINE_TOOL_BTN_CLICKED           = 'ltbc',
   LINE_TOOL_BTN_UNCLICKED         = 'ltuc',
   RECT_TOOL_BTN_CLICKED           = 'rtbc',

@@ -36,7 +36,7 @@ class SolveSpaceUI {
   UndoStack redo;
 
   std::map<Platform::Path, std::shared_ptr<Pixmap>, Platform::PathLess> images;
-  bool ReloadLinkedImage (const Platform::Path &saveFile, Platform::Path *filename, bool canCancel);
+  uint ReloadLinkedImage (const Platform::Path &saveFile, Platform::Path *filename, bool canCancel);
 
   virtual void UndoEnableMenus ();
   void         UndoRemember ();

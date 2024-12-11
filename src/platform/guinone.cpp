@@ -94,18 +94,6 @@ namespace SolveSpace {
     void Request3DConnexionEventsForWindow (WindowRef window) {}
 
     //-----------------------------------------------------------------------------
-    // File dialogs
-    //-----------------------------------------------------------------------------
-
-    FileDialogRef CreateOpenFileDialog (WindowRef parentWindow) {
-      return std::shared_ptr<FileDialog> ();
-    }
-
-    FileDialogRef CreateSaveFileDialog (WindowRef parentWindow) {
-      return std::shared_ptr<FileDialog> ();
-    }
-
-    //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
 

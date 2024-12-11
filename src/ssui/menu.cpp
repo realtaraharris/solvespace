@@ -1,13 +1,6 @@
 #include "solvespace.h"
 #include "../platform/EventHooks.h"
-#include "filewriter/stepfilewriter.h"
-#include "filewriter/vectorfilewriter.h"
 #include "config.h"
-
-namespace SolveSpace {
-  void ImportDxf (const Platform::Path &file);
-  void ImportDwg (const Platform::Path &file);
-} // namespace SolveSpace
 
 void SolveSpaceUI::MenuFile (Command id) {
   Platform::SettingsRef settings = Platform::GetSettings ();
@@ -46,103 +39,32 @@ void SolveSpaceUI::MenuFile (Command id) {
   }
 
   case Command::EXPORT_VIEW: {
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::VectorFileFilters);
-    dialog->ThawChoices (settings, "ExportView");
-    dialog->SuggestFilename (SS.saveFile);
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "ExportView");
-
-    // If the user is exporting something where it would be
-    // inappropriate to include the constraints, then warn.
-    if (SS.GW.showConstraints &&
-        (dialog->GetFilename ().HasExtension ("txt") || fabs (SS.exportOffset) > LENGTH_EPS)) {
-      Message (_ ("Constraints are currently shown, and will be exported "
-                  "in the toolpath. This is probably not what you want; "
-                  "hide them by clicking the link at the top of the "
-                  "text window."));
-    }
-
-    SS.ExportViewOrWireframeTo (dialog->GetFilename (), /*exportWireframe=*/false);
+    SS.PromptForExportViewFile ();
     break;
   }
 
   case Command::EXPORT_WIREFRAME: {
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::Vector3dFileFilters);
-    dialog->ThawChoices (settings, "ExportWireframe");
-    dialog->SuggestFilename (SS.saveFile);
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "ExportWireframe");
-
-    SS.ExportViewOrWireframeTo (dialog->GetFilename (), /*exportWireframe*/ true);
+    SS.PromptForExportWireframeFile ();
     break;
   }
 
   case Command::EXPORT_SECTION: {
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::VectorFileFilters);
-    dialog->ThawChoices (settings, "ExportSection");
-    dialog->SuggestFilename (SS.saveFile);
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "ExportSection");
-
-    SS.ExportSectionTo (dialog->GetFilename ());
+    SS.PromptForExportSectionFile ();
     break;
   }
 
   case Command::EXPORT_MESH: {
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::MeshFileFilters);
-    dialog->ThawChoices (settings, "ExportMesh");
-    dialog->SuggestFilename (SS.saveFile);
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "ExportMesh");
-
-    SS.ExportMeshTo (dialog->GetFilename ());
+    SS.PromptForExportMeshFile ();
     break;
   }
 
   case Command::EXPORT_SURFACES: {
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::SurfaceFileFilters);
-    dialog->ThawChoices (settings, "ExportSurfaces");
-    dialog->SuggestFilename (SS.saveFile);
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "ExportSurfaces");
-
-    StepFileWriter sfw = {};
-    sfw.ExportSurfacesTo (dialog->GetFilename ());
+    SS.PromptForExportSurfacesFile ();
     break;
   }
 
   case Command::IMPORT: {
-    Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::ImportFileFilters);
-    dialog->ThawChoices (settings, "Import");
-    if (!dialog->RunModal ())
-      break;
-    dialog->FreezeChoices (settings, "Import");
-
-    Platform::Path importFile = dialog->GetFilename ();
-    if (importFile.HasExtension ("dxf")) {
-      ImportDxf (importFile);
-    } else if (importFile.HasExtension ("dwg")) {
-      ImportDwg (importFile);
-    } else {
-      Error (_ ("Can't identify file type from file extension of "
-                "filename '%s'; try .dxf or .dwg."),
-             importFile.raw.c_str ());
-      break;
-    }
-
-    SS.GenerateAll (SolveSpaceUI::Generate::UNTIL_ACTIVE);
-    SS.ScheduleShowTW ();
+    SS.PromptForImportFile ();
     break;
   }
 
@@ -325,34 +247,7 @@ void SolveSpaceUI::MenuAnalyze (Command id) {
     break;
 
   case Command::STOP_TRACING: {
-    if (SS.traced.point == Entity::NO_ENTITY) {
-      break;
-    }
-    Platform::FileDialogRef dialog = Platform::CreateSaveFileDialog (SS.GW.window);
-    dialog->AddFilters (Platform::CsvFileFilters);
-    dialog->ThawChoices (settings, "Trace");
-    dialog->SetFilename (SS.saveFile);
-    if (dialog->RunModal ()) {
-      dialog->FreezeChoices (settings, "Trace");
-
-      FILE *f = OpenFile (dialog->GetFilename (), "wb");
-      if (f) {
-        int       i;
-        SContour *sc = &(SS.traced.path);
-        for (i = 0; i < sc->l.n; i++) {
-          Vector p = sc->l[i].p;
-          double s = SS.exportScale;
-          fprintf (f, "%.10f, %.10f, %.10f\r\n", p.x / s, p.y / s, p.z / s);
-        }
-        fclose (f);
-      } else {
-        Error (_ ("Couldn't write to '%s'"), dialog->GetFilename ().raw.c_str ());
-      }
-    }
-    // Clear the trace, and stop tracing
-    SS.traced.point = Entity::NO_ENTITY;
-    SS.traced.path.l.Clear ();
-    SS.GW.Invalidate ();
+    SS.PromptForStopTracingFile ();
     break;
   }
 
@@ -843,10 +738,16 @@ void SolveSpaceUI::MenuRequest (Command id) {
   case Command::RECTANGLE: s = _ ("click one corner of rectangle"); goto c;
   case Command::TTF_TEXT: s = _ ("click top left of text"); goto c;
   case Command::IMAGE:
-    if (!SS.ReloadLinkedImage (SS.saveFile, &SS.GW.pending.filename,
-                               /*canCancel=*/true)) {
+    // this call to SS.ReloadLinkedImage needs to be made async somehow
+    // maybe the way to do this is to *first* add a "Command::IMAGE_REQUEST"
+    // which kicks off the filename search with "SS.PromptForLinkedFile()"
+    // the _handler_ for that then triggers Command::IMAGE
+    //
+    // if we do it this way, we don't need the next three lines:
+    if (!SS.ReloadLinkedImage (SS.saveFile, &SS.GW.pending.filename, /*canCancel=*/true)) {
       return;
     }
+
     s = _ ("click top left of image");
     goto c;
   c:
@@ -1789,27 +1690,7 @@ void SolveSpaceUI::MenuGroup (Command id, Platform::Path linkFile) {
     break;
 
   case Command::GROUP_LINK: {
-    g.type        = Group::Type::LINKED;
-    g.meshCombine = Group::CombineAs::ASSEMBLE;
-    if (g.linkFile.IsEmpty ()) {
-      Platform::FileDialogRef dialog = Platform::CreateOpenFileDialog (SS.GW.window);
-      dialog->AddFilters (Platform::SolveSpaceLinkFileFilters);
-      dialog->ThawChoices (settings, "LinkSketch");
-      if (!dialog->RunModal ())
-        return;
-      dialog->FreezeChoices (settings, "LinkSketch");
-      g.linkFile = dialog->GetFilename ();
-    }
-
-    // Assign the default name of the group based on the name of
-    // the linked file.
-    g.name = g.linkFile.FileStem ();
-    for (size_t i = 0; i < g.name.length (); i++) {
-      if (!(isalnum (g.name[i]) || (unsigned)g.name[i] >= 0x80)) {
-        // convert punctuation to dashes
-        g.name[i] = '-';
-      }
-    }
+    SS.PromptForGroupLink (g);
     break;
   }
 

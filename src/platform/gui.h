@@ -279,58 +279,6 @@ namespace SolveSpace {
     void Close3DConnexion ();
     void Request3DConnexionEventsForWindow (WindowRef window);
 
-    // A file filter.
-    struct FileFilter {
-      std::string              name;
-      std::vector<std::string> extensions;
-    };
-
-    // SolveSpace's native file format
-    extern std::vector<FileFilter> SolveSpaceModelFileFilters;
-    // SolveSpace's linkable file formats
-    extern std::vector<FileFilter> SolveSpaceLinkFileFilters;
-    // Raster image
-    extern std::vector<FileFilter> RasterFileFilters;
-    // Triangle mesh
-    extern std::vector<FileFilter> MeshFileFilters;
-    // NURBS surfaces
-    extern std::vector<FileFilter> SurfaceFileFilters;
-    // 2d vector (lines and curves) format
-    extern std::vector<FileFilter> VectorFileFilters;
-    // 3d vector (wireframe lines and curves) format
-    extern std::vector<FileFilter> Vector3dFileFilters;
-    // Any importable format
-    extern std::vector<FileFilter> ImportFileFilters;
-    // Comma-separated value, like a spreadsheet would use
-    extern std::vector<FileFilter> CsvFileFilters;
-
-    // A native dialog that asks to choose a file.
-    class FileDialog {
-  public:
-      virtual ~FileDialog () = default;
-
-      virtual void SetTitle (std::string title)      = 0;
-      virtual void SetCurrentName (std::string name) = 0;
-
-      virtual Platform::Path GetFilename ()                        = 0;
-      virtual void           SetFilename (Platform::Path path)     = 0;
-      virtual void           SuggestFilename (Platform::Path path) = 0;
-
-      virtual void AddFilter (std::string name, std::vector<std::string> extensions) = 0;
-      void         AddFilter (const FileFilter &filter);
-      void         AddFilters (const std::vector<FileFilter> &filters);
-
-      virtual void FreezeChoices (SettingsRef settings, const std::string &key) = 0;
-      virtual void ThawChoices (SettingsRef settings, const std::string &key)   = 0;
-
-      virtual bool RunModal () = 0;
-    };
-
-    typedef std::shared_ptr<FileDialog> FileDialogRef;
-
-    FileDialogRef CreateOpenFileDialog (WindowRef parentWindow);
-    FileDialogRef CreateSaveFileDialog (WindowRef parentWindow);
-
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
