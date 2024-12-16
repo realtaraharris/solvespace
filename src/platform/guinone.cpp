@@ -11,8 +11,8 @@ namespace SolveSpace {
   // Rendering
   //-----------------------------------------------------------------------------
 
-  std::shared_ptr<ViewportCanvas> CreateRenderer () {
-    return std::make_shared<AggPixmapRenderer> ();
+  std::shared_ptr<ViewportCanvas> CreateRenderer() {
+    return std::make_shared<AggPixmapRenderer>();
   }
 
   namespace Platform {
@@ -21,9 +21,9 @@ namespace SolveSpace {
     // Fatal errors
     //-----------------------------------------------------------------------------
 
-    void FatalError (const std::string &message) {
-      fprintf (stderr, "%s", message.c_str ());
-      abort ();
+    void FatalError(const std::string &message) {
+      fprintf(stderr, "%s", message.c_str());
+      abort();
     }
 
     //-----------------------------------------------------------------------------
@@ -32,28 +32,28 @@ namespace SolveSpace {
 
     class SettingsImplDummy final : public Settings {
   public:
-      void FreezeInt (const std::string &key, uint32_t value) override {}
+      void FreezeInt(const std::string &key, uint32_t value) override {}
 
-      uint32_t ThawInt (const std::string &key, uint32_t defaultValue = 0) override {
+      uint32_t ThawInt(const std::string &key, uint32_t defaultValue = 0) override {
         return defaultValue;
       }
 
-      void FreezeFloat (const std::string &key, double value) override {}
+      void FreezeFloat(const std::string &key, double value) override {}
 
-      double ThawFloat (const std::string &key, double defaultValue = 0.0) override {
+      double ThawFloat(const std::string &key, double defaultValue = 0.0) override {
         return defaultValue;
       }
 
-      void FreezeString (const std::string &key, const std::string &value) override {}
+      void FreezeString(const std::string &key, const std::string &value) override {}
 
-      std::string ThawString (const std::string &key,
-                              const std::string &defaultValue = "") override {
+      std::string ThawString(const std::string &key,
+                             const std::string &defaultValue = "") override {
         return defaultValue;
       }
     };
 
-    SettingsRef GetSettings () {
-      static std::shared_ptr<SettingsImplDummy> settings = std::make_shared<SettingsImplDummy> ();
+    SettingsRef GetSettings() {
+      static std::shared_ptr<SettingsImplDummy> settings = std::make_shared<SettingsImplDummy>();
       return settings;
     }
 
@@ -63,58 +63,58 @@ namespace SolveSpace {
 
     class TimerImplDummy final : public Timer {
   public:
-      void RunAfter (unsigned milliseconds) override {}
+      void RunAfter(unsigned milliseconds) override {}
     };
 
-    TimerRef CreateTimer () {
-      return std::make_shared<TimerImplDummy> ();
+    TimerRef CreateTimer() {
+      return std::make_shared<TimerImplDummy>();
     }
 
     //-----------------------------------------------------------------------------
     // Menus
     //-----------------------------------------------------------------------------
 
-    MenuRef CreateMenu () {
-      return std::shared_ptr<Menu> ();
+    MenuRef CreateMenu() {
+      return std::shared_ptr<Menu>();
     }
 
-    MenuBarRef GetOrCreateMainMenu (bool *unique) {
+    MenuBarRef GetOrCreateMainMenu(bool *unique) {
       *unique = false;
-      return std::shared_ptr<MenuBar> ();
+      return std::shared_ptr<MenuBar>();
     }
 
     //-----------------------------------------------------------------------------
     // Windows
     //-----------------------------------------------------------------------------
 
-    WindowRef CreateWindow (Window::Kind kind, WindowRef parentWindow) {
-      return std::shared_ptr<Window> ();
+    WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
+      return std::shared_ptr<Window>();
     }
 
-    void Request3DConnexionEventsForWindow (WindowRef window) {}
+    void Request3DConnexionEventsForWindow(WindowRef window) {}
 
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
 
     std::vector<Platform::Path> fontFiles;
-    std::vector<Platform::Path> GetFontFiles () {
+    std::vector<Platform::Path> GetFontFiles() {
       return fontFiles;
     }
 
-    void OpenInBrowser (const std::string &url) {}
+    void OpenInBrowser(const std::string &url) {}
 
-    std::vector<std::string> InitGui (int argc, char **argv) {
+    std::vector<std::string> InitGui(int argc, char **argv) {
       return {};
     }
 
-    void RunGui () {}
+    void RunGui() {}
 
-    void ExitGui () {
-      exit (0);
+    void ExitGui() {
+      exit(0);
     }
 
-    void ClearGui () {}
+    void ClearGui() {}
 
   } // namespace Platform
 

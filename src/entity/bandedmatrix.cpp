@@ -9,7 +9,7 @@
 #include "bandedmatrix.h"
 #include <algorithm> // std::min
 
-void BandedMatrix::Solve () {
+void BandedMatrix::Solve() {
   int    i, ip, j, jp;
   double temp;
 
@@ -37,7 +37,7 @@ void BandedMatrix::Solve () {
     if (i < n - 2)
       temp -= X[n - 2] * A[i][n - 2];
 
-    for (j = std::min (n - 3, i + RIGHT_OF_DIAG); j > i; j--) {
+    for (j = std::min(n - 3, i + RIGHT_OF_DIAG); j > i; j--) {
       temp -= X[j] * A[i][j];
     }
     X[i] = temp / A[i][i];

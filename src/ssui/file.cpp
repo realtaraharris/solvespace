@@ -6,15 +6,15 @@
 #include "solvespace.h"
 
 namespace SolveSpace {
-  bool LinkIDF (const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
-  bool LinkStl (const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
+  bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
+  bool LinkStl(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);
 } // namespace SolveSpace
 #define VERSION_STRING \
   "\261\262\263" \
   "SolveSpaceREVa"
 
-static int StrStartsWith (const char *str, const char *start) {
-  return memcmp (str, start, strlen (start)) == 0;
+static int StrStartsWith(const char *str, const char *start) {
+  return memcmp(str, start, strlen(start)) == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -22,54 +22,54 @@ static int StrStartsWith (const char *str, const char *start) {
 // sketch. This does not leave the program in an acceptable state (with the
 // references created, and so on), so anyone calling this must fix that later.
 //-----------------------------------------------------------------------------
-void SolveSpaceUI::ClearExisting () {
-  UndoClearStack (&redo);
-  UndoClearStack (&undo);
+void SolveSpaceUI::ClearExisting() {
+  UndoClearStack(&redo);
+  UndoClearStack(&undo);
 
   for (hGroup hg : SK.groupOrder) {
-    Group *g = SK.GetGroup (hg);
-    g->Clear ();
+    Group *g = SK.GetGroup(hg);
+    g->Clear();
   }
 
-  SK.constraint.Clear ();
-  SK.request.Clear ();
-  SK.group.Clear ();
-  SK.groupOrder.Clear ();
-  SK.style.Clear ();
+  SK.constraint.Clear();
+  SK.request.Clear();
+  SK.group.Clear();
+  SK.groupOrder.Clear();
+  SK.style.Clear();
 
-  SK.entity.Clear ();
-  SK.param.Clear ();
-  images.clear ();
+  SK.entity.Clear();
+  SK.param.Clear();
+  images.clear();
 }
 
-hGroup SolveSpaceUI::CreateDefaultDrawingGroup () {
+hGroup SolveSpaceUI::CreateDefaultDrawingGroup() {
   Group g = {};
 
   // And an empty group, for the first stuff the user draws.
   g.visible       = true;
-  g.name          = C_ ("group-name", "sketch-in-plane");
+  g.name          = C_("group-name", "sketch-in-plane");
   g.type          = Group::Type::DRAWING_WORKPLANE;
   g.subtype       = Group::Subtype::WORKPLANE_BY_POINT_ORTHO;
   g.order         = 1;
-  g.predef.q      = Quaternion::From (1, 0, 0, 0);
+  g.predef.q      = Quaternion::From(1, 0, 0, 0);
   hRequest hr     = Request::HREQUEST_REFERENCE_XY;
-  g.predef.origin = hr.entity (1);
-  SK.group.AddAndAssignId (&g);
-  SK.GetGroup (g.h)->activeWorkplane = g.h.entity (0);
+  g.predef.origin = hr.entity(1);
+  SK.group.AddAndAssignId(&g);
+  SK.GetGroup(g.h)->activeWorkplane = g.h.entity(0);
   return g.h;
 }
 
-void SolveSpaceUI::NewFile () {
-  ClearExisting ();
+void SolveSpaceUI::NewFile() {
+  ClearExisting();
 
   // Our initial group, that contains the references.
   Group g   = {};
   g.visible = true;
-  g.name    = C_ ("group-name", "#references");
+  g.name    = C_("group-name", "#references");
   g.type    = Group::Type::DRAWING_3D;
   g.order   = 0;
   g.h       = Group::HGROUP_REFERENCES;
-  SK.group.Add (&g);
+  SK.group.Add(&g);
 
   // Let's create three two-d coordinate systems, for the coordinate
   // planes; these are our references, present in every sketch.
@@ -79,15 +79,15 @@ void SolveSpaceUI::NewFile () {
   r.workplane = Entity::FREE_IN_3D;
 
   r.h = Request::HREQUEST_REFERENCE_XY;
-  SK.request.Add (&r);
+  SK.request.Add(&r);
 
   r.h = Request::HREQUEST_REFERENCE_YZ;
-  SK.request.Add (&r);
+  SK.request.Add(&r);
 
   r.h = Request::HREQUEST_REFERENCE_ZX;
-  SK.request.Add (&r);
+  SK.request.Add(&r);
 
-  CreateDefaultDrawingGroup ();
+  CreateDefaultDrawingGroup();
 }
 
 const SolveSpaceUI::SaveTable SolveSpaceUI::SAVED[] = {
@@ -219,17 +219,17 @@ const SolveSpaceUI::SaveTable SolveSpaceUI::SAVED[] = {
     {0, NULL, 0, NULL}};
 
 struct SAVEDptr {
-  EntityMap      &M () { return *((EntityMap *)this); }
-  std::string    &S () { return *((std::string *)this); }
-  Platform::Path &P () { return *((Platform::Path *)this); }
-  bool           &b () { return *((bool *)this); }
-  RgbaColor      &c () { return *((RgbaColor *)this); }
-  int            &d () { return *((int *)this); }
-  double         &f () { return *((double *)this); }
-  uint32_t       &x () { return *((uint32_t *)this); }
+  EntityMap      &M() { return *((EntityMap *)this); }
+  std::string    &S() { return *((std::string *)this); }
+  Platform::Path &P() { return *((Platform::Path *)this); }
+  bool           &b() { return *((bool *)this); }
+  RgbaColor      &c() { return *((RgbaColor *)this); }
+  int            &d() { return *((int *)this); }
+  double         &f() { return *((double *)this); }
+  uint32_t       &x() { return *((uint32_t *)this); }
 };
 
-void SolveSpaceUI::SaveUsingTable (const Platform::Path &filename, int type) {
+void SolveSpaceUI::SaveUsingTable(const Platform::Path &filename, int type) {
   int i;
   for (i = 0; SAVED[i].type != 0; i++) {
     if (SAVED[i].type != type)
@@ -238,218 +238,218 @@ void SolveSpaceUI::SaveUsingTable (const Platform::Path &filename, int type) {
     int       fmt = SAVED[i].fmt;
     SAVEDptr *p   = (SAVEDptr *)SAVED[i].ptr;
     // Any items that aren't specified are assumed to be zero
-    if (fmt == 'S' && p->S ().empty ())
+    if (fmt == 'S' && p->S().empty())
       continue;
-    if (fmt == 'P' && p->P ().IsEmpty ())
+    if (fmt == 'P' && p->P().IsEmpty())
       continue;
-    if (fmt == 'd' && p->d () == 0)
+    if (fmt == 'd' && p->d() == 0)
       continue;
-    if (fmt == 'f' && EXACT (p->f () == 0.0))
+    if (fmt == 'f' && EXACT(p->f() == 0.0))
       continue;
-    if (fmt == 'x' && p->x () == 0)
+    if (fmt == 'x' && p->x() == 0)
       continue;
     if (fmt == 'i')
       continue;
 
-    fprintf (fh, "%s=", SAVED[i].desc);
+    fprintf(fh, "%s=", SAVED[i].desc);
     switch (fmt) {
-    case 'S': fprintf (fh, "%s", p->S ().c_str ()); break;
-    case 'b': fprintf (fh, "%d", p->b () ? 1 : 0); break;
-    case 'c': fprintf (fh, "%08x", p->c ().ToPackedInt ()); break;
-    case 'd': fprintf (fh, "%d", p->d ()); break;
-    case 'f': fprintf (fh, "%.20f", p->f ()); break;
-    case 'x': fprintf (fh, "%08x", p->x ()); break;
+    case 'S': fprintf(fh, "%s", p->S().c_str()); break;
+    case 'b': fprintf(fh, "%d", p->b() ? 1 : 0); break;
+    case 'c': fprintf(fh, "%08x", p->c().ToPackedInt()); break;
+    case 'd': fprintf(fh, "%d", p->d()); break;
+    case 'f': fprintf(fh, "%.20f", p->f()); break;
+    case 'x': fprintf(fh, "%08x", p->x()); break;
 
     case 'P': {
-      if (!p->P ().IsEmpty ()) {
-        Platform::Path relativePath = p->P ().RelativeTo (filename.Parent ());
-        ssassert (!relativePath.IsEmpty (), "Cannot relativize path");
-        fprintf (fh, "%s", relativePath.ToPortable ().c_str ());
+      if (!p->P().IsEmpty()) {
+        Platform::Path relativePath = p->P().RelativeTo(filename.Parent());
+        ssassert(!relativePath.IsEmpty(), "Cannot relativize path");
+        fprintf(fh, "%s", relativePath.ToPortable().c_str());
       }
       break;
     }
 
     case 'M': {
-      fprintf (fh, "{\n");
+      fprintf(fh, "{\n");
       // Sort the mapping, since EntityMap is not deterministic.
-      std::vector<std::pair<EntityKey, EntityId>> sorted (p->M ().begin (), p->M ().end ());
-      std::sort (sorted.begin (), sorted.end (),
-                 [] (std::pair<EntityKey, EntityId> &a, std::pair<EntityKey, EntityId> &b) {
-                   return a.second.v < b.second.v;
-                 });
+      std::vector<std::pair<EntityKey, EntityId>> sorted(p->M().begin(), p->M().end());
+      std::sort(sorted.begin(), sorted.end(),
+                [](std::pair<EntityKey, EntityId> &a, std::pair<EntityKey, EntityId> &b) {
+                  return a.second.v < b.second.v;
+                });
       for (auto it : sorted) {
-        fprintf (fh, "    %d %08x %d\n", it.second.v, it.first.input.v, it.first.copyNumber);
+        fprintf(fh, "    %d %08x %d\n", it.second.v, it.first.input.v, it.first.copyNumber);
       }
-      fprintf (fh, "}");
+      fprintf(fh, "}");
       break;
     }
 
     case 'i': break;
 
-    default: ssassert (false, "Unexpected value format");
+    default: ssassert(false, "Unexpected value format");
     }
-    fprintf (fh, "\n");
+    fprintf(fh, "\n");
   }
 }
 
-bool SolveSpaceUI::SaveToFile (const Platform::Path &filename) {
+bool SolveSpaceUI::SaveToFile(const Platform::Path &filename) {
   // Make sure all the entities are regenerated up to date, since they will be exported.
-  SS.ScheduleShowTW ();
-  SS.GenerateAll (SolveSpaceUI::Generate::ALL);
+  SS.ScheduleShowTW();
+  SS.GenerateAll(SolveSpaceUI::Generate::ALL);
 
   for (Group &g : SK.group) {
     if (g.type != Group::Type::LINKED)
       continue;
 
-    if (g.linkFile.RelativeTo (filename).IsEmpty ()) {
-      Error ("This sketch links the sketch '%s'; it can only be saved "
-             "on the same volume.",
-             g.linkFile.raw.c_str ());
+    if (g.linkFile.RelativeTo(filename).IsEmpty()) {
+      Error("This sketch links the sketch '%s'; it can only be saved "
+            "on the same volume.",
+            g.linkFile.raw.c_str());
       return false;
     }
   }
 
-  fh = OpenFile (filename, "wb");
+  fh = OpenFile(filename, "wb");
   if (!fh) {
-    Error ("Couldn't write to file '%s'", filename.raw.c_str ());
+    Error("Couldn't write to file '%s'", filename.raw.c_str());
     return false;
   }
 
-  fprintf (fh, "%s\n\n\n", VERSION_STRING);
+  fprintf(fh, "%s\n\n\n", VERSION_STRING);
 
   int i, j;
   for (auto &g : SK.group) {
     sv.g = g;
-    SaveUsingTable (filename, 'g');
-    fprintf (fh, "AddGroup\n\n");
+    SaveUsingTable(filename, 'g');
+    fprintf(fh, "AddGroup\n\n");
   }
 
   for (auto &p : SK.param) {
     sv.p = p;
-    SaveUsingTable (filename, 'p');
-    fprintf (fh, "AddParam\n\n");
+    SaveUsingTable(filename, 'p');
+    fprintf(fh, "AddParam\n\n");
   }
 
   for (auto &r : SK.request) {
     sv.r = r;
-    SaveUsingTable (filename, 'r');
-    fprintf (fh, "AddRequest\n\n");
+    SaveUsingTable(filename, 'r');
+    fprintf(fh, "AddRequest\n\n");
   }
 
   for (auto &e : SK.entity) {
-    e.CalculateNumerical (/*forExport=*/true);
+    e.CalculateNumerical(/*forExport=*/true);
     sv.e = e;
-    SaveUsingTable (filename, 'e');
-    fprintf (fh, "AddEntity\n\n");
+    SaveUsingTable(filename, 'e');
+    fprintf(fh, "AddEntity\n\n");
   }
 
   for (auto &c : SK.constraint) {
     sv.c = c;
-    SaveUsingTable (filename, 'c');
-    fprintf (fh, "AddConstraint\n\n");
+    SaveUsingTable(filename, 'c');
+    fprintf(fh, "AddConstraint\n\n");
   }
 
   for (auto &s : SK.style) {
     sv.s = s;
     if (sv.s.h.v >= Style::FIRST_CUSTOM) {
-      SaveUsingTable (filename, 's');
-      fprintf (fh, "AddStyle\n\n");
+      SaveUsingTable(filename, 's');
+      fprintf(fh, "AddStyle\n\n");
     }
   }
 
   // A group will have either a mesh or a shell, but not both; but the code
   // to print either of those just does nothing if the mesh/shell is empty.
 
-  Group *g = SK.GetGroup (*SK.groupOrder.Last ());
+  Group *g = SK.GetGroup(*SK.groupOrder.Last());
   SMesh *m = &g->runningMesh;
   for (i = 0; i < m->l.n; i++) {
     STriangle *tr = &(m->l[i]);
-    fprintf (fh,
-             "Triangle %08x %08x "
-             "%.20f %.20f %.20f  %.20f %.20f %.20f  %.20f %.20f %.20f\n",
-             tr->meta.face, tr->meta.color.ToPackedInt (), CO (tr->a), CO (tr->b), CO (tr->c));
+    fprintf(fh,
+            "Triangle %08x %08x "
+            "%.20f %.20f %.20f  %.20f %.20f %.20f  %.20f %.20f %.20f\n",
+            tr->meta.face, tr->meta.color.ToPackedInt(), CO(tr->a), CO(tr->b), CO(tr->c));
   }
 
   SShell *s = &g->runningShell;
   for (SSurface &srf : s->surface) {
-    fprintf (fh, "Surface %08x %08x %08x %d %d\n", srf.h.v, srf.color.ToPackedInt (), srf.face,
-             srf.degm, srf.degn);
+    fprintf(fh, "Surface %08x %08x %08x %d %d\n", srf.h.v, srf.color.ToPackedInt(), srf.face,
+            srf.degm, srf.degn);
     for (i = 0; i <= srf.degm; i++) {
       for (j = 0; j <= srf.degn; j++) {
-        fprintf (fh, "SCtrl %d %d %.20f %.20f %.20f Weight %20.20f\n", i, j, CO (srf.ctrl[i][j]),
-                 srf.weight[i][j]);
+        fprintf(fh, "SCtrl %d %d %.20f %.20f %.20f Weight %20.20f\n", i, j, CO(srf.ctrl[i][j]),
+                srf.weight[i][j]);
       }
     }
 
     STrimBy *stb;
-    for (stb = srf.trim.First (); stb; stb = srf.trim.NextAfter (stb)) {
-      fprintf (fh, "TrimBy %08x %d %.20f %.20f %.20f  %.20f %.20f %.20f\n", stb->curve.v,
-               stb->backwards ? 1 : 0, CO (stb->start), CO (stb->finish));
+    for (stb = srf.trim.First(); stb; stb = srf.trim.NextAfter(stb)) {
+      fprintf(fh, "TrimBy %08x %d %.20f %.20f %.20f  %.20f %.20f %.20f\n", stb->curve.v,
+              stb->backwards ? 1 : 0, CO(stb->start), CO(stb->finish));
     }
 
-    fprintf (fh, "AddSurface\n");
+    fprintf(fh, "AddSurface\n");
   }
   for (SCurve &sc : s->curve) {
-    fprintf (fh, "Curve %08x %d %d %08x %08x\n", sc.h.v, sc.isExact ? 1 : 0, sc.exact.deg,
-             sc.surfA.v, sc.surfB.v);
+    fprintf(fh, "Curve %08x %d %d %08x %08x\n", sc.h.v, sc.isExact ? 1 : 0, sc.exact.deg,
+            sc.surfA.v, sc.surfB.v);
 
     if (sc.isExact) {
       for (i = 0; i <= sc.exact.deg; i++) {
-        fprintf (fh, "CCtrl %d %.20f %.20f %.20f Weight %.20f\n", i, CO (sc.exact.ctrl[i]),
-                 sc.exact.weight[i]);
+        fprintf(fh, "CCtrl %d %.20f %.20f %.20f Weight %.20f\n", i, CO(sc.exact.ctrl[i]),
+                sc.exact.weight[i]);
       }
     }
     SCurvePt *scpt;
-    for (scpt = sc.pts.First (); scpt; scpt = sc.pts.NextAfter (scpt)) {
-      fprintf (fh, "CurvePt %d %.20f %.20f %.20f\n", scpt->vertex ? 1 : 0, CO (scpt->p));
+    for (scpt = sc.pts.First(); scpt; scpt = sc.pts.NextAfter(scpt)) {
+      fprintf(fh, "CurvePt %d %.20f %.20f %.20f\n", scpt->vertex ? 1 : 0, CO(scpt->p));
     }
 
-    fprintf (fh, "AddCurve\n");
+    fprintf(fh, "AddCurve\n");
   }
 
-  fclose (fh);
+  fclose(fh);
 
   return true;
 }
 
-void SolveSpaceUI::LoadUsingTable (const Platform::Path &filename, char *key, char *val) {
+void SolveSpaceUI::LoadUsingTable(const Platform::Path &filename, char *key, char *val) {
   int i;
   for (i = 0; SAVED[i].type != 0; i++) {
-    if (strcmp (SAVED[i].desc, key) == 0) {
+    if (strcmp(SAVED[i].desc, key) == 0) {
       SAVEDptr    *p = (SAVEDptr *)SAVED[i].ptr;
       unsigned int u = 0;
       switch (SAVED[i].fmt) {
-      case 'S': p->S () = val; break;
-      case 'b': p->b () = (atoi (val) != 0); break;
-      case 'd': p->d () = atoi (val); break;
-      case 'f': p->f () = atof (val); break;
+      case 'S': p->S() = val; break;
+      case 'b': p->b() = (atoi(val) != 0); break;
+      case 'd': p->d() = atoi(val); break;
+      case 'f': p->f() = atof(val); break;
       case 'x':
-        sscanf (val, "%x", &u);
-        p->x () = u;
+        sscanf(val, "%x", &u);
+        p->x() = u;
         break;
 
       case 'P': {
-        Platform::Path path = Platform::Path::FromPortable (val);
-        if (!path.IsEmpty ()) {
-          p->P () = filename.Parent ().Join (path).Expand ();
+        Platform::Path path = Platform::Path::FromPortable(val);
+        if (!path.IsEmpty()) {
+          p->P() = filename.Parent().Join(path).Expand();
         }
         break;
       }
 
       case 'c':
-        sscanf (val, "%x", &u);
-        p->c () = RgbaColor::FromPackedInt (u);
+        sscanf(val, "%x", &u);
+        p->c() = RgbaColor::FromPackedInt(u);
         break;
 
       case 'M': {
-        p->M ().clear ();
+        p->M().clear();
         for (;;) {
           EntityKey ek;
           EntityId  ei;
           char      line2[1024];
-          if (fgets (line2, (int)sizeof (line2), fh) == NULL)
+          if (fgets(line2, (int)sizeof(line2), fh) == NULL)
             break;
-          if (sscanf (line2, "%d %x %d", &(ei.v), &(ek.input.v), &(ek.copyNumber)) == 3) {
+          if (sscanf(line2, "%d %x %d", &(ei.v), &(ek.input.v), &(ek.copyNumber)) == 3) {
             if (ei.v == Entity::NO_ENTITY.v) {
               // Commit bd84bc1a mistakenly introduced code that would remap
               // some entities to NO_ENTITY. This was fixed in commit bd84bc1a,
@@ -460,7 +460,7 @@ void SolveSpaceUI::LoadUsingTable (const Platform::Path &filename, char *key, ch
               // be pruned in the usual way, recovering to a well-defined state.
               continue;
             }
-            p->M ().insert ({ek, ei});
+            p->M().insert({ek, ei});
           } else {
             break;
           }
@@ -470,7 +470,7 @@ void SolveSpaceUI::LoadUsingTable (const Platform::Path &filename, char *key, ch
 
       case 'i': break;
 
-      default: ssassert (false, "Unexpected value format");
+      default: ssassert(false, "Unexpected value format");
       }
       break;
     }
@@ -480,105 +480,105 @@ void SolveSpaceUI::LoadUsingTable (const Platform::Path &filename, char *key, ch
   }
 }
 
-bool SolveSpaceUI::LoadFromFile (const Platform::Path &filename, bool canCancel) {
+bool SolveSpaceUI::LoadFromFile(const Platform::Path &filename, bool canCancel) {
   bool fileIsEmpty = true;
   allConsistent    = false;
   fileLoadError    = false;
 
-  fh = OpenFile (filename, "rb");
+  fh = OpenFile(filename, "rb");
   if (!fh) {
-    Error ("Couldn't read from file '%s'", filename.raw.c_str ());
+    Error("Couldn't read from file '%s'", filename.raw.c_str());
     return false;
   }
 
-  ClearExisting ();
+  ClearExisting();
 
   sv         = {};
   sv.g.scale = 1; // default is 1, not 0; so legacy files need this
-  Style::FillDefaultStyle (&sv.s);
+  Style::FillDefaultStyle(&sv.s);
 
   char line[1024];
-  while (fgets (line, (int)sizeof (line), fh)) {
+  while (fgets(line, (int)sizeof(line), fh)) {
     fileIsEmpty = false;
 
-    char *s = strchr (line, '\n');
+    char *s = strchr(line, '\n');
     if (s)
       *s = '\0';
     // We should never get files with \r characters in them, but mailers
     // will sometimes mangle attachments.
-    s = strchr (line, '\r');
+    s = strchr(line, '\r');
     if (s)
       *s = '\0';
 
     if (*line == '\0')
       continue;
 
-    char *e = strchr (line, '=');
+    char *e = strchr(line, '=');
     if (e) {
       *e        = '\0';
       char *key = line, *val = e + 1;
-      LoadUsingTable (filename, key, val);
-    } else if (strcmp (line, "AddGroup") == 0) {
+      LoadUsingTable(filename, key, val);
+    } else if (strcmp(line, "AddGroup") == 0) {
       // legacy files have a spurious dependency between linked groups
       // and their parent groups, remove
       if (sv.g.type == Group::Type::LINKED)
         sv.g.opA.v = 0;
 
-      SK.group.Add (&(sv.g));
+      SK.group.Add(&(sv.g));
       sv.g       = {};
       sv.g.scale = 1; // default is 1, not 0; so legacy files need this
-    } else if (strcmp (line, "AddParam") == 0) {
+    } else if (strcmp(line, "AddParam") == 0) {
       // params are regenerated, but we want to preload the values
       // for initial guesses
-      SK.param.Add (&(sv.p));
+      SK.param.Add(&(sv.p));
       sv.p = {};
-    } else if (strcmp (line, "AddEntity") == 0) {
+    } else if (strcmp(line, "AddEntity") == 0) {
       // entities are regenerated
-    } else if (strcmp (line, "AddRequest") == 0) {
-      SK.request.Add (&(sv.r));
+    } else if (strcmp(line, "AddRequest") == 0) {
+      SK.request.Add(&(sv.r));
       sv.r = {};
-    } else if (strcmp (line, "AddConstraint") == 0) {
-      SK.constraint.Add (&(sv.c));
+    } else if (strcmp(line, "AddConstraint") == 0) {
+      SK.constraint.Add(&(sv.c));
       sv.c = {};
-    } else if (strcmp (line, "AddStyle") == 0) {
-      SK.style.Add (&(sv.s));
+    } else if (strcmp(line, "AddStyle") == 0) {
+      SK.style.Add(&(sv.s));
       sv.s = {};
-      Style::FillDefaultStyle (&sv.s);
-    } else if (strcmp (line, VERSION_STRING) == 0) {
+      Style::FillDefaultStyle(&sv.s);
+    } else if (strcmp(line, VERSION_STRING) == 0) {
       // do nothing, version string
-    } else if (StrStartsWith (line, "Triangle ") || StrStartsWith (line, "Surface ") ||
-               StrStartsWith (line, "SCtrl ") || StrStartsWith (line, "TrimBy ") ||
-               StrStartsWith (line, "Curve ") || StrStartsWith (line, "CCtrl ") ||
-               StrStartsWith (line, "CurvePt ") || strcmp (line, "AddSurface") == 0 ||
-               strcmp (line, "AddCurve") == 0) {
+    } else if (StrStartsWith(line, "Triangle ") || StrStartsWith(line, "Surface ") ||
+               StrStartsWith(line, "SCtrl ") || StrStartsWith(line, "TrimBy ") ||
+               StrStartsWith(line, "Curve ") || StrStartsWith(line, "CCtrl ") ||
+               StrStartsWith(line, "CurvePt ") || strcmp(line, "AddSurface") == 0 ||
+               strcmp(line, "AddCurve") == 0) {
       // ignore the mesh or shell, since we regenerate that
     } else {
       fileLoadError = true;
     }
   }
 
-  fclose (fh);
+  fclose(fh);
 
   if (fileIsEmpty) {
-    Error (_ ("The file is empty. It may be corrupt."));
-    NewFile ();
+    Error(_("The file is empty. It may be corrupt."));
+    NewFile();
   }
 
   if (fileLoadError) {
-    Error (_ ("Unrecognized data in file. This file may be corrupt, or "
-              "from a newer version of the program."));
+    Error(_("Unrecognized data in file. This file may be corrupt, or "
+            "from a newer version of the program."));
     // At least leave the program in a non-crashing state.
-    if (SK.group.IsEmpty ()) {
-      NewFile ();
+    if (SK.group.IsEmpty()) {
+      NewFile();
     }
   }
-  ReloadAllLinked (filename, canCancel); // TODO: check for errors without breaking async
-  UpgradeLegacyData ();
+  ReloadAllLinked(filename, canCancel); // TODO: check for errors without breaking async
+  UpgradeLegacyData();
 
   return true;
 }
 
-void SolveSpaceUI::UpgradeLegacyData () {
+void SolveSpaceUI::UpgradeLegacyData() {
   for (Request &r : SK.request) {
     switch (r.type) {
     // TTF text requests saved in versions prior to 3.0 only have two
@@ -589,35 +589,35 @@ void SolveSpaceUI::UpgradeLegacyData () {
     case Request::Type::TTF_TEXT: {
       IdList<Entity, hEntity> entity = {};
       IdList<Param, hParam>   param  = {};
-      r.Generate (&entity, &param);
+      r.Generate(&entity, &param);
 
       // If we didn't load all of the entities and params that this
       // request would generate, then add them now, so that we can
       // force them to their appropriate positions.
       for (Param &p : param) {
-        if (SK.param.FindByIdNoOops (p.h) != NULL)
+        if (SK.param.FindByIdNoOops(p.h) != NULL)
           continue;
-        SK.param.Add (&p);
+        SK.param.Add(&p);
       }
       bool allPointsExist = true;
       for (Entity &e : entity) {
-        if (SK.entity.FindByIdNoOops (e.h) != NULL)
+        if (SK.entity.FindByIdNoOops(e.h) != NULL)
           continue;
-        SK.entity.Add (&e);
+        SK.entity.Add(&e);
         allPointsExist = false;
       }
 
       if (!allPointsExist) {
-        Entity    *text = entity.FindById (r.h.entity (0));
-        Entity    *b    = entity.FindById (text->point[2]);
-        Entity    *c    = entity.FindById (text->point[3]);
+        Entity    *text = entity.FindById(r.h.entity(0));
+        Entity    *b    = entity.FindById(text->point[2]);
+        Entity    *c    = entity.FindById(text->point[3]);
         ExprVector bex, cex;
-        text->RectGetPointsExprs (&bex, &cex);
-        b->PointForceParamTo (bex.Eval ());
-        c->PointForceParamTo (cex.Eval ());
+        text->RectGetPointsExprs(&bex, &cex);
+        b->PointForceParamTo(bex.Eval());
+        c->PointForceParamTo(cex.Eval());
       }
-      entity.Clear ();
-      param.Clear ();
+      entity.Clear();
+      param.Clear();
       break;
     }
 
@@ -629,248 +629,248 @@ void SolveSpaceUI::UpgradeLegacyData () {
   // version 3.0 introduced params to constraints to avoid the hairy ball problem,
   // so force them where they belong.
   IdList<Param, hParam> oldParam = {};
-  SK.param.DeepCopyInto (&oldParam);
-  SS.GenerateAll (SolveSpaceUI::Generate::REGEN);
+  SK.param.DeepCopyInto(&oldParam);
+  SS.GenerateAll(SolveSpaceUI::Generate::REGEN);
 
-  auto AllParamsExistFor = [&] (Constraint &c) {
+  auto AllParamsExistFor = [&](Constraint &c) {
     IdList<Param, hParam> param = {};
-    c.Generate (&param);
+    c.Generate(&param);
     bool allParamsExist = true;
     for (Param &p : param) {
-      if (oldParam.FindByIdNoOops (p.h) != NULL)
+      if (oldParam.FindByIdNoOops(p.h) != NULL)
         continue;
       allParamsExist = false;
       break;
     }
-    param.Clear ();
+    param.Clear();
     return allParamsExist;
   };
 
   for (Constraint &c : SK.constraint) {
     switch (c.type) {
     case Constraint::Type::PT_ON_LINE: {
-      if (AllParamsExistFor (c))
+      if (AllParamsExistFor(c))
         continue;
 
-      Entity *eln = SK.GetEntity (c.entityA);
-      Entity *ea  = SK.GetEntity (eln->point[0]);
-      Entity *eb  = SK.GetEntity (eln->point[1]);
-      Entity *ep  = SK.GetEntity (c.ptA);
+      Entity *eln = SK.GetEntity(c.entityA);
+      Entity *ea  = SK.GetEntity(eln->point[0]);
+      Entity *eb  = SK.GetEntity(eln->point[1]);
+      Entity *ep  = SK.GetEntity(c.ptA);
 
-      ExprVector exp  = ep->PointGetExprsInWorkplane (c.workplane);
-      ExprVector exa  = ea->PointGetExprsInWorkplane (c.workplane);
-      ExprVector exb  = eb->PointGetExprsInWorkplane (c.workplane);
-      ExprVector exba = exb.Minus (exa);
-      Param     *p    = SK.GetParam (c.h.param (0));
-      p->val          = exba.Dot (exp.Minus (exa))->Eval () / exba.Dot (exba)->Eval ();
+      ExprVector exp  = ep->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exa  = ea->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exb  = eb->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exba = exb.Minus(exa);
+      Param     *p    = SK.GetParam(c.h.param(0));
+      p->val          = exba.Dot(exp.Minus(exa))->Eval() / exba.Dot(exba)->Eval();
       break;
     }
 
     case Constraint::Type::CUBIC_LINE_TANGENT: {
-      if (AllParamsExistFor (c))
+      if (AllParamsExistFor(c))
         continue;
 
-      Entity *cubic = SK.GetEntity (c.entityA);
-      Entity *line  = SK.GetEntity (c.entityB);
+      Entity *cubic = SK.GetEntity(c.entityA);
+      Entity *line  = SK.GetEntity(c.entityB);
 
       ExprVector a;
       if (c.other) {
-        a = cubic->CubicGetFinishTangentExprs ();
+        a = cubic->CubicGetFinishTangentExprs();
       } else {
-        a = cubic->CubicGetStartTangentExprs ();
+        a = cubic->CubicGetStartTangentExprs();
       }
 
-      ExprVector b = line->VectorGetExprs ();
+      ExprVector b = line->VectorGetExprs();
 
-      Param *param = SK.GetParam (c.h.param (0));
-      param->val   = a.Dot (b)->Eval () / b.Dot (b)->Eval ();
+      Param *param = SK.GetParam(c.h.param(0));
+      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
     case Constraint::Type::SAME_ORIENTATION: {
-      if (AllParamsExistFor (c))
+      if (AllParamsExistFor(c))
         continue;
 
-      Entity *an = SK.GetEntity (c.entityA);
-      Entity *bn = SK.GetEntity (c.entityB);
+      Entity *an = SK.GetEntity(c.entityA);
+      Entity *bn = SK.GetEntity(c.entityB);
 
-      ExprVector a = an->NormalExprsN ();
-      ExprVector b = bn->NormalExprsN ();
+      ExprVector a = an->NormalExprsN();
+      ExprVector b = bn->NormalExprsN();
 
-      Param *param = SK.GetParam (c.h.param (0));
-      param->val   = a.Dot (b)->Eval () / b.Dot (b)->Eval ();
+      Param *param = SK.GetParam(c.h.param(0));
+      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
     case Constraint::Type::PARALLEL: {
-      if (AllParamsExistFor (c))
+      if (AllParamsExistFor(c))
         continue;
 
-      Entity    *ea = SK.GetEntity (c.entityA), *eb = SK.GetEntity (c.entityB);
-      ExprVector a = ea->VectorGetExprsInWorkplane (c.workplane);
-      ExprVector b = eb->VectorGetExprsInWorkplane (c.workplane);
+      Entity    *ea = SK.GetEntity(c.entityA), *eb = SK.GetEntity(c.entityB);
+      ExprVector a = ea->VectorGetExprsInWorkplane(c.workplane);
+      ExprVector b = eb->VectorGetExprsInWorkplane(c.workplane);
 
-      Param *param = SK.GetParam (c.h.param (0));
-      param->val   = a.Dot (b)->Eval () / b.Dot (b)->Eval ();
+      Param *param = SK.GetParam(c.h.param(0));
+      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
     default: break;
     }
   }
-  oldParam.Clear ();
+  oldParam.Clear();
 }
 
-bool SolveSpaceUI::LoadEntitiesFromFile (const Platform::Path &filename, EntityList *le, SMesh *m,
-                                         SShell *sh) {
-  if (strcmp (filename.Extension ().c_str (), "emn") == 0) {
-    return LinkIDF (filename, le, m, sh);
-  } else if (strcmp (filename.Extension ().c_str (), "stl") == 0) {
-    return LinkStl (filename, le, m, sh);
+bool SolveSpaceUI::LoadEntitiesFromFile(const Platform::Path &filename, EntityList *le, SMesh *m,
+                                        SShell *sh) {
+  if (strcmp(filename.Extension().c_str(), "emn") == 0) {
+    return LinkIDF(filename, le, m, sh);
+  } else if (strcmp(filename.Extension().c_str(), "stl") == 0) {
+    return LinkStl(filename, le, m, sh);
   } else {
-    return LoadEntitiesFromSlvs (filename, le, m, sh);
+    return LoadEntitiesFromSlvs(filename, le, m, sh);
   }
 }
 
-bool SolveSpaceUI::LoadEntitiesFromSlvs (const Platform::Path &filename, EntityList *le, SMesh *m,
-                                         SShell *sh) {
+bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityList *le, SMesh *m,
+                                        SShell *sh) {
   SSurface srf = {};
   SCurve   crv = {};
 
-  fh = OpenFile (filename, "rb");
+  fh = OpenFile(filename, "rb");
   if (!fh)
     return false;
 
-  le->Clear ();
+  le->Clear();
   sv = {};
 
   char line[1024];
-  while (fgets (line, (int)sizeof (line), fh)) {
-    char *s = strchr (line, '\n');
+  while (fgets(line, (int)sizeof(line), fh)) {
+    char *s = strchr(line, '\n');
     if (s)
       *s = '\0';
     // We should never get files with \r characters in them, but mailers
     // will sometimes mangle attachments.
-    s = strchr (line, '\r');
+    s = strchr(line, '\r');
     if (s)
       *s = '\0';
 
     if (*line == '\0')
       continue;
 
-    char *e = strchr (line, '=');
+    char *e = strchr(line, '=');
     if (e) {
       *e        = '\0';
       char *key = line, *val = e + 1;
-      LoadUsingTable (filename, key, val);
-    } else if (strcmp (line, "AddGroup") == 0) {
+      LoadUsingTable(filename, key, val);
+    } else if (strcmp(line, "AddGroup") == 0) {
       // These get allocated whether we want them or not.
-      sv.g.remap.clear ();
-    } else if (strcmp (line, "AddParam") == 0) {
+      sv.g.remap.clear();
+    } else if (strcmp(line, "AddParam") == 0) {
 
-    } else if (strcmp (line, "AddEntity") == 0) {
-      le->Add (&(sv.e));
+    } else if (strcmp(line, "AddEntity") == 0) {
+      le->Add(&(sv.e));
       sv.e = {};
-    } else if (strcmp (line, "AddRequest") == 0) {
+    } else if (strcmp(line, "AddRequest") == 0) {
 
-    } else if (strcmp (line, "AddConstraint") == 0) {
+    } else if (strcmp(line, "AddConstraint") == 0) {
 
-    } else if (strcmp (line, "AddStyle") == 0) {
+    } else if (strcmp(line, "AddStyle") == 0) {
       // Linked file contains a style that we don't have yet,
       // so import it.
-      if (SK.style.FindByIdNoOops (sv.s.h) == nullptr) {
-        SK.style.Add (&(sv.s));
+      if (SK.style.FindByIdNoOops(sv.s.h) == nullptr) {
+        SK.style.Add(&(sv.s));
       }
       sv.s = {};
-      Style::FillDefaultStyle (&sv.s);
-    } else if (strcmp (line, VERSION_STRING) == 0) {
+      Style::FillDefaultStyle(&sv.s);
+    } else if (strcmp(line, VERSION_STRING) == 0) {
 
-    } else if (StrStartsWith (line, "Triangle ")) {
-      STriangle    tr   = STriangle ();
+    } else if (StrStartsWith(line, "Triangle ")) {
+      STriangle    tr   = STriangle();
       unsigned int rgba = 0;
-      if (sscanf (line,
-                  "Triangle %x %x  "
-                  "%lf %lf %lf  %lf %lf %lf  %lf %lf %lf",
-                  &(tr.meta.face), &rgba, &(tr.a.x), &(tr.a.y), &(tr.a.z), &(tr.b.x), &(tr.b.y),
-                  &(tr.b.z), &(tr.c.x), &(tr.c.y), &(tr.c.z)) != 11) {
-        ssassert (false, "Unexpected Triangle format");
+      if (sscanf(line,
+                 "Triangle %x %x  "
+                 "%lf %lf %lf  %lf %lf %lf  %lf %lf %lf",
+                 &(tr.meta.face), &rgba, &(tr.a.x), &(tr.a.y), &(tr.a.z), &(tr.b.x), &(tr.b.y),
+                 &(tr.b.z), &(tr.c.x), &(tr.c.y), &(tr.c.z)) != 11) {
+        ssassert(false, "Unexpected Triangle format");
       }
-      tr.meta.color = RgbaColor::FromPackedInt ((uint32_t)rgba);
-      m->AddTriangle (&tr);
-    } else if (StrStartsWith (line, "Surface ")) {
+      tr.meta.color = RgbaColor::FromPackedInt((uint32_t)rgba);
+      m->AddTriangle(&tr);
+    } else if (StrStartsWith(line, "Surface ")) {
       unsigned int rgba = 0;
-      if (sscanf (line, "Surface %x %x %x %d %d", &(srf.h.v), &rgba, &(srf.face), &(srf.degm),
-                  &(srf.degn)) != 5) {
-        ssassert (false, "Unexpected Surface format");
+      if (sscanf(line, "Surface %x %x %x %d %d", &(srf.h.v), &rgba, &(srf.face), &(srf.degm),
+                 &(srf.degn)) != 5) {
+        ssassert(false, "Unexpected Surface format");
       }
-      srf.color = RgbaColor::FromPackedInt ((uint32_t)rgba);
-    } else if (StrStartsWith (line, "SCtrl ")) {
+      srf.color = RgbaColor::FromPackedInt((uint32_t)rgba);
+    } else if (StrStartsWith(line, "SCtrl ")) {
       int    i, j;
       Vector c;
       double w;
-      if (sscanf (line, "SCtrl %d %d %lf %lf %lf Weight %lf", &i, &j, &(c.x), &(c.y), &(c.z), &w) !=
+      if (sscanf(line, "SCtrl %d %d %lf %lf %lf Weight %lf", &i, &j, &(c.x), &(c.y), &(c.z), &w) !=
           6) {
-        ssassert (false, "Unexpected SCtrl format");
+        ssassert(false, "Unexpected SCtrl format");
       }
       srf.ctrl[i][j]   = c;
       srf.weight[i][j] = w;
-    } else if (StrStartsWith (line, "TrimBy ")) {
+    } else if (StrStartsWith(line, "TrimBy ")) {
       STrimBy stb = {};
       int     backwards;
-      if (sscanf (line, "TrimBy %x %d  %lf %lf %lf  %lf %lf %lf", &(stb.curve.v), &backwards,
-                  &(stb.start.x), &(stb.start.y), &(stb.start.z), &(stb.finish.x), &(stb.finish.y),
-                  &(stb.finish.z)) != 8) {
-        ssassert (false, "Unexpected TrimBy format");
+      if (sscanf(line, "TrimBy %x %d  %lf %lf %lf  %lf %lf %lf", &(stb.curve.v), &backwards,
+                 &(stb.start.x), &(stb.start.y), &(stb.start.z), &(stb.finish.x), &(stb.finish.y),
+                 &(stb.finish.z)) != 8) {
+        ssassert(false, "Unexpected TrimBy format");
       }
       stb.backwards = (backwards != 0);
-      srf.trim.Add (&stb);
-    } else if (strcmp (line, "AddSurface") == 0) {
-      sh->surface.Add (&srf);
+      srf.trim.Add(&stb);
+    } else if (strcmp(line, "AddSurface") == 0) {
+      sh->surface.Add(&srf);
       srf = {};
-    } else if (StrStartsWith (line, "Curve ")) {
+    } else if (StrStartsWith(line, "Curve ")) {
       int isExact;
-      if (sscanf (line, "Curve %x %d %d %x %x", &(crv.h.v), &(isExact), &(crv.exact.deg),
-                  &(crv.surfA.v), &(crv.surfB.v)) != 5) {
-        ssassert (false, "Unexpected Curve format");
+      if (sscanf(line, "Curve %x %d %d %x %x", &(crv.h.v), &(isExact), &(crv.exact.deg),
+                 &(crv.surfA.v), &(crv.surfB.v)) != 5) {
+        ssassert(false, "Unexpected Curve format");
       }
       crv.isExact = (isExact != 0);
-    } else if (StrStartsWith (line, "CCtrl ")) {
+    } else if (StrStartsWith(line, "CCtrl ")) {
       int    i;
       Vector c;
       double w;
-      if (sscanf (line, "CCtrl %d %lf %lf %lf Weight %lf", &i, &(c.x), &(c.y), &(c.z), &w) != 5) {
-        ssassert (false, "Unexpected CCtrl format");
+      if (sscanf(line, "CCtrl %d %lf %lf %lf Weight %lf", &i, &(c.x), &(c.y), &(c.z), &w) != 5) {
+        ssassert(false, "Unexpected CCtrl format");
       }
       crv.exact.ctrl[i]   = c;
       crv.exact.weight[i] = w;
-    } else if (StrStartsWith (line, "CurvePt ")) {
+    } else if (StrStartsWith(line, "CurvePt ")) {
       SCurvePt scpt;
       int      vertex;
-      if (sscanf (line, "CurvePt %d %lf %lf %lf", &vertex, &(scpt.p.x), &(scpt.p.y), &(scpt.p.z)) !=
+      if (sscanf(line, "CurvePt %d %lf %lf %lf", &vertex, &(scpt.p.x), &(scpt.p.y), &(scpt.p.z)) !=
           4) {
-        ssassert (false, "Unexpected CurvePt format");
+        ssassert(false, "Unexpected CurvePt format");
       }
       scpt.vertex = (vertex != 0);
-      crv.pts.Add (&scpt);
-    } else if (strcmp (line, "AddCurve") == 0) {
-      sh->curve.Add (&crv);
+      crv.pts.Add(&scpt);
+    } else if (strcmp(line, "AddCurve") == 0) {
+      sh->curve.Add(&crv);
       crv = {};
     } else
-      ssassert (false, "Unexpected operation");
+      ssassert(false, "Unexpected operation");
   }
 
-  fclose (fh);
+  fclose(fh);
   return true;
 }
 
-int SolveSpaceUI::LocateImportedFile (const Platform::Path &filename, bool canCancel) {
-  assert ("SolveSpaceUI::LocateImportedFile() shouldn't be called");
+int SolveSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCancel) {
+  assert("SolveSpaceUI::LocateImportedFile() shouldn't be called");
   return false;
 }
 
 // this is a bigger challenge to asyncify. the best thing is to temporarily disable it
 // maybe this needs a different UI, where it's like a list the user can see
-bool SolveSpaceUI::ReloadAllLinked (const Platform::Path &saveFile, bool canCancel) {
+bool SolveSpaceUI::ReloadAllLinked(const Platform::Path &saveFile, bool canCancel) {
   /*
     Platform::SettingsRef settings = Platform::GetSettings ();
 
@@ -960,20 +960,20 @@ bool SolveSpaceUI::ReloadAllLinked (const Platform::Path &saveFile, bool canCanc
 }
 
 // 0: success, 1: failure, 2: promptOpenFile
-uint SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::Path *filename,
-                                      bool canCancel) {
-  if (filename->IsEmpty ()) {
+uint SolveSpaceUI::ReloadLinkedImage(const Platform::Path &saveFile, Platform::Path *filename,
+                                     bool canCancel) {
+  if (filename->IsEmpty()) {
     // this is a new image and the user needs to be prompted
     return 2;
   }
 
-  auto image = SS.images.find (*filename);
-  if (image != SS.images.end ()) {
+  auto image = SS.images.find(*filename);
+  if (image != SS.images.end()) {
     // we already have the image
     return 0;
   }
 
-  std::shared_ptr<Pixmap> pixmap = Pixmap::ReadPng (*filename);
+  std::shared_ptr<Pixmap> pixmap = Pixmap::ReadPng(*filename);
   if (pixmap != NULL) {
     // the filename is correct, and now we actually load it into the images array on this pass
     SS.images[*filename] = pixmap;
@@ -981,7 +981,7 @@ uint SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::
   }
 
   // the file was moved; prompt the user for its new location
-  switch (LocateImportedFile (filename->RelativeTo (saveFile), canCancel)) {
+  switch (LocateImportedFile(filename->RelativeTo(saveFile), canCancel)) {
   case 0: // YES
     return 2;
 
@@ -993,7 +993,7 @@ uint SolveSpaceUI::ReloadLinkedImage (const Platform::Path &saveFile, Platform::
   case 2: // CANCEL
     return 1;
 
-  default: ssassert (false, "Unexpected dialog response");
+  default: ssassert(false, "Unexpected dialog response");
   }
 }
 

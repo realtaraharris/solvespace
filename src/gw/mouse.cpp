@@ -6,32 +6,32 @@
 #include "solvespace.h"
 #include "platform/EventHooks.h"
 
-void GraphicsWindow::UpdateDraggedPoint (hEntity hp, double mx, double my) {
-  Entity *p   = SK.GetEntity (hp);
-  Vector  pos = p->PointGetNum ();
-  UpdateDraggedNum (&pos, mx, my);
-  p->PointForceTo (pos);
+void GraphicsWindow::UpdateDraggedPoint(hEntity hp, double mx, double my) {
+  Entity *p   = SK.GetEntity(hp);
+  Vector  pos = p->PointGetNum();
+  UpdateDraggedNum(&pos, mx, my);
+  p->PointForceTo(pos);
 
-  SS.ScheduleShowTW ();
+  SS.ScheduleShowTW();
 }
 
-void GraphicsWindow::UpdateDraggedNum (Vector *pos, double mx, double my) {
-  *pos = pos->Plus (projRight.ScaledBy ((mx - orig.mouse.x) / scale));
-  *pos = pos->Plus (projUp.ScaledBy ((my - orig.mouse.y) / scale));
+void GraphicsWindow::UpdateDraggedNum(Vector *pos, double mx, double my) {
+  *pos = pos->Plus(projRight.ScaledBy((mx - orig.mouse.x) / scale));
+  *pos = pos->Plus(projUp.ScaledBy((my - orig.mouse.y) / scale));
 }
 
-void GraphicsWindow::AddPointToDraggedList (hEntity hp) {
-  Entity *p = SK.GetEntity (hp);
+void GraphicsWindow::AddPointToDraggedList(hEntity hp) {
+  Entity *p = SK.GetEntity(hp);
   // If an entity and its points are both selected, then its points could
   // end up in the list twice. This would be bad, because it would move
   // twice as far as the mouse pointer...
   List<hEntity> *lhe = &(pending.points);
-  for (hEntity *hee = lhe->First (); hee; hee = lhe->NextAfter (hee)) {
+  for (hEntity *hee = lhe->First(); hee; hee = lhe->NextAfter(hee)) {
     if (*hee == hp) {
       // Exact same point.
       return;
     }
-    Entity *pe = SK.GetEntity (*hee);
+    Entity *pe = SK.GetEntity(*hee);
     if (pe->type == p->type && pe->type != Entity::Type::POINT_IN_2D &&
         pe->type != Entity::Type::POINT_IN_3D && pe->group == p->group) {
       // Transform-type point, from the same group. So it handles the
@@ -39,46 +39,46 @@ void GraphicsWindow::AddPointToDraggedList (hEntity hp) {
       return;
     }
   }
-  pending.points.Add (&hp);
+  pending.points.Add(&hp);
 }
 
-void GraphicsWindow::StartDraggingByEntity (hEntity he) {
-  Entity *e = SK.GetEntity (he);
-  if (e->IsPoint ()) {
-    AddPointToDraggedList (e->h);
+void GraphicsWindow::StartDraggingByEntity(hEntity he) {
+  Entity *e = SK.GetEntity(he);
+  if (e->IsPoint()) {
+    AddPointToDraggedList(e->h);
   } else if (e->type == Entity::Type::LINE_SEGMENT || e->type == Entity::Type::ARC_OF_CIRCLE ||
              e->type == Entity::Type::CUBIC || e->type == Entity::Type::CUBIC_PERIODIC ||
              e->type == Entity::Type::CIRCLE || e->type == Entity::Type::TTF_TEXT ||
              e->type == Entity::Type::IMAGE) {
     int pts;
-    EntReqTable::GetEntityInfo (e->type, e->extraPoints, NULL, &pts, NULL, NULL);
+    EntReqTable::GetEntityInfo(e->type, e->extraPoints, NULL, &pts, NULL, NULL);
     for (int i = 0; i < pts; i++) {
-      AddPointToDraggedList (e->point[i]);
+      AddPointToDraggedList(e->point[i]);
     }
   }
 }
 
-void GraphicsWindow::StartDraggingBySelection () {
+void GraphicsWindow::StartDraggingBySelection() {
   List<Selection> *ls = &(selection);
-  for (Selection *s = ls->First (); s; s = ls->NextAfter (s)) {
+  for (Selection *s = ls->First(); s; s = ls->NextAfter(s)) {
     if (!s->entity.v)
       continue;
 
-    StartDraggingByEntity (s->entity);
+    StartDraggingByEntity(s->entity);
   }
   // The user might select a point, and then click it again to start
   // dragging; but the point just got unselected by that click. So drag
   // the hovered item too, and they'll always have it.
   if (hover.entity.v) {
-    hEntity dragEntity = ChooseFromHoverToDrag ().entity;
+    hEntity dragEntity = ChooseFromHoverToDrag().entity;
     if (dragEntity != Entity::NO_ENTITY) {
-      StartDraggingByEntity (dragEntity);
+      StartDraggingByEntity(dragEntity);
     }
   }
 }
 
-void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleDown, bool rightDown,
-                                 bool shiftDown, bool ctrlDown) {
+void GraphicsWindow::MouseMoved(double x, double y, bool leftDown, bool middleDown, bool rightDown,
+                                bool shiftDown, bool ctrlDown) {
   if (context.active) {
     return;
   }
@@ -99,14 +99,14 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
 
   if (!leftDown && (pending.operation == Pending::DRAGGING_POINTS ||
                     pending.operation == Pending::DRAGGING_MARQUEE)) {
-    ClearPending (1);
-    Invalidate ();
+    ClearPending(1);
+    Invalidate();
   }
 
-  Point2d mp           = Point2d::From (x, y);
+  Point2d mp           = Point2d::From(x, y);
   currentMousePosition = mp;
 
-  if (rightDown && orig.mouse.DistanceTo (mp) < 5 && !orig.startedMoving) {
+  if (rightDown && orig.mouse.DistanceTo(mp) < 5 && !orig.startedMoving) {
     // Avoid accidentally panning (or rotating if shift is down) if the
     // user wants a context menu.
     return;
@@ -116,7 +116,7 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
   // If the middle button is down, then mouse movement is used to pan and
   // rotate our view. This wins over everything else.
   if (middleDown) {
-    hover.Clear ();
+    hover.Clear();
 
     double dx = (x - orig.mouse.x) / scale;
     double dy = (y - orig.mouse.y) / scale;
@@ -124,27 +124,27 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
     if (!(shiftDown || ctrlDown)) {
       double s = 0.3 * (PI / 180) * scale; // degrees per pixel
       if (SS.turntableNav) {               // lock the Z to vertical
-        projRight = orig.projRight.RotatedAbout (Vector::From (0, 0, 1), -s * dx);
-        projUp    = orig.projUp.RotatedAbout (
-            Vector::From (orig.projRight.x, orig.projRight.y, orig.projRight.y), s * dy);
+        projRight = orig.projRight.RotatedAbout(Vector::From(0, 0, 1), -s * dx);
+        projUp    = orig.projUp.RotatedAbout(
+            Vector::From(orig.projRight.x, orig.projRight.y, orig.projRight.y), s * dy);
       } else {
-        projRight = orig.projRight.RotatedAbout (orig.projUp, -s * dx);
-        projUp    = orig.projUp.RotatedAbout (orig.projRight, s * dy);
+        projRight = orig.projRight.RotatedAbout(orig.projUp, -s * dx);
+        projUp    = orig.projUp.RotatedAbout(orig.projRight, s * dy);
       }
 
-      NormalizeProjectionVectors ();
+      NormalizeProjectionVectors();
     } else if (ctrlDown) {
-      double theta = atan2 (orig.mouse.y, orig.mouse.x);
-      theta -= atan2 (y, x);
+      double theta = atan2(orig.mouse.y, orig.mouse.x);
+      theta -= atan2(y, x);
       SS.extraLine.draw = true;
-      SS.extraLine.ptA  = UnProjectPoint (Point2d::From (0, 0));
-      SS.extraLine.ptB  = UnProjectPoint (mp);
+      SS.extraLine.ptA  = UnProjectPoint(Point2d::From(0, 0));
+      SS.extraLine.ptB  = UnProjectPoint(mp);
 
-      Vector normal = orig.projRight.Cross (orig.projUp);
-      projRight     = orig.projRight.RotatedAbout (normal, theta);
-      projUp        = orig.projUp.RotatedAbout (normal, theta);
+      Vector normal = orig.projRight.Cross(orig.projUp);
+      projRight     = orig.projRight.RotatedAbout(normal, theta);
+      projUp        = orig.projUp.RotatedAbout(normal, theta);
 
-      NormalizeProjectionVectors ();
+      NormalizeProjectionVectors();
     } else {
       offset.x = orig.offset.x + dx * projRight.x + dy * projUp.x;
       offset.y = orig.offset.y + dx * projRight.y + dy * projUp.y;
@@ -157,49 +157,49 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
     orig.mouse.x   = x;
     orig.mouse.y   = y;
 
-    Invalidate ();
+    Invalidate();
     return;
   }
 
   if (pending.operation == Pending::NONE) {
-    double dm = orig.mouse.DistanceTo (mp);
+    double dm = orig.mouse.DistanceTo(mp);
     // If we're currently not doing anything, then see if we should
     // start dragging something.
     if (leftDown && dm > 3) {
       Entity *e          = NULL;
-      hEntity dragEntity = ChooseFromHoverToDrag ().entity;
+      hEntity dragEntity = ChooseFromHoverToDrag().entity;
       if (dragEntity.v)
-        e = SK.GetEntity (dragEntity);
+        e = SK.GetEntity(dragEntity);
       if (e && e->type != Entity::Type::WORKPLANE) {
         if (!hoverWasSelectedOnMousedown) {
           // The user clicked an unselected entity, which
           // means they're dragging just the hovered thing,
           // not the full selection. So clear all the selection
           // except that entity.
-          ClearSelection ();
-          MakeSelected (dragEntity);
+          ClearSelection();
+          MakeSelected(dragEntity);
         }
         if (e->type == Entity::Type::CIRCLE && selection.n <= 1) {
           // Drag the radius.
           pending.circle    = dragEntity;
           pending.operation = Pending::DRAGGING_RADIUS;
-        } else if (e->IsNormal ()) {
+        } else if (e->IsNormal()) {
           pending.normal    = dragEntity;
           pending.operation = Pending::DRAGGING_NORMAL;
         } else {
-          StartDraggingBySelection ();
-          hover.Clear ();
+          StartDraggingBySelection();
+          hover.Clear();
           pending.operation = Pending::DRAGGING_POINTS;
         }
-      } else if (hover.constraint.v && SK.GetConstraint (hover.constraint)->HasLabel ()) {
-        ClearSelection ();
+      } else if (hover.constraint.v && SK.GetConstraint(hover.constraint)->HasLabel()) {
+        ClearSelection();
         pending.constraint = hover.constraint;
         pending.operation  = Pending::DRAGGING_CONSTRAINT;
       }
       if (pending.operation != Pending::NONE) {
         // We just started a drag, so remember for the undo before
         // the drag changes anything.
-        SS.UndoRemember ();
+        SS.UndoRemember();
       } else {
         if (!hover.constraint.v) {
           // That's just marquee selection, which should not cause
@@ -208,11 +208,11 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
             if (hover.entity.v) {
               // Avoid accidentally selecting workplanes when
               // starting drags.
-              MakeUnselected (hover.entity, /*coincidentPointTrick=*/false);
-              hover.Clear ();
+              MakeUnselected(hover.entity, /*coincidentPointTrick=*/false);
+              hover.Clear();
             }
             pending.operation = Pending::DRAGGING_MARQUEE;
-            orig.marqueePoint = UnProjectPoint (orig.mouseOnButtonDown);
+            orig.marqueePoint = UnProjectPoint(orig.mouseOnButtonDown);
           }
         }
       }
@@ -228,7 +228,7 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
         // something, don't hit test again, since this just causes
         // a lag.
         //                if(!havePainted) return;
-        HitTestMakeSelection (mp);
+        HitTestMakeSelection(mp);
       }
     }
     return;
@@ -237,37 +237,37 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
   // If the user has started an operation from the menu, but not
   // completed it, then just do the selection.
   if (pending.operation == Pending::COMMAND) {
-    HitTestMakeSelection (mp);
+    HitTestMakeSelection(mp);
     return;
   }
 
   if (pending.operation == Pending::DRAGGING_POINTS && ctrlDown) {
-    SS.extraLine.ptA  = UnProjectPoint (orig.mouseOnButtonDown);
-    SS.extraLine.ptB  = UnProjectPoint (mp);
+    SS.extraLine.ptA  = UnProjectPoint(orig.mouseOnButtonDown);
+    SS.extraLine.ptB  = UnProjectPoint(mp);
     SS.extraLine.draw = true;
   }
 
   switch (pending.operation) {
   case Pending::DRAGGING_CONSTRAINT: {
-    Constraint *c = SK.constraint.FindById (pending.constraint);
-    UpdateDraggedNum (&(c->disp.offset), x, y);
+    Constraint *c = SK.constraint.FindById(pending.constraint);
+    UpdateDraggedNum(&(c->disp.offset), x, y);
     orig.mouse = mp;
-    Invalidate ();
+    Invalidate();
     return;
   }
 
   case Pending::DRAGGING_NEW_LINE_POINT:
     if (!ctrlDown) {
       SS.GW.pending.hasSuggestion =
-          SS.GW.SuggestLineConstraint (SS.GW.pending.request, &SS.GW.pending.suggestion);
+          SS.GW.SuggestLineConstraint(SS.GW.pending.request, &SS.GW.pending.suggestion);
     } else {
       SS.GW.pending.hasSuggestion = false;
     }
     // fallthrough
   case Pending::DRAGGING_NEW_POINT:
-    UpdateDraggedPoint (pending.point, x, y);
-    HitTestMakeSelection (mp);
-    SS.MarkGroupDirtyByEntity (pending.point);
+    UpdateDraggedPoint(pending.point, x, y);
+    HitTestMakeSelection(mp);
+    SS.MarkGroupDirtyByEntity(pending.point);
     orig.mouse = mp;
     break;
 
@@ -278,202 +278,202 @@ void GraphicsWindow::MouseMoved (double x, double y, bool leftDown, bool middleD
       // of the screen. So first get the rotation to apply, in qt.
       Quaternion qt;
       if (ctrlDown) {
-        double d = mp.DistanceTo (orig.mouseOnButtonDown);
+        double d = mp.DistanceTo(orig.mouseOnButtonDown);
         if (d < 25) {
           // Don't start dragging the position about the normal
           // until we're a little ways out, to get a reasonable
           // reference pos
           qt = Quaternion::IDENTITY;
         } else {
-          double theta = atan2 (orig.mouse.y - orig.mouseOnButtonDown.y,
-                                orig.mouse.x - orig.mouseOnButtonDown.x);
-          theta -= atan2 (y - orig.mouseOnButtonDown.y, x - orig.mouseOnButtonDown.x);
+          double theta = atan2(orig.mouse.y - orig.mouseOnButtonDown.y,
+                               orig.mouse.x - orig.mouseOnButtonDown.x);
+          theta -= atan2(y - orig.mouseOnButtonDown.y, x - orig.mouseOnButtonDown.x);
 
-          Vector gn = projRight.Cross (projUp);
-          qt        = Quaternion::From (gn, -theta);
+          Vector gn = projRight.Cross(projUp);
+          qt        = Quaternion::From(gn, -theta);
         }
       } else {
         double dx = -(x - orig.mouse.x);
         double dy = -(y - orig.mouse.y);
         double s  = 0.3 * (PI / 180); // degrees per pixel
-        qt        = Quaternion::From (projUp, -s * dx).Times (Quaternion::From (projRight, s * dy));
+        qt        = Quaternion::From(projUp, -s * dx).Times(Quaternion::From(projRight, s * dy));
       }
 
       // Now apply this rotation to the points being dragged.
       List<hEntity> *lhe = &(pending.points);
-      for (hEntity *he = lhe->First (); he; he = lhe->NextAfter (he)) {
-        Entity *e = SK.GetEntity (*he);
+      for (hEntity *he = lhe->First(); he; he = lhe->NextAfter(he)) {
+        Entity *e = SK.GetEntity(*he);
         if (e->type != Entity::Type::POINT_N_ROT_TRANS) {
           if (ctrlDown) {
-            Vector p = e->PointGetNum ();
-            p        = p.Minus (SS.extraLine.ptA);
-            p        = qt.Rotate (p);
-            p        = p.Plus (SS.extraLine.ptA);
-            e->PointForceTo (p);
+            Vector p = e->PointGetNum();
+            p        = p.Minus(SS.extraLine.ptA);
+            p        = qt.Rotate(p);
+            p        = p.Plus(SS.extraLine.ptA);
+            e->PointForceTo(p);
           } else {
-            UpdateDraggedPoint (*he, x, y);
+            UpdateDraggedPoint(*he, x, y);
           }
         } else {
-          Quaternion q = e->PointGetQuaternion ();
-          Vector     p = e->PointGetNum ();
-          q            = qt.Times (q);
-          e->PointForceQuaternionTo (q);
+          Quaternion q = e->PointGetQuaternion();
+          Vector     p = e->PointGetNum();
+          q            = qt.Times(q);
+          e->PointForceQuaternionTo(q);
           // Let's rotate about the selected point; so fix up the
           // translation so that that point didn't move.
-          e->PointForceTo (p);
+          e->PointForceTo(p);
         }
-        SS.MarkGroupDirtyByEntity (e->h);
+        SS.MarkGroupDirtyByEntity(e->h);
       }
     } else {
       List<hEntity> *lhe = &(pending.points);
-      for (hEntity *he = lhe->First (); he; he = lhe->NextAfter (he)) {
-        UpdateDraggedPoint (*he, x, y);
-        SS.MarkGroupDirtyByEntity (*he);
+      for (hEntity *he = lhe->First(); he; he = lhe->NextAfter(he)) {
+        UpdateDraggedPoint(*he, x, y);
+        SS.MarkGroupDirtyByEntity(*he);
       }
     }
     orig.mouse = mp;
     break;
 
   case Pending::DRAGGING_NEW_CUBIC_POINT: {
-    UpdateDraggedPoint (pending.point, x, y);
-    HitTestMakeSelection (mp);
+    UpdateDraggedPoint(pending.point, x, y);
+    HitTestMakeSelection(mp);
 
-    hRequest hr = pending.point.request ();
-    if (pending.point == hr.entity (4)) {
+    hRequest hr = pending.point.request();
+    if (pending.point == hr.entity(4)) {
       // The very first segment; dragging final point drags both
       // tangent points.
-      Vector p0 = SK.GetEntity (hr.entity (1))->PointGetNum (),
-             p3 = SK.GetEntity (hr.entity (4))->PointGetNum (),
-             p1 = p0.ScaledBy (2.0 / 3).Plus (p3.ScaledBy (1.0 / 3)),
-             p2 = p0.ScaledBy (1.0 / 3).Plus (p3.ScaledBy (2.0 / 3));
-      SK.GetEntity (hr.entity (1 + 1))->PointForceTo (p1);
-      SK.GetEntity (hr.entity (1 + 2))->PointForceTo (p2);
+      Vector p0 = SK.GetEntity(hr.entity(1))->PointGetNum(),
+             p3 = SK.GetEntity(hr.entity(4))->PointGetNum(),
+             p1 = p0.ScaledBy(2.0 / 3).Plus(p3.ScaledBy(1.0 / 3)),
+             p2 = p0.ScaledBy(1.0 / 3).Plus(p3.ScaledBy(2.0 / 3));
+      SK.GetEntity(hr.entity(1 + 1))->PointForceTo(p1);
+      SK.GetEntity(hr.entity(1 + 2))->PointForceTo(p2);
     } else {
       // A subsequent segment; dragging point drags only final
       // tangent point.
-      int    i    = SK.GetEntity (hr.entity (0))->extraPoints;
-      Vector pn   = SK.GetEntity (hr.entity (4 + i))->PointGetNum (),
-             pnm2 = SK.GetEntity (hr.entity (2 + i))->PointGetNum (),
-             pnm1 = (pn.Plus (pnm2)).ScaledBy (0.5);
-      SK.GetEntity (hr.entity (3 + i))->PointForceTo (pnm1);
+      int    i    = SK.GetEntity(hr.entity(0))->extraPoints;
+      Vector pn   = SK.GetEntity(hr.entity(4 + i))->PointGetNum(),
+             pnm2 = SK.GetEntity(hr.entity(2 + i))->PointGetNum(),
+             pnm1 = (pn.Plus(pnm2)).ScaledBy(0.5);
+      SK.GetEntity(hr.entity(3 + i))->PointForceTo(pnm1);
     }
 
     orig.mouse = mp;
-    SS.MarkGroupDirtyByEntity (pending.point);
+    SS.MarkGroupDirtyByEntity(pending.point);
     break;
   }
   case Pending::DRAGGING_NEW_ARC_POINT: {
-    UpdateDraggedPoint (pending.point, x, y);
-    HitTestMakeSelection (mp);
+    UpdateDraggedPoint(pending.point, x, y);
+    HitTestMakeSelection(mp);
 
-    hRequest hr     = pending.point.request ();
-    Vector   ona    = SK.GetEntity (hr.entity (2))->PointGetNum ();
-    Vector   onb    = SK.GetEntity (hr.entity (3))->PointGetNum ();
-    Vector   center = (ona.Plus (onb)).ScaledBy (0.5);
+    hRequest hr     = pending.point.request();
+    Vector   ona    = SK.GetEntity(hr.entity(2))->PointGetNum();
+    Vector   onb    = SK.GetEntity(hr.entity(3))->PointGetNum();
+    Vector   center = (ona.Plus(onb)).ScaledBy(0.5);
 
-    SK.GetEntity (hr.entity (1))->PointForceTo (center);
+    SK.GetEntity(hr.entity(1))->PointForceTo(center);
 
     orig.mouse = mp;
-    SS.MarkGroupDirtyByEntity (pending.point);
+    SS.MarkGroupDirtyByEntity(pending.point);
     break;
   }
   case Pending::DRAGGING_NEW_RADIUS:
   case Pending::DRAGGING_RADIUS: {
-    Entity *circle = SK.GetEntity (pending.circle);
-    Vector  center = SK.GetEntity (circle->point[0])->PointGetNum ();
-    Point2d c2     = ProjectPoint (center);
-    double  r      = c2.DistanceTo (mp) / scale;
-    SK.GetEntity (circle->distance)->DistanceForceTo (r);
+    Entity *circle = SK.GetEntity(pending.circle);
+    Vector  center = SK.GetEntity(circle->point[0])->PointGetNum();
+    Point2d c2     = ProjectPoint(center);
+    double  r      = c2.DistanceTo(mp) / scale;
+    SK.GetEntity(circle->distance)->DistanceForceTo(r);
 
-    SS.MarkGroupDirtyByEntity (pending.circle);
-    SS.ScheduleShowTW ();
+    SS.MarkGroupDirtyByEntity(pending.circle);
+    SS.ScheduleShowTW();
     break;
   }
 
   case Pending::DRAGGING_NORMAL: {
-    Entity *normal = SK.GetEntity (pending.normal);
-    Vector  p      = SK.GetEntity (normal->point[0])->PointGetNum ();
-    Point2d p2     = ProjectPoint (p);
+    Entity *normal = SK.GetEntity(pending.normal);
+    Vector  p      = SK.GetEntity(normal->point[0])->PointGetNum();
+    Point2d p2     = ProjectPoint(p);
 
-    Quaternion q = normal->NormalGetNum ();
-    Vector     u = q.RotationU (), v = q.RotationV ();
+    Quaternion q = normal->NormalGetNum();
+    Vector     u = q.RotationU(), v = q.RotationV();
 
     if (ctrlDown) {
-      double theta = atan2 (orig.mouse.y - p2.y, orig.mouse.x - p2.x);
-      theta -= atan2 (y - p2.y, x - p2.x);
+      double theta = atan2(orig.mouse.y - p2.y, orig.mouse.x - p2.x);
+      theta -= atan2(y - p2.y, x - p2.x);
 
-      Vector normal = projRight.Cross (projUp);
-      u             = u.RotatedAbout (normal, -theta);
-      v             = v.RotatedAbout (normal, -theta);
+      Vector normal = projRight.Cross(projUp);
+      u             = u.RotatedAbout(normal, -theta);
+      v             = v.RotatedAbout(normal, -theta);
     } else {
       double dx = -(x - orig.mouse.x);
       double dy = -(y - orig.mouse.y);
       double s  = 0.3 * (PI / 180); // degrees per pixel
-      u         = u.RotatedAbout (projUp, -s * dx);
-      u         = u.RotatedAbout (projRight, s * dy);
-      v         = v.RotatedAbout (projUp, -s * dx);
-      v         = v.RotatedAbout (projRight, s * dy);
+      u         = u.RotatedAbout(projUp, -s * dx);
+      u         = u.RotatedAbout(projRight, s * dy);
+      v         = v.RotatedAbout(projUp, -s * dx);
+      v         = v.RotatedAbout(projRight, s * dy);
     }
     orig.mouse = mp;
-    normal->NormalForceTo (Quaternion::From (u, v));
+    normal->NormalForceTo(Quaternion::From(u, v));
 
-    SS.MarkGroupDirtyByEntity (pending.normal);
+    SS.MarkGroupDirtyByEntity(pending.normal);
     break;
   }
 
   case Pending::DRAGGING_MARQUEE:
     orig.mouse = mp;
-    Invalidate ();
+    Invalidate();
     return;
 
   case Pending::NONE:
-  case Pending::COMMAND: ssassert (false, "Unexpected pending operation");
+  case Pending::COMMAND: ssassert(false, "Unexpected pending operation");
   }
 }
 
-void GraphicsWindow::ClearPending (int which, bool scheduleShowTW) {
+void GraphicsWindow::ClearPending(int which, bool scheduleShowTW) {
   // std::cout << "in ClearPending, which: " << which << ", pending.command: " <<
   // uint32_t(pending.command) << ", pending.operation: " << uint32_t(pending.operation) <<
   // std::endl;
   switch (pending.command) {
   case Command::LINE_SEGMENT: {
-    LineToolButtonUnclickedEventHook ();
+    LineToolButtonUnclickedEventHook();
     break;
   }
   case Command::RECTANGLE: {
-    RectToolButtonUnclickedEventHook ();
+    RectToolButtonUnclickedEventHook();
     break;
   }
   case Command::CIRCLE: {
-    CircleToolButtonUnclickedEventHook ();
+    CircleToolButtonUnclickedEventHook();
     break;
   }
   case Command::ARC: {
-    ArcToolButtonUnclickedEventHook ();
+    ArcToolButtonUnclickedEventHook();
     break;
   }
   case Command::TANGENT_ARC: {
-    TangentArcToolButtonUnclickedEventHook ();
+    TangentArcToolButtonUnclickedEventHook();
     break;
   }
   case Command::CUBIC: {
-    CubicSplineToolButtonUnclickedEventHook ();
+    CubicSplineToolButtonUnclickedEventHook();
     break;
   }
   case Command::DATUM_POINT: {
-    DatumPointToolButtonUnclickedEventHook ();
+    DatumPointToolButtonUnclickedEventHook();
     break;
   }
   case Command::CONSTRUCTION: {
-    ConstructionToolButtonUnclickedEventHook ();
+    ConstructionToolButtonUnclickedEventHook();
     break;
   }
   case Command::SPLIT_CURVES: {
-    SplitCurvesToolButtonUnclickedEventHook ();
+    SplitCurvesToolButtonUnclickedEventHook();
     break;
   }
   case Command::TTF_TEXT: {
-    TextToolButtonUnclickedEventHook ();
+    TextToolButtonUnclickedEventHook();
     break;
   }
   default: {
@@ -481,15 +481,15 @@ void GraphicsWindow::ClearPending (int which, bool scheduleShowTW) {
   }
   }
 
-  pending.points.Clear ();
-  pending.requests.Clear ();
+  pending.points.Clear();
+  pending.requests.Clear();
   pending = {};
   if (scheduleShowTW) {
-    SS.ScheduleShowTW ();
+    SS.ScheduleShowTW();
   }
 }
 
-bool GraphicsWindow::IsFromPending (hRequest r) {
+bool GraphicsWindow::IsFromPending(hRequest r) {
   for (auto &req : pending.requests) {
     if (req == r)
       return true;
@@ -497,11 +497,11 @@ bool GraphicsWindow::IsFromPending (hRequest r) {
   return false;
 }
 
-void GraphicsWindow::AddToPending (hRequest r) {
-  pending.requests.Add (&r);
+void GraphicsWindow::AddToPending(hRequest r) {
+  pending.requests.Add(&r);
 }
 
-void GraphicsWindow::ReplacePending (hRequest before, hRequest after) {
+void GraphicsWindow::ReplacePending(hRequest before, hRequest after) {
   for (auto &req : pending.requests) {
     if (req == before) {
       req = after;
@@ -509,7 +509,7 @@ void GraphicsWindow::ReplacePending (hRequest before, hRequest after) {
   }
 }
 
-void GraphicsWindow::MouseMiddleOrRightDown (double x, double y) {
+void GraphicsWindow::MouseMiddleOrRightDown(double x, double y) {
   orig.offset        = offset;
   orig.projUp        = projUp;
   orig.projRight     = projRight;
@@ -518,9 +518,9 @@ void GraphicsWindow::MouseMiddleOrRightDown (double x, double y) {
   orig.startedMoving = false;
 }
 
-void GraphicsWindow::MouseRightUp (double x, double y) {
+void GraphicsWindow::MouseRightUp(double x, double y) {
   SS.extraLine.draw = false;
-  Invalidate ();
+  Invalidate();
 
   // Don't show a context menu if the user finishing a pan.
   if (orig.startedMoving)
@@ -530,8 +530,8 @@ void GraphicsWindow::MouseRightUp (double x, double y) {
     return;
 
   if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT && pending.hasSuggestion) {
-    Constraint::TryConstrain (SS.GW.pending.suggestion, Entity::NO_ENTITY, Entity::NO_ENTITY,
-                              pending.request.entity (0));
+    Constraint::TryConstrain(SS.GW.pending.suggestion, Entity::NO_ENTITY, Entity::NO_ENTITY,
+                             pending.request.entity(0));
   }
 
   if (pending.operation == Pending::DRAGGING_NEW_LINE_POINT ||
@@ -543,28 +543,28 @@ void GraphicsWindow::MouseRightUp (double x, double y) {
     // a left click would draw another one. This is quicker and more
     // intuitive than hitting escape. Likewise for other entities
     // for consistency.
-    ClearPending (2);
+    ClearPending(2);
     return;
   }
 
   // The current mouse location
-  Vector v = offset.ScaledBy (-1);
-  v        = v.Plus (projRight.ScaledBy (x / scale));
-  v        = v.Plus (projUp.ScaledBy (y / scale));
+  Vector v = offset.ScaledBy(-1);
+  v        = v.Plus(projRight.ScaledBy(x / scale));
+  v        = v.Plus(projUp.ScaledBy(y / scale));
 
-  Platform::MenuRef menu = Platform::CreateMenu ();
+  Platform::MenuRef menu = Platform::CreateMenu();
   context.active         = true;
 
-  if (!hover.IsEmpty ()) {
-    MakeSelected (&hover);
-    SS.ScheduleShowTW ();
+  if (!hover.IsEmpty()) {
+    MakeSelected(&hover);
+    SS.ScheduleShowTW();
   }
-  GroupSelection ();
+  GroupSelection();
 
   bool itemsSelected = (gs.n > 0 || gs.constraints > 0);
   if (itemsSelected) {
     if (gs.stylables > 0) {
-      Platform::MenuRef styleMenu = menu->AddSubMenu (_ ("Assign to Style"));
+      Platform::MenuRef styleMenu = menu->AddSubMenu(_("Assign to Style"));
 
       bool empty = true;
       for (const Style &s : SK.style) {
@@ -573,153 +573,153 @@ void GraphicsWindow::MouseRightUp (double x, double y) {
 
         uint32_t v = s.h.v;
 
-        styleMenu->AddItem (s.DescriptionString (), [v] () { Style::AssignSelectionToStyle (v); });
+        styleMenu->AddItem(s.DescriptionString(), [v]() { Style::AssignSelectionToStyle(v); });
         empty = false;
       }
 
       if (!empty)
-        styleMenu->AddSeparator ();
+        styleMenu->AddSeparator();
 
-      styleMenu->AddItem (_ ("No Style"), [] () { Style::AssignSelectionToStyle (0); });
-      styleMenu->AddItem (_ ("Newly Created Custom Style..."), [this] () {
-        uint32_t vs = Style::CreateCustomStyle ();
-        Style::AssignSelectionToStyle (vs);
-        ForceTextWindowShown ();
+      styleMenu->AddItem(_("No Style"), []() { Style::AssignSelectionToStyle(0); });
+      styleMenu->AddItem(_("Newly Created Custom Style..."), [this]() {
+        uint32_t vs = Style::CreateCustomStyle();
+        Style::AssignSelectionToStyle(vs);
+        ForceTextWindowShown();
       });
     }
     if (gs.n + gs.constraints == 1) {
-      menu->AddItem (_ ("Group Info"), [this] () {
+      menu->AddItem(_("Group Info"), [this]() {
         hGroup hg;
         if (gs.entities == 1) {
-          hg = SK.GetEntity (gs.entity[0])->group;
+          hg = SK.GetEntity(gs.entity[0])->group;
         } else if (gs.points == 1) {
-          hg = SK.GetEntity (gs.point[0])->group;
+          hg = SK.GetEntity(gs.point[0])->group;
         } else if (gs.constraints == 1) {
-          hg = SK.GetConstraint (gs.constraint[0])->group;
+          hg = SK.GetConstraint(gs.constraint[0])->group;
         } else {
           return;
         }
-        ClearSelection ();
+        ClearSelection();
 
-        SS.TW.GoToScreen (TextWindow::Screen::GROUP_INFO);
+        SS.TW.GoToScreen(TextWindow::Screen::GROUP_INFO);
         SS.TW.shown.group = hg;
-        SS.ScheduleShowTW ();
+        SS.ScheduleShowTW();
       });
     }
     if (gs.n + gs.constraints == 1 && gs.stylables == 1) {
-      menu->AddItem (_ ("Style Info"), [this] () {
+      menu->AddItem(_("Style Info"), [this]() {
         hStyle hs;
         if (gs.entities == 1) {
-          hs = Style::ForEntity (gs.entity[0]);
+          hs = Style::ForEntity(gs.entity[0]);
         } else if (gs.points == 1) {
-          hs = Style::ForEntity (gs.point[0]);
+          hs = Style::ForEntity(gs.point[0]);
         } else if (gs.constraints == 1) {
-          hs = SK.GetConstraint (gs.constraint[0])->GetStyle ();
+          hs = SK.GetConstraint(gs.constraint[0])->GetStyle();
         } else {
           return;
         }
-        ClearSelection ();
+        ClearSelection();
 
-        SS.TW.GoToScreen (TextWindow::Screen::STYLE_INFO);
+        SS.TW.GoToScreen(TextWindow::Screen::STYLE_INFO);
         SS.TW.shown.style = hs;
-        SS.ScheduleShowTW ();
+        SS.ScheduleShowTW();
       });
     }
     if (gs.withEndpoints > 0) {
-      menu->AddItem (_ ("Select Edge Chain"),
-                     [] () { SolveSpaceUI::MenuEdit (Command::SELECT_CHAIN); });
+      menu->AddItem(_("Select Edge Chain"),
+                    []() { SolveSpaceUI::MenuEdit(Command::SELECT_CHAIN); });
     }
     if (gs.constraints == 1 && gs.n == 0) {
-      Constraint *c = SK.GetConstraint (gs.constraint[0]);
-      if (c->HasLabel () && c->type != Constraint::Type::COMMENT) {
-        menu->AddItem (_ ("Toggle Reference Dimension"),
-                       [] () { SolveSpaceUI::MenuConstrain (Command::REFERENCE); });
+      Constraint *c = SK.GetConstraint(gs.constraint[0]);
+      if (c->HasLabel() && c->type != Constraint::Type::COMMENT) {
+        menu->AddItem(_("Toggle Reference Dimension"),
+                      []() { SolveSpaceUI::MenuConstrain(Command::REFERENCE); });
       }
       if (c->type == Constraint::Type::ANGLE || c->type == Constraint::Type::EQUAL_ANGLE) {
-        menu->AddItem (_ ("Other Supplementary Angle"),
-                       [] () { SolveSpaceUI::MenuConstrain (Command::OTHER_ANGLE); });
+        menu->AddItem(_("Other Supplementary Angle"),
+                      []() { SolveSpaceUI::MenuConstrain(Command::OTHER_ANGLE); });
       }
     }
     if (gs.constraintLabels > 0 || gs.points > 0) {
-      menu->AddItem (_ ("Snap to Grid"), [] () { SolveSpaceUI::MenuEdit (Command::SNAP_TO_GRID); });
+      menu->AddItem(_("Snap to Grid"), []() { SolveSpaceUI::MenuEdit(Command::SNAP_TO_GRID); });
     }
 
-    if (gs.points == 1 && gs.point[0].isFromRequest ()) {
-      Request *r     = SK.GetRequest (gs.point[0].request ());
-      int      index = r->IndexOfPoint (gs.point[0]);
+    if (gs.points == 1 && gs.point[0].isFromRequest()) {
+      Request *r     = SK.GetRequest(gs.point[0].request());
+      int      index = r->IndexOfPoint(gs.point[0]);
       if ((r->type == Request::Type::CUBIC && (index > 1 && index < r->extraPoints + 2)) ||
           r->type == Request::Type::CUBIC_PERIODIC) {
-        menu->AddItem (_ ("Remove Spline Point"), [this, r] () {
-          int index = r->IndexOfPoint (gs.point[0]);
-          ssassert (r->extraPoints != 0, "Expected a bezier with interior control points");
+        menu->AddItem(_("Remove Spline Point"), [this, r]() {
+          int index = r->IndexOfPoint(gs.point[0]);
+          ssassert(r->extraPoints != 0, "Expected a bezier with interior control points");
 
-          SS.UndoRemember ();
-          Entity *e = SK.GetEntity (r->h.entity (0));
+          SS.UndoRemember();
+          Entity *e = SK.GetEntity(r->h.entity(0));
 
           // First, fix point-coincident constraints involving this point.
           // Then, remove all other constraints, since they would otherwise
           // jump to an adjacent one and mess up the bezier after generation.
-          FixConstraintsForPointBeingDeleted (e->point[index]);
-          RemoveConstraintsForPointBeingDeleted (e->point[index]);
+          FixConstraintsForPointBeingDeleted(e->point[index]);
+          RemoveConstraintsForPointBeingDeleted(e->point[index]);
 
           for (int i = index; i < MAX_POINTS_IN_ENTITY - 1; i++) {
             if (e->point[i + 1].v == 0)
               break;
-            Entity *p0 = SK.GetEntity (e->point[i]);
-            Entity *p1 = SK.GetEntity (e->point[i + 1]);
-            ReplacePointInConstraints (p1->h, p0->h);
-            p0->PointForceTo (p1->PointGetNum ());
+            Entity *p0 = SK.GetEntity(e->point[i]);
+            Entity *p1 = SK.GetEntity(e->point[i + 1]);
+            ReplacePointInConstraints(p1->h, p0->h);
+            p0->PointForceTo(p1->PointGetNum());
           }
           r->extraPoints--;
-          SS.MarkGroupDirtyByEntity (gs.point[0]);
-          ClearSelection ();
+          SS.MarkGroupDirtyByEntity(gs.point[0]);
+          ClearSelection();
         });
       }
     }
-    if (gs.entities == 1 && gs.entity[0].isFromRequest ()) {
-      Request *r = SK.GetRequest (gs.entity[0].request ());
+    if (gs.entities == 1 && gs.entity[0].isFromRequest()) {
+      Request *r = SK.GetRequest(gs.entity[0].request());
       if (r->type == Request::Type::CUBIC || r->type == Request::Type::CUBIC_PERIODIC) {
-        Entity *e             = SK.GetEntity (gs.entity[0]);
-        int     addAfterPoint = e->GetPositionOfPoint (GetCamera (), Point2d::From (x, y));
-        ssassert (addAfterPoint != -1, "Expected a nearest bezier point to be located");
+        Entity *e             = SK.GetEntity(gs.entity[0]);
+        int     addAfterPoint = e->GetPositionOfPoint(GetCamera(), Point2d::From(x, y));
+        ssassert(addAfterPoint != -1, "Expected a nearest bezier point to be located");
         // Skip derivative point.
         if (r->type == Request::Type::CUBIC)
           addAfterPoint++;
-        menu->AddItem (_ ("Add Spline Point"), [this, r, addAfterPoint, v] () {
+        menu->AddItem(_("Add Spline Point"), [this, r, addAfterPoint, v]() {
           int pointCount = r->extraPoints + ((r->type == Request::Type::CUBIC_PERIODIC) ? 3 : 4);
           if (pointCount >= MAX_POINTS_IN_ENTITY) {
-            Error (_ ("Cannot add spline point: maximum number of points reached."));
+            Error(_("Cannot add spline point: maximum number of points reached."));
             return;
           }
 
-          SS.UndoRemember ();
+          SS.UndoRemember();
           r->extraPoints++;
-          SS.MarkGroupDirtyByEntity (gs.entity[0]);
-          SS.GenerateAll (SolveSpaceUI::Generate::REGEN);
+          SS.MarkGroupDirtyByEntity(gs.entity[0]);
+          SS.GenerateAll(SolveSpaceUI::Generate::REGEN);
 
-          Entity *e = SK.GetEntity (r->h.entity (0));
+          Entity *e = SK.GetEntity(r->h.entity(0));
           for (int i = MAX_POINTS_IN_ENTITY; i > addAfterPoint + 1; i--) {
-            Entity *p0 = SK.entity.FindByIdNoOops (e->point[i]);
+            Entity *p0 = SK.entity.FindByIdNoOops(e->point[i]);
             if (p0 == NULL)
               continue;
-            Entity *p1 = SK.GetEntity (e->point[i - 1]);
-            ReplacePointInConstraints (p1->h, p0->h);
-            p0->PointForceTo (p1->PointGetNum ());
+            Entity *p1 = SK.GetEntity(e->point[i - 1]);
+            ReplacePointInConstraints(p1->h, p0->h);
+            p0->PointForceTo(p1->PointGetNum());
           }
-          Entity *p = SK.GetEntity (e->point[addAfterPoint + 1]);
-          p->PointForceTo (v);
-          SS.MarkGroupDirtyByEntity (gs.entity[0]);
-          ClearSelection ();
+          Entity *p = SK.GetEntity(e->point[addAfterPoint + 1]);
+          p->PointForceTo(v);
+          SS.MarkGroupDirtyByEntity(gs.entity[0]);
+          ClearSelection();
         });
       }
     }
     if (gs.entities == gs.n) {
-      menu->AddItem (_ ("Toggle Construction"),
-                     [] () { SolveSpaceUI::MenuRequest (Command::CONSTRUCTION); });
+      menu->AddItem(_("Toggle Construction"),
+                    []() { SolveSpaceUI::MenuRequest(Command::CONSTRUCTION); });
     }
 
     if (gs.points == 1) {
-      Entity                          *p  = SK.GetEntity (gs.point[0]);
+      Entity                          *p  = SK.GetEntity(gs.point[0]);
       Constraint                      *c  = nullptr;
       IdList<Constraint, hConstraint> *lc = &(SK.constraint);
       for (Constraint &ci : *lc) {
@@ -731,12 +731,12 @@ void GraphicsWindow::MouseRightUp (double x, double y) {
         }
       }
       if (c) {
-        menu->AddItem (_ ("Delete Point-Coincident Constraint"), [this, p] () {
-          if (!p->IsPoint ())
+        menu->AddItem(_("Delete Point-Coincident Constraint"), [this, p]() {
+          if (!p->IsPoint())
             return;
 
-          SS.UndoRemember ();
-          SK.constraint.ClearTags ();
+          SS.UndoRemember();
+          SK.constraint.ClearTags();
           for (Constraint &c : SK.constraint) {
             if (c.type != Constraint::Type::POINTS_COINCIDENT)
               continue;
@@ -744,190 +744,189 @@ void GraphicsWindow::MouseRightUp (double x, double y) {
               c.tag = 1;
             }
           }
-          SK.constraint.RemoveTagged ();
-          ClearSelection ();
+          SK.constraint.RemoveTagged();
+          ClearSelection();
         });
       }
     }
-    menu->AddSeparator ();
-    if (LockedInWorkplane ()) {
-      menu->AddItem (_ ("Cut"), [] () { SolveSpaceUI::MenuClipboard (Command::CUT); });
-      menu->AddItem (_ ("Copy"), [] () { SolveSpaceUI::MenuClipboard (Command::COPY); });
+    menu->AddSeparator();
+    if (LockedInWorkplane()) {
+      menu->AddItem(_("Cut"), []() { SolveSpaceUI::MenuClipboard(Command::CUT); });
+      menu->AddItem(_("Copy"), []() { SolveSpaceUI::MenuClipboard(Command::COPY); });
     }
   } else {
-    menu->AddItem (_ ("Select All"), [] () { SolveSpaceUI::MenuEdit (Command::SELECT_ALL); });
+    menu->AddItem(_("Select All"), []() { SolveSpaceUI::MenuEdit(Command::SELECT_ALL); });
   }
 
-  if ((!SS.clipboard.r.IsEmpty () || !SS.clipboard.c.IsEmpty ()) && LockedInWorkplane ()) {
-    menu->AddItem (_ ("Paste"), [] () { SolveSpaceUI::MenuClipboard (Command::PASTE); });
-    menu->AddItem (_ ("Paste Transformed..."),
-                   [] () { SolveSpaceUI::MenuClipboard (Command::PASTE_TRANSFORM); });
+  if ((!SS.clipboard.r.IsEmpty() || !SS.clipboard.c.IsEmpty()) && LockedInWorkplane()) {
+    menu->AddItem(_("Paste"), []() { SolveSpaceUI::MenuClipboard(Command::PASTE); });
+    menu->AddItem(_("Paste Transformed..."),
+                  []() { SolveSpaceUI::MenuClipboard(Command::PASTE_TRANSFORM); });
   }
 
   if (itemsSelected) {
-    menu->AddItem (_ ("Delete"), [] () { SolveSpaceUI::MenuClipboard (Command::DELETE); });
-    menu->AddSeparator ();
-    menu->AddItem (_ ("Unselect All"), [] () { SolveSpaceUI::MenuEdit (Command::UNSELECT_ALL); });
+    menu->AddItem(_("Delete"), []() { SolveSpaceUI::MenuClipboard(Command::DELETE); });
+    menu->AddSeparator();
+    menu->AddItem(_("Unselect All"), []() { SolveSpaceUI::MenuEdit(Command::UNSELECT_ALL); });
   }
   // If only one item is selected, then it must be the one that we just
   // selected from the hovered item; in which case unselect all and hovered
   // are equivalent.
-  if (!hover.IsEmpty () && selection.n > 1) {
-    menu->AddItem (_ ("Unselect Hovered"), [this] {
-      if (!hover.IsEmpty ()) {
-        MakeUnselected (&hover, /*coincidentPointTrick=*/true);
+  if (!hover.IsEmpty() && selection.n > 1) {
+    menu->AddItem(_("Unselect Hovered"), [this] {
+      if (!hover.IsEmpty()) {
+        MakeUnselected(&hover, /*coincidentPointTrick=*/true);
       }
     });
   }
 
   if (itemsSelected) {
-    menu->AddSeparator ();
-    menu->AddItem (_ ("Zoom to Fit"), [] () { SolveSpaceUI::MenuView (Command::ZOOM_TO_FIT); });
+    menu->AddSeparator();
+    menu->AddItem(_("Zoom to Fit"), []() { SolveSpaceUI::MenuView(Command::ZOOM_TO_FIT); });
   }
 
-  menu->PopUp ();
+  menu->PopUp();
 
   context.active = false;
-  SS.ScheduleShowTW ();
+  SS.ScheduleShowTW();
 }
 
-hRequest GraphicsWindow::AddRequest (Request::Type type) {
-  return AddRequest (type, /*rememberForUndo=*/true);
+hRequest GraphicsWindow::AddRequest(Request::Type type) {
+  return AddRequest(type, /*rememberForUndo=*/true);
 }
-hRequest GraphicsWindow::AddRequest (Request::Type type, bool rememberForUndo) {
+hRequest GraphicsWindow::AddRequest(Request::Type type, bool rememberForUndo) {
   if (rememberForUndo)
-    SS.UndoRemember ();
+    SS.UndoRemember();
 
   Request r = {};
   r.group   = activeGroup;
-  Group *g  = SK.GetGroup (activeGroup);
+  Group *g  = SK.GetGroup(activeGroup);
   if (g->type == Group::Type::DRAWING_3D || g->type == Group::Type::DRAWING_WORKPLANE) {
     r.construction = false;
   } else {
     r.construction = true;
   }
-  r.workplane = ActiveWorkplane ();
+  r.workplane = ActiveWorkplane();
   r.type      = type;
-  SK.request.AddAndAssignId (&r);
+  SK.request.AddAndAssignId(&r);
 
   // We must regenerate the parameters, so that the code that tries to
   // place this request's entities where the mouse is can do so. But
   // we mustn't try to solve until reasonable values have been supplied
   // for these new parameters, or else we'll get a numerical blowup.
-  r.Generate (&SK.entity, &SK.param);
-  SS.MarkGroupDirty (r.group);
+  r.Generate(&SK.entity, &SK.param);
+  SS.MarkGroupDirty(r.group);
   return r.h;
 }
 
-Vector GraphicsWindow::SnapToEntityByScreenPoint (Point2d pp, hEntity he) {
-  Entity *e = SK.GetEntity (he);
-  if (e->IsPoint ())
-    return e->PointGetNum ();
-  SEdgeList *edges = e->GetOrGenerateEdges ();
+Vector GraphicsWindow::SnapToEntityByScreenPoint(Point2d pp, hEntity he) {
+  Entity *e = SK.GetEntity(he);
+  if (e->IsPoint())
+    return e->PointGetNum();
+  SEdgeList *edges = e->GetOrGenerateEdges();
 
   double       minD = -1.0f;
   double       k;
   const SEdge *edge = NULL;
   for (const auto &e : edges->l) {
-    Point2d p0  = ProjectPoint (e.a);
-    Point2d p1  = ProjectPoint (e.b);
-    Point2d dir = p1.Minus (p0);
-    double  d   = pp.DistanceToLine (p0, dir, /*asSegment=*/true);
+    Point2d p0  = ProjectPoint(e.a);
+    Point2d p1  = ProjectPoint(e.b);
+    Point2d dir = p1.Minus(p0);
+    double  d   = pp.DistanceToLine(p0, dir, /*asSegment=*/true);
     if (minD > 0.0 && d > minD)
       continue;
     minD = d;
-    k    = pp.Minus (p0).Dot (dir) / dir.Dot (dir);
+    k    = pp.Minus(p0).Dot(dir) / dir.Dot(dir);
     edge = &e;
   }
   if (edge == NULL)
-    return UnProjectPoint (pp);
-  return edge->a.Plus (edge->b.Minus (edge->a).ScaledBy (k));
+    return UnProjectPoint(pp);
+  return edge->a.Plus(edge->b.Minus(edge->a).ScaledBy(k));
 }
 
-bool GraphicsWindow::ConstrainPointByHovered (hEntity pt, const Point2d *projected) {
+bool GraphicsWindow::ConstrainPointByHovered(hEntity pt, const Point2d *projected) {
   if (!hover.entity.v)
     return false;
 
-  Entity *point = SK.GetEntity (pt);
-  Entity *e     = SK.GetEntity (hover.entity);
-  if (e->IsPoint ()) {
-    point->PointForceTo (e->PointGetNum ());
-    Constraint::ConstrainCoincident (e->h, pt);
+  Entity *point = SK.GetEntity(pt);
+  Entity *e     = SK.GetEntity(hover.entity);
+  if (e->IsPoint()) {
+    point->PointForceTo(e->PointGetNum());
+    Constraint::ConstrainCoincident(e->h, pt);
     return true;
   }
-  if (e->IsCircle ()) {
+  if (e->IsCircle()) {
     if (projected != NULL) {
-      Vector snapPos = SnapToEntityByScreenPoint (*projected, e->h);
-      point->PointForceTo (snapPos);
+      Vector snapPos = SnapToEntityByScreenPoint(*projected, e->h);
+      point->PointForceTo(snapPos);
     }
-    Constraint::Constrain (Constraint::Type::PT_ON_CIRCLE, pt, Entity::NO_ENTITY, e->h);
+    Constraint::Constrain(Constraint::Type::PT_ON_CIRCLE, pt, Entity::NO_ENTITY, e->h);
     return true;
   }
   if (e->type == Entity::Type::LINE_SEGMENT) {
     if (projected != NULL) {
-      Vector snapPos = SnapToEntityByScreenPoint (*projected, e->h);
-      point->PointForceTo (snapPos);
+      Vector snapPos = SnapToEntityByScreenPoint(*projected, e->h);
+      point->PointForceTo(snapPos);
     }
-    Constraint::Constrain (Constraint::Type::PT_ON_LINE, pt, Entity::NO_ENTITY, e->h);
+    Constraint::Constrain(Constraint::Type::PT_ON_LINE, pt, Entity::NO_ENTITY, e->h);
     return true;
   }
 
   return false;
 }
 
-bool GraphicsWindow::MouseEvent (Platform::MouseEvent event) {
+bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
   if (window == NULL) {
     return true;
   }
   using Platform::MouseEvent;
   double width, height;
-  window->GetContentSize (&width, &height);
+  window->GetContentSize(&width, &height);
 
   event.x = event.x - width / 2;
   event.y = height / 2 - event.y;
 
   switch (event.type) {
   case MouseEvent::Type::MOTION:
-    this->MouseMoved (event.x, event.y, event.button == MouseEvent::Button::LEFT,
-                      event.button == MouseEvent::Button::MIDDLE,
-                      event.button == MouseEvent::Button::RIGHT, event.shiftDown,
-                      event.controlDown);
+    this->MouseMoved(event.x, event.y, event.button == MouseEvent::Button::LEFT,
+                     event.button == MouseEvent::Button::MIDDLE,
+                     event.button == MouseEvent::Button::RIGHT, event.shiftDown, event.controlDown);
     break;
 
   case MouseEvent::Type::PRESS:
     if (event.button == MouseEvent::Button::LEFT) {
-      this->MouseLeftDown (event.x, event.y, event.shiftDown, event.controlDown);
+      this->MouseLeftDown(event.x, event.y, event.shiftDown, event.controlDown);
     } else if (event.button == MouseEvent::Button::MIDDLE ||
                event.button == MouseEvent::Button::RIGHT) {
-      this->MouseMiddleOrRightDown (event.x, event.y);
+      this->MouseMiddleOrRightDown(event.x, event.y);
     }
     break;
 
   case MouseEvent::Type::DBL_PRESS:
     if (event.button == MouseEvent::Button::LEFT) {
-      this->MouseLeftDoubleClick (event.x, event.y);
+      this->MouseLeftDoubleClick(event.x, event.y);
     }
     break;
 
   case MouseEvent::Type::RELEASE:
     if (event.button == MouseEvent::Button::LEFT) {
-      this->MouseLeftUp (event.x, event.y, event.shiftDown, event.controlDown);
+      this->MouseLeftUp(event.x, event.y, event.shiftDown, event.controlDown);
     } else if (event.button == MouseEvent::Button::RIGHT) {
-      this->MouseRightUp (event.x, event.y);
+      this->MouseRightUp(event.x, event.y);
     }
     break;
 
   case MouseEvent::Type::SCROLL_VERT:
-    this->MouseScroll (event.shiftDown ? event.scrollDelta / 10 : event.scrollDelta);
+    this->MouseScroll(event.shiftDown ? event.scrollDelta / 10 : event.scrollDelta);
     break;
 
-  case MouseEvent::Type::LEAVE: this->MouseLeave (); break;
+  case MouseEvent::Type::LEAVE: this->MouseLeave(); break;
   }
 
   return true;
 }
 
-void GraphicsWindow::MouseLeftDown (double mx, double my, bool shiftDown, bool ctrlDown) {
+void GraphicsWindow::MouseLeftDown(double mx, double my, bool shiftDown, bool ctrlDown) {
   orig.mouseDown = true;
 
   // This will be clobbered by MouseMoved below.
@@ -935,17 +934,17 @@ void GraphicsWindow::MouseLeftDown (double mx, double my, bool shiftDown, bool c
   Constraint::Type constraintSuggestion    = pending.suggestion;
 
   // Make sure the hover is up to date.
-  MouseMoved (mx, my, /*leftDown=*/false, /*middleDown=*/false, /*rightDown=*/false,
-              /*shiftDown=*/false, /*ctrlDown=*/false);
+  MouseMoved(mx, my, /*leftDown=*/false, /*middleDown=*/false, /*rightDown=*/false,
+             /*shiftDown=*/false, /*ctrlDown=*/false);
   orig.mouse.x           = mx;
   orig.mouse.y           = my;
   orig.mouseOnButtonDown = orig.mouse;
-  Point2d mouse          = Point2d::From (mx, my);
+  Point2d mouse          = Point2d::From(mx, my);
 
   // The current mouse location
-  Vector v = offset.ScaledBy (-1);
-  v        = v.Plus (projRight.ScaledBy (mx / scale));
-  v        = v.Plus (projUp.ScaledBy (my / scale));
+  Vector v = offset.ScaledBy(-1);
+  v        = v.Plus(projRight.ScaledBy(mx / scale));
+  v        = v.Plus(projUp.ScaledBy(my / scale));
 
   hRequest    hr = {};
   hConstraint hc = {};
@@ -953,212 +952,210 @@ void GraphicsWindow::MouseLeftDown (double mx, double my, bool shiftDown, bool c
   case Pending::COMMAND:
     switch (pending.command) {
     case Command::DATUM_POINT:
-      hr = AddRequest (Request::Type::DATUM_POINT);
-      SK.GetEntity (hr.entity (0))->PointForceTo (v);
-      ConstrainPointByHovered (hr.entity (0), &mouse);
+      hr = AddRequest(Request::Type::DATUM_POINT);
+      SK.GetEntity(hr.entity(0))->PointForceTo(v);
+      ConstrainPointByHovered(hr.entity(0), &mouse);
 
-      ClearSuper (9);
+      ClearSuper(9);
       break;
 
     case Command::LINE_SEGMENT:
     case Command::CONSTR_SEGMENT:
-      hr                               = AddRequest (Request::Type::LINE_SEGMENT);
-      SK.GetRequest (hr)->construction = (pending.command == Command::CONSTR_SEGMENT);
-      SK.GetEntity (hr.entity (1))->PointForceTo (v);
-      ConstrainPointByHovered (hr.entity (1), &mouse);
+      hr                              = AddRequest(Request::Type::LINE_SEGMENT);
+      SK.GetRequest(hr)->construction = (pending.command == Command::CONSTR_SEGMENT);
+      SK.GetEntity(hr.entity(1))->PointForceTo(v);
+      ConstrainPointByHovered(hr.entity(1), &mouse);
 
-      AddToPending (hr);
+      AddToPending(hr);
 
       pending.operation   = Pending::DRAGGING_NEW_LINE_POINT;
       pending.request     = hr;
-      pending.point       = hr.entity (2);
-      pending.description = _ ("click next point of line, or press Esc");
-      SK.GetEntity (pending.point)->PointForceTo (v);
+      pending.point       = hr.entity(2);
+      pending.description = _("click next point of line, or press Esc");
+      SK.GetEntity(pending.point)->PointForceTo(v);
       break;
 
     case Command::RECTANGLE: {
-      if (!SS.GW.LockedInWorkplane ()) {
-        Error (_ ("Can't draw rectangle in 3d; first, activate a workplane "
-                  "with Sketch -> In Workplane."));
-        ClearSuper (18);
+      if (!SS.GW.LockedInWorkplane()) {
+        Error(_("Can't draw rectangle in 3d; first, activate a workplane "
+                "with Sketch -> In Workplane."));
+        ClearSuper(18);
         break;
       }
       hRequest lns[4];
       int      i;
-      SS.UndoRemember ();
+      SS.UndoRemember();
       for (i = 0; i < 4; i++) {
-        lns[i] = AddRequest (Request::Type::LINE_SEGMENT, /*rememberForUndo=*/false);
-        AddToPending (lns[i]);
+        lns[i] = AddRequest(Request::Type::LINE_SEGMENT, /*rememberForUndo=*/false);
+        AddToPending(lns[i]);
       }
       for (i = 0; i < 4; i++) {
-        Constraint::ConstrainCoincident (lns[i].entity (1), lns[(i + 1) % 4].entity (2));
-        SK.GetEntity (lns[i].entity (1))->PointForceTo (v);
-        SK.GetEntity (lns[i].entity (2))->PointForceTo (v);
+        Constraint::ConstrainCoincident(lns[i].entity(1), lns[(i + 1) % 4].entity(2));
+        SK.GetEntity(lns[i].entity(1))->PointForceTo(v);
+        SK.GetEntity(lns[i].entity(2))->PointForceTo(v);
       }
       for (i = 0; i < 4; i++) {
-        Constraint::Constrain ((i % 2) ? Constraint::Type::HORIZONTAL : Constraint::Type::VERTICAL,
-                               Entity::NO_ENTITY, Entity::NO_ENTITY, lns[i].entity (0));
+        Constraint::Constrain((i % 2) ? Constraint::Type::HORIZONTAL : Constraint::Type::VERTICAL,
+                              Entity::NO_ENTITY, Entity::NO_ENTITY, lns[i].entity(0));
       }
-      if (ConstrainPointByHovered (lns[2].entity (1), &mouse)) {
-        Vector pos = SK.GetEntity (lns[2].entity (1))->PointGetNum ();
+      if (ConstrainPointByHovered(lns[2].entity(1), &mouse)) {
+        Vector pos = SK.GetEntity(lns[2].entity(1))->PointGetNum();
         for (i = 0; i < 4; i++) {
-          SK.GetEntity (lns[i].entity (1))->PointForceTo (pos);
-          SK.GetEntity (lns[i].entity (2))->PointForceTo (pos);
+          SK.GetEntity(lns[i].entity(1))->PointForceTo(pos);
+          SK.GetEntity(lns[i].entity(2))->PointForceTo(pos);
         }
       }
 
       pending.operation   = Pending::DRAGGING_NEW_POINT;
-      pending.point       = lns[1].entity (2);
-      pending.description = _ ("click to place other corner of rectangle");
+      pending.point       = lns[1].entity(2);
+      pending.description = _("click to place other corner of rectangle");
       hr                  = lns[0];
       break;
     }
     case Command::CIRCLE:
-      hr = AddRequest (Request::Type::CIRCLE);
+      hr = AddRequest(Request::Type::CIRCLE);
       // Centered where we clicked
-      SK.GetEntity (hr.entity (1))->PointForceTo (v);
+      SK.GetEntity(hr.entity(1))->PointForceTo(v);
       // Normal to the screen
-      SK.GetEntity (hr.entity (32))
-          ->NormalForceTo (Quaternion::From (SS.GW.projRight, SS.GW.projUp));
+      SK.GetEntity(hr.entity(32))->NormalForceTo(Quaternion::From(SS.GW.projRight, SS.GW.projUp));
       // Initial radius zero
-      SK.GetEntity (hr.entity (64))->DistanceForceTo (0);
+      SK.GetEntity(hr.entity(64))->DistanceForceTo(0);
 
-      ConstrainPointByHovered (hr.entity (1), &mouse);
+      ConstrainPointByHovered(hr.entity(1), &mouse);
 
-      AddToPending (hr);
+      AddToPending(hr);
 
       pending.operation   = Pending::DRAGGING_NEW_RADIUS;
-      pending.circle      = hr.entity (0);
-      pending.description = _ ("click to set radius");
+      pending.circle      = hr.entity(0);
+      pending.description = _("click to set radius");
       break;
 
     case Command::ARC: {
-      if (!SS.GW.LockedInWorkplane ()) {
-        Error (_ ("Can't draw arc in 3d; first, activate a workplane "
-                  "with Sketch -> In Workplane."));
-        ClearPending (3);
+      if (!SS.GW.LockedInWorkplane()) {
+        Error(_("Can't draw arc in 3d; first, activate a workplane "
+                "with Sketch -> In Workplane."));
+        ClearPending(3);
         break;
       }
-      hr = AddRequest (Request::Type::ARC_OF_CIRCLE);
+      hr = AddRequest(Request::Type::ARC_OF_CIRCLE);
       // This fudge factor stops us from immediately failing to solve
       // because of the arc's implicit (equal radius) tangent.
-      Vector adj = SS.GW.projRight.WithMagnitude (2 / SS.GW.scale);
-      SK.GetEntity (hr.entity (1))->PointForceTo (v.Minus (adj));
-      SK.GetEntity (hr.entity (2))->PointForceTo (v);
-      SK.GetEntity (hr.entity (3))->PointForceTo (v);
-      ConstrainPointByHovered (hr.entity (2), &mouse);
+      Vector adj = SS.GW.projRight.WithMagnitude(2 / SS.GW.scale);
+      SK.GetEntity(hr.entity(1))->PointForceTo(v.Minus(adj));
+      SK.GetEntity(hr.entity(2))->PointForceTo(v);
+      SK.GetEntity(hr.entity(3))->PointForceTo(v);
+      ConstrainPointByHovered(hr.entity(2), &mouse);
 
-      AddToPending (hr);
+      AddToPending(hr);
 
       pending.operation   = Pending::DRAGGING_NEW_ARC_POINT;
-      pending.point       = hr.entity (3);
-      pending.description = _ ("click to place point");
+      pending.point       = hr.entity(3);
+      pending.description = _("click to place point");
       break;
     }
     case Command::CUBIC:
-      hr = AddRequest (Request::Type::CUBIC);
-      SK.GetEntity (hr.entity (1))->PointForceTo (v);
-      SK.GetEntity (hr.entity (2))->PointForceTo (v);
-      SK.GetEntity (hr.entity (3))->PointForceTo (v);
-      SK.GetEntity (hr.entity (4))->PointForceTo (v);
-      ConstrainPointByHovered (hr.entity (1), &mouse);
+      hr = AddRequest(Request::Type::CUBIC);
+      SK.GetEntity(hr.entity(1))->PointForceTo(v);
+      SK.GetEntity(hr.entity(2))->PointForceTo(v);
+      SK.GetEntity(hr.entity(3))->PointForceTo(v);
+      SK.GetEntity(hr.entity(4))->PointForceTo(v);
+      ConstrainPointByHovered(hr.entity(1), &mouse);
 
-      AddToPending (hr);
+      AddToPending(hr);
 
       pending.operation   = Pending::DRAGGING_NEW_CUBIC_POINT;
-      pending.point       = hr.entity (4);
-      pending.description = _ ("click next point of cubic, or press Esc");
+      pending.point       = hr.entity(4);
+      pending.description = _("click next point of cubic, or press Esc");
       break;
 
     case Command::WORKPLANE:
-      if (LockedInWorkplane ()) {
-        Error (_ ("Sketching in a workplane already; sketch in 3d before "
-                  "creating new workplane."));
-        ClearSuper (14);
+      if (LockedInWorkplane()) {
+        Error(_("Sketching in a workplane already; sketch in 3d before "
+                "creating new workplane."));
+        ClearSuper(14);
         break;
       }
-      hr = AddRequest (Request::Type::WORKPLANE);
-      SK.GetEntity (hr.entity (1))->PointForceTo (v);
-      SK.GetEntity (hr.entity (32))
-          ->NormalForceTo (Quaternion::From (SS.GW.projRight, SS.GW.projUp));
-      ConstrainPointByHovered (hr.entity (1), &mouse);
+      hr = AddRequest(Request::Type::WORKPLANE);
+      SK.GetEntity(hr.entity(1))->PointForceTo(v);
+      SK.GetEntity(hr.entity(32))->NormalForceTo(Quaternion::From(SS.GW.projRight, SS.GW.projUp));
+      ConstrainPointByHovered(hr.entity(1), &mouse);
 
-      ClearSuper (19);
+      ClearSuper(19);
       break;
 
     case Command::TTF_TEXT: {
-      if (!SS.GW.LockedInWorkplane ()) {
-        Error (_ ("Can't draw text in 3d; first, activate a workplane "
-                  "with Sketch -> In Workplane."));
-        ClearSuper (15);
+      if (!SS.GW.LockedInWorkplane()) {
+        Error(_("Can't draw text in 3d; first, activate a workplane "
+                "with Sketch -> In Workplane."));
+        ClearSuper(15);
         break;
       }
-      hr = AddRequest (Request::Type::TTF_TEXT);
-      AddToPending (hr);
-      Request *r = SK.GetRequest (hr);
+      hr = AddRequest(Request::Type::TTF_TEXT);
+      AddToPending(hr);
+      Request *r = SK.GetRequest(hr);
       r->str     = "Abc";
       r->font    = Platform::embeddedFont;
 
       for (int i = 1; i <= 4; i++) {
-        SK.GetEntity (hr.entity (i))->PointForceTo (v);
+        SK.GetEntity(hr.entity(i))->PointForceTo(v);
       }
 
       pending.operation   = Pending::DRAGGING_NEW_POINT;
-      pending.point       = hr.entity (3);
-      pending.description = _ ("click to place bottom right of text");
+      pending.point       = hr.entity(3);
+      pending.description = _("click to place bottom right of text");
       break;
     }
 
     case Command::IMAGE: {
-      if (!SS.GW.LockedInWorkplane ()) {
-        Error (_ ("Can't draw image in 3d; first, activate a workplane "
-                  "with Sketch -> In Workplane."));
-        ClearSuper (16);
+      if (!SS.GW.LockedInWorkplane()) {
+        Error(_("Can't draw image in 3d; first, activate a workplane "
+                "with Sketch -> In Workplane."));
+        ClearSuper(16);
         break;
       }
-      hr = AddRequest (Request::Type::IMAGE);
-      AddToPending (hr);
-      Request *r = SK.GetRequest (hr);
+      hr = AddRequest(Request::Type::IMAGE);
+      AddToPending(hr);
+      Request *r = SK.GetRequest(hr);
       r->file    = pending.filename;
 
       for (int i = 1; i <= 4; i++) {
-        SK.GetEntity (hr.entity (i))->PointForceTo (v);
+        SK.GetEntity(hr.entity(i))->PointForceTo(v);
       }
 
       pending.operation   = Pending::DRAGGING_NEW_POINT;
-      pending.point       = hr.entity (3);
+      pending.point       = hr.entity(3);
       pending.description = "click to place bottom right of image";
       break;
     }
 
     case Command::COMMENT: {
-      ClearSuper (17);
+      ClearSuper(17);
       Constraint c  = {};
       c.group       = SS.GW.activeGroup;
-      c.workplane   = SS.GW.ActiveWorkplane ();
+      c.workplane   = SS.GW.ActiveWorkplane();
       c.type        = Constraint::Type::COMMENT;
       c.disp.offset = v;
-      c.comment     = _ ("NEW COMMENT -- DOUBLE-CLICK TO EDIT");
-      hc            = Constraint::AddConstraint (&c);
+      c.comment     = _("NEW COMMENT -- DOUBLE-CLICK TO EDIT");
+      hc            = Constraint::AddConstraint(&c);
       break;
     }
-    default: ssassert (false, "Unexpected pending menu id");
+    default: ssassert(false, "Unexpected pending menu id");
     }
     break;
 
-  case Pending::DRAGGING_RADIUS: ClearPending (4); break;
+  case Pending::DRAGGING_RADIUS: ClearPending(4); break;
 
   case Pending::DRAGGING_NEW_POINT:
   case Pending::DRAGGING_NEW_ARC_POINT:
-    ConstrainPointByHovered (pending.point, &mouse);
-    ClearPending (5);
+    ConstrainPointByHovered(pending.point, &mouse);
+    ClearPending(5);
     break;
 
   case Pending::DRAGGING_NEW_CUBIC_POINT: {
-    hRequest hr = pending.point.request ();
-    Request *r  = SK.GetRequest (hr);
+    hRequest hr = pending.point.request();
+    Request *r  = SK.GetRequest(hr);
 
-    if (hover.entity == hr.entity (1) && r->extraPoints >= 2) {
+    if (hover.entity == hr.entity(1) && r->extraPoints >= 2) {
       // They want the endpoints coincident, which means a periodic
       // spline instead.
       r->type = Request::Type::CUBIC_PERIODIC;
@@ -1166,104 +1163,104 @@ void GraphicsWindow::MouseLeftDown (double mx, double my, bool shiftDown, bool c
       // needed here; so move [2,ep+1] down, skipping first pt.
       int i;
       for (i = 2; i <= r->extraPoints + 1; i++) {
-        SK.GetEntity (hr.entity ((i - 1) + 1))
-            ->PointForceTo (SK.GetEntity (hr.entity (i + 1))->PointGetNum ());
+        SK.GetEntity(hr.entity((i - 1) + 1))
+            ->PointForceTo(SK.GetEntity(hr.entity(i + 1))->PointGetNum());
       }
       // and move ep+3 down by two, skipping both
-      SK.GetEntity (hr.entity ((r->extraPoints + 1) + 1))
-          ->PointForceTo (SK.GetEntity (hr.entity ((r->extraPoints + 3) + 1))->PointGetNum ());
+      SK.GetEntity(hr.entity((r->extraPoints + 1) + 1))
+          ->PointForceTo(SK.GetEntity(hr.entity((r->extraPoints + 3) + 1))->PointGetNum());
       r->extraPoints -= 2;
       // And we're done.
-      SS.MarkGroupDirty (r->group);
-      ClearPending (6);
+      SS.MarkGroupDirty(r->group);
+      ClearPending(6);
       break;
     }
 
-    if (ConstrainPointByHovered (pending.point, &mouse)) {
-      ClearPending (7);
+    if (ConstrainPointByHovered(pending.point, &mouse)) {
+      ClearPending(7);
       break;
     }
 
     Entity e;
-#define arraylen(x) (sizeof ((x)) / sizeof ((x)[0]))
-    if (r->extraPoints >= (int)arraylen (e.point) - 4) {
-      ClearPending (8);
+#define arraylen(x) (sizeof((x)) / sizeof((x)[0]))
+    if (r->extraPoints >= (int)arraylen(e.point) - 4) {
+      ClearPending(8);
       break;
     }
 
-    (SK.GetRequest (hr)->extraPoints)++;
-    SS.GenerateAll (SolveSpaceUI::Generate::REGEN);
+    (SK.GetRequest(hr)->extraPoints)++;
+    SS.GenerateAll(SolveSpaceUI::Generate::REGEN);
 
     int    ep   = r->extraPoints;
-    Vector last = SK.GetEntity (hr.entity (3 + ep))->PointGetNum ();
+    Vector last = SK.GetEntity(hr.entity(3 + ep))->PointGetNum();
 
-    SK.GetEntity (hr.entity (2 + ep))->PointForceTo (last);
-    SK.GetEntity (hr.entity (3 + ep))->PointForceTo (v);
-    SK.GetEntity (hr.entity (4 + ep))->PointForceTo (v);
-    pending.point = hr.entity (4 + ep);
+    SK.GetEntity(hr.entity(2 + ep))->PointForceTo(last);
+    SK.GetEntity(hr.entity(3 + ep))->PointForceTo(v);
+    SK.GetEntity(hr.entity(4 + ep))->PointForceTo(v);
+    pending.point = hr.entity(4 + ep);
     break;
   }
 
   case Pending::DRAGGING_NEW_LINE_POINT: {
     if (hover.entity.v) {
-      Entity *e = SK.GetEntity (hover.entity);
-      if (e->IsPoint ()) {
-        hRequest hrl = pending.point.request ();
-        Entity  *sp  = SK.GetEntity (hrl.entity (1));
-        if ((e->PointGetNum ()).Equals ((sp->PointGetNum ()))) {
+      Entity *e = SK.GetEntity(hover.entity);
+      if (e->IsPoint()) {
+        hRequest hrl = pending.point.request();
+        Entity  *sp  = SK.GetEntity(hrl.entity(1));
+        if ((e->PointGetNum()).Equals((sp->PointGetNum()))) {
           // If we constrained by the hovered point, then we
           // would create a zero-length line segment. That's
           // not good, so just stop drawing.
-          ClearPending (9);
+          ClearPending(9);
           break;
         }
       }
     }
 
-    bool doneDragging = ConstrainPointByHovered (pending.point, &mouse);
+    bool doneDragging = ConstrainPointByHovered(pending.point, &mouse);
 
     // Constrain the line segment horizontal or vertical if close enough
     if (hasConstraintSuggestion) {
-      Constraint::TryConstrain (constraintSuggestion, Entity::NO_ENTITY, Entity::NO_ENTITY,
-                                pending.request.entity (0));
+      Constraint::TryConstrain(constraintSuggestion, Entity::NO_ENTITY, Entity::NO_ENTITY,
+                               pending.request.entity(0));
     }
 
     if (doneDragging) {
-      ClearPending (10);
+      ClearPending(10);
       break;
     }
 
     // Create a new line segment, so that we continue drawing.
-    hRequest hr = AddRequest (Request::Type::LINE_SEGMENT);
-    ReplacePending (pending.request, hr);
-    SK.GetRequest (hr)->construction = SK.GetRequest (pending.request)->construction;
+    hRequest hr = AddRequest(Request::Type::LINE_SEGMENT);
+    ReplacePending(pending.request, hr);
+    SK.GetRequest(hr)->construction = SK.GetRequest(pending.request)->construction;
     // Displace the second point of the new line segment slightly,
     // to avoid creating zero-length edge warnings.
-    SK.GetEntity (hr.entity (2))->PointForceTo (v.Plus (projRight.ScaledBy (0.5 / scale)));
+    SK.GetEntity(hr.entity(2))->PointForceTo(v.Plus(projRight.ScaledBy(0.5 / scale)));
 
     // Constrain the line segments to share an endpoint
-    Constraint::ConstrainCoincident (pending.point, hr.entity (1));
-    Vector pendingPos = SK.GetEntity (pending.point)->PointGetNum ();
-    SK.GetEntity (hr.entity (1))->PointForceTo (pendingPos);
+    Constraint::ConstrainCoincident(pending.point, hr.entity(1));
+    Vector pendingPos = SK.GetEntity(pending.point)->PointGetNum();
+    SK.GetEntity(hr.entity(1))->PointForceTo(pendingPos);
 
     // And drag an endpoint of the new line segment
     pending.operation   = Pending::DRAGGING_NEW_LINE_POINT;
     pending.request     = hr;
-    pending.point       = hr.entity (2);
-    pending.description = _ ("click next point of line, or press Esc");
+    pending.point       = hr.entity(2);
+    pending.description = _("click next point of line, or press Esc");
 
     break;
   }
 
   case Pending::NONE:
   default:
-    ClearPending (11);
-    if (!hover.IsEmpty ()) {
+    ClearPending(11);
+    if (!hover.IsEmpty()) {
       if (!ctrlDown) {
-        hoverWasSelectedOnMousedown = IsSelected (&hover);
-        MakeSelected (&hover);
+        hoverWasSelectedOnMousedown = IsSelected(&hover);
+        MakeSelected(&hover);
       } else {
-        MakeUnselected (&hover, /*coincidentPointTrick=*/true);
+        MakeUnselected(&hover, /*coincidentPointTrick=*/true);
       }
     }
     break;
@@ -1272,20 +1269,20 @@ void GraphicsWindow::MouseLeftDown (double mx, double my, bool shiftDown, bool c
   // Activate group with newly created request/constraint
   Group *g = NULL;
   if (hr.v != 0) {
-    g = SK.GetGroup (SK.GetRequest (hr)->group);
+    g = SK.GetGroup(SK.GetRequest(hr)->group);
   }
   if (hc.v != 0) {
-    g = SK.GetGroup (SK.GetConstraint (hc)->group);
+    g = SK.GetGroup(SK.GetConstraint(hc)->group);
   }
   if (g != NULL) {
     g->visible = true;
   }
 
-  SS.ScheduleShowTW ();
-  Invalidate ();
+  SS.ScheduleShowTW();
+  Invalidate();
 }
 
-void GraphicsWindow::MouseLeftUp (double mx, double my, bool shiftDown, bool ctrlDown) {
+void GraphicsWindow::MouseLeftUp(double mx, double my, bool shiftDown, bool ctrlDown) {
   orig.mouseDown = false;
 
   switch (pending.operation) {
@@ -1297,23 +1294,23 @@ void GraphicsWindow::MouseLeftUp (double mx, double my, bool shiftDown, bool ctr
       // And then clear the selection again, since they
       // probably didn't want that selected if they just
       // were dragging it.
-      ClearSelection ();
+      ClearSelection();
     }
     hoverWasSelectedOnMousedown = false;
     SS.extraLine.draw           = false;
-    ClearPending (12);
-    Invalidate ();
+    ClearPending(12);
+    Invalidate();
     break;
 
   case Pending::DRAGGING_MARQUEE:
-    SelectByMarquee ();
-    ClearPending (13);
-    Invalidate ();
+    SelectByMarquee();
+    ClearPending(13);
+    Invalidate();
     break;
 
   case Pending::NONE:
-    if (hover.IsEmpty () && !ctrlDown) {
-      ClearSelection ();
+    if (hover.IsEmpty() && !ctrlDown) {
+      ClearSelection();
     }
     break;
 
@@ -1321,12 +1318,12 @@ void GraphicsWindow::MouseLeftUp (double mx, double my, bool shiftDown, bool ctr
   }
 }
 
-void GraphicsWindow::EditConstraint (hConstraint constraint) {
+void GraphicsWindow::EditConstraint(hConstraint constraint) {
   constraintBeingEdited = constraint;
-  ClearSuper (20);
+  ClearSuper(20);
 
-  Constraint *c = SK.GetConstraint (constraintBeingEdited);
-  if (!c->HasLabel ()) {
+  Constraint *c = SK.GetConstraint(constraintBeingEdited);
+  if (!c->HasLabel()) {
     // Not meaningful to edit a constraint without a dimension
     return;
   }
@@ -1335,8 +1332,8 @@ void GraphicsWindow::EditConstraint (hConstraint constraint) {
     return;
   }
 
-  Vector  p3 = c->GetLabelPos (GetCamera ());
-  Point2d p2 = ProjectPoint (p3);
+  Vector  p3 = c->GetLabelPos(GetCamera());
+  Point2d p2 = ProjectPoint(p3);
 
   std::string editValue;
   std::string editPlaceholder;
@@ -1347,7 +1344,7 @@ void GraphicsWindow::EditConstraint (hConstraint constraint) {
     break;
 
   default: {
-    double value = fabs (c->valA);
+    double value = fabs(c->valA);
 
     // If displayed as radius, also edit as radius.
     if (c->type == Constraint::Type::DIAMETER && c->other)
@@ -1357,18 +1354,18 @@ void GraphicsWindow::EditConstraint (hConstraint constraint) {
     if (c->type == Constraint::Type::LENGTH_RATIO ||
         c->type == Constraint::Type::ARC_ARC_LEN_RATIO ||
         c->type == Constraint::Type::ARC_LINE_LEN_RATIO) {
-      editValue = ssprintf ("%.3f", value);
+      editValue = ssprintf("%.3f", value);
     } else if (c->type == Constraint::Type::ANGLE) {
-      editValue = SS.DegreeToString (value);
+      editValue = SS.DegreeToString(value);
     } else {
-      editValue = SS.MmToString (value, true);
-      value /= SS.MmPerUnit ();
+      editValue = SS.MmToString(value, true);
+      value /= SS.MmPerUnit();
     }
     // If that's not enough to represent it exactly, show the value with as many
     // digits after decimal as required, up to 10.
     int digits = 0;
-    while (fabs (std::stod (editValue) - value) > 1e-10) {
-      editValue = ssprintf ("%.*f", digits, value);
+    while (fabs(std::stod(editValue) - value) > 1e-10) {
+      editValue = ssprintf("%.*f", digits, value);
       digits++;
     }
     editPlaceholder = "10.000000";
@@ -1377,34 +1374,34 @@ void GraphicsWindow::EditConstraint (hConstraint constraint) {
   }
 
   double width, height;
-  window->GetContentSize (&width, &height);
+  window->GetContentSize(&width, &height);
   hStyle hs = c->disp.style;
   if (hs.v == 0)
     hs.v = Style::CONSTRAINT;
-  double capHeight    = Style::TextHeight (hs);
-  double fontHeight   = VectorFont::Builtin ()->GetHeight (capHeight);
-  double editMinWidth = VectorFont::Builtin ()->GetWidth (capHeight, editPlaceholder);
-  window->ShowEditor (p2.x + width / 2, height / 2 - p2.y, fontHeight, editMinWidth,
-                      /*isMonospace=*/false, editValue);
+  double capHeight    = Style::TextHeight(hs);
+  double fontHeight   = VectorFont::Builtin()->GetHeight(capHeight);
+  double editMinWidth = VectorFont::Builtin()->GetWidth(capHeight, editPlaceholder);
+  window->ShowEditor(p2.x + width / 2, height / 2 - p2.y, fontHeight, editMinWidth,
+                     /*isMonospace=*/false, editValue);
 }
 
-void GraphicsWindow::MouseLeftDoubleClick (double mx, double my) {
+void GraphicsWindow::MouseLeftDoubleClick(double mx, double my) {
   if (hover.constraint.v) {
-    EditConstraint (hover.constraint);
+    EditConstraint(hover.constraint);
   }
 }
 
-void GraphicsWindow::EditControlDone (const std::string &s) {
-  Constraint *c = SK.GetConstraint (constraintBeingEdited);
+void GraphicsWindow::EditControlDone(const std::string &s) {
+  Constraint *c = SK.GetConstraint(constraintBeingEdited);
 
   if (c->type == Constraint::Type::COMMENT) {
-    SS.UndoRemember ();
+    SS.UndoRemember();
     c->comment = s;
     return;
   }
 
-  if (Expr *e = Expr::From (s, true)) {
-    SS.UndoRemember ();
+  if (Expr *e = Expr::From(s, true)) {
+    SS.UndoRemember();
 
     switch (c->type) {
     case Constraint::Type::PROJ_PT_DISTANCE:
@@ -1419,9 +1416,9 @@ void GraphicsWindow::EditControlDone (const std::string &s) {
       // negative distance.
       bool wasNeg = (c->valA < 0);
       if (wasNeg) {
-        c->valA = -SS.ExprToMm (e);
+        c->valA = -SS.ExprToMm(e);
       } else {
-        c->valA = SS.ExprToMm (e);
+        c->valA = SS.ExprToMm(e);
       }
       break;
     }
@@ -1431,11 +1428,11 @@ void GraphicsWindow::EditControlDone (const std::string &s) {
     case Constraint::Type::ARC_LINE_LEN_RATIO:
       // These don't get the units conversion for distance, and
       // they're always positive
-      c->valA = fabs (e->Eval ());
+      c->valA = fabs(e->Eval());
       break;
 
     case Constraint::Type::DIAMETER:
-      c->valA = fabs (SS.ExprToMm (e));
+      c->valA = fabs(SS.ExprToMm(e));
 
       // If displayed and edited as radius, convert back
       // to diameter
@@ -1445,14 +1442,14 @@ void GraphicsWindow::EditControlDone (const std::string &s) {
 
     default:
       // These are always positive, and they get the units conversion.
-      c->valA = fabs (SS.ExprToMm (e));
+      c->valA = fabs(SS.ExprToMm(e));
       break;
     }
-    SS.MarkGroupDirty (c->group);
+    SS.MarkGroupDirty(c->group);
   }
 }
 
-void GraphicsWindow::MouseScroll (double zoomMultiplyer) {
+void GraphicsWindow::MouseScroll(double zoomMultiplyer) {
   // To support smooth scrolling where scroll wheel events come in increments
   // smaller (or larger) than 1 we do:
   //     scale *= exp(ln(1.2) * zoomMultiplyer);
@@ -1463,85 +1460,85 @@ void GraphicsWindow::MouseScroll (double zoomMultiplyer) {
   // while
   //     scale * a * b != scale * (a+b)
   // So this constant is ln(1.2) = 0.1823216 to make the default zoom 1.2x
-  ZoomToMouse (zoomMultiplyer);
+  ZoomToMouse(zoomMultiplyer);
 }
 
-void GraphicsWindow::MouseLeave () {
+void GraphicsWindow::MouseLeave() {
   // Un-hover everything when the mouse leaves our window, unless there's
   // currently a context menu shown.
   if (!context.active) {
-    hover.Clear ();
-    Invalidate ();
+    hover.Clear();
+    Invalidate();
   }
   SS.extraLine.draw = false;
 }
 
-void GraphicsWindow::SixDofEvent (Platform::SixDofEvent event) {
+void GraphicsWindow::SixDofEvent(Platform::SixDofEvent event) {
   if (event.type == Platform::SixDofEvent::Type::RELEASE) {
-    ZoomToFit (/*includingInvisibles=*/false, /*useSelection=*/true);
-    Invalidate ();
+    ZoomToFit(/*includingInvisibles=*/false, /*useSelection=*/true);
+    Invalidate();
     return;
   }
 
   //    if(!havePainted) return;
-  Vector out = projRight.Cross (projUp);
+  Vector out = projRight.Cross(projUp);
 
   // rotation vector is axis of rotation, and its magnitude is angle
-  Vector aa = Vector::From (event.rotationX, event.rotationY, event.rotationZ);
+  Vector aa = Vector::From(event.rotationX, event.rotationY, event.rotationZ);
   // but it's given with respect to screen projection frame
-  aa         = aa.ScaleOutOfCsys (projRight, projUp, out);
-  double aam = aa.Magnitude ();
+  aa         = aa.ScaleOutOfCsys(projRight, projUp, out);
+  double aam = aa.Magnitude();
   if (aam > 0.0)
-    aa = aa.WithMagnitude (1);
+    aa = aa.WithMagnitude(1);
 
   // This can either transform our view, or transform a linked part.
-  GroupSelection ();
+  GroupSelection();
   Entity *e = NULL;
   Group  *g = NULL;
   if (gs.points == 1 && gs.n == 1)
-    e = SK.GetEntity (gs.point[0]);
+    e = SK.GetEntity(gs.point[0]);
   if (gs.entities == 1 && gs.n == 1)
-    e = SK.GetEntity (gs.entity[0]);
+    e = SK.GetEntity(gs.entity[0]);
   if (e)
-    g = SK.GetGroup (e->group);
+    g = SK.GetGroup(e->group);
   if (g && g->type == Group::Type::LINKED && !event.shiftDown) {
     // Apply the transformation to a linked part. Gain down the Z
     // axis, since it's hard to see what you're doing on that one since
     // it's normal to the screen.
-    Vector t = projRight.ScaledBy (event.translationX / scale)
-                   .Plus (projUp.ScaledBy (event.translationY / scale)
-                              .Plus (out.ScaledBy (0.1 * event.translationZ / scale)));
-    Quaternion q = Quaternion::From (aa, aam);
+    Vector t = projRight.ScaledBy(event.translationX / scale)
+                   .Plus(projUp.ScaledBy(event.translationY / scale)
+                             .Plus(out.ScaledBy(0.1 * event.translationZ / scale)));
+    Quaternion q = Quaternion::From(aa, aam);
 
     // If we go five seconds without SpaceNavigator input, or if we've
     // switched groups, then consider that a new action and save an undo
     // point.
-    int64_t now = GetMilliseconds ();
+    int64_t now = GetMilliseconds();
     if (now - last6DofTime > 5000 || last6DofGroup != g->h) {
-      SS.UndoRemember ();
+      SS.UndoRemember();
     }
 
-    g->TransformImportedBy (t, q);
+    g->TransformImportedBy(t, q);
 
     last6DofTime  = now;
     last6DofGroup = g->h;
-    SS.MarkGroupDirty (g->h);
+    SS.MarkGroupDirty(g->h);
   } else {
     // Apply the transformation to the view of the everything. The
     // x and y components are translation; but z component is scale,
     // not translation, or else it would do nothing in a parallel
     // projection
-    offset = offset.Plus (projRight.ScaledBy (event.translationX / scale));
-    offset = offset.Plus (projUp.ScaledBy (event.translationY / scale));
-    scale *= exp (0.001 * event.translationZ);
+    offset = offset.Plus(projRight.ScaledBy(event.translationX / scale));
+    offset = offset.Plus(projUp.ScaledBy(event.translationY / scale));
+    scale *= exp(0.001 * event.translationZ);
 
     if (aam > 0.0) {
-      projRight = projRight.RotatedAbout (aa, -aam);
-      projUp    = projUp.RotatedAbout (aa, -aam);
-      NormalizeProjectionVectors ();
+      projRight = projRight.RotatedAbout(aa, -aam);
+      projUp    = projUp.RotatedAbout(aa, -aam);
+      NormalizeProjectionVectors();
     }
   }
 
   //    havePainted = false;
-  Invalidate ();
+  Invalidate();
 }

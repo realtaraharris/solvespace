@@ -1,18 +1,18 @@
 #include "harness.h"
 
 #define CHECK_PARSE(var, expr) \
-    do { \
-      var = Expr::From(expr, false); \
-      CHECK_TRUE(var != NULL); \
-    } while(0)
+  do { \
+    var = Expr::From(expr, false); \
+    CHECK_TRUE(var != NULL); \
+  } while (0)
 
 #define CHECK_PARSE_ERR(expr, msg) \
-    do { \
-      std::string err; \
-      Expr *e = Expr::Parse(expr, &err); \
-      CHECK_TRUE(e == NULL); \
-      CHECK_TRUE(err.find(msg) != std::string::npos); \
-    } while(0)
+  do { \
+    std::string err; \
+    Expr       *e = Expr::Parse(expr, &err); \
+    CHECK_TRUE(e == NULL); \
+    CHECK_TRUE(err.find(msg) != std::string::npos); \
+  } while (0)
 
 TEST_CASE(constant) {
   Expr *e;
@@ -93,20 +93,12 @@ TEST_CASE(precedence) {
 }
 
 TEST_CASE(errors) {
-  CHECK_PARSE_ERR("\x01",
-                  "Unexpected character");
-  CHECK_PARSE_ERR("notavar",
-                  "'notavar' is not a valid variable, function or constant");
-  CHECK_PARSE_ERR("1e2e3",
-                  "'1e2e3' is not a valid number");
-  CHECK_PARSE_ERR("_",
-                  "'_' is not a valid operator");
-  CHECK_PARSE_ERR("2 2",
-                  "Expected an operator");
-  CHECK_PARSE_ERR("2 + +",
-                  "Expected an operand");
-  CHECK_PARSE_ERR("( 2 + 2",
-                  "Expected ')'");
-  CHECK_PARSE_ERR("(",
-                  "Expected ')'");
+  CHECK_PARSE_ERR("\x01", "Unexpected character");
+  CHECK_PARSE_ERR("notavar", "'notavar' is not a valid variable, function or constant");
+  CHECK_PARSE_ERR("1e2e3", "'1e2e3' is not a valid number");
+  CHECK_PARSE_ERR("_", "'_' is not a valid operator");
+  CHECK_PARSE_ERR("2 2", "Expected an operator");
+  CHECK_PARSE_ERR("2 + +", "Expected an operand");
+  CHECK_PARSE_ERR("( 2 + 2", "Expected ')'");
+  CHECK_PARSE_ERR("(", "Expected ')'");
 }

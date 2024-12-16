@@ -14,6 +14,8 @@ project(SolveSpace)
 # can't just set this because it'll emit -std=gnu++20 with no way to stop it :grimace:
 # set_property(TARGET SolveSpace PROPERTY CXX_STANDARD 20)
 
+include(cmake/ClangFormat.cmake) # adds clang-format target
+
 add_definitions(-g -gdwarf-4 -fpermissive -Wno-deprecated-enum-float-conversion -Wno-conversion-null -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion -Wno-register -std=c++20)
 
 add_subdirectory(res)

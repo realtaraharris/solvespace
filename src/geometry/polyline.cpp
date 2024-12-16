@@ -6,13 +6,13 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
-bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vertex **next, Edge **nextEdge) {
-  auto it = std::find_if (edges.begin (), edges.end (),
-                          [&] (const Edge *e) { return e->tag == 0 && e->kind == kind; });
+bool PolylineBuilder::Vertex::GetNext(uint32_t kind, Vertex **next, Edge **nextEdge) {
+  auto it = std::find_if(edges.begin(), edges.end(),
+                         [&](const Edge *e) { return e->tag == 0 && e->kind == kind; });
 
-  if (it != edges.end ()) {
+  if (it != edges.end()) {
     (*it)->tag = 1;
-    *next      = (*it)->GetOtherVertex (this);
+    *next      = (*it)->GetOtherVertex(this);
     *nextEdge  = *it;
     return true;
   }
@@ -20,8 +20,8 @@ bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vertex **next, Edge **next
   return false;
 }
 
-bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vector plane, double dist, Vertex **next,
-                                       Edge **nextEdge) {
+bool PolylineBuilder::Vertex::GetNext(uint32_t kind, Vector plane, double dist, Vertex **next,
+                                      Edge **nextEdge) {
   Edge  *best = NULL;
   double minD = VERY_POSITIVE;
   for (Edge *e : edges) {
@@ -31,8 +31,8 @@ bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vector plane, double dist,
       continue;
 
     // We choose the best next edge with minimal distance from the current plane
-    Vector nextPos = e->GetOtherVertex (this)->pos;
-    double curD    = std::fabs (plane.Dot (nextPos) - dist);
+    Vector nextPos = e->GetOtherVertex(this)->pos;
+    double curD    = std::fabs(plane.Dot(nextPos) - dist);
     if (best != NULL && curD > minD)
       continue;
     best = e;
@@ -41,7 +41,7 @@ bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vector plane, double dist,
 
   if (best != NULL) {
     best->tag = 1;
-    *next     = best->GetOtherVertex (this);
+    *next     = best->GetOtherVertex(this);
     *nextEdge = best;
     return true;
   }
@@ -49,12 +49,12 @@ bool PolylineBuilder::Vertex::GetNext (uint32_t kind, Vector plane, double dist,
   return false;
 }
 
-size_t PolylineBuilder::Vertex::CountEdgesWithTagAndKind (int tag, uint32_t kind) const {
-  return std::count_if (edges.begin (), edges.end (),
-                        [&] (const Edge *e) { return e->tag == tag && e->kind == kind; });
+size_t PolylineBuilder::Vertex::CountEdgesWithTagAndKind(int tag, uint32_t kind) const {
+  return std::count_if(edges.begin(), edges.end(),
+                       [&](const Edge *e) { return e->tag == tag && e->kind == kind; });
 }
 
-PolylineBuilder::Vertex *PolylineBuilder::Edge::GetOtherVertex (PolylineBuilder::Vertex *v) const {
+PolylineBuilder::Vertex *PolylineBuilder::Edge::GetOtherVertex(PolylineBuilder::Vertex *v) const {
   if (a == v)
     return b;
   if (b == v)
@@ -63,13 +63,13 @@ PolylineBuilder::Vertex *PolylineBuilder::Edge::GetOtherVertex (PolylineBuilder:
 }
 
 size_t PolylineBuilder::VertexPairHash::operator() (const std::pair<Vertex *, Vertex *> &v) const {
-  return ((uintptr_t)v.first / sizeof (Vertex)) ^ ((uintptr_t)v.second / sizeof (Vertex));
+  return ((uintptr_t)v.first / sizeof(Vertex)) ^ ((uintptr_t)v.second / sizeof(Vertex));
 }
 
-bool PolylineBuilder::Edge::GetStartAndNext (PolylineBuilder::Vertex **start,
-                                             PolylineBuilder::Vertex **next, bool loop) const {
-  size_t numA = a->CountEdgesWithTagAndKind (0, kind);
-  size_t numB = b->CountEdgesWithTagAndKind (0, kind);
+bool PolylineBuilder::Edge::GetStartAndNext(PolylineBuilder::Vertex **start,
+                                            PolylineBuilder::Vertex **next, bool loop) const {
+  size_t numA = a->CountEdgesWithTagAndKind(0, kind);
+  size_t numB = b->CountEdgesWithTagAndKind(0, kind);
 
   if ((numA == 1 && numB > 1) || (loop && numA > 1 && numB > 1)) {
     *start = a;
@@ -86,44 +86,44 @@ bool PolylineBuilder::Edge::GetStartAndNext (PolylineBuilder::Vertex **start,
   return false;
 }
 
-PolylineBuilder::~PolylineBuilder () {
-  Clear ();
+PolylineBuilder::~PolylineBuilder() {
+  Clear();
 }
 
-void PolylineBuilder::Clear () {
+void PolylineBuilder::Clear() {
   for (Edge *e : edges) {
     delete e;
   }
-  edges.clear ();
+  edges.clear();
 
   for (auto &v : vertices) {
     delete v.second;
   }
-  vertices.clear ();
+  vertices.clear();
 }
 
-PolylineBuilder::Vertex *PolylineBuilder::AddVertex (const Vector &pos) {
-  auto it = vertices.find (pos);
-  if (it != vertices.end ()) {
+PolylineBuilder::Vertex *PolylineBuilder::AddVertex(const Vector &pos) {
+  auto it = vertices.find(pos);
+  if (it != vertices.end()) {
     return it->second;
   }
 
   Vertex *result = new Vertex;
   result->pos    = pos;
-  vertices.emplace (pos, result);
+  vertices.emplace(pos, result);
 
   return result;
 }
 
-PolylineBuilder::Edge *PolylineBuilder::AddEdge (const Vector &p0, const Vector &p1, uint32_t kind,
-                                                 uintptr_t data) {
-  Vertex *v0 = AddVertex (p0);
-  Vertex *v1 = AddVertex (p1);
+PolylineBuilder::Edge *PolylineBuilder::AddEdge(const Vector &p0, const Vector &p1, uint32_t kind,
+                                                uintptr_t data) {
+  Vertex *v0 = AddVertex(p0);
+  Vertex *v1 = AddVertex(p1);
   if (v0 == v1)
     return NULL;
 
-  auto it = edgeMap.find (std::make_pair (v0, v1));
-  if (it != edgeMap.end ()) {
+  auto it = edgeMap.find(std::make_pair(v0, v1));
+  if (it != edgeMap.end()) {
     return it->second;
   }
 
@@ -133,19 +133,19 @@ PolylineBuilder::Edge *PolylineBuilder::AddEdge (const Vector &p0, const Vector 
   edge->kind                  = kind;
   edge->tag                   = 0;
   edge->data                  = data;
-  edges.push_back (edge);
-  edgeMap.emplace (std::make_pair (v0, v1), edge);
+  edges.push_back(edge);
+  edgeMap.emplace(std::make_pair(v0, v1), edge);
 
-  v0->edges.push_back (edge);
-  v1->edges.push_back (edge);
+  v0->edges.push_back(edge);
+  v1->edges.push_back(edge);
 
   return edge;
 }
 
-void PolylineBuilder::Generate (
-    std::function<void (Vertex *start, Vertex *next, Edge *edge)> const &startFunc,
-    std::function<void (Vertex *next, Edge *edge)> const                &nextFunc,
-    std::function<void (Edge *alone)> const &aloneFunc, std::function<void ()> const &endFunc) {
+void PolylineBuilder::Generate(
+    std::function<void(Vertex *start, Vertex *next, Edge *edge)> const &startFunc,
+    std::function<void(Vertex *next, Edge *edge)> const                &nextFunc,
+    std::function<void(Edge *alone)> const &aloneFunc, std::function<void()> const &endFunc) {
   bool found;
   bool loop = false;
   do {
@@ -156,7 +156,7 @@ void PolylineBuilder::Generate (
 
       Vertex *start;
       Vertex *next;
-      if (!e->GetStartAndNext (&start, &next, loop))
+      if (!e->GetStartAndNext(&start, &next, loop))
         continue;
 
       Vector startPos = start->pos;
@@ -164,19 +164,19 @@ void PolylineBuilder::Generate (
       found           = true;
       e->tag          = 1;
 
-      startFunc (start, next, e);
+      startFunc(start, next, e);
 
       Edge *nextEdge;
-      if (next->GetNext (e->kind, &next, &nextEdge)) {
-        Vector plane = nextPos.Minus (startPos).Cross (next->pos.Minus (startPos));
-        double dist  = plane.Dot (startPos);
-        nextFunc (next, nextEdge);
-        while (next->GetNext (e->kind, plane, dist, &next, &nextEdge)) {
-          nextFunc (next, nextEdge);
+      if (next->GetNext(e->kind, &next, &nextEdge)) {
+        Vector plane = nextPos.Minus(startPos).Cross(next->pos.Minus(startPos));
+        double dist  = plane.Dot(startPos);
+        nextFunc(next, nextEdge);
+        while (next->GetNext(e->kind, plane, dist, &next, &nextEdge)) {
+          nextFunc(next, nextEdge);
         }
       }
 
-      endFunc ();
+      endFunc();
     }
 
     if (!found && !loop) {
@@ -188,59 +188,59 @@ void PolylineBuilder::Generate (
   for (PolylineBuilder::Edge *e : edges) {
     if (e->tag != 0)
       continue;
-    aloneFunc (e);
+    aloneFunc(e);
   }
 }
 
-void PolylineBuilder::MakeFromEdges (const SEdgeList &sel) {
+void PolylineBuilder::MakeFromEdges(const SEdgeList &sel) {
   for (const SEdge &se : sel.l) {
-    AddEdge (se.a, se.b, (uint32_t)se.auxA, reinterpret_cast<uintptr_t> (&se));
+    AddEdge(se.a, se.b, (uint32_t)se.auxA, reinterpret_cast<uintptr_t>(&se));
   }
 }
 
-void PolylineBuilder::MakeFromOutlines (const SOutlineList &ol) {
+void PolylineBuilder::MakeFromOutlines(const SOutlineList &ol) {
   for (const SOutline &so : ol.l) {
     // Use outline tag as kind, so that emphasized and contour outlines
     // would not be composed together.
-    AddEdge (so.a, so.b, (uint32_t)so.tag, reinterpret_cast<uintptr_t> (&so));
+    AddEdge(so.a, so.b, (uint32_t)so.tag, reinterpret_cast<uintptr_t>(&so));
   }
 }
 
-void PolylineBuilder::GenerateEdges (SEdgeList *sel) {
+void PolylineBuilder::GenerateEdges(SEdgeList *sel) {
   Vector prev;
-  auto   startFunc = [&] (Vertex *start, Vertex *next, Edge *e) {
-    sel->AddEdge (start->pos, next->pos, e->kind);
+  auto   startFunc = [&](Vertex *start, Vertex *next, Edge *e) {
+    sel->AddEdge(start->pos, next->pos, e->kind);
     prev = next->pos;
   };
 
-  auto nextFunc = [&] (Vertex *next, Edge *e) {
-    sel->AddEdge (prev, next->pos, e->kind);
+  auto nextFunc = [&](Vertex *next, Edge *e) {
+    sel->AddEdge(prev, next->pos, e->kind);
     prev = next->pos;
   };
 
-  auto aloneFunc = [&] (Edge *e) { sel->AddEdge (e->a->pos, e->b->pos, e->kind); };
+  auto aloneFunc = [&](Edge *e) { sel->AddEdge(e->a->pos, e->b->pos, e->kind); };
 
-  Generate (startFunc, nextFunc, aloneFunc);
+  Generate(startFunc, nextFunc, aloneFunc);
 }
 
-void PolylineBuilder::GenerateOutlines (SOutlineList *sol) {
+void PolylineBuilder::GenerateOutlines(SOutlineList *sol) {
   Vector prev;
-  auto   startFunc = [&] (Vertex *start, Vertex *next, Edge *e) {
+  auto   startFunc = [&](Vertex *start, Vertex *next, Edge *e) {
     SOutline *so = e->outline;
-    sol->AddEdge (start->pos, next->pos, so->nl, so->nr, so->tag);
+    sol->AddEdge(start->pos, next->pos, so->nl, so->nr, so->tag);
     prev = next->pos;
   };
 
-  auto nextFunc = [&] (Vertex *next, Edge *e) {
+  auto nextFunc = [&](Vertex *next, Edge *e) {
     SOutline *so = e->outline;
-    sol->AddEdge (prev, next->pos, so->nl, so->nr, so->tag);
+    sol->AddEdge(prev, next->pos, so->nl, so->nr, so->tag);
     prev = next->pos;
   };
 
-  auto aloneFunc = [&] (Edge *e) {
+  auto aloneFunc = [&](Edge *e) {
     SOutline *so = e->outline;
-    sol->AddEdge (so->a, so->b, so->nl, so->nr, so->tag);
+    sol->AddEdge(so->a, so->b, so->nl, so->nr, so->tag);
   };
 
-  Generate (startFunc, nextFunc, aloneFunc);
+  Generate(startFunc, nextFunc, aloneFunc);
 }

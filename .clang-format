@@ -2,7 +2,18 @@
 # Things explicitly enumerated in CONTRIBUTING.md
 IndentWidth: 2
 UseTab: Never
-SpaceBeforeParens: Always
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterForeachMacros: true
+  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName: false
+  AfterIfMacros: true
+  AfterOverloadedOperator: true
+  AfterPlacementOperator: true
+  AfterRequiresInClause: true
+  AfterRequiresInExpression: true
+  BeforeNonEmptyParentheses: false
 BreakBeforeBraces: Attach
 ColumnLimit: 100
 # Docs say 100, but some places look more like 80.

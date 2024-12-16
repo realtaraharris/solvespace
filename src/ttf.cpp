@@ -26,7 +26,7 @@ static const struct ft_error ft_errors[] = {
 #include FT_ERRORS_H
 };
 
-extern "C" const char *ft_error_string (int err) {
+extern "C" const char *ft_error_string(int err) {
   const struct ft_error *e;
   for (e = ft_errors; e->str; e++)
     if (e->err == err)
@@ -45,42 +45,41 @@ extern "C" const char *ft_error_string (int err) {
 // Get the list of available font filenames, and load the name for each of
 // them. Only that, though, not the glyphs too.
 //-----------------------------------------------------------------------------
-TtfFontList::TtfFontList () {
-  FT_Init_FreeType (&fontLibrary);
+TtfFontList::TtfFontList() {
+  FT_Init_FreeType(&fontLibrary);
 }
 
-TtfFontList::~TtfFontList () {
-  FT_Done_FreeType (fontLibrary);
+TtfFontList::~TtfFontList() {
+  FT_Done_FreeType(fontLibrary);
 }
 
-void TtfFontList::LoadAll () {
+void TtfFontList::LoadAll() {
   if (loaded)
     return;
 
-  for (const Platform::Path &font : Platform::GetFontFiles ()) {
+  for (const Platform::Path &font : Platform::GetFontFiles()) {
     TtfFont tf  = {};
     tf.fontFile = font;
-    if (tf.LoadFromFile (fontLibrary))
-      l.Add (&tf);
+    if (tf.LoadFromFile(fontLibrary))
+      l.Add(&tf);
   }
 
   // Add builtin font to end of font list so it is displayed first in the UI
   {
     TtfFont tf = {};
-    tf.SetResourceID ("fonts/BitstreamVeraSans-Roman-builtin.ttf");
-    if (tf.LoadFromResource (fontLibrary))
-      l.Add (&tf);
+    tf.SetResourceID("fonts/BitstreamVeraSans-Roman-builtin.ttf");
+    if (tf.LoadFromResource(fontLibrary))
+      l.Add(&tf);
   }
 
   // Sort fonts according to their actual name, not filename.
-  std::sort (l.begin (), l.end (),
-             [] (const TtfFont &a, const TtfFont &b) { return a.name < b.name; });
+  std::sort(l.begin(), l.end(), [](const TtfFont &a, const TtfFont &b) { return a.name < b.name; });
 
   // Filter out fonts with the same family and style name. This is not
   // strictly necessarily the exact same font, but it will almost always be.
-  TtfFont *it = std::unique (l.begin (), l.end (),
-                             [] (const TtfFont &a, const TtfFont &b) { return a.name == b.name; });
-  l.RemoveLast (&l[l.n] - it);
+  TtfFont *it = std::unique(l.begin(), l.end(),
+                            [](const TtfFont &a, const TtfFont &b) { return a.name == b.name; });
+  l.RemoveLast(&l[l.n] - it);
 
   //! @todo identify fonts by their name and not filename, which may change
   //! between OSes.
@@ -88,18 +87,18 @@ void TtfFontList::LoadAll () {
   loaded = true;
 }
 
-TtfFont *TtfFontList::LoadFont (const std::string &font) {
-  LoadAll ();
+TtfFont *TtfFontList::LoadFont(const std::string &font) {
+  LoadAll();
 
-  TtfFont *tf = std::find_if (
-      l.begin (), l.end (), [&font] (const TtfFont &tf) { return tf.FontFileBaseName () == font; });
+  TtfFont *tf = std::find_if(l.begin(), l.end(),
+                             [&font](const TtfFont &tf) { return tf.FontFileBaseName() == font; });
 
-  if (tf != l.end ()) {
+  if (tf != l.end()) {
     if (tf->fontFace == NULL) {
-      if (tf->IsResource ())
-        tf->LoadFromResource (fontLibrary, /*keepOpen=*/true);
+      if (tf->IsResource())
+        tf->LoadFromResource(fontLibrary, /*keepOpen=*/true);
       else
-        tf->LoadFromFile (fontLibrary, /*keepOpen=*/true);
+        tf->LoadFromFile(fontLibrary, /*keepOpen=*/true);
     }
     return tf;
   } else {
@@ -107,25 +106,25 @@ TtfFont *TtfFontList::LoadFont (const std::string &font) {
   }
 }
 
-void TtfFontList::PlotString (const std::string &font, const std::string &str, SBezierList *sbl,
-                              Vector origin, Vector u, Vector v) {
-  TtfFont *tf = LoadFont (font);
-  if (!str.empty () && tf != NULL) {
-    tf->PlotString (str, sbl, origin, u, v);
+void TtfFontList::PlotString(const std::string &font, const std::string &str, SBezierList *sbl,
+                             Vector origin, Vector u, Vector v) {
+  TtfFont *tf = LoadFont(font);
+  if (!str.empty() && tf != NULL) {
+    tf->PlotString(str, sbl, origin, u, v);
   } else {
     // No text or no font; so draw a big X for an error marker.
     SBezier sb;
-    sb = SBezier::From (origin, origin.Plus (u).Plus (v));
-    sbl->l.Add (&sb);
-    sb = SBezier::From (origin.Plus (v), origin.Plus (u));
-    sbl->l.Add (&sb);
+    sb = SBezier::From(origin, origin.Plus(u).Plus(v));
+    sbl->l.Add(&sb);
+    sb = SBezier::From(origin.Plus(v), origin.Plus(u));
+    sbl->l.Add(&sb);
   }
 }
 
-double TtfFontList::AspectRatio (const std::string &font, const std::string &str) {
-  TtfFont *tf = LoadFont (font);
+double TtfFontList::AspectRatio(const std::string &font, const std::string &str) {
+  TtfFont *tf = LoadFont(font);
   if (tf != NULL) {
-    return tf->AspectRatio (str);
+    return tf->AspectRatio(str);
   }
 
   return 0.0;
@@ -135,26 +134,26 @@ double TtfFontList::AspectRatio (const std::string &font, const std::string &str
 // Return the basename of our font filename; that's how the requests and
 // entities that reference us will store it.
 //-----------------------------------------------------------------------------
-std::string TtfFont::FontFileBaseName () const {
-  return fontFile.FileName ();
+std::string TtfFont::FontFileBaseName() const {
+  return fontFile.FileName();
 }
 
 //-----------------------------------------------------------------------------
 // Convenience method to set fontFile for resource-loaded fonts as res://<path>
 //-----------------------------------------------------------------------------
-void TtfFont::SetResourceID (const std::string &resource) {
+void TtfFont::SetResourceID(const std::string &resource) {
   fontFile = {"res://" + resource};
 }
 
-bool TtfFont::IsResource () const {
-  return fontFile.raw.compare (0, 6, "res://") == 0;
+bool TtfFont::IsResource() const {
+  return fontFile.raw.compare(0, 6, "res://") == 0;
 }
 
 //-----------------------------------------------------------------------------
 // Load a TrueType font into memory.
 //-----------------------------------------------------------------------------
-bool TtfFont::LoadFromFile (FT_Library fontLibrary, bool keepOpen) {
-  ssassert (!IsResource (), "Cannot load a font provided by a resource as a file.");
+bool TtfFont::LoadFromFile(FT_Library fontLibrary, bool keepOpen) {
+  ssassert(!IsResource(), "Cannot load a font provided by a resource as a file.");
 
   FT_Open_Args args = {};
   args.flags        = FT_OPEN_PATHNAME;
@@ -163,53 +162,52 @@ bool TtfFont::LoadFromFile (FT_Library fontLibrary, bool keepOpen) {
   // We don't use OpenFile() here to let freetype do its own memory management.
   // This is OK because on Linux/OS X we just delegate to fopen and on Windows
   // we only look into C:\Windows\Fonts, which has a known short path.
-  if (int fterr = FT_Open_Face (fontLibrary, &args, 0, &fontFace)) {
-    dbp ("freetype: loading font from file '%s' failed: %s", fontFile.raw.c_str (),
-         ft_error_string (fterr));
+  if (int fterr = FT_Open_Face(fontLibrary, &args, 0, &fontFace)) {
+    dbp("freetype: loading font from file '%s' failed: %s", fontFile.raw.c_str(),
+        ft_error_string(fterr));
     return false;
   }
 
-  return ExtractTTFData (keepOpen);
+  return ExtractTTFData(keepOpen);
 }
 
 //-----------------------------------------------------------------------------
 // Load a TrueType from resource in memory. Implemented to load bundled fonts
 // through theresource system.
 //-----------------------------------------------------------------------------
-bool TtfFont::LoadFromResource (FT_Library fontLibrary, bool keepOpen) {
-  ssassert (IsResource (), "Font to be loaded as resource is not provided by a resource "
-                           "or does not have the 'res://' prefix.");
+bool TtfFont::LoadFromResource(FT_Library fontLibrary, bool keepOpen) {
+  ssassert(IsResource(), "Font to be loaded as resource is not provided by a resource "
+                         "or does not have the 'res://' prefix.");
 
   size_t _size;
   // substr to cut off 'res://' (length: 6)
-  const void *_buffer =
-      Platform::LoadResource (fontFile.raw.substr (6, fontFile.raw.size ()), &_size);
+  const void *_buffer = Platform::LoadResource(fontFile.raw.substr(6, fontFile.raw.size()), &_size);
 
-  FT_Long        size   = static_cast<FT_Long> (_size);
-  const FT_Byte *buffer = reinterpret_cast<const FT_Byte *> (_buffer);
+  FT_Long        size   = static_cast<FT_Long>(_size);
+  const FT_Byte *buffer = reinterpret_cast<const FT_Byte *>(_buffer);
 
-  if (int fterr = FT_New_Memory_Face (fontLibrary, buffer, size, 0, &fontFace)) {
-    dbp ("freetype: loading font '%s' from memory failed: %s", fontFile.raw.c_str (),
-         ft_error_string (fterr));
+  if (int fterr = FT_New_Memory_Face(fontLibrary, buffer, size, 0, &fontFace)) {
+    dbp("freetype: loading font '%s' from memory failed: %s", fontFile.raw.c_str(),
+        ft_error_string(fterr));
     return false;
   }
 
-  return ExtractTTFData (keepOpen);
+  return ExtractTTFData(keepOpen);
 }
 
 //-----------------------------------------------------------------------------
 // Extract font information. We care about the font name and unit size.
 //-----------------------------------------------------------------------------
-bool TtfFont::ExtractTTFData (bool keepOpen) {
-  if (int fterr = FT_Select_Charmap (fontFace, FT_ENCODING_UNICODE)) {
-    dbp ("freetype: loading unicode CMap for file '%s' failed: %s", fontFile.raw.c_str (),
-         ft_error_string (fterr));
-    FT_Done_Face (fontFace);
+bool TtfFont::ExtractTTFData(bool keepOpen) {
+  if (int fterr = FT_Select_Charmap(fontFace, FT_ENCODING_UNICODE)) {
+    dbp("freetype: loading unicode CMap for file '%s' failed: %s", fontFile.raw.c_str(),
+        ft_error_string(fterr));
+    FT_Done_Face(fontFace);
     fontFace = NULL;
     return false;
   }
 
-  name = std::string (fontFace->family_name) + " (" + std::string (fontFace->style_name) + ")";
+  name = std::string(fontFace->family_name) + " (" + std::string(fontFace->style_name) + ")";
 
   // We always ask Freetype to give us a unit size character.
   // It uses fixed point; put the unit size somewhere in the middle of the dynamic
@@ -221,35 +219,35 @@ bool TtfFont::ExtractTTFData (bool keepOpen) {
   sizeRequest.height         = 1 << 16;
   sizeRequest.horiResolution = 128;
   sizeRequest.vertResolution = 128;
-  if (int fterr = FT_Request_Size (fontFace, &sizeRequest)) {
-    dbp ("freetype: size request for file '%s' failed: %s", fontFile.raw.c_str (),
-         ft_error_string (fterr));
-    FT_Done_Face (fontFace);
+  if (int fterr = FT_Request_Size(fontFace, &sizeRequest)) {
+    dbp("freetype: size request for file '%s' failed: %s", fontFile.raw.c_str(),
+        ft_error_string(fterr));
+    FT_Done_Face(fontFace);
     fontFace = NULL;
     return false;
   }
 
   char     chr = 'A';
-  uint32_t gid = FT_Get_Char_Index (fontFace, 'A');
+  uint32_t gid = FT_Get_Char_Index(fontFace, 'A');
   if (gid == 0) {
-    dbp ("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
-         "using CID as GID",
-         chr, fontFile.raw.c_str (), ft_error_string (gid));
-    dbp ("Assuming cap height is the same as requested height (this is likely wrong).");
+    dbp("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
+        "using CID as GID",
+        chr, fontFile.raw.c_str(), ft_error_string(gid));
+    dbp("Assuming cap height is the same as requested height (this is likely wrong).");
     capHeight = (double)sizeRequest.height;
   }
 
   if (gid) {
-    if (int fterr = FT_Load_Glyph (fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
-      dbp ("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid,
-           fontFile.raw.c_str (), ft_error_string (fterr));
-      FT_Done_Face (fontFace);
+    if (int fterr = FT_Load_Glyph(fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
+      dbp("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid, fontFile.raw.c_str(),
+          ft_error_string(fterr));
+      FT_Done_Face(fontFace);
       fontFace = NULL;
       return false;
     }
 
     FT_BBox bbox;
-    FT_Outline_Get_CBox (&fontFace->glyph->outline, &bbox);
+    FT_Outline_Get_CBox(&fontFace->glyph->outline, &bbox);
     capHeight = (double)bbox.yMax;
   }
 
@@ -257,7 +255,7 @@ bool TtfFont::ExtractTTFData (bool keepOpen) {
   // it now. If we don't do this, and there are a lot of fonts, we can bump into the file
   // descriptor limit (especially on Windows), breaking all file operations.
   if (!keepOpen) {
-    FT_Done_Face (fontFace);
+    FT_Done_Face(fontFace);
     fontFace = NULL;
     return true;
   }
@@ -266,59 +264,59 @@ bool TtfFont::ExtractTTFData (bool keepOpen) {
 }
 
 typedef struct OutlineData {
-  Vector origin = Vector (0, 0, 0), u = Vector (0, 0, 0), v = Vector (0, 0, 0); // input parameters
-  SBezierList *beziers; // output bezier list
-  float        factor;  // ratio between freetype and solvespace coordinates
-  FT_Pos       bx;      // x offset of the current glyph
-  FT_Pos       px, py;  // current point
+  Vector origin = Vector(0, 0, 0), u = Vector(0, 0, 0), v = Vector(0, 0, 0); // input parameters
+  SBezierList *beziers;                                                      // output bezier list
+  float        factor; // ratio between freetype and solvespace coordinates
+  FT_Pos       bx;     // x offset of the current glyph
+  FT_Pos       px, py; // current point
 } OutlineData;
 
-static Vector Transform (OutlineData *data, FT_Pos x, FT_Pos y) {
+static Vector Transform(OutlineData *data, FT_Pos x, FT_Pos y) {
   Vector r = data->origin;
-  r        = r.Plus (data->u.ScaledBy ((float)(data->bx + x) * data->factor));
-  r        = r.Plus (data->v.ScaledBy ((float)y * data->factor));
+  r        = r.Plus(data->u.ScaledBy((float)(data->bx + x) * data->factor));
+  r        = r.Plus(data->v.ScaledBy((float)y * data->factor));
   return r;
 }
 
-static int MoveTo (const FT_Vector *p, void *cc) {
+static int MoveTo(const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
   data->px          = p->x;
   data->py          = p->y;
   return 0;
 }
 
-static int LineTo (const FT_Vector *p, void *cc) {
+static int LineTo(const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  SBezier sb = SBezier::From (Transform (data, data->px, data->py), Transform (data, p->x, p->y));
-  data->beziers->l.Add (&sb);
+  SBezier      sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, p->x, p->y));
+  data->beziers->l.Add(&sb);
   data->px = p->x;
   data->py = p->y;
   return 0;
 }
 
-static int ConicTo (const FT_Vector *c, const FT_Vector *p, void *cc) {
+static int ConicTo(const FT_Vector *c, const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  SBezier sb = SBezier::From (Transform (data, data->px, data->py), Transform (data, c->x, c->y),
-                              Transform (data, p->x, p->y));
-  data->beziers->l.Add (&sb);
+  SBezier      sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, c->x, c->y),
+                                  Transform(data, p->x, p->y));
+  data->beziers->l.Add(&sb);
   data->px = p->x;
   data->py = p->y;
   return 0;
 }
 
-static int CubicTo (const FT_Vector *c1, const FT_Vector *c2, const FT_Vector *p, void *cc) {
+static int CubicTo(const FT_Vector *c1, const FT_Vector *c2, const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  SBezier sb = SBezier::From (Transform (data, data->px, data->py), Transform (data, c1->x, c1->y),
-                              Transform (data, c2->x, c2->y), Transform (data, p->x, p->y));
-  data->beziers->l.Add (&sb);
+  SBezier sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, c1->x, c1->y),
+                             Transform(data, c2->x, c2->y), Transform(data, p->x, p->y));
+  data->beziers->l.Add(&sb);
   data->px = p->x;
   data->py = p->y;
   return 0;
 }
 
-void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origin, Vector u,
-                          Vector v) {
-  ssassert (fontFace != NULL, "Expected font face to be loaded");
+void TtfFont::PlotString(const std::string &str, SBezierList *sbl, Vector origin, Vector u,
+                         Vector v) {
+  ssassert(fontFace != NULL, "Expected font face to be loaded");
 
   FT_Outline_Funcs outlineFuncs;
   outlineFuncs.move_to  = MoveTo;
@@ -329,12 +327,12 @@ void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origi
   outlineFuncs.delta    = 0;
 
   FT_Pos dx = 0;
-  for (char32_t cid : ReadUTF8 (str)) {
-    uint32_t gid = FT_Get_Char_Index (fontFace, cid);
+  for (char32_t cid : ReadUTF8(str)) {
+    uint32_t gid = FT_Get_Char_Index(fontFace, cid);
     if (gid == 0) {
-      dbp ("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
-           "using CID as GID",
-           cid, fontFile.raw.c_str (), ft_error_string (gid));
+      dbp("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
+          "using CID as GID",
+          cid, fontFile.raw.c_str(), ft_error_string(gid));
       gid = cid;
     }
 
@@ -346,9 +344,9 @@ void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origi
      *    FT_Set_Transform. This looks decent at small font sizes and bad at larger
      *    ones, antialiasing mitigates this considerably though.
      */
-    if (int fterr = FT_Load_Glyph (fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
-      dbp ("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid,
-           fontFile.raw.c_str (), ft_error_string (fterr));
+    if (int fterr = FT_Load_Glyph(fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
+      dbp("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid, fontFile.raw.c_str(),
+          ft_error_string(fterr));
       return;
     }
 
@@ -366,7 +364,7 @@ void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origi
      * one would expect! especially since most fonts don't set track kerning).
      */
     FT_BBox cbox;
-    FT_Outline_Get_CBox (&fontFace->glyph->outline, &cbox);
+    FT_Outline_Get_CBox(&fontFace->glyph->outline, &cbox);
     FT_Pos bx = dx - cbox.xMin;
     // Yes, this is what FreeType calls left-side bearing.
     // Then interchangeably uses that with "left-side bearing". Sigh.
@@ -379,9 +377,9 @@ void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origi
     data.beziers     = sbl;
     data.factor      = (float)(1.0 / capHeight);
     data.bx          = bx;
-    if (int fterr = FT_Outline_Decompose (&fontFace->glyph->outline, &outlineFuncs, &data)) {
-      dbp ("freetype: bezier decomposition failed for GID 0x%4x in file '%s': %s", gid,
-           fontFile.raw.c_str (), ft_error_string (fterr));
+    if (int fterr = FT_Outline_Decompose(&fontFace->glyph->outline, &outlineFuncs, &data)) {
+      dbp("freetype: bezier decomposition failed for GID 0x%4x in file '%s': %s", gid,
+          fontFile.raw.c_str(), ft_error_string(fterr));
     }
 
     // And we're done, so advance our position by the requested advance
@@ -390,22 +388,22 @@ void TtfFont::PlotString (const std::string &str, SBezierList *sbl, Vector origi
   }
 }
 
-double TtfFont::AspectRatio (const std::string &str) {
-  ssassert (fontFace != NULL, "Expected font face to be loaded");
+double TtfFont::AspectRatio(const std::string &str) {
+  ssassert(fontFace != NULL, "Expected font face to be loaded");
 
   // We always request a unit size character, so the aspect ratio is the same as advance length.
   double dx = 0;
-  for (char32_t chr : ReadUTF8 (str)) {
-    uint32_t gid = FT_Get_Char_Index (fontFace, chr);
+  for (char32_t chr : ReadUTF8(str)) {
+    uint32_t gid = FT_Get_Char_Index(fontFace, chr);
     if (gid == 0) {
-      dbp ("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
-           "using CID as GID",
-           chr, fontFile.raw.c_str (), ft_error_string (gid));
+      dbp("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
+          "using CID as GID",
+          chr, fontFile.raw.c_str(), ft_error_string(gid));
     }
 
-    if (int fterr = FT_Load_Glyph (fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
-      dbp ("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid,
-           fontFile.raw.c_str (), ft_error_string (fterr));
+    if (int fterr = FT_Load_Glyph(fontFace, gid, FT_LOAD_NO_BITMAP | FT_LOAD_NO_HINTING)) {
+      dbp("freetype: cannot load glyph for GID 0x%04x in file '%s': %s", gid, fontFile.raw.c_str(),
+          ft_error_string(fterr));
       break;
     }
 
