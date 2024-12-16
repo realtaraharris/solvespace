@@ -17,6 +17,7 @@
 class MainWindow : public BWindow {
   public:
   MainWindow (void);
+
   void MessageReceived (BMessage *msg);
   bool QuitRequested (void);
   void LoadSettings ();

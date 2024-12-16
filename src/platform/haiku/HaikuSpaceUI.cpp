@@ -15,22 +15,22 @@
 #include "HaikuSpaceUI.h"
 #include <FilePanel.h>
 
-void SavePanel (uint32 messageName) {
-  BFilePanel *fp = new BFilePanel (B_SAVE_PANEL, &be_app_messenger, NULL, B_FILE_NODE, false,
+void HaikuSpaceUI::SavePanel (uint32 messageName) {
+  BFilePanel *fp = new BFilePanel (B_SAVE_PANEL, NULL, NULL, B_FILE_NODE, false,
                                    new BMessage (messageName));
   fp->Show ();
 }
 
-void OpenPanel (uint32 messageName) {
-  BFilePanel *fp = new BFilePanel (B_OPEN_PANEL, &be_app_messenger, NULL, B_FILE_NODE, false,
+void HaikuSpaceUI::OpenPanel (uint32 messageName) {
+  BFilePanel *fp = new BFilePanel (B_OPEN_PANEL, NULL, NULL, B_FILE_NODE, false,
                                    new BMessage (messageName));
   fp->Show ();
 }
 
 void HaikuSpaceUI::OpenSolveSpaceFile () {
-  BFilePanel *fp = new BFilePanel (B_OPEN_PANEL, &be_app_messenger, NULL, B_FILE_NODE, false,
-                                   new BMessage (READ_FILE));
-  fp->Show ();
+	std::cout << "in HaikuSpaceUI::OpenSolveSpaceFile()" << std::endl;
+  OpenPanel(READ_FILE);
+	std::cout << "in HaikuSpaceUI::OpenSolveSpaceFile(), past OpenPanel()" << std::endl;
 }
 
 void HaikuSpaceUI::UndoEnableMenus () {
@@ -81,7 +81,13 @@ void HaikuSpaceUI::GetFilenameAndSave (bool saveAs) {
       fp->SetSaveText (saveFile.raw.c_str ());
     }
     fp->Show ();
-  }
+  } else { // we know the file name! just save the file now
+    if (SaveToFile(saveFile)) {
+      AddToRecentList(saveFile);
+			RemoveAutosave();
+			unsaved = false;
+    }
+	}
 }
 
 bool HaikuSpaceUI::SaveNewFile (
@@ -115,6 +121,7 @@ bool HaikuSpaceUI::LoadAutosaveFor (const Platform::Path &filename) {
   alert->SetShortcut (0, B_ESCAPE);
   if (alert->Go () == 0) {
     unsaved = true;
+    std::cout << "unsaved = true (HaikuSpaceUI::LoadAutosaveFor)" << std::endl;
     return LoadFromFile (autosaveFile, /*canCancel=*/true);
   }
 
@@ -150,9 +157,7 @@ void HaikuSpaceUI::PngExportImage () {
 }
 
 void HaikuSpaceUI::PromptForLinkedFile () {
-  BFilePanel *fp = new BFilePanel (B_OPEN_PANEL, &be_app_messenger, NULL, B_FILE_NODE, false,
-                                   new BMessage (LINKED_FILE_IMAGE));
-  fp->Show (); // handled by HaikuSpaceUI::LinkedFileImage
+	OpenPanel(LINKED_FILE_IMAGE);
 }
 
 void HaikuSpaceUI::LinkedFileImage (const Platform::Path &filename) {

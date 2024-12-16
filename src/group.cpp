@@ -131,7 +131,6 @@ void Group::Activate () {
   } else {
     SS.GW.showFaces = SS.GW.showFacesNonDrawing;
   }
-  SS.MarkGroupDirty (h); // for good measure; shouldn't be needed
   SS.ScheduleShowTW ();
 }
 

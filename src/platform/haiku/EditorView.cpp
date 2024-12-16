@@ -68,7 +68,7 @@ void EditorView::Load (std::string path) {
     return;
   }
 
-  this->New ();
+//  this->New ();
 }
 
 void EditorView::New () {

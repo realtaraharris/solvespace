@@ -27,6 +27,7 @@ void SolveSpaceUI::MarkGroupDirty (hGroup hg, bool onlyThis) {
     }
   }
   unsaved = true;
+  std::cout << "unsaved = true (SolveSpaceUI::MarkGroupDirty)" << std::endl;
   ScheduleGenerateAll ();
 }
 

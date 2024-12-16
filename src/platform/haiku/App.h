@@ -12,10 +12,14 @@
 #define MIN_WIDTH 600.0f
 #define MIN_HEIGHT 600.0f
 #define MENUBAR_HEIGHT 20.0f
+#define	MAX_REFS_RECEIVED 32
 
 class App : public BApplication {
   public:
   App (void);
+	void RefsReceived(BMessage *message);
+	void ArgvReceived(int32 argc, char **argv);
+	void MessageReceived(BMessage *msg);
 };
 
 enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2, VIEW_PARAMETERS = 3 };
@@ -103,6 +107,7 @@ enum {
   M_EXPORT_SURFACES  = 'mexs',
   M_IMPORT           = 'mimp',
   M_QUIT_APP         = 'mqa',
+  SAVE_FILE          = 'safi',
 
   // Edit menu
   M_UNDO = 'undo',

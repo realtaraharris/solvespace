@@ -19,6 +19,8 @@ void SolveSpaceUI::MenuFile (Command id) {
     if (!SS.OkayToStartNewFile ()) {
       break;
     }
+		
+		std::cout << "ok in Command::OPEN" << std::endl;
 
     SS.OpenSolveSpaceFile ();
     break;

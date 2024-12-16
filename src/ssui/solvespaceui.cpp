@@ -169,6 +169,8 @@ bool SolveSpaceUI::Load (const Platform::Path &filename) {
   }
   AfterNewFile ();
   unsaved = autosaveLoaded;
+  std::cout << "unsaved = " << unsaved << " (SolveSpaceUI::Load)" << std::endl;
+
   return fileLoaded;
 }
 
