@@ -12,7 +12,7 @@ namespace SolveSpace {
     // Keyboard events
     //-----------------------------------------------------------------------------
 
-    std::string AcceleratorDescription (const KeyboardEvent &accel) {
+    std::string AcceleratorDescription(const KeyboardEvent &accel) {
       std::string label;
       if (accel.controlDown) {
 #ifdef __APPLE__
@@ -27,7 +27,7 @@ namespace SolveSpace {
       }
 
       switch (accel.key) {
-      case KeyboardEvent::Key::FUNCTION: label += ssprintf ("F%d", accel.num); break;
+      case KeyboardEvent::Key::FUNCTION: label += ssprintf("F%d", accel.num); break;
 
       case KeyboardEvent::Key::CHARACTER:
         if (accel.chr == '\t') {
@@ -39,7 +39,7 @@ namespace SolveSpace {
         } else if (accel.chr == '\x7f') {
           label += "Del";
         } else if (accel.chr != 0) {
-          label += toupper ((char)(accel.chr & 0xff));
+          label += toupper((char)(accel.chr & 0xff));
         }
         break;
       }
@@ -51,20 +51,20 @@ namespace SolveSpace {
     // Settings
     //-----------------------------------------------------------------------------
 
-    void Settings::FreezeBool (const std::string &key, bool value) {
-      FreezeInt (key, (int)value);
+    void Settings::FreezeBool(const std::string &key, bool value) {
+      FreezeInt(key, (int)value);
     }
 
-    bool Settings::ThawBool (const std::string &key, bool defaultValue) {
-      return ThawInt (key, (int)defaultValue) != 0;
+    bool Settings::ThawBool(const std::string &key, bool defaultValue) {
+      return ThawInt(key, (int)defaultValue) != 0;
     }
 
-    void Settings::FreezeColor (const std::string &key, RgbaColor value) {
-      FreezeInt (key, value.ToPackedInt ());
+    void Settings::FreezeColor(const std::string &key, RgbaColor value) {
+      FreezeInt(key, value.ToPackedInt());
     }
 
-    RgbaColor Settings::ThawColor (const std::string &key, RgbaColor defaultValue) {
-      return RgbaColor::FromPackedInt (ThawInt (key, defaultValue.ToPackedInt ()));
+    RgbaColor Settings::ThawColor(const std::string &key, RgbaColor defaultValue) {
+      return RgbaColor::FromPackedInt(ThawInt(key, defaultValue.ToPackedInt()));
     }
   } // namespace Platform
 } // namespace SolveSpace

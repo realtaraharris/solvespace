@@ -24,7 +24,7 @@
 #define INIT_X 125
 #define INIT_Y 45
 
-std::string fetchFilePath (BMessage *message);
+std::string fetchFilePath(BMessage *message);
 
 MainWindow::MainWindow(void)
     : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH, INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT),
@@ -268,9 +268,6 @@ MainWindow::MainWindow(void)
 }
 
 void MainWindow::MessageReceived(BMessage *msg) {
-
-msg->PrintToStream();
-
   switch (msg->what) {
   // TODO: move this into KeyboardShortcuts.cpp
   case B_KEY_DOWN: {
@@ -388,13 +385,15 @@ msg->PrintToStream();
     break;
   }
   case SAVE_FILE: {
-	  std::cout << "SAVE FILE HIT, MainWindow!!!" << std::endl;
-	  break;
-	}
-  case READ_FILE: {
-    SS.Load(Platform::Path(fetchFilePath(msg)));
+    std::cout << "SAVE_FILE, MainWindow" << std::endl;
     break;
-	}
+  }
+  case READ_FILE: {
+    Platform::Path fp = Platform::Path(fetchFilePath(msg));
+    be_app->WindowAt(MAIN_WINDOW)->SetTitle(("SolveSpace: " + fp.FileName()).c_str());
+    SS.Load(fp);
+    break;
+  }
   case ZOOM_IN: {
     SS.MenuView(SolveSpace::Command::ZOOM_IN);
     be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
@@ -662,12 +661,12 @@ msg->PrintToStream();
     SS.MenuFile(SolveSpace::Command::EXPORT_VIEW);
     break;
   }
-	case EXPORT_VIEW: {
-//		std::string ffp = fetchFilePath(msg);
-//		if (ffp.empty()) { break; }
-//	  SS.ExportView(Platform::Path(ffp));
-	  break;
-	}
+  case EXPORT_VIEW: {
+    //		std::string ffp = fetchFilePath(msg);
+    //		if (ffp.empty()) { break; }
+    //	  SS.ExportView(Platform::Path(ffp));
+    break;
+  }
   case M_EXPORT_SECTION: {
     SS.MenuFile(SolveSpace::Command::EXPORT_SECTION);
     break;

@@ -27,38 +27,38 @@
 
 #include "solvespace.h"
 
-void PropertyBrowser::ShowListOfGroups () {
-  dbp ("%Ft active");
-  dbp ("%Ft    shown dof group-name%E");
+void PropertyBrowser::ShowListOfGroups() {
+  dbp("%Ft active");
+  dbp("%Ft    shown dof group-name%E");
   bool afterActive      = false;
   bool backgroundParity = false;
   for (hGroup hg : SK.groupOrder) {
-    Group *g = SK.GetGroup (hg);
+    Group *g = SK.GetGroup(hg);
 
-    std::string s      = g->DescriptionString ();
+    std::string s      = g->DescriptionString();
     bool        active = (g->h == SS.GW.activeGroup);
     bool        shown  = g->visible;
-    bool        ok     = g->IsSolvedOkay ();
+    bool        ok     = g->IsSolvedOkay();
     bool        warn =
         (g->type == Group::Type::DRAWING_WORKPLANE && g->polyError.how != PolyError::GOOD) ||
         ((g->type == Group::Type::EXTRUDE || g->type == Group::Type::LATHE) &&
-         SK.GetGroup (g->opA)->polyError.how != PolyError::GOOD);
+         SK.GetGroup(g->opA)->polyError.how != PolyError::GOOD);
     int  dof      = g->solved.dof;
     char sdof[16] = "ok ";
     if (ok && dof > 0) {
       if (dof > 999) {
-        strcpy (sdof, "###");
+        strcpy(sdof, "###");
       } else {
-        sprintf (sdof, "%-3d", dof);
+        sprintf(sdof, "%-3d", dof);
       }
     }
     std::string suffix;
-    if (g->forceToMesh || g->IsTriangleMeshAssembly ()) {
+    if (g->forceToMesh || g->IsTriangleMeshAssembly()) {
       suffix = " (∆)";
     }
 
     bool ref = (g->h == Group::HGROUP_REFERENCES);
-    dbp (g->name.c_str ());
+    dbp(g->name.c_str());
     /*false,
            "%Bp%Fd "
            "%Ft%s%Fb%D%f%Ll%s%E "
@@ -87,10 +87,10 @@ void PropertyBrowser::ShowListOfGroups () {
            */
 
     ThumbListItem  *listItem;
-    static BBitmap *closedEyeIcon = LoadIconFromResource ("closed-eye", 20);
+    static BBitmap *closedEyeIcon = LoadIconFromResource("closed-eye", 20);
 
-    listItem = new ThumbListItem (closedEyeIcon, g->name.c_str (), 20, 0, FALSE);
-    groupList->AddItem (listItem);
+    listItem = new ThumbListItem(closedEyeIcon, g->name.c_str(), 20, 0, FALSE);
+    groupList->AddItem(listItem);
 
     if (active) {
       afterActive = true;
@@ -99,27 +99,27 @@ void PropertyBrowser::ShowListOfGroups () {
   }
 }
 
-PropertyBrowser::PropertyBrowser (void)
-    : BWindow (BRect (BPoint (740, 35), BSize (300, 150)), "Property Browser",
-               B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
-               B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE) {
+PropertyBrowser::PropertyBrowser(void)
+    : BWindow(BRect(BPoint(740, 35), BSize(300, 150)), "Property Browser", B_FLOATING_WINDOW_LOOK,
+              B_FLOATING_APP_WINDOW_FEEL, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS,
+              B_CURRENT_WORKSPACE) {
   BScrollView *scrollView;
 
-  groupList = new GroupsListView (Bounds (), "groups_list", NULL, B_SINGLE_SELECTION_LIST,
-                                  B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+  groupList = new GroupsListView(Bounds(), "groups_list", NULL, B_SINGLE_SELECTION_LIST,
+                                 B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
 
-  groupList->SetViewColor (255, 220, 220, 0);
+  groupList->SetViewColor(255, 220, 220, 0);
 
-  BLayoutBuilder::Group<> (this, B_VERTICAL, 0.0f)
-      .Add (scrollView = new BScrollView ("scroll_view", groupList, 0, false, true, B_PLAIN_BORDER),
-            0.0f)
-      .End ();
+  BLayoutBuilder::Group<>(this, B_VERTICAL, 0.0f)
+      .Add(scrollView = new BScrollView("scroll_view", groupList, 0, false, true, B_PLAIN_BORDER),
+           0.0f)
+      .End();
 }
 
-void PropertyBrowser::MessageReceived (BMessage *msg) {
+void PropertyBrowser::MessageReceived(BMessage *msg) {
   switch (msg->what) {
   case SHOW_LIST_OF_GROUPS: {
-    ShowListOfGroups ();
+    ShowListOfGroups();
     break;
   }
   }

@@ -1,45 +1,45 @@
 #include "solvespace.h"
 
-void Sketch::Clear () {
-  group.Clear ();
-  groupOrder.Clear ();
-  constraint.Clear ();
-  request.Clear ();
-  style.Clear ();
-  entity.Clear ();
-  param.Clear ();
+void Sketch::Clear() {
+  group.Clear();
+  groupOrder.Clear();
+  constraint.Clear();
+  request.Clear();
+  style.Clear();
+  entity.Clear();
+  param.Clear();
 }
 
-BBox Sketch::CalculateEntityBBox (bool includingInvisible) {
+BBox Sketch::CalculateEntityBBox(bool includingInvisible) {
   BBox box   = {};
   bool first = true;
 
-  auto includePoint = [&] (const Vector &point) {
+  auto includePoint = [&](const Vector &point) {
     if (first) {
       box.minp = point;
       box.maxp = point;
       first    = false;
     } else {
-      box.Include (point);
+      box.Include(point);
     }
   };
 
   for (const Entity &e : entity) {
     if (e.construction)
       continue;
-    if (!(includingInvisible || e.IsVisible ()))
+    if (!(includingInvisible || e.IsVisible()))
       continue;
 
     // arc center point shouldn't be included in bounding box calculation
-    if (e.IsPoint () && e.h.isFromRequest ()) {
-      Request *r = SK.GetRequest (e.h.request ());
-      if (r->type == Request::Type::ARC_OF_CIRCLE && e.h == r->h.entity (1)) {
+    if (e.IsPoint() && e.h.isFromRequest()) {
+      Request *r = SK.GetRequest(e.h.request());
+      if (r->type == Request::Type::ARC_OF_CIRCLE && e.h == r->h.entity(1)) {
         continue;
       }
     }
 
-    if (e.IsPoint ()) {
-      includePoint (e.PointGetNum ());
+    if (e.IsPoint()) {
+      includePoint(e.PointGetNum());
       continue;
     }
 
@@ -50,14 +50,14 @@ BBox Sketch::CalculateEntityBBox (bool includingInvisible) {
     case Entity::Type::CIRCLE:
     case Entity::Type::ARC_OF_CIRCLE: {
       SBezierList sbl = {};
-      e.GenerateBezierCurves (&sbl);
+      e.GenerateBezierCurves(&sbl);
 
       for (const SBezier &sb : sbl.l) {
         for (int j = 0; j <= sb.deg; j++) {
-          includePoint (sb.ctrl[j]);
+          includePoint(sb.ctrl[j]);
         }
       }
-      sbl.Clear ();
+      sbl.Clear();
       continue;
     }
 
@@ -68,13 +68,13 @@ BBox Sketch::CalculateEntityBBox (bool includingInvisible) {
   return box;
 }
 
-Group *Sketch::GetRunningMeshGroupFor (hGroup h) {
-  Group *g = GetGroup (h);
+Group *Sketch::GetRunningMeshGroupFor(hGroup h) {
+  Group *g = GetGroup(h);
   while (g != NULL) {
-    if (g->IsMeshGroup ()) {
+    if (g->IsMeshGroup()) {
       return g;
     }
-    g = g->PreviousGroup ();
+    g = g->PreviousGroup();
   }
   return NULL;
 }
