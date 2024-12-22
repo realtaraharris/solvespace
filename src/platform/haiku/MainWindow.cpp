@@ -26,6 +26,27 @@
 
 std::string fetchFilePath(BMessage *message);
 
+std::string fetchFilePathFromThisOtherShape(BMessage *msg) {
+  // TODO: report errors to user
+  if (!msg->HasRef("directory") || !msg->HasString("name")) {
+    return std::string();
+  }
+  entry_ref   ref;
+  const char *name;
+
+  if (msg->FindRef("directory", 0, &ref) != B_OK || msg->FindString("name", &name) != B_OK) {
+    return std::string();
+  }
+  BEntry entry(&ref, true);
+  BPath  filePath(&ref);
+  if (entry.GetPath(&filePath) != B_OK) {
+    return std::string();
+  }
+
+  // TODO: is this the right way to do this? we never validate the name
+  return std::string(std::string(filePath.Path()) + "/" + std::string(name));
+}
+
 MainWindow::MainWindow(void)
     : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH, INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT),
               "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE),
@@ -637,26 +658,12 @@ void MainWindow::MessageReceived(BMessage *msg) {
     fp->Show();
     break;
   }
-    /*
-        case EXPORT_IMAGE: {
-            // TODO: extract identical code used elsewhere, e.g., the
-       SAVE_AS_FILE case handler if (!msg->HasRef("directory") ||
-       !msg->HasString("name")) { break; } entry_ref ref; const char *name;
-            BPath path;
-
-            if (msg->FindRef("directory", 0, &ref) != B_OK ||
-       msg->FindString("name", &name) != B_OK) { break; } BEntry entry(&ref,
-       true);
-
-            if (entry.GetPath(&path) != B_OK) { break; }
-
-            SS.ExportAsPngTo(
-                Platform::Path::From(std::string(path.Path()) + "/" +
-       std::string(name))
-            );
-
-            break;
-        }*/
+  case PNG_EXPORT_IMAGE: {
+    msg->PrintToStream();
+    Platform::Path fp = Platform::Path(fetchFilePathFromThisOtherShape(msg));
+    SS.PngExportImage(fp);
+    break;
+  }
   case M_EXPORT_VIEW: {
     SS.MenuFile(SolveSpace::Command::EXPORT_VIEW);
     break;

@@ -926,8 +926,9 @@ void GraphicsWindow::Paint() {
     if (!f || !canvas->ReadFrame()->WritePng(f, /*flip=*/true)) {
       Error("Couldn't write to '%s'", SS.screenshotFile.raw.c_str());
     }
-    if (f)
+    if (f) {
       fclose(f);
+    }
     SS.screenshotFile.Clear();
   }
 

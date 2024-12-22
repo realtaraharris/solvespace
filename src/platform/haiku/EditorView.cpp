@@ -21,8 +21,6 @@ void attachBufferToBBitmap(agg::rendering_buffer &buffer, BBitmap *bitmap) {
 EditorView::EditorView()
     : BView(Bounds(), "SolveSpace Editor View", B_FOLLOW_ALL_SIDES,
             B_FRAME_EVENTS | B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE) {
-  // choices: SS.GW.canvas.get(),
-  // std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
   SS.GW.canvas         = std::make_shared<AggPixmapRenderer>();
   SS.GW.overrideCamera = false;
 
@@ -56,7 +54,12 @@ void EditorView::FrameResized(float width, float height) {
   camera.height = height;
   SS.GW.width   = width;
   SS.GW.height  = height;
-  std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->SetCamera(camera);
+
+  std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
+      ->SetCamera(camera); // do this before Init so it has the new values
+  std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
+      ->Init(false); // this picks up the width and height set on SS.GW
+                     // TODO: consider giving Init width and height params
 
   Draw(Bounds());
 }
@@ -67,8 +70,6 @@ void EditorView::Load(std::string path) {
   if (!SS.LoadFromFile(fixturePath)) {
     return;
   }
-
-  //  this->New ();
 }
 
 void EditorView::New() {

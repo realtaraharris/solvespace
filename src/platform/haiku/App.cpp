@@ -27,8 +27,7 @@ std::string fetchFilePath(BMessage *message) {
   }
 
   BEntry entry(&ref, true);
-  //  BPath *filePath;
-  BPath filePath(&ref);
+  BPath  filePath(&ref);
 
   entry.GetPath(&filePath);
 

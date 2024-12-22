@@ -21,7 +21,7 @@ class HaikuSpaceUI : public SolveSpaceUI {
   bool LoadAutosaveFor(const Platform::Path &filename);
   int  LocateImportedFile(const Platform::Path &filename, bool canCancel);
   void GetPngExportImageFilename();
-  void PngExportImage();
+  void PngExportImage(Platform::Path fp);
   void PromptForLinkedFile();
   void LinkedFileImage(const Platform::Path &filename);
   void PromptForImportFile();

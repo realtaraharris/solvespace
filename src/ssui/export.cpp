@@ -1043,6 +1043,7 @@ void SolveSpaceUI::ExportMeshAsVrmlTo(FILE *f, const Platform::Path &filename, S
 //-----------------------------------------------------------------------------
 void SolveSpaceUI::ExportAsPngTo(const Platform::Path &filename) {
   screenshotFile = filename;
+  GW.Paint();
   // The rest of the work is done in the next redraw.
-  GW.Invalidate();
+  //  GW.Invalidate();
 }

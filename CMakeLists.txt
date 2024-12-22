@@ -239,6 +239,7 @@ set(testsuite_sources
 )
 
 add_executable(solvespace-testsuite
+	src/platform/haiku/HaikuSpaceUI.cpp
 	test/harness.cpp
 	${testsuite_sources}
 	src/platform/guinone.cpp
@@ -246,8 +247,9 @@ add_executable(solvespace-testsuite
 	$<TARGET_OBJECTS:solvespace-core>
 	$<TARGET_PROPERTY:resources,EXTRA_SOURCES>)
 
+target_compile_definitions(solvespace-testsuite PRIVATE HAIKU_GUI=1)
 target_link_libraries(solvespace-testsuite
-	dxfrw agg ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${COVERAGE_LIBRARY})
+	be agg tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY} ${COVERAGE_LIBRARY})
 
 target_include_directories(solvespace-testsuite
 	PRIVATE

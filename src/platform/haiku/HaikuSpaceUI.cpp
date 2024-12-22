@@ -150,8 +150,8 @@ void HaikuSpaceUI::GetPngExportImageFilename() {
   fp->Show();
 }
 
-void HaikuSpaceUI::PngExportImage() {
-  SS.ExportAsPngTo(pngExportImageFilename);
+void HaikuSpaceUI::PngExportImage(Platform::Path fp) {
+  SS.ExportAsPngTo(fp);
 }
 
 void HaikuSpaceUI::PromptForLinkedFile() {
