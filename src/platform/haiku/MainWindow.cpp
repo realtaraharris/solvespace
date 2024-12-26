@@ -680,6 +680,13 @@ void MainWindow::MessageReceived(BMessage *msg) {
     SS.MenuFile(SolveSpace::Command::EXPORT_SECTION);
     break;
   }
+  case EXPORT_SECTION: {
+    std::string ffp = fetchFilePathFromThisOtherShape(msg);
+    if (ffp.empty()) {
+      break;
+    }
+    SS.ExportSection(Platform::Path(ffp));
+  }
   case M_EXPORT_WIREFRAME: {
     SS.MenuFile(SolveSpace::Command::EXPORT_WIREFRAME);
     break;
