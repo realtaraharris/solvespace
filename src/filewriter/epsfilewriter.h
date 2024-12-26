@@ -1,5 +1,5 @@
-#ifndef GCODE_FILE_WRITER_H
-#define GCODE_FILE_WRITER_H
+#ifndef EPS_FILE_WRITER_H
+#define EPS_FILE_WRITER_H
 
 #include "vectorfilewriter.h"
 
@@ -20,4 +20,4 @@ class EpsFileWriter : public VectorFileWriter {
   bool HasCanvasSize () const override { return true; }
   bool CanOutputMesh () const override { return true; }
 };
-#endif // GCODE_FILE_WRITER_H
+#endif // EPS_FILE_WRITER_H

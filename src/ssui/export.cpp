@@ -186,8 +186,9 @@ void SolveSpaceUI::ExportViewOrWireframeTo(const Platform::Path &filename, bool 
   SBezierList beziers = {};
 
   VectorFileWriter *out = VectorFileWriter::ForFile(filename);
-  if (!out)
+  if (!out) {
     return;
+  }
 
   SS.exportMode = true;
   GenerateAll(Generate::ALL);

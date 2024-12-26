@@ -127,12 +127,14 @@ bool HaikuSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {
 }
 
 int HaikuSpaceUI::LocateImportedFile(const Platform::Path &filename, bool canCancel) {
-  BAlert *alert = new BAlert("Missing file",
-                             "The linked file “%s” is not present. Do you want to locate "
-                             "it manually? If you decline, any geometry that depends on "
-                             "the missing file will be permanently removed.",
-                             "Yes", "No", canCancel ? "Cancel" : NULL, B_WIDTH_AS_USUAL,
-                             B_OFFSET_SPACING, B_INFO_ALERT);
+  BAlert *alert = new BAlert(
+      "Missing file",
+      std::format(
+          "The linked file {0} is not present. Do you want to locate it manually? If you decline, "
+          "any geometry that depends on the missing file will be permanently removed.",
+          filename.raw)
+          .c_str(),
+      "Yes", "No", canCancel ? "Cancel" : NULL, B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_INFO_ALERT);
   alert->SetShortcut(0, B_ESCAPE);
 
   // FIXME(async): asyncify this call

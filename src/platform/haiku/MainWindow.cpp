@@ -204,8 +204,8 @@ MainWindow::MainWindow(void)
   constrainMenu->AddItem(new BMenuItem("Vertical", new BMessage(M_VERTICAL),
                                        'V')); // Command::VERTICAL
   constrainMenu->AddSeparatorItem();
-  constrainMenu->AddItem(new BMenuItem("On point / curve /plane", new BMessage(M_ON_ENTITY),
-                                       'O')); // Command::ON_ENTITY
+  constrainMenu->AddItem(new BMenuItem("On point / curve /plane", new BMessage(M_ON_ENTITY), 'O',
+                                       B_SHIFT_KEY)); // Command::ON_ENTITY
   constrainMenu->AddItem(new BMenuItem("Equal length / radius / angle", new BMessage(M_EQUAL), 'Q',
                                        B_SHIFT_KEY)); // Command::EQUAL
   constrainMenu->AddItem(new BMenuItem("Length / arc ratio", new BMessage(M_RATIO), 'Z',
@@ -669,9 +669,9 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case EXPORT_VIEW: {
-    //		std::string ffp = fetchFilePath(msg);
-    //		if (ffp.empty()) { break; }
-    //	  SS.ExportView(Platform::Path(ffp));
+    std::string ffp = fetchFilePathFromThisOtherShape(msg);
+    if (ffp.empty()) { break; }
+    SS.ExportView(Platform::Path(ffp));
     break;
   }
   case M_EXPORT_SECTION: {

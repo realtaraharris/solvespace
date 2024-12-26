@@ -1,10 +1,12 @@
 #include "solvespace.h"
+#include "vectorfilewriter.h"
 #include "gcodefilewriter.h"
 #include "dxffilewriter.h"
 #include "epsfilewriter.h"
+#include "svgfilewriter.h"
 #include "pdffilewriter.h"
 #include "hpglfilewriter.h"
-#include "vectorfilewriter.h"
+#include "step2dfilewriter.h"
 
 double VectorFileWriter::MmToPts(double mm) {
   // 72 points in an inch
@@ -13,46 +15,47 @@ double VectorFileWriter::MmToPts(double mm) {
 
 VectorFileWriter *VectorFileWriter::ForFile(const Platform::Path &filename) {
   VectorFileWriter *ret;
-  /*    bool needOpen = true;
-      if(filename.HasExtension("dxf")) {
-          static DxfFileWriter DxfWriter;
-          ret = &DxfWriter;
-          needOpen = false;
-      } else if(filename.HasExtension("ps") || filename.HasExtension("eps")) {
-          static EpsFileWriter EpsWriter;
-          ret = &EpsWriter;
-      } else if(filename.HasExtension("pdf")) {
-          static PdfFileWriter PdfWriter;
-          ret = &PdfWriter;
-      } else if(filename.HasExtension("svg")) {
-          static SvgFileWriter SvgWriter;
-          ret = &SvgWriter;
-      } else if(filename.HasExtension("plt") || filename.HasExtension("hpgl")) {
-          static HpglFileWriter HpglWriter;
-          ret = &HpglWriter;
-      } else if(filename.HasExtension("step") || filename.HasExtension("stp")) {
-          static Step2dFileWriter Step2dWriter;
-          ret = &Step2dWriter;
-      } else if(filename.HasExtension("txt") || filename.HasExtension("ngc")) {
-          static GCodeFileWriter GCodeWriter;
-          ret = &GCodeWriter;
-      } else {
-          Error("Can't identify output file type from file extension of "
+  bool              needOpen = true;
+  if (filename.HasExtension("dxf")) {
+    static DxfFileWriter DxfWriter;
+    ret      = &DxfWriter;
+    needOpen = false;
+  } else if (filename.HasExtension("ps") || filename.HasExtension("eps")) {
+    static EpsFileWriter EpsWriter;
+    ret = &EpsWriter;
+  } else if (filename.HasExtension("pdf")) {
+    static PdfFileWriter PdfWriter;
+    ret = &PdfWriter;
+  } else if (filename.HasExtension("svg")) {
+    static SvgFileWriter SvgWriter;
+    ret = &SvgWriter;
+  } else if (filename.HasExtension("plt") || filename.HasExtension("hpgl")) {
+    static HpglFileWriter HpglWriter;
+    ret = &HpglWriter;
+  } else if (filename.HasExtension("step") || filename.HasExtension("stp")) {
+    static Step2dFileWriter Step2dWriter;
+    ret = &Step2dWriter;
+  } else if (filename.HasExtension("txt") || filename.HasExtension("ngc")) {
+    static GCodeFileWriter GCodeWriter;
+    ret = &GCodeWriter;
+  } else {
+    Error("Can't identify output file type from file extension of "
           "filename '%s'; try "
           ".step, .stp, .dxf, .svg, .plt, .hpgl, .pdf, .txt, .ngc, "
           ".eps, or .ps.",
-              filename.raw.c_str());
-          return NULL;
-      }
-      ret->filename = filename;
-      if(!needOpen) return ret;
+          filename.raw.c_str());
+    return NULL;
+  }
+  ret->filename = filename;
+  if (!needOpen)
+    return ret;
 
-      FILE *f = OpenFile(filename, "wb");
-      if(!f) {
-          Error("Couldn't write to '%s'", filename.raw.c_str());
-          return NULL;
-      }
-      ret->f = f; */
+  FILE *f = OpenFile(filename, "wb");
+  if (!f) {
+    Error("Couldn't write to '%s'", filename.raw.c_str());
+    return NULL;
+  }
+  ret->f = f;
   return ret;
 }
 

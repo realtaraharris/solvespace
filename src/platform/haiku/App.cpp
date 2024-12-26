@@ -57,10 +57,8 @@ void App::RefsReceived(BMessage *message) {
 
 void App::MessageReceived(BMessage *msg) {
   switch (msg->what) {
-  case READ_FILE: {
-    be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
-    break;
-  }
+  case EXPORT_VIEW: // fall through, intentionally
+  case READ_FILE: // fall through, intentionally
   case SAVE_FILE: {
     be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
     break;
