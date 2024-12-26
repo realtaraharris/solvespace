@@ -670,7 +670,9 @@ void MainWindow::MessageReceived(BMessage *msg) {
   }
   case EXPORT_VIEW: {
     std::string ffp = fetchFilePathFromThisOtherShape(msg);
-    if (ffp.empty()) { break; }
+    if (ffp.empty()) {
+      break;
+    }
     SS.ExportView(Platform::Path(ffp));
     break;
   }
