@@ -15,25 +15,6 @@ App::App(void) : BApplication("application/x-vnd.dw-solvespace") {
   mainwin->Show();
 }
 
-std::string fetchFilePath(BMessage *message) {
-  if (!message->HasRef("refs")) {
-    return std::string();
-  }
-
-  entry_ref ref;
-
-  if (message->FindRef("refs", 0, &ref) != B_OK) {
-    return std::string();
-  }
-
-  BEntry entry(&ref, true);
-  BPath  filePath(&ref);
-
-  entry.GetPath(&filePath);
-
-  return std::string(filePath.Path());
-}
-
 void App::RefsReceived(BMessage *message) {
   int32  count = 0;
   uint32 type  = 0;
@@ -57,9 +38,13 @@ void App::RefsReceived(BMessage *message) {
 
 void App::MessageReceived(BMessage *msg) {
   switch (msg->what) {
-  case EXPORT_VIEW:    // fall through, intentionally
-  case EXPORT_SECTION: // fall through, intentionally
-  case READ_FILE:      // fall through, intentionally
+  case EXPORT_VIEW:      // fall through, intentionally
+  case EXPORT_SECTION:   // fall through, intentionally
+  case EXPORT_WIREFRAME: // fall through, intentionally
+  case EXPORT_MESH:      // fall through, intentionally
+  case EXPORT_SURFACES:  // fall through, intentionally
+  case IMPORT_FILE:      // fall through, intentionally
+  case READ_FILE:        // fall through, intentionally
   case SAVE_FILE: {
     be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
     break;

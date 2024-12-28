@@ -24,9 +24,28 @@
 #define INIT_X 125
 #define INIT_Y 45
 
-std::string fetchFilePath(BMessage *message);
+// TODO: compare the shapes we get back from the open and save panels and make sure
+// we can't use the same function for both
+std::string getOpenPanelFilename(BMessage *message) {
+  if (!message->HasRef("refs")) {
+    return std::string();
+  }
 
-std::string fetchFilePathFromThisOtherShape(BMessage *msg) {
+  entry_ref ref;
+
+  if (message->FindRef("refs", 0, &ref) != B_OK) {
+    return std::string();
+  }
+
+  BEntry entry(&ref, true);
+  BPath  filePath(&ref);
+
+  entry.GetPath(&filePath);
+
+  return std::string(filePath.Path());
+}
+
+std::string getSavePanelFilename(BMessage *msg) {
   // TODO: report errors to user
   if (!msg->HasRef("directory") || !msg->HasString("name")) {
     return std::string();
@@ -410,7 +429,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case READ_FILE: {
-    Platform::Path fp = Platform::Path(fetchFilePath(msg));
+    Platform::Path fp = Platform::Path(getOpenPanelFilename(msg));
     be_app->WindowAt(MAIN_WINDOW)->SetTitle(("SolveSpace: " + fp.FileName()).c_str());
     SS.Load(fp);
     break;
@@ -660,7 +679,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
   }
   case PNG_EXPORT_IMAGE: {
     msg->PrintToStream();
-    Platform::Path fp = Platform::Path(fetchFilePathFromThisOtherShape(msg));
+    Platform::Path fp = Platform::Path(getSavePanelFilename(msg));
     SS.PngExportImage(fp);
     break;
   }
@@ -669,7 +688,7 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case EXPORT_VIEW: {
-    std::string ffp = fetchFilePathFromThisOtherShape(msg);
+    std::string ffp = getSavePanelFilename(msg);
     if (ffp.empty()) {
       break;
     }
@@ -681,29 +700,61 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case EXPORT_SECTION: {
-    std::string ffp = fetchFilePathFromThisOtherShape(msg);
+    std::string ffp = getSavePanelFilename(msg);
     if (ffp.empty()) {
       break;
     }
     SS.ExportSection(Platform::Path(ffp));
+    break;
   }
   case M_EXPORT_WIREFRAME: {
     SS.MenuFile(SolveSpace::Command::EXPORT_WIREFRAME);
+    break;
+  }
+  case EXPORT_WIREFRAME: {
+    std::string ffp = getSavePanelFilename(msg);
+    if (ffp.empty()) {
+      break;
+    }
+    SS.ExportWireframe(Platform::Path(ffp));
     break;
   }
   case M_EXPORT_MESH: {
     SS.MenuFile(SolveSpace::Command::EXPORT_MESH);
     break;
   }
+  case EXPORT_MESH: {
+    std::string ffp = getSavePanelFilename(msg);
+    if (ffp.empty()) {
+      break;
+    }
+    SS.ExportMesh(Platform::Path(ffp));
+    break;
+  }
   case M_EXPORT_SURFACES: {
     SS.MenuFile(SolveSpace::Command::EXPORT_SURFACES);
+    break;
+  }
+  case EXPORT_SURFACES: {
+    std::string ffp = getSavePanelFilename(msg);
+    if (ffp.empty()) {
+      break;
+    }
+    SS.ExportSurfaces(Platform::Path(ffp));
     break;
   }
   case M_IMPORT: {
     SS.MenuFile(SolveSpace::Command::IMPORT);
     break;
   }
-
+  case IMPORT_FILE: {
+    std::string ffp = getOpenPanelFilename(msg);
+    if (ffp.empty()) {
+      break;
+    }
+    SS.ImportFile(Platform::Path(ffp));
+    break;
+  }
   case M_UNDO: {
     SS.MenuEdit(SolveSpace::Command::UNDO);
     be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
