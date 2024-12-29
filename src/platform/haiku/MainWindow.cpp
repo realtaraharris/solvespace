@@ -17,6 +17,7 @@
 #include <View.h>
 
 #include "App.h" // contains message enums
+#include "KeyboardShortcuts.h"
 #include "Toolbar.h"
 
 #include <iostream>
@@ -66,15 +67,7 @@ std::string getSavePanelFilename(BMessage *msg) {
   return std::string(std::string(filePath.Path()) + "/" + std::string(name));
 }
 
-MainWindow::MainWindow(void)
-    : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH, INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT),
-              "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE),
-      settings(new BMessage('sett')) {
-  BRect rect(Bounds());
-
-  SetSizeLimits(MIN_WIDTH, 100000, MIN_HEIGHT + MENUBAR_HEIGHT,
-                100000); // the Haiku API needs a way to not set any upper bound
-
+void MainWindow::SetupMenubar(BRect rect) {
   menuBar         = new BMenuBar(rect, "menubar");
   BMenu *fileMenu = new BMenu("File");
   fileMenu->AddItem(new BMenuItem("New", new BMessage(M_NEW_FILE), 'N'));
@@ -278,6 +271,18 @@ MainWindow::MainWindow(void)
   helpMenu->AddItem(new BMenuItem("About", new BMessage(M_ABOUT),
                                   NULL)); // Command::ABOUT
   menuBar->AddItem(helpMenu);
+}
+
+MainWindow::MainWindow(void)
+    : BWindow(BRect(INIT_X, INIT_Y, INIT_X + MIN_WIDTH, INIT_Y + MIN_HEIGHT + MENUBAR_HEIGHT),
+              "SolveSpace", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE),
+      settings(new BMessage('sett')) {
+  BRect rect(Bounds());
+
+  SetSizeLimits(MIN_WIDTH, 100000, MIN_HEIGHT + MENUBAR_HEIGHT,
+                100000); // the Haiku API needs a way to not set any upper bound
+
+  SetupMenubar(rect);
 
   editorView = new EditorView();
 
@@ -309,119 +314,12 @@ MainWindow::MainWindow(void)
 
 void MainWindow::MessageReceived(BMessage *msg) {
   switch (msg->what) {
-  // TODO: move this into KeyboardShortcuts.cpp
   case B_KEY_DOWN: {
-    int32 key, raw;
+    int32 key;
+    int32 raw;
     msg->FindInt32("key", &key);
     msg->FindInt32("raw_char", &raw);
-    uint32_t mods = modifiers();
-    switch (key) {
-    case B_F3_KEY: {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(NEAREST_ISO_TOOL_BTN_CLICKED));
-      break;
-    }
-    }
-    switch ((char)raw) {
-    case B_DELETE: {
-      SS.MenuClipboard(SolveSpace::Command::DELETE);
-      break;
-    }
-    case 's': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(LINE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'r': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(RECT_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'c': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CIRCLE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'a': {
-      if (mods & B_SHIFT_KEY) {
-        be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(TANGENT_ARC_TOOL_BTN_CLICKED));
-      } else {
-        be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(ARC_TOOL_BTN_CLICKED));
-      }
-      break;
-    }
-    case 'b': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CUBIC_SPLINE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'p': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(DATUM_POINT_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'g': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(CONSTRUCTION_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'i': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(SPLIT_CURVES_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 't': {
-      be_app->WindowAt(TOOLBAR)->PostMessage(new BMessage(TEXT_TOOL_BTN_CLICKED));
-      break;
-    }
-
-    case 'd': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(DISTANCE_DIA_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'n': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(ANGLE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'h': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(HORIZONTAL_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'v': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(VERTICAL_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'l': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(PARALLEL_TOOL_BTN_CLICKED));
-      break;
-    }
-    case '[': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(CONSTRAIN_PERP_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'o': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(PT_ON_LINE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'y': {
-      be_app->WindowAt(MAIN_WINDOW)
-          ->PostMessage(new BMessage(CONSTRAIN_SYMMETRIC_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'q': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(CONSTRAIN_EQUAL_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'x': {
-      be_app->WindowAt(MAIN_WINDOW)
-          ->PostMessage(new BMessage(CONSTRAIN_ORIENTED_SAME_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'u': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(OTHER_ANGLE_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'e': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(REF_TOOL_BTN_CLICKED));
-      break;
-    }
-    case 'w': {
-      be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(NEAREST_ORTHO_TOOL_BTN_CLICKED));
-      break;
-    }
-    }
+    HandleKeyboardShortcut(key, (char)raw, modifiers());
     break;
   }
   case SAVE_FILE: {

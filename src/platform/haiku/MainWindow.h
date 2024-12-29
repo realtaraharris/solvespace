@@ -22,6 +22,7 @@ class MainWindow : public BWindow {
   bool QuitRequested (void);
   void LoadSettings ();
   void SaveSettings ();
+  void SetupMenubar(BRect rect);
 
   private:
   BMenuBar *menuBar;

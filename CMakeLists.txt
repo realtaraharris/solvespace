@@ -134,6 +134,7 @@ add_executable(SolveSpace
 	src/platform/haiku/guihaiku.cpp
 	src/platform/haiku/HaikuSpaceUI.cpp
 	src/platform/haiku/EventHooksHaiku.cpp
+	src/platform/haiku/KeyboardShortcuts.cpp
 	$<TARGET_OBJECTS:solvespace-core>
 )
 
