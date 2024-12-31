@@ -7,8 +7,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_SURFACE_H
-#define SOLVESPACE_SURFACE_H
+#pragma once
 
 class SBezierList;
 class SSurface;
@@ -439,6 +438,3 @@ public:
     void RemapFaces(Group *g, int remap);
     void Clear();
 };
-
-#endif
-

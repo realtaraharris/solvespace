@@ -1,3 +1,5 @@
+#pragma once
+
 #include "clipboardrequest.h"
 #include "filewriter/vectorfilewriter.h"
 #include "ttf.h"

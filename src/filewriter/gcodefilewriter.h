@@ -1,5 +1,4 @@
-#ifndef GCODE_FILE_WRITER_H
-#define GCODE_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 
@@ -18,4 +17,3 @@ class GCodeFileWriter : public VectorFileWriter {
   bool      HasCanvasSize () const override { return false; }
   bool      CanOutputMesh () const override { return false; }
 };
-#endif // GCODE_FILE_WRITER_H

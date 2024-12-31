@@ -5,8 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_POLYGON_H
-#define SOLVESPACE_POLYGON_H
+#pragma once
 
 class SPointList;
 class SPolygon;
@@ -376,5 +375,3 @@ class PolylineBuilder {
   void GenerateEdges (SEdgeList *sel);
   void GenerateOutlines (SOutlineList *sol);
 };
-
-#endif

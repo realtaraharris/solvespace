@@ -1,3 +1,5 @@
+#pragma once
+
 // The format for entities stored on the clipboard.
 class ClipboardRequest {
   public:

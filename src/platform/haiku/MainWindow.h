@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <MenuBar.h>
 #include <Window.h>
@@ -37,5 +36,3 @@ class MainWindow : public BWindow {
 
   BMessage *settings;
 };
-
-#endif

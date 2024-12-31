@@ -1,5 +1,4 @@
-#ifndef REQUEST_H
-#define REQUEST_H
+#pragma once
 // a user request for some primitive or derived operation; for example a line, or a step and repeat
 
 class Request {
@@ -48,5 +47,3 @@ class Request {
 
   void Clear () {}
 };
-
-#endif // REQUEST_H

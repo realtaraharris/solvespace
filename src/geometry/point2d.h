@@ -1,3 +1,5 @@
+#pragma once
+
 class Point2d {
   public:
   double x, y;

@@ -1,5 +1,4 @@
-#ifndef VECTOR_FILE_WRITER_H
-#define VECTOR_FILE_WRITER_H
+#pragma once
 
 #include "solvespace.h"
 
@@ -39,5 +38,3 @@ class VectorFileWriter {
   virtual bool HasCanvasSize () const       = 0;
   virtual bool CanOutputMesh () const       = 0;
 };
-
-#endif // VECTOR_FILE_WRITER_H

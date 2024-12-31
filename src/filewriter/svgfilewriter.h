@@ -1,5 +1,4 @@
-#ifndef SVG_FILE_WRITER_H
-#define SVG_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 
@@ -20,5 +19,3 @@ class SvgFileWriter : public VectorFileWriter {
   bool HasCanvasSize () const override { return true; }
   bool CanOutputMesh () const override { return true; }
 };
-
-#endif // SVG_FILE_WRITER_H

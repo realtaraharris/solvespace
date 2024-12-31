@@ -4,8 +4,8 @@
 //
 // copyright 2008-2013 Jonathan Westhues
 //-----------------------------------------------------------------------------
-#ifndef ENTITY_MAIN_H
-#define ENTITY_MAIN_H
+
+#pragma once
 
 class hGroup;
 class hRequest;
@@ -288,5 +288,3 @@ inline hConstraint hEquation::constraint () const {
   r.v = (v >> 16);
   return r;
 }
-
-#endif // ENTITY_MAIN

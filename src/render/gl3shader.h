@@ -3,8 +3,8 @@
 //
 // Copyright 2016 Aleksey Egorov
 //-----------------------------------------------------------------------------
-#ifndef SOLVESPACE_GL3SHADER_H
-#define SOLVESPACE_GL3SHADER_H
+
+#pragma once
 
 #if defined(WIN32) || defined(__EMSCRIPTEN__)
 #   define GL_APICALL /*static linkage*/
@@ -262,5 +262,3 @@ public:
 };
 
 }
-
-#endif

@@ -4,8 +4,7 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_RENDER_H
-#define SOLVESPACE_RENDER_H
+#pragma once
 
 // TODO: move these to the right place
 #include "agg_rendering_buffer.h"
@@ -437,5 +436,3 @@ public:
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<ViewportCanvas> CreateRenderer();
-
-#endif

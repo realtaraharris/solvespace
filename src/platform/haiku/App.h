@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef APP_H
-#define APP_H
+#pragma once
 
 #include <Application.h>
 
@@ -190,5 +189,3 @@ enum {
 
   M_NOT_IMPL = 'mnti'
 };
-
-#endif

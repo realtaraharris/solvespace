@@ -1,7 +1,6 @@
 // this entire file is copied from WonderBrush
 
-#ifndef DRAG_SORTABLE_LIST_VIEW_H
-#define DRAG_SORTABLE_LIST_VIEW_H
+#pragma once
 
 #include <ListItem.h>
 #include <ListView.h>
@@ -129,5 +128,3 @@ class SimpleListView : public DragSortableListView {
   private:
     BMessage *fSelectionChangeMessage;
 };
-
-#endif // DRAG_SORTABLE_LIST_VIEW_H

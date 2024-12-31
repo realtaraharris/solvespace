@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef TOOLBAR_H
-#define TOOLBAR_H
+#pragma once
 
 #include <Window.h>
 
@@ -42,5 +41,3 @@ class AppToolbar : public BWindow {
   BButton *nearestIsoToolButton;
   BButton *nearestOrthoToolButton;
 };
-
-#endif

@@ -4,8 +4,7 @@
 //
 // copyright 2008-2013 Jonathan Westhues
 //-----------------------------------------------------------------------------
-#ifndef DATASTRUCTURES_H
-#define DATASTRUCTURES_H
+#pragma once
 
 #include "solvespace.h"
 
@@ -491,5 +490,3 @@ struct RgbaColorCompare {
 };
 
 #include "geometry/bbox.h"
-
-#endif // DATASTRUCTURES_H

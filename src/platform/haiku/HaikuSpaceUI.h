@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef HAIKUSPACEUI_H
-#define HAIKUSPACEUI_H
+#pragma once
 
 #include <SupportDefs.h>
 
@@ -47,5 +46,3 @@ class HaikuSpaceUI : public SolveSpaceUI {
   void PromptForStopTracingFile();
   void StopTracing(const Platform::Path &exportFile);
 };
-
-#endif // HAIKUSPACEUI_H

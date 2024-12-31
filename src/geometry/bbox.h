@@ -1,3 +1,5 @@
+#pragma once
+
 class BBox {
   public:
   Vector minp = Vector (0, 0, 0);

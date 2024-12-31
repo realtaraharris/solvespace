@@ -1,5 +1,4 @@
-#ifndef STYLE_H
-#define STYLE_H
+#pragma once
 
 class Style {
   public:
@@ -112,5 +111,3 @@ class Style {
 
   void Clear () {}
 };
-
-#endif // STYLE_H

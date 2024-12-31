@@ -1,5 +1,4 @@
-#ifndef STEP_FILE_WRITER_H
-#define STEP_FILE_WRITER_H
+#pragma once
 
 class StepFileWriter {
   public:
@@ -17,5 +16,3 @@ class StepFileWriter {
   FILE     *f;
   int       id;
 };
-
-#endif // STEP_FILE_WRITER_H

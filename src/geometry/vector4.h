@@ -1,3 +1,5 @@
+#pragma once
+
 class Vector4 {
   public:
   double w, x, y, z;

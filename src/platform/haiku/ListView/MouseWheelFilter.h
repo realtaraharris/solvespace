@@ -1,7 +1,6 @@
 // this entire file is copied from WonderBrush
 
-#ifndef MOUSE_WHEEL_FILTER_H
-#define MOUSE_WHEEL_FILTER_H
+#pragma once
 
 #include <MessageFilter.h>
 
@@ -43,5 +42,3 @@ class MouseWheelFilter : public BMessageFilter {
     MouseWheelTarget *fTarget;
     BHandler *fTargetHandler;
 };
-
-#endif // MOUSE_WHEEL_FILTER_H

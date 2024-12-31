@@ -5,8 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_UI_H
-#define SOLVESPACE_UI_H
+#pragma once
 
 class Locale {
   public:
@@ -162,5 +161,3 @@ class Button;
 
 #include "tw/textwindow.h"
 #include "gw/graphicswindow.h"
-
-#endif

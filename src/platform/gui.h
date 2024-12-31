@@ -4,8 +4,7 @@
 // Copyright 2018 whitequark
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_GUI_H
-#define SOLVESPACE_GUI_H
+#pragma once
 
 namespace SolveSpace {
   class RgbaColor;
@@ -293,5 +292,3 @@ namespace SolveSpace {
 
   } // namespace Platform
 } // namespace SolveSpace
-
-#endif

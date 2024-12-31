@@ -4,8 +4,7 @@
 // Copyright 2017 whitequark
 //-----------------------------------------------------------------------------
 
-#ifndef SOLVESPACE_PLATFORM_H
-#define SOLVESPACE_PLATFORM_H
+#pragma once
 
 namespace SolveSpace {
   namespace Platform {
@@ -83,5 +82,3 @@ namespace SolveSpace {
 
   } // namespace Platform
 } // namespace SolveSpace
-
-#endif

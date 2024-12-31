@@ -1,6 +1,6 @@
 // utility functions that are provided in the platform-independent code
-#ifndef UTIL_H
-#define UTIL_H
+
+#pragma once
 
 class utf8_iterator : std::iterator<std::forward_iterator_tag, char32_t> {
   const char *p, *n;
@@ -40,5 +40,3 @@ int64_t GetMilliseconds ();
 void    Message (const char *fmt, ...);
 void    MessageAndRun (std::function<void ()> onDismiss, const char *fmt, ...);
 void    Error (const char *fmt, ...);
-
-#endif // UTIL_H

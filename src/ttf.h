@@ -5,8 +5,8 @@
 //
 // copyright 2016 whitequark, Peter Barfuss.
 //-----------------------------------------------------------------------------
-#ifndef TTF_H
-#define TTF_H
+
+#pragma once
 
 class TtfFont {
   public:
@@ -44,5 +44,3 @@ class TtfFontList {
                    Vector u, Vector v);
   double AspectRatio (const std::string &font, const std::string &str);
 };
-
-#endif // TTF_H

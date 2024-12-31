@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef PROPERTYBROWSER_H
-#define PROPERTYBROWSER_H
+#pragma once
 
 #include "GroupsListView.h"
 #include <Window.h>
@@ -19,5 +18,3 @@ class PropertyBrowser : public BWindow {
   private:
   GroupsListView *groupList;
 };
-
-#endif

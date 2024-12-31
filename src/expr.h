@@ -4,8 +4,7 @@
 //
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
-#ifndef EXPR_H
-#define EXPR_H
+#pragma once
 
 class Expr {
   public:
@@ -136,5 +135,3 @@ class ExprQuaternion {
 
   Expr *Magnitude () const;
 };
-
-#endif // EXPR_H

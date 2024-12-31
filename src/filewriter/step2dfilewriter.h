@@ -1,5 +1,4 @@
-#ifndef STEP2D_FILE_WRITER_H
-#define STEP2D_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 #include "stepfilewriter.h"
@@ -18,5 +17,3 @@ class Step2dFileWriter : public VectorFileWriter {
   bool           HasCanvasSize () const override { return false; }
   bool           CanOutputMesh () const override { return false; }
 };
-
-#endif // STEP2D_FILE_WRITER_H

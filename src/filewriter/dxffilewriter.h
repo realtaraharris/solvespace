@@ -1,5 +1,4 @@
-#ifndef DXF_FILE_WRITER_H
-#define DXF_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 
@@ -29,4 +28,3 @@ class DxfFileWriter : public VectorFileWriter {
   bool CanOutputMesh () const override { return false; }
   bool NeedToOutput (Constraint *c);
 };
-#endif // DXF_FILE_WRITER_H

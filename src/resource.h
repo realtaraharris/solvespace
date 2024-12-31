@@ -3,8 +3,7 @@
 //
 // copyright 2016 whitequark
 //-----------------------------------------------------------------------------
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#pragma once
 
 #include <functional>
 #include <map>
@@ -121,5 +120,3 @@ public:
   };
 
 } // namespace SolveSpace
-
-#endif // RESOURCE_H

@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef VIEWPARAMETERS_H
-#define VIEWPARAMETERS_H
+#pragma once
 
 #include <StringView.h>
 #include <Window.h>
@@ -23,5 +22,3 @@ class ViewParameters : public BWindow {
   BStringView *perspectiveFactor;
   BStringView *explodeDistance;
 };
-
-#endif // VIEWPARAMETERS_H

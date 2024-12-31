@@ -1,6 +1,5 @@
-#ifndef DEBUGGING_H
-#define DEBUGGING_H
 // debugging functions
+#pragma once
 
 #if defined(__GNUC__)
 #  define ssassert(condition, message) \
@@ -23,5 +22,3 @@
 #define DBPTRI(tri) \
   dbp ("tri: (%.3f %.3f %.3f) (%.3f %.3f %.3f) (%.3f %.3f %.3f)", CO ((tri).a), CO ((tri).b), \
        CO ((tri).c))
-
-#endif // DEBUGGING_H

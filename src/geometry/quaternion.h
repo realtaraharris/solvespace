@@ -1,3 +1,5 @@
+#pragma once
+
 class Quaternion {
   public:
   // a + (vx)*i + (vy)*j + (vz)*k

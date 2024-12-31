@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef GROUPS_LIST_VIEW_H
-#define GROUPS_LIST_VIEW_H
+#pragma once
 
 #include "ListView/DragSortableListView.h"
 
@@ -22,5 +21,3 @@ class GroupsListView : public SimpleListView {
 
   virtual void MoveItems (BList &items, int32 toIndex);
 };
-
-#endif // GROUPS_LIST_VIEW_H

@@ -3,8 +3,8 @@
 //
 // copyright 2008-2013 Jonathan Westhues
 //-----------------------------------------------------------------------------
-#ifndef SOLVESPACE_H
-#define SOLVESPACE_H
+
+#pragma once
 
 #include "debugging.h"
 #include "resource.h"
@@ -143,4 +143,3 @@ namespace SolveSpace {
 #endif
 } // namespace SolveSpace
 using namespace SolveSpace;
-#endif

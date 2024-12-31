@@ -1,7 +1,6 @@
 // this entire file is copied from WonderBrush
 
-#ifndef THUMB_LIST_ITEM_H
-#define THUMB_LIST_ITEM_H
+#pragma once
 
 #include <String.h>
 #include <Bitmap.h> 
@@ -37,5 +36,3 @@ private:
     int32 width;
     int f_thumb;
 };
-
-#endif // THUMB_LIST_ITEM_H

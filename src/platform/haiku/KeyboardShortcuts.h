@@ -4,9 +4,6 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef KEYBOARD_SHORTCUTS_H
-#define KEYBOARD_SHORTCUTS_H
+#pragma once
 
 void HandleKeyboardShortcut(int32 key, char raw, uint32_t mods);
-
-#endif // KEYBOARD_SHORTCUTS_H

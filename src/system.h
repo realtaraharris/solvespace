@@ -1,5 +1,4 @@
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#pragma once
 
 class System {
   public:
@@ -79,5 +78,3 @@ class System {
   void   SubstituteParamsByLast (Expr *e);
   void   SortSubstitutionByDragged (Param *p);
 };
-
-#endif // SYSTEM_H

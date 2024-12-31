@@ -1,5 +1,4 @@
-#ifndef HPGL_FILE_WRITER_H
-#define HPGL_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 
@@ -18,5 +17,3 @@ class HpglFileWriter : public VectorFileWriter {
   bool          HasCanvasSize () const override { return false; }
   bool          CanOutputMesh () const override { return false; }
 };
-
-#endif // HPGL_FILE_WRITER_H

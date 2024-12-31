@@ -3,8 +3,7 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
-#ifndef EVENT_HOOKS_H
-#define EVENT_HOOKS_H
+#pragma once
 
 void LineToolButtonUnclickedEventHook ();
 void RectToolButtonUnclickedEventHook ();
@@ -21,5 +20,3 @@ void ErrorDialog (std::string message, std::string description,
                   std::function<void ()> onDismiss = std::function<void ()> ());
 void WarningDialog (std::string message, std::string description,
                     std::function<void ()> onDismiss = std::function<void ()> ());
-
-#endif // EVENT_HOOKS_H

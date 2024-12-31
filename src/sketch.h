@@ -1,5 +1,4 @@
-#ifndef SKETCH_H
-#define SKETCH_H
+#pragma once
 
 class Sketch {
   public:
@@ -26,5 +25,3 @@ class Sketch {
   BBox   CalculateEntityBBox (bool includingInvisible);
   Group *GetRunningMeshGroupFor (hGroup h);
 };
-
-#endif // SKETCH_H

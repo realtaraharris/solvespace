@@ -1,5 +1,4 @@
-#ifndef PDF_FILE_WRITER_H
-#define PDF_FILE_WRITER_H
+#pragma once
 
 #include "vectorfilewriter.h"
 
@@ -22,5 +21,3 @@ class PdfFileWriter : public VectorFileWriter {
   bool HasCanvasSize () const override { return true; }
   bool CanOutputMesh () const override { return true; }
 };
-
-#endif // PDF_FILE_WRITER_H

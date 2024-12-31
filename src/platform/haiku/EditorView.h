@@ -4,8 +4,7 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
-#ifndef EDITORVIEW_H
-#define EDITORVIEW_H
+#pragma once
 
 #include <cstdio>
 
@@ -63,5 +62,3 @@ class EditorView : public BView {
   void                                     InitBitmapAndBuffer ();
   SolveSpace::Platform::MouseEvent::Button GetMouseButton ();
 };
-
-#endif // EDITORVIEW_H
