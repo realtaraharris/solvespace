@@ -1,4 +1,4 @@
-resource app_signature "application/x-vnd.dw-solvespace";
+resource app_signature "application/solvespace";
 
 resource app_flags B_MULTIPLE_LAUNCH;
 

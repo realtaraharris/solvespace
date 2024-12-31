@@ -6,14 +6,16 @@
 
 #include <Alert.h>
 #include <Application.h>
+#include <NodeInfo.h>
 #include <Window.h>
+#include <SupportDefs.h>
 
 #include "../../solvespace.h"
 #include "filewriter/stepfilewriter.h"
 #include "filewriter/vectorfilewriter.h"
 #include "App.h"
-#include "HaikuSpaceUI.h"
 #include <FilePanel.h>
+#include "HaikuSpaceUI.h"
 
 void HaikuSpaceUI::SavePanel(uint32 messageName) {
   BFilePanel *fp =

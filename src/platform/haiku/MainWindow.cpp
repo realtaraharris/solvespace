@@ -302,8 +302,6 @@ MainWindow::MainWindow(void)
   viewParameters = new ViewParameters();
   be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
 
-  currentFilePath = new BPath();
-
   LoadSettings();
   toolWindow->Show();
   propertyBrowser->Show();
@@ -353,17 +351,8 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case TOGGLE_SNAP_GRID: {
-    SS.GW.showSnapGrid = !SS.GW.showSnapGrid;
-    SS.GW.EnsureValidActives();
-    SS.GW.Invalidate();
-    editorView->Invalidate();
-    if (SS.GW.showSnapGrid && !SS.GW.LockedInWorkplane()) {
-      BAlert *alert = new BAlert("SolveSpace information dialog",
-                                 "No workplane is active, so the grid will not appear.", NULL, NULL,
-                                 "OK", B_WIDTH_AS_USUAL, B_OFFSET_SPACING, B_WARNING_ALERT);
-      alert->SetShortcut(0, B_ESCAPE);
-      alert->Go();
-    }
+    SS.MenuView(SolveSpace::Command::SHOW_GRID);
+    be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
     break;
   }
 
@@ -515,47 +504,23 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case M_QUIT_APP: {
-    if (!SS.OkayToStartNewFile()) {
-      break;
-    }
-    FreeAllTemporary();
+    SS.MenuFile(SolveSpace::Command::EXIT);
     be_app->PostMessage(B_QUIT_REQUESTED);
     break;
   }
   case M_NEW_FILE: {
-    if (!SS.OkayToStartNewFile()) {
-      break;
-    }
     SS.MenuFile(SolveSpace::Command::NEW);
     be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
     break;
   }
   case M_SAVE_AS_FILE: {
-    BFilePanel *fp = new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL, B_FILE_NODE, false,
-                                    new BMessage(SAVE_AS_FILE));
-    fp->SetSaveText(currentFilePath->Leaf());
-    fp->Show();
+    SS.MenuFile(SolveSpace::Command::SAVE_AS);
+    be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
     break;
   }
   case SAVE_AS_FILE: {
-    // TODO: report errors to user
-    if (!msg->HasRef("directory") || !msg->HasString("name")) {
-      break;
-    }
-    entry_ref   ref;
-    const char *name;
-
-    if (msg->FindRef("directory", 0, &ref) != B_OK || msg->FindString("name", &name) != B_OK) {
-      break;
-    }
-    BEntry entry(&ref, true);
-
-    if (entry.GetPath(currentFilePath) != B_OK) {
-      break;
-    }
-    SS.SaveToFile(
-        Platform::Path::From(std::string(currentFilePath->Path()) + "/" + std::string(name)));
-
+    Platform::Path fp = Platform::Path(getSavePanelFilename(msg));
+    SS.SaveToFile(fp);
     break;
   }
   case M_OPEN_FILE: {
@@ -569,10 +534,8 @@ void MainWindow::MessageReceived(BMessage *msg) {
     break;
   }
   case M_EXPORT_IMAGE: {
-    BFilePanel *fp = new BFilePanel(B_SAVE_PANEL, new BMessenger(this), NULL, B_FILE_NODE, false,
-                                    new BMessage(PNG_EXPORT_IMAGE));
-    fp->SetSaveText(currentFilePath->Leaf()); // TODO: strip extension and replace with png
-    fp->Show();
+    SS.MenuFile(SolveSpace::Command::EXPORT_PNG_IMAGE);
+    be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
     break;
   }
   case PNG_EXPORT_IMAGE: {

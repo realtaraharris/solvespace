@@ -271,6 +271,8 @@ void SolveSpaceUI::Exit() {
   // And the default styles, colors and line widths and such.
   Style::FreezeDefaultStyles(settings);
 
+  FreeAllTemporary();
+
   Platform::ExitGui();
 }
 

@@ -34,7 +34,6 @@ class MainWindow : public BWindow {
   PropertyBrowser *propertyBrowser;
   ViewParameters  *viewParameters;
   EditorView      *editorView;
-  BPath           *currentFilePath; // TODO: remove
 
   BMessage *settings;
 };

@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-App::App(void) : BApplication("application/x-vnd.dw-solvespace") {
+App::App(void) : BApplication("application/solvespace") {
   MainWindow *mainwin = new MainWindow();
   mainwin->Show();
 }
@@ -45,7 +45,8 @@ void App::MessageReceived(BMessage *msg) {
   case EXPORT_SURFACES:  // fall through, intentionally
   case IMPORT_FILE:      // fall through, intentionally
   case READ_FILE:        // fall through, intentionally
-  case SAVE_FILE: {
+  case SAVE_FILE:        // fall through, intentionally
+  case SAVE_AS_FILE: {
     be_app->WindowAt(MAIN_WINDOW)->PostMessage(msg);
     break;
   }
