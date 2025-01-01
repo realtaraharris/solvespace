@@ -10,13 +10,28 @@
 #include <Window.h>
 #include <SupportDefs.h>
 
+#include "App.h"
 #include "../../solvespace.h"
 #include "ssg.h"
 #include "filewriter/stepfilewriter.h"
 #include "filewriter/vectorfilewriter.h"
-#include "App.h"
-#include <FilePanel.h>
-#include "HaikuSpaceUI.h"
+
+bool SolveSpaceFileFilter::Filter(const entry_ref *entryRef, BNode *node, struct stat_beos *stat,
+                                  const char *fileType) {
+  bool          admitIt = false;
+  char          type[256];
+  const BString mask("application/solvespace");
+  BNodeInfo     nodeInfo(node);
+
+  if (node->IsDirectory()) {
+    admitIt = true;
+  } else {
+    nodeInfo.GetType(type);
+    admitIt = (mask.Compare(type, mask.CountChars()) == 0);
+  }
+
+  return admitIt;
+}
 
 void HaikuSpaceUI::SavePanel(uint32 messageName) {
   BFilePanel *fp =
@@ -25,9 +40,13 @@ void HaikuSpaceUI::SavePanel(uint32 messageName) {
 }
 
 void HaikuSpaceUI::OpenPanel(uint32 messageName) {
-  BFilePanel *fp =
-      new BFilePanel(B_OPEN_PANEL, NULL, NULL, B_FILE_NODE, false, new BMessage(messageName));
+  BFilePanel *fp = new BFilePanel(B_OPEN_PANEL, NULL, NULL, B_FILE_NODE, false,
+                                  new BMessage(messageName), solvespaceFF);
   fp->Show();
+}
+
+HaikuSpaceUI::HaikuSpaceUI() {
+  solvespaceFF = new SolveSpaceFileFilter();
 }
 
 void HaikuSpaceUI::OpenSolveSpaceFile() {
@@ -48,7 +67,7 @@ bool HaikuSpaceUI::OkayToStartNewFile() {
 
   std::string message;
 
-  if (!SolveSpace::SS.saveFile.IsEmpty()) {
+  if (!SS.saveFile.IsEmpty()) {
     message = "Do you want to save the changes you made to the sketch " + saveFile.raw +
               "?"; // .c_str());
   } else {

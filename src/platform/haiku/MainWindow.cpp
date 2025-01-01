@@ -21,6 +21,7 @@
 #include "Toolbar.h"
 
 #include <iostream>
+#include "solvespace.h"
 #include "ssg.h"
 
 #define INIT_X 125

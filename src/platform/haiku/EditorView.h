@@ -24,6 +24,7 @@
 #include "agg_scanline_p.h"
 #include "agg_trans_viewport.h"
 
+#include <Message.h>
 #include "solvespace.h"
 #include "ssg.h"
 

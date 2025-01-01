@@ -4,9 +4,9 @@
  * Distributed under the terms of the GPLv3 and MIT licenses.
  */
 
+#include <StorageKit.h>
 #include "App.h"
 #include "MainWindow.h"
-#include <StorageKit.h>
 
 #include <iostream>
 

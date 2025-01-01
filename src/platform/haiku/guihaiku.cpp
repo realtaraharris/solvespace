@@ -3,11 +3,13 @@
 //
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
-#include "solvespace.h"
-#include "ssg.h"
+
 #include <Window.h>
 
 #include "App.h"
+
+#include "solvespace.h"
+#include "ssg.h"
 
 extern BApplication *be_app;
 

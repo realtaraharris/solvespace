@@ -6,12 +6,22 @@
 
 #pragma once
 
-#include <SupportDefs.h>
+#include <FilePanel.h>
+
+class SolveSpaceFileFilter : public BRefFilter {
+  public:
+  bool Filter(const entry_ref *entryRef, BNode *node, struct stat_beos *stat,
+              const char *fileType);
+};
 
 class HaikuSpaceUI : public SolveSpaceUI {
+  private:
+  BRefFilter *solvespaceFF;
+
   public:
-	void SavePanel(uint32 messageName);
-	void OpenPanel(uint32 messageName);
+  HaikuSpaceUI();
+  void SavePanel(uint32 messageName);
+  void OpenPanel(uint32 messageName);
   void OpenSolveSpaceFile();
   void UndoEnableMenus();
   bool OkayToStartNewFile();

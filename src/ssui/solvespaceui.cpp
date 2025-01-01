@@ -11,9 +11,9 @@
 #include "filewriter/vectorfilewriter.h"
 
 #if defined(HAIKU_GUI)
-HaikuSpaceUI SolveSpace::SS = {};
+HaikuSpaceUI SS = {};
 #else
-SolveSpaceUI SolveSpace::SS = {};
+SolveSpaceUI SS = {};
 #endif
 
 Sketch SolveSpace::SK = {};

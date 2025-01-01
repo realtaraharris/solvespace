@@ -8,6 +8,7 @@
 
 #include <MenuBar.h>
 #include <Window.h>
+#include <Message.h>
 
 #include "EditorView.h"
 #include "PropertyBrowser.h"
