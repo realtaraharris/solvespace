@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "../solvespace.h"
+#include "ssg.h"
 
 SSurface SSurface::FromExtrusionOf(SBezier *sb, Vector t0, Vector t1) {
   SSurface ret = {};

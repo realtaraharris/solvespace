@@ -4,6 +4,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 #include "platform/EventHooks.h"
 
 void GraphicsWindow::UpdateDraggedPoint(hEntity hp, double mx, double my) {

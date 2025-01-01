@@ -133,13 +133,6 @@ namespace SolveSpace {
   extern Sketch SK;
 
 #include "ssui/ui.h"
-#include "ssui/solvespaceui.h"
-
-#if defined(HAIKU_GUI)
-#  include "platform/haiku/HaikuSpaceUI.h"
-  extern HaikuSpaceUI SS;
-#else
-  extern SolveSpaceUI SS;
-#endif
 } // namespace SolveSpace
+
 using namespace SolveSpace;

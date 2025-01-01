@@ -2,6 +2,7 @@
 // Routines for HPGL output
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 #include "filewriter/hpglfilewriter.h"
 
 double HpglFileWriter::MmToHpglUnits(double mm) {

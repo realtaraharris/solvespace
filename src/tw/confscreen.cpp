@@ -5,6 +5,8 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
+
 #if defined(_OPENMP)
 #  include <omp.h>
 #endif

@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 std::string Constraint::DescriptionString() const {
   std::string s;

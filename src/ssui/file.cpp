@@ -4,6 +4,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 namespace SolveSpace {
   bool LinkIDF(const Platform::Path &filename, EntityList *le, SMesh *m, SShell *sh);

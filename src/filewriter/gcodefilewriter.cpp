@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 
 #include "solvespace.h"
+#include "ssg.h"
 #include "filewriter/gcodefilewriter.h"
 
 void GCodeFileWriter::StartFile() {

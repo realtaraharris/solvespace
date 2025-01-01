@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 #include "platform/EventHooks.h"
 
 void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {

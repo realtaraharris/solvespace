@@ -25,6 +25,7 @@
 #include "agg_trans_viewport.h"
 
 #include "solvespace.h"
+#include "ssg.h"
 
 class EditorView : public BView {
   public:

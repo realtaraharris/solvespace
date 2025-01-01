@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "solvespace.h"
+#include "ssg.h"
 
 void PropertyBrowser::ShowListOfGroups() {
   dbp("%Ft active");

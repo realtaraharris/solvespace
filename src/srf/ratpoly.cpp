@@ -6,6 +6,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "../solvespace.h"
+#include "ssg.h"
 
 // Converge it to better than LENGTH_EPS; we want two points, each
 // independently projected into uv and back, to end up equal with the

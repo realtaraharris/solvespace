@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "solvespace.h"
+#include "ssg.h"
 #include "filewriter/pdffilewriter.h"
 #include "stipplepattern.h"
 

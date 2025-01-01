@@ -7,6 +7,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "../solvespace.h"
+#include "ssg.h"
 
 void SPolygon::UvTriangulateInto(SMesh *m, SSurface *srf) {
   if (l.n <= 0)

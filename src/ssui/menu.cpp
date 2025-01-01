@@ -1,4 +1,5 @@
 #include "solvespace.h"
+#include "ssg.h"
 #include "../platform/EventHooks.h"
 #include "config.h"
 

@@ -8,6 +8,7 @@
 #include "ListView/DragSortableListView.h"
 
 #include "solvespace.h"
+#include "ssg.h"
 
 GroupsListView::GroupsListView(BRect frame, BMessage *selectionChangeMessage)
     : SimpleListView(frame, selectionChangeMessage) {}

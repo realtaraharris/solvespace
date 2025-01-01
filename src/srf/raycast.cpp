@@ -8,6 +8,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 // Dot product tolerance for perpendicular; this is on the direction cosine,
 // so it's about 0.001 degrees.

@@ -10,6 +10,7 @@
 #include <LayoutBuilder.h>
 
 #include "solvespace.h"
+#include "ssg.h"
 
 ViewParameters::ViewParameters(void)
     : BWindow(BRect(BPoint(740, 225), BSize(300, 400)), "View Parameters", B_FLOATING_WINDOW_LOOK,

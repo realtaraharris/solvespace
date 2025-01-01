@@ -6,6 +6,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 //-----------------------------------------------------------------------------
 // Replace constraints on oldpt with the same constraints on newpt.

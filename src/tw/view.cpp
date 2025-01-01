@@ -5,6 +5,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 void TextWindow::ShowEditView() {
   Printf(true, "%Ft3D VIEW PARAMETERS%E");

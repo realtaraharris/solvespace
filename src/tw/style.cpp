@@ -6,6 +6,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 void TextWindow::ScreenShowListOfStyles(int link, uint32_t v) {
   SS.TW.GoToScreen(Screen::LIST_OF_STYLES);

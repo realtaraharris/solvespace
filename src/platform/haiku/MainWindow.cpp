@@ -21,6 +21,7 @@
 #include "Toolbar.h"
 
 #include <iostream>
+#include "ssg.h"
 
 #define INIT_X 125
 #define INIT_Y 45

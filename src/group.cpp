@@ -7,6 +7,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 const hParam Param::NO_PARAM = {0};
 #define NO_PARAM (Param::NO_PARAM)

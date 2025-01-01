@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------
 #include "cpp2util.h"
 #include "solvespace.h"
+#include "ssg.h"
 #include "config.h"
 #include "filewriter/vectorfilewriter.h"
 

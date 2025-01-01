@@ -11,6 +11,7 @@
 #include <SupportDefs.h>
 
 #include "../../solvespace.h"
+#include "ssg.h"
 #include "filewriter/stepfilewriter.h"
 #include "filewriter/vectorfilewriter.h"
 #include "App.h"

@@ -40,6 +40,7 @@ extern "C" const char *ft_error_string(int err) {
 #undef FT_ERROR_END_LIST
 
 #include "solvespace.h"
+#include "ssg.h"
 
 //-----------------------------------------------------------------------------
 // Get the list of available font filenames, and load the name for each of

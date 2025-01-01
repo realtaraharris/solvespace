@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "solvespace.h"
+#include "ssg.h"
 
 BButton *MakeButton(const BSize toolbarIconSize, BBitmap *icon, BMessage *message,
                     const char *tooltipText) {

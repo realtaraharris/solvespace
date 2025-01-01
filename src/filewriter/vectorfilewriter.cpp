@@ -1,4 +1,5 @@
 #include "solvespace.h"
+#include "ssg.h"
 #include "vectorfilewriter.h"
 #include "gcodefilewriter.h"
 #include "dxffilewriter.h"

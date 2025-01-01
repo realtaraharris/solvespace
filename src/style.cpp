@@ -6,6 +6,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 const Style::Default Style::Defaults[] = {
     {{ACTIVE_GRP}, "ActiveGrp", RGBf(1.0, 1.0, 1.0), 1.5, 4, true, StipplePattern::CONTINUOUS},

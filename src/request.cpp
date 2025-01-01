@@ -7,6 +7,7 @@
 // Copyright 2008-2013 Jonathan Westhues.
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 const hRequest Request::HREQUEST_REFERENCE_XY = {1};
 const hRequest Request::HREQUEST_REFERENCE_YZ = {2};

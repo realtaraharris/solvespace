@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #include "solvespace.h"
+#include "ssg.h"
 #include "filewriter/epsfilewriter.h"
 #include "stipplepattern.h"
 

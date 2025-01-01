@@ -7,6 +7,7 @@
 #include <Window.h>
 #include "App.h" // contains message enums
 #include "solvespace.h"
+#include "ssg.h"
 
 void HandleKeyboardShortcut(int32 key, char raw, uint32_t mods) {
   switch (key) {
