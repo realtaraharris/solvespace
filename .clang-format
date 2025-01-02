@@ -21,7 +21,7 @@ ColumnLimit: 100
 
 # Based on minimizing diff when applying clang-format
 AccessModifierOffset: -4
-AlignConsecutiveAssignments: true
+AlignConsecutiveAssignments: false
 AlignEscapedNewlines: DontAlign
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: true
@@ -40,7 +40,7 @@ SpaceBeforeAssignmentOperators: true
 
 # Only seen some of the time (mostly just variables, not functions)
 # but clang-format only has a true/false
-AlignConsecutiveDeclarations: true
+AlignConsecutiveDeclarations: false
 
 # Would be nice to turn on eventually, maybe?
 SortIncludes: false
