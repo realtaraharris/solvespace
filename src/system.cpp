@@ -59,7 +59,7 @@ bool System::WriteJacobian(int tag) {
       continue;
     // Simplify (fold) then deep-copy the current equation.
     Expr *f = e->e->FoldConstants();
-    f       = f->DeepCopyWithParamsAsPointers(&param, &(SK.param));
+    f = f->DeepCopyWithParamsAsPointers(&param, &(SK.param));
 
     paramsUsed.clear();
     f->ParamsUsedList(&paramsUsed);
@@ -73,7 +73,7 @@ bool System::WriteJacobian(int tag) {
       const int j = it->second;
       // compute partial derivative of f
       Expr *pd = f->PartialWrt(p);
-      pd       = pd->FoldConstants();
+      pd = pd->FoldConstants();
       if (pd->IsZeroConst())
         continue;
       mat.A.sym.insert(i, j) = pd;
@@ -122,8 +122,8 @@ Param *System::GetLastParamSubstitution(Param *p) {
 
 void System::SortSubstitutionByDragged(Param *p) {
   std::vector<Param *> subsParams;
-  Param               *by      = NULL;
-  Param               *current = p;
+  Param *by = NULL;
+  Param *current = p;
   while (current != NULL) {
     subsParams.push_back(current);
     if (IsDragged(current->h)) {
@@ -137,10 +137,10 @@ void System::SortSubstitutionByDragged(Param *p) {
     if (p == by)
       continue;
     p->substd = by;
-    p->tag    = VAR_SUBSTITUTED;
+    p->tag = VAR_SUBSTITUTED;
   }
   by->substd = NULL;
-  by->tag    = 0;
+  by->tag = 0;
 }
 
 void System::SubstituteParamsByLast(Expr *e) {
@@ -189,9 +189,9 @@ void System::SolveBySubstitution() {
 
       // Take the last substitution of parameter a
       // This resulted in creation of substitution chains
-      Param *last  = GetLastParamSubstitution(pa);
+      Param *last = GetLastParamSubstitution(pa);
       last->substd = pb;
-      last->tag    = VAR_SUBSTITUTED;
+      last->tag = VAR_SUBSTITUTED;
 
       if (pb->substd != NULL) {
         // Break the loops
@@ -297,9 +297,9 @@ bool System::SolveLeastSquares() {
 
 bool System::NewtonSolve(int tag) {
 
-  int  iter      = 0;
+  int iter = 0;
   bool converged = false;
-  int  i;
+  int i;
 
   // Evaluate the functions at our operating point.
   mat.B.num = Eigen::VectorXd(mat.m);
@@ -381,7 +381,7 @@ void System::WriteEquationsExceptFor(hConstraint hc, Group *g) {
 }
 
 void System::FindWhichToRemoveToFixJacobian(Group *g, List<hConstraint> *bad, bool forceDofCheck) {
-  auto time         = GetMilliseconds();
+  auto time = GetMilliseconds();
   g->solved.timeout = false;
   int a;
 
@@ -472,7 +472,7 @@ SolveResult System::Solve(Group *g, int *rank, int *dof, List<hConstraint> *bad,
     if (p->tag != 0)
       continue; // let rank test catch inconsistency
 
-    e.tag  = alone;
+    e.tag = alone;
     p->tag = alone;
     WriteJacobian(alone);
     if (!NewtonSolve(alone)) {
@@ -519,9 +519,9 @@ SolveResult System::Solve(Group *g, int *rank, int *dof, List<hConstraint> *bad,
       val = p.val;
     }
     Param *pp = SK.GetParam(p.h);
-    pp->val   = val;
+    pp->val = val;
     pp->known = true;
-    pp->free  = p.free;
+    pp->free = p.free;
   }
   return rankOk ? SolveResult::OKAY : SolveResult::REDUNDANT_OKAY;
 
@@ -535,7 +535,7 @@ didnt_converge:
         continue;
 
       hConstraint hc = mat.eq[i]->h.constraint();
-      Constraint *c  = SK.constraint.FindByIdNoOops(hc);
+      Constraint *c = SK.constraint.FindByIdNoOops(hc);
       if (!c)
         continue;
       // Don't double-show constraints that generated multiple

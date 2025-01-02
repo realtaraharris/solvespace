@@ -122,9 +122,9 @@ void PdfFileWriter::FinishAndCloseFile() {
 }
 
 void PdfFileWriter::Background(RgbaColor color) {
-  double width  = ptMax.x - ptMin.x;
+  double width = ptMax.x - ptMin.x;
   double height = ptMax.y - ptMin.y;
-  double sw     = std::max(width, height) / 1000;
+  double sw = std::max(width, height) / 1000;
 
   fprintf(f,
           "1 J 1 j\r\n"
@@ -143,8 +143,8 @@ void PdfFileWriter::Background(RgbaColor color) {
 
 void PdfFileWriter::StartPath(RgbaColor strokeRgb, double lineWidth, bool filled, RgbaColor fillRgb,
                               hStyle hs) {
-  StipplePattern pattern      = Style::PatternType(hs);
-  double         stippleScale = MmToPts(Style::StippleScaleMm(hs));
+  StipplePattern pattern = Style::PatternType(hs);
+  double stippleScale = MmToPts(Style::StippleScaleMm(hs));
 
   fprintf(f,
           "1 J 1 j " // round endcaps and joins

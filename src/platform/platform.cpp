@@ -33,7 +33,7 @@ namespace SolveSpace {
 
     std::string Narrow(const wchar_t *in) {
       std::string out;
-      DWORD       len = WideCharToMultiByte(CP_UTF8, 0, in, -1, NULL, 0, NULL, NULL);
+      DWORD len = WideCharToMultiByte(CP_UTF8, 0, in, -1, NULL, 0, NULL, NULL);
       out.resize(len - 1);
       ssassert(WideCharToMultiByte(CP_UTF8, 0, in, -1, &out[0], len, NULL, NULL), "Invalid UTF-16");
       return out;
@@ -53,7 +53,7 @@ namespace SolveSpace {
 
     std::wstring Widen(const char *in) {
       std::wstring out;
-      DWORD        len = MultiByteToWideChar(CP_UTF8, 0, in, -1, NULL, 0);
+      DWORD len = MultiByteToWideChar(CP_UTF8, 0, in, -1, NULL, 0);
       out.resize(len - 1);
       ssassert(MultiByteToWideChar(CP_UTF8, 0, in, -1, &out[0], len), "Invalid UTF-8");
       return out;
@@ -83,7 +83,7 @@ namespace SolveSpace {
       size_t oldpos = 0, pos = 0;
       while (true) {
         oldpos = pos;
-        pos    = joined.find(separator, pos);
+        pos = joined.find(separator, pos);
         if (pos == std::string::npos)
           break;
         parts.push_back(joined.substr(oldpos, pos - oldpos));
@@ -146,7 +146,7 @@ namespace SolveSpace {
 
     std::string Path::FileName() const {
       std::string fileName = raw;
-      size_t      slash    = fileName.rfind(SEPARATOR);
+      size_t slash = fileName.rfind(SEPARATOR);
       if (slash != std::string::npos) {
         fileName = fileName.substr(slash + 1);
       }
@@ -155,7 +155,7 @@ namespace SolveSpace {
 
     std::string Path::FileStem() const {
       std::string baseName = FileName();
-      size_t      dot      = baseName.rfind('.');
+      size_t dot = baseName.rfind('.');
       if (dot != std::string::npos) {
         baseName = baseName.substr(0, dot);
       }
@@ -178,8 +178,8 @@ namespace SolveSpace {
     }
 
     Path Path::WithExtension(std::string ext) const {
-      Path   withExt = *this;
-      size_t dot     = withExt.raw.rfind('.');
+      Path withExt = *this;
+      size_t dot = withExt.raw.rfind('.');
       if (dot != std::string::npos) {
         withExt.raw.erase(dot);
       }
@@ -344,7 +344,7 @@ namespace SolveSpace {
     // if they belong to different roots, or
     // if they cannot be expanded.
     Path Path::RelativeTo(const Path &base) const {
-      Path expanded     = Expand();
+      Path expanded = Expand();
       Path baseExpanded = base.Expand();
       if (!(expanded.IsAbsolute() && baseExpanded.IsAbsolute())) {
         return From("");
@@ -481,7 +481,7 @@ namespace SolveSpace {
 #if defined(__APPLE__)
 
     static Platform::Path PathFromCFURL(CFURLRef cfUrl) {
-      Path        path;
+      Path path;
       CFStringRef cfPath = CFURLCopyFileSystemPath(cfUrl, kCFURLPOSIXPathStyle);
       path.raw.resize(CFStringGetMaximumSizeOfFileSystemRepresentation(cfPath));
       CFStringGetFileSystemRepresentation(cfPath, &path.raw[0], path.raw.size());
@@ -545,7 +545,7 @@ namespace SolveSpace {
     static Platform::Path FindLocalResourceDir() {
       // Find out the path to the running binary.
       Platform::Path selfPath;
-      char          *expandedSelfPath = realpath(selfSymlink, NULL);
+      char *expandedSelfPath = realpath(selfSymlink, NULL);
       if (expandedSelfPath != NULL) {
         selfPath = Path::From(expandedSelfPath);
       }
@@ -599,7 +599,7 @@ namespace SolveSpace {
       }
 
       const std::string &content = (*it).second;
-      *size                      = content.size();
+      *size = content.size();
       return (const void *)content.data();
     }
 
@@ -624,8 +624,8 @@ namespace SolveSpace {
 
       // Extract the command-line arguments; the ones from main() are ignored,
       // since they are in the OEM encoding.
-      int                      argcW;
-      LPWSTR                  *argvW = CommandLineToArgvW(GetCommandLineW(), &argcW);
+      int argcW;
+      LPWSTR *argvW = CommandLineToArgvW(GetCommandLineW(), &argcW);
       std::vector<std::string> args;
       for (int i = 0; i < argcW; i++)
         args.push_back(Platform::Narrow(argvW[i]));

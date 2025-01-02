@@ -18,24 +18,22 @@
 
 // https://www.iana.org/assignments/media-types/media-types.xhtml
 #define GENERATE_REF_FILTER_IMPL(filterName, permittedMimeTypes) \
-bool filterName::Filter( \
-  const entry_ref *entryRef, \
-	BNode *node, \
-	struct stat_beos *stat, \
-	const char *fileType \
-) { \
-  char type[B_MIME_TYPE_LENGTH]; \
-  BNodeInfo nodeInfo(node); \
-  if (node->IsDirectory()) { return true; } \
-  nodeInfo.GetType(type); \
-  for (const std::string &pmt : permittedMimeTypes) { \
-    const BString mask(pmt.c_str()); \
-    if (mask.Compare(type, mask.CountChars()) == 0) { \
+  bool filterName::Filter(const entry_ref *entryRef, BNode *node, struct stat_beos *stat, \
+                          const char *fileType) { \
+    char type[B_MIME_TYPE_LENGTH]; \
+    BNodeInfo nodeInfo(node); \
+    if (node->IsDirectory()) { \
       return true; \
     } \
-  } \
-  return false; \
-}
+    nodeInfo.GetType(type); \
+    for (const std::string &pmt : permittedMimeTypes) { \
+      const BString mask(pmt.c_str()); \
+      if (mask.Compare(type, mask.CountChars()) == 0) { \
+        return true; \
+      } \
+    } \
+    return false; \
+  }
 
 // - "SolveSpace models", "slvs"
 GENERATE_REF_FILTER_IMPL(SolveSpaceModelFileFilter, std::vector({"application/solvespace"}))
@@ -43,7 +41,8 @@ GENERATE_REF_FILTER_IMPL(SolveSpaceModelFileFilter, std::vector({"application/so
 // - "SolveSpace models", "slvs"
 // ? "IDF circuit board", "emn"
 // - "STL triangle mesh", "stl"
-GENERATE_REF_FILTER_IMPL(SolveSpaceLinkFileFilter, std::vector({"application/solvespace", "model/emn", "model/stl"}))
+GENERATE_REF_FILTER_IMPL(SolveSpaceLinkFileFilter,
+                         std::vector({"application/solvespace", "model/emn", "model/stl"}))
 
 // - "PNG image", "png"
 GENERATE_REF_FILTER_IMPL(RasterFileFilter, std::vector({"image/png"}))
@@ -53,7 +52,8 @@ GENERATE_REF_FILTER_IMPL(RasterFileFilter, std::vector({"image/png"}))
 // - "Three.js-compatible mesh, with viewer", "html"
 // - "Three.js-compatible mesh, mesh only", "js"
 // - "VRML text file", "wrl"
-GENERATE_REF_FILTER_IMPL(MeshFileFilter, std::vector({"model/stl", "model/obj", "text/html", "text/javascript", "model/vrml"}))
+GENERATE_REF_FILTER_IMPL(MeshFileFilter, std::vector({"model/stl", "model/obj", "text/html",
+                                                      "text/javascript", "model/vrml"}))
 
 // - "STEP file", "step", "stp"
 GENERATE_REF_FILTER_IMPL(SurfaceFileFilter, std::vector({"model/step"}))
@@ -66,7 +66,10 @@ GENERATE_REF_FILTER_IMPL(SurfaceFileFilter, std::vector({"model/step"}))
 // - "DXF file (AutoCAD 2007)", "dxf" (text)
 // - "HPGL file", "plt", "hpgl"
 // ? "G Code", "ngc", "txt"
-GENERATE_REF_FILTER_IMPL(VectorFileFilter, std::vector({"application/pdf", "image/x-eps", "application/postscript", "image/svg+xml", "model/step", "image/vnd.dxf", "application/vnd.hp-hpgl", "gcode"}))
+GENERATE_REF_FILTER_IMPL(VectorFileFilter,
+                         std::vector({"application/pdf", "image/x-eps", "application/postscript",
+                                      "image/svg+xml", "model/step", "image/vnd.dxf",
+                                      "application/vnd.hp-hpgl", "gcode"}))
 
 // - "STEP file", "step", "stp"
 // - "DXF file (AutoCAD 2007)" "dxf" (text)
@@ -173,7 +176,7 @@ bool HaikuSpaceUI::SaveNewFile(
   AddToRecentList(newSaveFile);
   RemoveAutosave();
   saveFile = newSaveFile;
-  unsaved  = false;
+  unsaved = false;
 
   return true;
 }
@@ -270,7 +273,7 @@ void HaikuSpaceUI::ImportFile(const Platform::Path &importFile) {
 }
 
 void HaikuSpaceUI::PromptForGroupLink(Group &g) {
-  g.type        = Group::Type::LINKED;
+  g.type = Group::Type::LINKED;
   g.meshCombine = Group::CombineAs::ASSEMBLE;
   if (g.linkFile.IsEmpty()) {
     OpenPanel(GROUP_LINK_FILE, solveSpaceLinkFileFilter);
@@ -346,7 +349,7 @@ void HaikuSpaceUI::PromptForStopTracingFile() {
 void HaikuSpaceUI::StopTracing(const Platform::Path &exportFile) {
   FILE *f = OpenFile(exportFile, "wb");
   if (f) {
-    int       i;
+    int i;
     SContour *sc = &(SS.traced.path);
     for (i = 0; i < sc->l.n; i++) {
       Vector p = sc->l[i].p;

@@ -17,8 +17,8 @@ const double SShell::DOTP_TOL = 1e-5;
 extern int FLAG;
 
 double SSurface::DepartureFromCoplanar() const {
-  int    i, j;
-  int    ia, ja, ib = 0, jb = 0, ic = 0, jc = 0;
+  int i, j;
+  int ia, ja, ib = 0, jb = 0, ic = 0, jc = 0;
   double best;
 
   // Grab three points to define a plane; first choose (0, 0) arbitrarily.
@@ -33,8 +33,8 @@ double SSurface::DepartureFromCoplanar() const {
       double dist = (ctrl[i][j]).Minus(ctrl[ia][ja]).Magnitude();
       if (dist > best) {
         best = dist;
-        ib   = i;
-        jb   = j;
+        ib = i;
+        jb = j;
       }
     }
   }
@@ -51,14 +51,14 @@ double SSurface::DepartureFromCoplanar() const {
           ((ctrl[ia][ja].Minus(ctrl[ib][jb]))).Cross((ctrl[ia][ja].Minus(ctrl[i][j]))).Magnitude();
       if (mag > best) {
         best = mag;
-        ic   = i;
-        jc   = j;
+        ic = i;
+        jc = j;
       }
     }
   }
 
   Vector n = ((ctrl[ia][ja].Minus(ctrl[ib][jb]))).Cross((ctrl[ia][ja].Minus(ctrl[ic][jc])));
-  n        = n.WithMagnitude(1);
+  n = n.WithMagnitude(1);
   double d = (ctrl[ia][ja]).Dot(n);
 
   // Finally, calculate the deviation from each point to the plane.
@@ -94,13 +94,13 @@ void SSurface::CopyRowOrCol(bool row, int this_ij, SSurface *src, int src_ij) {
   if (row) {
     int j;
     for (j = 0; j <= degn; j++) {
-      ctrl[this_ij][j]   = src->ctrl[src_ij][j];
+      ctrl[this_ij][j] = src->ctrl[src_ij][j];
       weight[this_ij][j] = src->weight[src_ij][j];
     }
   } else {
     int i;
     for (i = 0; i <= degm; i++) {
-      ctrl[i][this_ij]   = src->ctrl[i][src_ij];
+      ctrl[i][this_ij] = src->ctrl[i][src_ij];
       weight[i][this_ij] = src->weight[i][src_ij];
     }
   }
@@ -109,17 +109,17 @@ void SSurface::BlendRowOrCol(bool row, int this_ij, SSurface *a, int a_ij, SSurf
   if (row) {
     int j;
     for (j = 0; j <= degn; j++) {
-      Vector c           = (a->ctrl[a_ij][j]).Plus(b->ctrl[b_ij][j]);
-      double w           = (a->weight[a_ij][j] + b->weight[b_ij][j]);
-      ctrl[this_ij][j]   = c.ScaledBy(0.5);
+      Vector c = (a->ctrl[a_ij][j]).Plus(b->ctrl[b_ij][j]);
+      double w = (a->weight[a_ij][j] + b->weight[b_ij][j]);
+      ctrl[this_ij][j] = c.ScaledBy(0.5);
       weight[this_ij][j] = w / 2;
     }
   } else {
     int i;
     for (i = 0; i <= degm; i++) {
-      Vector c           = (a->ctrl[i][a_ij]).Plus(b->ctrl[i][b_ij]);
-      double w           = (a->weight[i][a_ij] + b->weight[i][b_ij]);
-      ctrl[i][this_ij]   = c.ScaledBy(0.5);
+      Vector c = (a->ctrl[i][a_ij]).Plus(b->ctrl[i][b_ij]);
+      double w = (a->weight[i][a_ij] + b->weight[i][b_ij]);
+      ctrl[i][this_ij] = c.ScaledBy(0.5);
       weight[i][this_ij] = w / 2;
     }
   }
@@ -224,7 +224,7 @@ void SSurface::AllPointsIntersectingUntrimmed(Vector a, Vector b, int *cnt, int 
   SplitInHalf((*level & 1) == 0, &surf0, &surf1);
 
   int nextLevel = (*level) + 1;
-  (*level)      = nextLevel;
+  (*level) = nextLevel;
   surf0.AllPointsIntersectingUntrimmed(a, b, cnt, level, l, asSegment, sorig);
   (*level) = nextLevel;
   surf1.AllPointsIntersectingUntrimmed(a, b, cnt, level, l, asSegment, sorig);
@@ -243,7 +243,7 @@ void SSurface::AllPointsIntersecting(Vector a, Vector b, List<SInter> *l, bool a
   if (LineEntirelyOutsideBbox(a, b, asSegment))
     return;
 
-  Vector ba  = b.Minus(a);
+  Vector ba = b.Minus(a);
   double bam = ba.Magnitude();
 
   List<Inter> inters = {};
@@ -261,7 +261,7 @@ void SSurface::AllPointsIntersecting(Vector a, Vector b, List<SInter> *l, bool a
     if (!asSegment || (n.Dot(a) > d + LENGTH_EPS && n.Dot(b) < d - LENGTH_EPS) ||
         (n.Dot(b) > d + LENGTH_EPS && n.Dot(a) < d - LENGTH_EPS)) {
       Vector p = VectorAtIntersectionOfPlaneAndLine(n, d, a, b, NULL);
-      Inter  inter;
+      Inter inter;
       ClosestPointTo(p, &(inter.p.x), &(inter.p.y));
       inters.Add(&inter);
     }
@@ -275,8 +275,8 @@ void SSurface::AllPointsIntersecting(Vector a, Vector b, List<SInter> *l, bool a
     // A coordinate system centered at the center of the circle, with
     // the edge under test horizontal
     Vector u, v, n = axis.WithMagnitude(1);
-    u          = (ab.Minus(n.ScaledBy(ab.Dot(n)))).WithMagnitude(1);
-    v          = n.Cross(u);
+    u = (ab.Minus(n.ScaledBy(ab.Dot(n)))).WithMagnitude(1);
+    v = n.Cross(u);
     Point2d ap = (a.Minus(center)).DotInToCsys(u, v, n).ProjectXy(),
             bp = (b.Minus(center)).DotInToCsys(u, v, n).ProjectXy(),
             sp = (start.Minus(center)).DotInToCsys(u, v, n).ProjectXy(),
@@ -285,29 +285,29 @@ void SSurface::AllPointsIntersecting(Vector a, Vector b, List<SInter> *l, bool a
     double thetas = atan2(sp.y, sp.x), thetaf = atan2(fp.y, fp.x);
 
     Point2d ip[2];
-    int     ip_n = 0;
+    int ip_n = 0;
     if (fabs(fabs(ap.y) - radius) < LENGTH_EPS) {
       // tangent
       if (inclTangent) {
         ip[0] = Point2d::From(0, ap.y);
-        ip_n  = 1;
+        ip_n = 1;
       }
     } else if (fabs(ap.y) < radius) {
       // two intersections
       double xint = sqrt(radius * radius - ap.y * ap.y);
-      ip[0]       = Point2d::From(-xint, ap.y);
-      ip[1]       = Point2d::From(xint, ap.y);
-      ip_n        = 2;
+      ip[0] = Point2d::From(-xint, ap.y);
+      ip[1] = Point2d::From(xint, ap.y);
+      ip_n = 2;
     }
     int i;
     for (i = 0; i < ip_n; i++) {
       double t = (ip[i].Minus(ap)).DivProjected(bp.Minus(ap));
       // This is a point on the circle; but is it on the arc?
-      Point2d pp    = ap.Plus((bp.Minus(ap)).ScaledBy(t));
-      double  theta = atan2(pp.y, pp.x);
-      double  dp    = WRAP_SYMMETRIC(theta - thetas, 2 * PI),
-             df     = WRAP_SYMMETRIC(thetaf - thetas, 2 * PI);
-      double tol    = LENGTH_EPS / radius;
+      Point2d pp = ap.Plus((bp.Minus(ap)).ScaledBy(t));
+      double theta = atan2(pp.y, pp.x);
+      double dp = WRAP_SYMMETRIC(theta - thetas, 2 * PI),
+             df = WRAP_SYMMETRIC(thetaf - thetas, 2 * PI);
+      double tol = LENGTH_EPS / radius;
 
       if ((df > 0 && ((dp < -tol) || (dp > df + tol))) ||
           (df < 0 && ((dp > tol) || (dp < df - tol)))) {
@@ -343,25 +343,25 @@ void SSurface::AllPointsIntersecting(Vector a, Vector b, List<SInter> *l, bool a
 
     // Make sure the point lies within the finite line segment
     Vector pxyz = PointAt(puv.x, puv.y);
-    double t    = (pxyz.Minus(a)).DivProjected(ba);
+    double t = (pxyz.Minus(a)).DivProjected(ba);
     if (asSegment && (t > 1 - LENGTH_EPS / bam || t < LENGTH_EPS / bam)) {
       continue;
     }
 
     // And that it lies inside our trim region
-    Point2d       dummy = {0, 0};
-    SBspUv::Class c     = (bsp) ? bsp->ClassifyPoint(puv, dummy, this) : SBspUv::Class::OUTSIDE;
+    Point2d dummy = {0, 0};
+    SBspUv::Class c = (bsp) ? bsp->ClassifyPoint(puv, dummy, this) : SBspUv::Class::OUTSIDE;
     if (trimmed && c == SBspUv::Class::OUTSIDE) {
       continue;
     }
 
     // It does, so generate the intersection
     SInter si;
-    si.p          = pxyz;
+    si.p = pxyz;
     si.surfNormal = NormalAt(puv.x, puv.y);
-    si.pinter     = puv;
-    si.srf        = this;
-    si.onEdge     = (c != SBspUv::Class::INSIDE);
+    si.pinter = puv;
+    si.srf = this;
+    si.onEdge = (c != SBspUv::Class::INSIDE);
     l->Add(&si);
   }
 
@@ -412,14 +412,14 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
   List<SInter> l = {};
 
   // First, check for edge-on-edge
-  int    edge_inters = 0;
+  int edge_inters = 0;
   Vector inter_surf_n[2], inter_edge_n[2];
   for (SSurface &srf : surface) {
     if (srf.LineEntirelyOutsideBbox(ea, eb, /*asSegment=*/true))
       continue;
 
     SEdgeList *sel = &(srf.edges);
-    SEdge     *se;
+    SEdge *se;
     for (se = sel->l.First(); se; se = sel->l.NextAfter(se)) {
       if ((ea.Equals(se->a) && eb.Equals(se->b)) || (eb.Equals(se->a) && ea.Equals(se->b)) ||
           p.OnLineSegment(se->a, se->b)) {
@@ -458,29 +458,29 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
     if (fabs(dotp[0]) < DOTP_TOL && fabs(dotp[1]) < DOTP_TOL) {
       // This is actually an edge on face case, just that the face
       // is split into two pieces joining at our edge.
-      *indir  = coinc;
+      *indir = coinc;
       *outdir = coinc;
     } else if (fabs(dotp[0]) < DOTP_TOL && dotp[1] > DOTP_TOL) {
       if (edge_n_out.Dot(inter_edge_n[0]) > 0) {
-        *indir  = coinc;
+        *indir = coinc;
         *outdir = Class::OUTSIDE;
       } else {
-        *indir  = Class::INSIDE;
+        *indir = Class::INSIDE;
         *outdir = coinc;
       }
     } else if (fabs(dotp[0]) < DOTP_TOL && dotp[1] < -DOTP_TOL) {
       if (edge_n_out.Dot(inter_edge_n[0]) > 0) {
-        *indir  = coinc;
+        *indir = coinc;
         *outdir = Class::INSIDE;
       } else {
-        *indir  = Class::OUTSIDE;
+        *indir = Class::OUTSIDE;
         *outdir = coinc;
       }
     } else if (dotp[0] > DOTP_TOL && dotp[1] > DOTP_TOL) {
-      *indir  = Class::INSIDE;
+      *indir = Class::INSIDE;
       *outdir = Class::OUTSIDE;
     } else if (dotp[0] < -DOTP_TOL && dotp[1] < -DOTP_TOL) {
-      *indir  = Class::OUTSIDE;
+      *indir = Class::OUTSIDE;
       *outdir = Class::INSIDE;
     } else {
       // Edge is tangent to the shell at shell's edge, so can't be
@@ -508,7 +508,7 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
 
     if ((pp.Minus(p)).Magnitude() > LENGTH_EPS)
       continue;
-    Point2d       dummy = {0, 0};
+    Point2d dummy = {0, 0};
     SBspUv::Class c = (srf.bsp) ? srf.bsp->ClassifyPoint(puv, dummy, &srf) : SBspUv::Class::OUTSIDE;
     if (c == SBspUv::Class::OUTSIDE)
       continue;
@@ -520,7 +520,7 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
 
     Vector surf_n_in = srf.NormalAt(pin), surf_n_out = srf.NormalAt(pout);
 
-    *indir  = ClassifyRegion(edge_n_in, surf_n_in, surf_n);
+    *indir = ClassifyRegion(edge_n_in, surf_n_in, surf_n);
     *outdir = ClassifyRegion(edge_n_out, surf_n_out, surf_n);
     return true;
   }
@@ -538,11 +538,11 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
                           /*asSegment=*/false, /*trimmed=*/true, /*inclTangent=*/false);
 
     // no intersections means it's outside
-    *indir        = Class::OUTSIDE;
-    *outdir       = Class::OUTSIDE;
-    double dmin   = VERY_POSITIVE;
-    bool   onEdge = false;
-    edge_inters   = 0;
+    *indir = Class::OUTSIDE;
+    *outdir = Class::OUTSIDE;
+    double dmin = VERY_POSITIVE;
+    bool onEdge = false;
+    edge_inters = 0;
 
     SInter *si;
     for (si = l.First(); si; si = l.NextAfter(si)) {
@@ -565,10 +565,10 @@ bool SShell::ClassifyEdge(Class *indir, Class *outdir, Vector ea, Vector eb, Vec
         // Edge does not lie on surface; either strictly inside
         // or strictly outside
         if ((si->surfNormal).Dot(ray) > 0) {
-          *indir  = Class::INSIDE;
+          *indir = Class::INSIDE;
           *outdir = Class::INSIDE;
         } else {
-          *indir  = Class::OUTSIDE;
+          *indir = Class::OUTSIDE;
           *outdir = Class::OUTSIDE;
         }
         onEdge = si->onEdge;

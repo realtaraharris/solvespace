@@ -16,8 +16,8 @@ App::App(void) : BApplication("application/solvespace") {
 }
 
 void App::RefsReceived(BMessage *message) {
-  int32  count = 0;
-  uint32 type  = 0;
+  int32 count = 0;
+  uint32 type = 0;
 
   message->GetInfo("refs", &type, &count);
   if (count > MAX_REFS_RECEIVED) {

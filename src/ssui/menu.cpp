@@ -90,8 +90,8 @@ void SolveSpaceUI::MenuAnalyze(Command id) {
     if (gs.constraints == 1 && gs.n == 0) {
       Constraint *c = SK.GetConstraint(gs.constraint[0]);
       if (c->HasLabel() && !c->reference) {
-        SS.TW.stepDim.finish     = c->valA;
-        SS.TW.stepDim.steps      = 10;
+        SS.TW.stepDim.finish = c->valA;
+        SS.TW.stepDim.steps = 10;
         SS.TW.stepDim.isDistance = (c->type != Constraint::Type::ANGLE) &&
                                    (c->type != Constraint::Type::LENGTH_RATIO) &&
                                    (c->type != Constraint::Type::ARC_ARC_LEN_RATIO) &&
@@ -100,7 +100,7 @@ void SolveSpaceUI::MenuAnalyze(Command id) {
                                    (c->type != Constraint::Type::ARC_ARC_DIFFERENCE) &&
                                    (c->type != Constraint::Type::ARC_LINE_DIFFERENCE);
         SS.TW.shown.constraint = c->h;
-        SS.TW.shown.screen     = TextWindow::Screen::STEP_DIMENSION;
+        SS.TW.shown.screen = TextWindow::Screen::STEP_DIMENSION;
 
         // The step params are specified in the text window,
         // so force that to be shown.
@@ -125,9 +125,9 @@ void SolveSpaceUI::MenuAnalyze(Command id) {
   case Command::INTERFERENCE: {
     SS.nakedEdges.Clear();
 
-    SMesh   *m    = &(SK.GetGroup(SS.GW.activeGroup)->displayMesh);
+    SMesh *m = &(SK.GetGroup(SS.GW.activeGroup)->displayMesh);
     SKdNode *root = SKdNode::From(m);
-    bool     inters, leaks;
+    bool inters, leaks;
     root->MakeCertainEdgesInto(&(SS.nakedEdges), EdgeKind::SELF_INTER, /*coplanarIsInter=*/false,
                                &inters, &leaks);
 
@@ -149,11 +149,11 @@ void SolveSpaceUI::MenuAnalyze(Command id) {
   }
 
   case Command::VOLUME: {
-    Group      *g        = SK.GetGroup(SS.GW.activeGroup);
-    double      totalVol = g->displayMesh.CalculateVolume();
-    std::string msg      = ssprintf(_("The volume of the solid model is:\n\n"
-                                           "    %s"),
-                                    SS.MmToStringSI(totalVol, /*dim=*/3).c_str());
+    Group *g = SK.GetGroup(SS.GW.activeGroup);
+    double totalVol = g->displayMesh.CalculateVolume();
+    std::string msg = ssprintf(_("The volume of the solid model is:\n\n"
+                                 "    %s"),
+                               SS.MmToStringSI(totalVol, /*dim=*/3).c_str());
 
     SMesh curMesh = {};
     g->thisShell.TriangulateInto(&curMesh);
@@ -215,7 +215,7 @@ void SolveSpaceUI::MenuAnalyze(Command id) {
     if (gs.n > 0 && gs.n == gs.entities) {
       double perimeter = 0.0;
       for (int i = 0; i < gs.entities; i++) {
-        Entity    *en = SK.entity.FindById(gs.entity[i]);
+        Entity *en = SK.entity.FindById(gs.entity[i]);
         SEdgeList *el = en->GetOrGenerateEdges();
         for (const SEdge &e : el->l) {
           perimeter += e.b.Minus(e.a).Magnitude();
@@ -311,10 +311,10 @@ void SolveSpaceUI::MenuView(Command id) {
   case Command::NEAREST_ISO: {
     static const Vector ortho[3] = {Vector::From(1, 0, 0), Vector::From(0, 1, 0),
                                     Vector::From(0, 0, 1)};
-    double              sqrt2 = sqrt(2.0), sqrt6 = sqrt(6.0);
-    Quaternion          quat0 = Quaternion::From(SS.GW.projRight, SS.GW.projUp);
-    Quaternion          quatf = quat0;
-    double              dmin  = 1e10;
+    double sqrt2 = sqrt(2.0), sqrt6 = sqrt(6.0);
+    Quaternion quat0 = Quaternion::From(SS.GW.projRight, SS.GW.projUp);
+    Quaternion quatf = quat0;
+    double dmin = 1e10;
 
     // There are 24 possible views; 3*2*2*2
     int i, j, negi, negj;
@@ -342,7 +342,7 @@ void SolveSpaceUI::MenuView(Command id) {
             Quaternion quatt = Quaternion::From(u, v);
             double d = std::min((quatt.Minus(quat0)).Magnitude(), (quatt.Plus(quat0)).Magnitude());
             if (d < dmin) {
-              dmin  = d;
+              dmin = d;
               quatf = quatt;
             }
           }
@@ -360,7 +360,7 @@ void SolveSpaceUI::MenuView(Command id) {
       Quaternion quat0;
       // Offset is the selected point, quaternion is same as before
       Vector pt = SK.GetEntity(SS.GW.gs.point[0])->PointGetNum();
-      quat0     = Quaternion::From(SS.GW.projRight, SS.GW.projUp);
+      quat0 = Quaternion::From(SS.GW.projRight, SS.GW.projUp);
       SS.GW.ClearSelection();
       SS.GW.AnimateOnto(quat0, pt.ScaledBy(-1));
     } else {
@@ -435,7 +435,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
     SS.TW.HideEditControl();
     SS.nakedEdges.Clear();
     SS.justExportedInfo.draw = false;
-    SS.centerOfMass.draw     = false;
+    SS.centerOfMass.draw = false;
     // This clears the marks drawn to indicate which points are
     // still free to drag.
     for (Param &p : SK.param) {
@@ -465,7 +465,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
   }
 
   case Command::SELECT_CHAIN: {
-    int  newlySelected = 0;
+    int newlySelected = 0;
     bool didSomething;
     do {
       didSomething = false;
@@ -479,7 +479,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
 
         Vector st = e.EndpointStart(), fi = e.EndpointFinish();
 
-        bool                             onChain = false, alreadySelected = false;
+        bool onChain = false, alreadySelected = false;
         List<GraphicsWindow::Selection> *ls = &(SS.GW.selection);
         for (GraphicsWindow::Selection *s = ls->First(); s; s = ls->NextAfter(s)) {
           if (!s->entity.v)
@@ -524,7 +524,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
     SS.GW.ClearSelection();
 
     hGroup hg = e ? e->group : SS.GW.activeGroup;
-    Group *g  = SK.GetGroup(hg);
+    Group *g = SK.GetGroup(hg);
     if (g->type != Group::Type::LINKED) {
       Error(_("To use this command, select a point or other "
               "entity from an linked part, or make a link "
@@ -535,9 +535,9 @@ void SolveSpaceUI::MenuEdit(Command id) {
     SS.UndoRemember();
     // Rotate by ninety degrees about the coordinate axis closest
     // to the screen normal.
-    Vector norm    = SS.GW.projRight.Cross(SS.GW.projUp);
-    norm           = norm.ClosestOrtho();
-    norm           = norm.WithMagnitude(1);
+    Vector norm = SS.GW.projRight.Cross(SS.GW.projUp);
+    norm = norm.ClosestOrtho();
+    norm = norm.WithMagnitude(1);
     Quaternion qaa = Quaternion::From(norm, PI / 2);
 
     g->TransformImportedBy(Vector::From(0, 0, 0), qaa);
@@ -576,7 +576,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
         SS.GW.pending.points.Add(&hp);
         SS.MarkGroupDirty(ep->group);
       } else if (s->constraint.v) {
-        Constraint         *c = SK.GetConstraint(s->constraint);
+        Constraint *c = SK.GetConstraint(s->constraint);
         std::vector<Vector> refs;
         c->GetReferencePoints(SS.GW.GetCamera(), &refs);
         c->disp.offset = c->disp.offset.Plus(SS.GW.SnapToGrid(refs[0]).Minus(refs[0]));
@@ -642,13 +642,13 @@ void SolveSpaceUI::MenuClipboard(Command id) {
       break;
     }
 
-    Entity *wrkpl            = SK.GetEntity(SS.GW.ActiveWorkplane());
-    Vector  p                = SK.GetEntity(wrkpl->point[0])->PointGetNum();
-    SS.TW.shown.paste.times  = 1;
-    SS.TW.shown.paste.trans  = Vector::From(0, 0, 0);
-    SS.TW.shown.paste.theta  = 0;
+    Entity *wrkpl = SK.GetEntity(SS.GW.ActiveWorkplane());
+    Vector p = SK.GetEntity(wrkpl->point[0])->PointGetNum();
+    SS.TW.shown.paste.times = 1;
+    SS.TW.shown.paste.trans = Vector::From(0, 0, 0);
+    SS.TW.shown.paste.theta = 0;
     SS.TW.shown.paste.origin = p;
-    SS.TW.shown.paste.scale  = 1;
+    SS.TW.shown.paste.scale = 1;
     SS.TW.GoToScreen(TextWindow::Screen::PASTE_TRANSFORMED);
     SS.GW.ForceTextWindowShown();
     SS.ScheduleShowTW();
@@ -751,8 +751,8 @@ void SolveSpaceUI::MenuRequest(Command id) {
     s = _("click top left of image");
     goto c;
   c:
-    SS.GW.pending.operation   = GraphicsWindow::Pending::COMMAND;
-    SS.GW.pending.command     = id;
+    SS.GW.pending.operation = GraphicsWindow::Pending::COMMAND;
+    SS.GW.pending.command = id;
     SS.GW.pending.description = s;
     SS.ScheduleShowTW();
     SS.GW.Invalidate(); // repaint toolbar
@@ -766,7 +766,7 @@ void SolveSpaceUI::MenuRequest(Command id) {
         SS.GW.pending.operation == GraphicsWindow::Pending::DRAGGING_NEW_CUBIC_POINT ||
         SS.GW.pending.operation == GraphicsWindow::Pending::DRAGGING_NEW_RADIUS) {
       for (auto &hr : SS.GW.pending.requests) {
-        Request *r      = SK.GetRequest(hr);
+        Request *r = SK.GetRequest(hr);
         r->construction = !(r->construction);
         SS.MarkGroupDirty(r->group);
       }
@@ -785,7 +785,7 @@ void SolveSpaceUI::MenuRequest(Command id) {
       hEntity he = SS.GW.gs.entity[i];
       if (!he.isFromRequest())
         continue;
-      Request *r      = SK.GetRequest(he.request());
+      Request *r = SK.GetRequest(he.request());
       r->construction = !(r->construction);
       SS.MarkGroupDirty(r->group);
     }
@@ -805,8 +805,8 @@ void SolveSpaceUI::MenuRequest(Command id) {
 
 void SolveSpaceUI::MenuConstrain(Command id) {
   Constraint c = {};
-  c.group      = SS.GW.activeGroup;
-  c.workplane  = SS.GW.ActiveWorkplane();
+  c.group = SS.GW.activeGroup;
+  c.workplane = SS.GW.ActiveWorkplane();
 
   SS.GW.GroupSelection();
   auto const &gs = SS.GW.gs;
@@ -816,32 +816,32 @@ void SolveSpaceUI::MenuConstrain(Command id) {
   case Command::REF_DISTANCE: {
     if (gs.points == 2 && gs.n == 2) {
       c.type = Constraint::Type::PT_PT_DISTANCE;
-      c.ptA  = gs.point[0];
-      c.ptB  = gs.point[1];
+      c.ptA = gs.point[0];
+      c.ptB = gs.point[1];
     } else if (gs.lineSegments == 1 && gs.n == 1) {
-      c.type    = Constraint::Type::PT_PT_DISTANCE;
+      c.type = Constraint::Type::PT_PT_DISTANCE;
       Entity *e = SK.GetEntity(gs.entity[0]);
-      c.ptA     = e->point[0];
-      c.ptB     = e->point[1];
+      c.ptA = e->point[0];
+      c.ptB = e->point[1];
     } else if (gs.vectors == 1 && gs.points == 2 && gs.n == 3) {
-      c.type    = Constraint::Type::PROJ_PT_DISTANCE;
-      c.ptA     = gs.point[0];
-      c.ptB     = gs.point[1];
+      c.type = Constraint::Type::PROJ_PT_DISTANCE;
+      c.ptA = gs.point[0];
+      c.ptB = gs.point[1];
       c.entityA = gs.vector[0];
     } else if (gs.workplanes == 1 && gs.points == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_PLANE_DISTANCE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_PLANE_DISTANCE;
+      c.ptA = gs.point[0];
       c.entityA = gs.entity[0];
     } else if (gs.lineSegments == 1 && gs.points == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_LINE_DISTANCE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_LINE_DISTANCE;
+      c.ptA = gs.point[0];
       c.entityA = gs.entity[0];
     } else if (gs.faces == 1 && gs.points == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_FACE_DISTANCE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_FACE_DISTANCE;
+      c.ptA = gs.point[0];
       c.entityA = gs.face[0];
     } else if (gs.circlesOrArcs == 1 && gs.n == 1) {
-      c.type    = Constraint::Type::DIAMETER;
+      c.type = Constraint::Type::DIAMETER;
       c.entityA = gs.entity[0];
     } else {
       Error(_("Bad selection for distance / diameter constraint. This "
@@ -857,9 +857,9 @@ void SolveSpaceUI::MenuConstrain(Command id) {
     }
     if (c.type == Constraint::Type::PT_PT_DISTANCE ||
         c.type == Constraint::Type::PROJ_PT_DISTANCE) {
-      Vector n      = SS.GW.projRight.Cross(SS.GW.projUp);
-      Vector a      = SK.GetEntity(c.ptA)->PointGetNum();
-      Vector b      = SK.GetEntity(c.ptB)->PointGetNum();
+      Vector n = SS.GW.projRight.Cross(SS.GW.projUp);
+      Vector a = SK.GetEntity(c.ptA)->PointGetNum();
+      Vector b = SK.GetEntity(c.ptB)->PointGetNum();
       c.disp.offset = n.Cross(a.Minus(b));
       c.disp.offset = (c.disp.offset).WithMagnitude(50 / SS.GW.scale);
     } else {
@@ -879,23 +879,23 @@ void SolveSpaceUI::MenuConstrain(Command id) {
   case Command::ON_ENTITY:
     if (gs.points == 2 && gs.n == 2) {
       c.type = Constraint::Type::POINTS_COINCIDENT;
-      c.ptA  = gs.point[0];
-      c.ptB  = gs.point[1];
+      c.ptA = gs.point[0];
+      c.ptB = gs.point[1];
     } else if (gs.points == 1 && gs.workplanes == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_IN_PLANE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_IN_PLANE;
+      c.ptA = gs.point[0];
       c.entityA = gs.entity[0];
     } else if (gs.points == 1 && gs.lineSegments == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_ON_LINE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_ON_LINE;
+      c.ptA = gs.point[0];
       c.entityA = gs.entity[0];
     } else if (gs.points == 1 && gs.circlesOrArcs == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_ON_CIRCLE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_ON_CIRCLE;
+      c.ptA = gs.point[0];
       c.entityA = gs.entity[0];
     } else if (gs.points == 1 && gs.faces == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::PT_ON_FACE;
-      c.ptA     = gs.point[0];
+      c.type = Constraint::Type::PT_ON_FACE;
+      c.ptA = gs.point[0];
       c.entityA = gs.face[0];
     } else {
       Error(_("Bad selection for on point / curve / plane constraint. "
@@ -912,42 +912,42 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::EQUAL:
     if (gs.lineSegments == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::EQUAL_LENGTH_LINES;
+      c.type = Constraint::Type::EQUAL_LENGTH_LINES;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.lineSegments == 2 && gs.points == 2 && gs.n == 4) {
-      c.type    = Constraint::Type::EQ_PT_LN_DISTANCES;
+      c.type = Constraint::Type::EQ_PT_LN_DISTANCES;
       c.entityA = gs.entity[0];
-      c.ptA     = gs.point[0];
+      c.ptA = gs.point[0];
       c.entityB = gs.entity[1];
-      c.ptB     = gs.point[1];
+      c.ptB = gs.point[1];
     } else if (gs.lineSegments == 1 && gs.points == 2 && gs.n == 3) {
       // The same line segment for the distances, but different
       // points.
-      c.type    = Constraint::Type::EQ_PT_LN_DISTANCES;
+      c.type = Constraint::Type::EQ_PT_LN_DISTANCES;
       c.entityA = gs.entity[0];
-      c.ptA     = gs.point[0];
+      c.ptA = gs.point[0];
       c.entityB = gs.entity[0];
-      c.ptB     = gs.point[1];
+      c.ptB = gs.point[1];
     } else if (gs.lineSegments == 2 && gs.points == 1 && gs.n == 3) {
-      c.type    = Constraint::Type::EQ_LEN_PT_LINE_D;
+      c.type = Constraint::Type::EQ_LEN_PT_LINE_D;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
-      c.ptA     = gs.point[0];
+      c.ptA = gs.point[0];
     } else if (gs.vectors == 4 && gs.n == 4) {
-      c.type    = Constraint::Type::EQUAL_ANGLE;
+      c.type = Constraint::Type::EQUAL_ANGLE;
       c.entityA = gs.vector[0];
       c.entityB = gs.vector[1];
       c.entityC = gs.vector[2];
       c.entityD = gs.vector[3];
     } else if (gs.vectors == 3 && gs.n == 3) {
-      c.type    = Constraint::Type::EQUAL_ANGLE;
+      c.type = Constraint::Type::EQUAL_ANGLE;
       c.entityA = gs.vector[0];
       c.entityB = gs.vector[1];
       c.entityC = gs.vector[1];
       c.entityD = gs.vector[2];
     } else if (gs.circlesOrArcs == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::EQUAL_RADIUS;
+      c.type = Constraint::Type::EQUAL_RADIUS;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.arcs == 1 && gs.lineSegments == 1 && gs.n == 2) {
@@ -995,11 +995,11 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::RATIO:
     if (gs.lineSegments == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::LENGTH_RATIO;
+      c.type = Constraint::Type::LENGTH_RATIO;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.arcs == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::ARC_ARC_LEN_RATIO;
+      c.type = Constraint::Type::ARC_ARC_LEN_RATIO;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.lineSegments == 1 && gs.arcs == 1 && gs.n == 2) {
@@ -1027,11 +1027,11 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::DIFFERENCE:
     if (gs.lineSegments == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::LENGTH_DIFFERENCE;
+      c.type = Constraint::Type::LENGTH_DIFFERENCE;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.arcs == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::ARC_ARC_DIFFERENCE;
+      c.type = Constraint::Type::ARC_ARC_DIFFERENCE;
       c.entityA = gs.entity[0];
       c.entityB = gs.entity[1];
     } else if (gs.lineSegments == 1 && gs.arcs == 1 && gs.n == 2) {
@@ -1059,9 +1059,9 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::AT_MIDPOINT:
     if (gs.lineSegments == 1 && gs.points == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::AT_MIDPOINT;
+      c.type = Constraint::Type::AT_MIDPOINT;
       c.entityA = gs.entity[0];
-      c.ptA     = gs.point[0];
+      c.ptA = gs.point[0];
 
       // If a point is at-midpoint, then no reason to also constrain
       // it on-line; so auto-remove that.  Handle as one undo group.
@@ -1070,8 +1070,8 @@ void SolveSpaceUI::MenuConstrain(Command id) {
       Constraint::AddConstraint(&c, /*rememberForUndo=*/false);
       break;
     } else if (gs.lineSegments == 1 && gs.workplanes == 1 && gs.n == 2) {
-      c.type    = Constraint::Type::AT_MIDPOINT;
-      int i     = SK.GetEntity(gs.entity[0])->IsWorkplane() ? 1 : 0;
+      c.type = Constraint::Type::AT_MIDPOINT;
+      int i = SK.GetEntity(gs.entity[0])->IsWorkplane() ? 1 : 0;
       c.entityA = gs.entity[i];
       c.entityB = gs.entity[1 - i];
     } else {
@@ -1090,19 +1090,19 @@ void SolveSpaceUI::MenuConstrain(Command id) {
     if (gs.points == 2 && ((gs.workplanes == 1 && gs.n == 3) || (gs.n == 2))) {
       if (gs.entities > 0)
         c.entityA = gs.entity[0];
-      c.ptA  = gs.point[0];
-      c.ptB  = gs.point[1];
+      c.ptA = gs.point[0];
+      c.ptB = gs.point[1];
       c.type = Constraint::Type::SYMMETRIC;
     } else if (gs.lineSegments == 1 && ((gs.workplanes == 1 && gs.n == 2) || (gs.n == 1))) {
       Entity *line;
       if (SK.GetEntity(gs.entity[0])->IsWorkplane()) {
-        line      = SK.GetEntity(gs.entity[1]);
+        line = SK.GetEntity(gs.entity[1]);
         c.entityA = gs.entity[0];
       } else {
         line = SK.GetEntity(gs.entity[0]);
       }
-      c.ptA  = line->point[0];
-      c.ptB  = line->point[1];
+      c.ptA = line->point[0];
+      c.ptB = line->point[1];
       c.type = Constraint::Type::SYMMETRIC;
     } else if (SS.GW.LockedInWorkplane() && gs.lineSegments == 2 && gs.n == 2) {
       Entity *l0 = SK.GetEntity(gs.entity[0]), *l1 = SK.GetEntity(gs.entity[1]);
@@ -1110,15 +1110,15 @@ void SolveSpaceUI::MenuConstrain(Command id) {
       if ((l1->group != SS.GW.activeGroup) || (l1->construction && !(l0->construction))) {
         std::swap(l0, l1);
       }
-      c.ptA     = l1->point[0];
-      c.ptB     = l1->point[1];
+      c.ptA = l1->point[0];
+      c.ptB = l1->point[1];
       c.entityA = l0->h;
-      c.type    = Constraint::Type::SYMMETRIC_LINE;
+      c.type = Constraint::Type::SYMMETRIC_LINE;
     } else if (SS.GW.LockedInWorkplane() && gs.lineSegments == 1 && gs.points == 2 && gs.n == 3) {
-      c.ptA     = gs.point[0];
-      c.ptB     = gs.point[1];
+      c.ptA = gs.point[0];
+      c.ptB = gs.point[1];
       c.entityA = gs.entity[0];
-      c.type    = Constraint::Type::SYMMETRIC_LINE;
+      c.type = Constraint::Type::SYMMETRIC_LINE;
     } else {
       Error(_("Bad selection for symmetric constraint. This constraint "
               "can apply to:\n\n"
@@ -1139,9 +1139,9 @@ void SolveSpaceUI::MenuConstrain(Command id) {
                 "symmetric without an explicit symmetry plane."));
         return;
       }
-      Vector  pa   = SK.GetEntity(c.ptA)->PointGetNum();
-      Vector  pb   = SK.GetEntity(c.ptB)->PointGetNum();
-      Vector  dp   = pa.Minus(pb);
+      Vector pa = SK.GetEntity(c.ptA)->PointGetNum();
+      Vector pb = SK.GetEntity(c.ptB)->PointGetNum();
+      Vector dp = pa.Minus(pb);
       Entity *norm = SK.GetEntity(c.workplane)->Normal();
       ;
       Vector u = norm->NormalU(), v = norm->NormalV();
@@ -1177,8 +1177,8 @@ void SolveSpaceUI::MenuConstrain(Command id) {
     if (gs.lineSegments == 1 && gs.n == 1) {
       c.entityA = gs.entity[0];
       Entity *e = SK.GetEntity(c.entityA);
-      ha        = e->point[0];
-      hb        = e->point[1];
+      ha = e->point[0];
+      hb = e->point[1];
     } else if (gs.points == 2 && gs.n == 2) {
       ha = c.ptA = gs.point[0];
       hb = c.ptB = gs.point[1];
@@ -1200,7 +1200,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::ORIENTED_SAME: {
     if (gs.anyNormals == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::SAME_ORIENTATION;
+      c.type = Constraint::Type::SAME_ORIENTATION;
       c.entityA = gs.anyNormal[0];
       c.entityB = gs.anyNormal[1];
     } else {
@@ -1212,7 +1212,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
     SS.UndoRemember();
 
     Entity *nfree = SK.GetEntity(c.entityA);
-    Entity *nref  = SK.GetEntity(c.entityB);
+    Entity *nref = SK.GetEntity(c.entityB);
     if (nref->group == SS.GW.activeGroup) {
       std::swap(nref, nfree);
     }
@@ -1273,10 +1273,10 @@ void SolveSpaceUI::MenuConstrain(Command id) {
   case Command::ANGLE:
   case Command::REF_ANGLE: {
     if (gs.vectors == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::ANGLE;
+      c.type = Constraint::Type::ANGLE;
       c.entityA = gs.vector[0];
       c.entityB = gs.vector[1];
-      c.valA    = 0;
+      c.valA = 0;
     } else {
       Error(_("Bad selection for angle constraint. This constraint "
               "can apply to:\n\n"
@@ -1313,11 +1313,11 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::PARALLEL:
     if (gs.faces == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::PARALLEL;
+      c.type = Constraint::Type::PARALLEL;
       c.entityA = gs.face[0];
       c.entityB = gs.face[1];
     } else if (gs.vectors == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::PARALLEL;
+      c.type = Constraint::Type::PARALLEL;
       c.entityA = gs.vector[0];
       c.entityB = gs.vector[1];
     } else if (gs.lineSegments == 1 && gs.arcs == 1 && gs.n == 2) {
@@ -1328,7 +1328,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
       if (!Constraint::ConstrainArcLineTangent(&c, line, arc)) {
         return;
       }
-      c.type    = Constraint::Type::ARC_LINE_TANGENT;
+      c.type = Constraint::Type::ARC_LINE_TANGENT;
       c.entityA = arc->h;
       c.entityB = line->h;
     } else if (gs.lineSegments == 1 && gs.cubics == 1 && gs.n == 2) {
@@ -1339,7 +1339,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
       if (!Constraint::ConstrainCubicLineTangent(&c, line, cubic)) {
         return;
       }
-      c.type    = Constraint::Type::CUBIC_LINE_TANGENT;
+      c.type = Constraint::Type::CUBIC_LINE_TANGENT;
       c.entityA = cubic->h;
       c.entityB = line->h;
     } else if (gs.cubics + gs.arcs == 2 && gs.n == 2) {
@@ -1351,7 +1351,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
       if (!Constraint::ConstrainCurveCurveTangent(&c, eA, eB)) {
         return;
       }
-      c.type    = Constraint::Type::CURVE_CURVE_TANGENT;
+      c.type = Constraint::Type::CURVE_CURVE_TANGENT;
       c.entityA = eA->h;
       c.entityB = eB->h;
     } else {
@@ -1370,11 +1370,11 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::PERPENDICULAR:
     if (gs.faces == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::PERPENDICULAR;
+      c.type = Constraint::Type::PERPENDICULAR;
       c.entityA = gs.face[0];
       c.entityB = gs.face[1];
     } else if (gs.vectors == 2 && gs.n == 2) {
-      c.type    = Constraint::Type::PERPENDICULAR;
+      c.type = Constraint::Type::PERPENDICULAR;
       c.entityA = gs.vector[0];
       c.entityB = gs.vector[1];
     } else {
@@ -1392,7 +1392,7 @@ void SolveSpaceUI::MenuConstrain(Command id) {
   case Command::WHERE_DRAGGED:
     if (gs.points == 1 && gs.n == 1) {
       c.type = Constraint::Type::WHERE_DRAGGED;
-      c.ptA  = gs.point[0];
+      c.ptA = gs.point[0];
     } else {
       Error(_("Bad selection for lock point where dragged constraint. "
               "This constraint can apply to:\n\n"
@@ -1404,15 +1404,15 @@ void SolveSpaceUI::MenuConstrain(Command id) {
 
   case Command::COMMENT:
     if (gs.points == 1 && gs.n == 1) {
-      c.type      = Constraint::Type::COMMENT;
-      c.ptA       = gs.point[0];
-      c.group     = SS.GW.activeGroup;
+      c.type = Constraint::Type::COMMENT;
+      c.ptA = gs.point[0];
+      c.group = SS.GW.activeGroup;
       c.workplane = SS.GW.ActiveWorkplane();
-      c.comment   = _("NEW COMMENT -- DOUBLE-CLICK TO EDIT");
+      c.comment = _("NEW COMMENT -- DOUBLE-CLICK TO EDIT");
       Constraint::AddConstraint(&c);
     } else {
-      SS.GW.pending.operation   = GraphicsWindow::Pending::COMMAND;
-      SS.GW.pending.command     = Command::COMMENT;
+      SS.GW.pending.operation = GraphicsWindow::Pending::COMMAND;
+      SS.GW.pending.command = Command::COMMENT;
       SS.GW.pending.description = _("click center of comment text");
       SS.ScheduleShowTW();
     }
@@ -1459,10 +1459,10 @@ void SolveSpaceUI::MenuGroup(Command id) {
 void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
   Platform::SettingsRef settings = Platform::GetSettings();
 
-  Group g    = {};
-  g.visible  = true;
-  g.color    = RGBi(100, 100, 100);
-  g.scale    = 1;
+  Group g = {};
+  g.visible = true;
+  g.color = RGBi(100, 100, 100);
+  g.scale = 1;
   g.linkFile = linkFile;
 
   SS.GW.GroupSelection();
@@ -1485,19 +1485,19 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
       v = v.Minus(u.ScaledBy(v.Dot(u)));
       v = v.ClosestOrtho();
 
-      g.predef.q      = Quaternion::From(u, v);
+      g.predef.q = Quaternion::From(u, v);
       g.predef.origin = gs.point[0];
     } else if (gs.points == 1 && gs.lineSegments == 2 && gs.n == 3) {
       g.subtype = Group::Subtype::WORKPLANE_BY_LINE_SEGMENTS;
 
-      g.predef.origin  = gs.point[0];
+      g.predef.origin = gs.point[0];
       g.predef.entityB = gs.entity[0];
       g.predef.entityC = gs.entity[1];
 
       Vector ut = SK.GetEntity(g.predef.entityB)->VectorGetNum();
       Vector vt = SK.GetEntity(g.predef.entityC)->VectorGetNum();
-      ut        = ut.WithMagnitude(1);
-      vt        = vt.WithMagnitude(1);
+      ut = ut.WithMagnitude(1);
+      vt = vt.WithMagnitude(1);
 
       if (std::fabs(SS.GW.projUp.Dot(vt)) < std::fabs(SS.GW.projUp.Dot(ut))) {
         std::swap(ut, vt);
@@ -1509,34 +1509,34 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
         g.predef.negateV = true;
     } else if (gs.workplanes == 1 && gs.n == 1) {
       if (gs.entity[0].isFromRequest()) {
-        Entity *wrkpl   = SK.GetEntity(gs.entity[0]);
-        Entity *normal  = SK.GetEntity(wrkpl->normal);
-        g.subtype       = Group::Subtype::WORKPLANE_BY_POINT_ORTHO;
+        Entity *wrkpl = SK.GetEntity(gs.entity[0]);
+        Entity *normal = SK.GetEntity(wrkpl->normal);
+        g.subtype = Group::Subtype::WORKPLANE_BY_POINT_ORTHO;
         g.predef.origin = wrkpl->point[0];
-        g.predef.q      = normal->NormalGetNum();
+        g.predef.q = normal->NormalGetNum();
       } else {
-        Group *wrkplg   = SK.GetGroup(gs.entity[0].group());
-        g.subtype       = wrkplg->subtype;
+        Group *wrkplg = SK.GetGroup(gs.entity[0].group());
+        g.subtype = wrkplg->subtype;
         g.predef.origin = wrkplg->predef.origin;
         if (wrkplg->subtype == Group::Subtype::WORKPLANE_BY_LINE_SEGMENTS) {
           g.predef.entityB = wrkplg->predef.entityB;
           g.predef.entityC = wrkplg->predef.entityC;
-          g.predef.swapUV  = wrkplg->predef.swapUV;
+          g.predef.swapUV = wrkplg->predef.swapUV;
           g.predef.negateU = wrkplg->predef.negateU;
           g.predef.negateV = wrkplg->predef.negateV;
         } else if (wrkplg->subtype == Group::Subtype::WORKPLANE_BY_POINT_ORTHO) {
           g.predef.q = wrkplg->predef.q;
         } else if (wrkplg->subtype == Group::Subtype::WORKPLANE_BY_POINT_NORMAL) {
-          g.predef.q       = wrkplg->predef.q;
+          g.predef.q = wrkplg->predef.q;
           g.predef.entityB = wrkplg->predef.entityB;
         } else
           ssassert(false, "Unexpected workplane subtype");
       }
     } else if (gs.anyNormals == 1 && gs.points == 1 && gs.n == 2) {
-      g.subtype        = Group::Subtype::WORKPLANE_BY_POINT_NORMAL;
+      g.subtype = Group::Subtype::WORKPLANE_BY_POINT_NORMAL;
       g.predef.entityB = gs.anyNormal[0];
-      g.predef.q       = SK.GetEntity(gs.anyNormal[0])->NormalGetNum();
-      g.predef.origin  = gs.point[0];
+      g.predef.q = SK.GetEntity(gs.anyNormal[0])->NormalGetNum();
+      g.predef.origin = gs.point[0];
       //} else if(gs.faces == 1 && gs.points == 1 && gs.n == 2) {
       //    g.subtype = Subtype::WORKPLANE_BY_POINT_FACE;
       //    g.predef.q      = SK.GetEntity(gs.face[0])->NormalGetNum();
@@ -1563,11 +1563,11 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
               "workplane."));
       return;
     }
-    g.type           = Group::Type::EXTRUDE;
-    g.opA            = SS.GW.activeGroup;
+    g.type = Group::Type::EXTRUDE;
+    g.opA = SS.GW.activeGroup;
     g.predef.entityB = SS.GW.ActiveWorkplane();
-    g.subtype        = Group::Subtype::ONE_SIDED;
-    g.name           = C_("group-name", "extrude");
+    g.subtype = Group::Subtype::ONE_SIDED;
+    g.name = C_("group-name", "extrude");
     break;
 
   case Command::GROUP_LATHE:
@@ -1576,10 +1576,10 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
       return;
     }
     if (gs.points == 1 && gs.vectors == 1 && gs.n == 2) {
-      g.predef.origin  = gs.point[0];
+      g.predef.origin = gs.point[0];
       g.predef.entityB = gs.vector[0];
     } else if (gs.lineSegments == 1 && gs.n == 1) {
-      g.predef.origin  = SK.GetEntity(gs.entity[0])->point[0];
+      g.predef.origin = SK.GetEntity(gs.entity[0])->point[0];
       g.predef.entityB = gs.entity[0];
       // since a line segment is a vector
     } else {
@@ -1592,7 +1592,7 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
       return;
     }
     g.type = Group::Type::LATHE;
-    g.opA  = SS.GW.activeGroup;
+    g.opA = SS.GW.activeGroup;
     g.name = C_("group-name", "lathe");
     break;
 
@@ -1602,10 +1602,10 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
       return;
     }
     if (gs.points == 1 && gs.vectors == 1 && gs.n == 2) {
-      g.predef.origin  = gs.point[0];
+      g.predef.origin = gs.point[0];
       g.predef.entityB = gs.vector[0];
     } else if (gs.lineSegments == 1 && gs.n == 1) {
-      g.predef.origin  = SK.GetEntity(gs.entity[0])->point[0];
+      g.predef.origin = SK.GetEntity(gs.entity[0])->point[0];
       g.predef.entityB = gs.entity[0];
       // since a line segment is a vector
     } else {
@@ -1617,11 +1617,11 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
               "    * a line segment (revolved about line segment)\n"));
       return;
     }
-    g.type    = Group::Type::REVOLVE;
-    g.opA     = SS.GW.activeGroup;
-    g.valA    = 2;
+    g.type = Group::Type::REVOLVE;
+    g.opA = SS.GW.activeGroup;
+    g.valA = 2;
     g.subtype = Group::Subtype::ONE_SIDED;
-    g.name    = C_("group-name", "revolve");
+    g.name = C_("group-name", "revolve");
     break;
 
   case Command::GROUP_HELIX:
@@ -1630,10 +1630,10 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
       return;
     }
     if (gs.points == 1 && gs.vectors == 1 && gs.n == 2) {
-      g.predef.origin  = gs.point[0];
+      g.predef.origin = gs.point[0];
       g.predef.entityB = gs.vector[0];
     } else if (gs.lineSegments == 1 && gs.n == 1) {
-      g.predef.origin  = SK.GetEntity(gs.entity[0])->point[0];
+      g.predef.origin = SK.GetEntity(gs.entity[0])->point[0];
       g.predef.entityB = gs.entity[0];
       // since a line segment is a vector
     } else {
@@ -1645,21 +1645,21 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
               "    * a line segment (revolved about line segment)\n"));
       return;
     }
-    g.type    = Group::Type::HELIX;
-    g.opA     = SS.GW.activeGroup;
-    g.valA    = 2;
+    g.type = Group::Type::HELIX;
+    g.opA = SS.GW.activeGroup;
+    g.valA = 2;
     g.subtype = Group::Subtype::ONE_SIDED;
-    g.name    = C_("group-name", "helix");
+    g.name = C_("group-name", "helix");
     break;
 
   case Command::GROUP_ROT: {
     if (gs.points == 1 && gs.n == 1 && SS.GW.LockedInWorkplane()) {
-      g.predef.origin   = gs.point[0];
-      Entity *w         = SK.GetEntity(SS.GW.ActiveWorkplane());
-      g.predef.entityB  = w->Normal()->h;
+      g.predef.origin = gs.point[0];
+      Entity *w = SK.GetEntity(SS.GW.ActiveWorkplane());
+      g.predef.entityB = w->Normal()->h;
       g.activeWorkplane = w->h;
     } else if (gs.points == 1 && gs.vectors == 1 && gs.n == 2) {
-      g.predef.origin  = gs.point[0];
+      g.predef.origin = gs.point[0];
       g.predef.entityB = gs.vector[0];
     } else {
       Error(_("Bad selection for new rotation. This group can "
@@ -1671,22 +1671,22 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
               "line / normal)\n"));
       return;
     }
-    g.type    = Group::Type::ROTATE;
-    g.opA     = SS.GW.activeGroup;
-    g.valA    = 3;
+    g.type = Group::Type::ROTATE;
+    g.opA = SS.GW.activeGroup;
+    g.valA = 3;
     g.subtype = Group::Subtype::ONE_SIDED;
-    g.name    = C_("group-name", "rotate");
+    g.name = C_("group-name", "rotate");
     break;
   }
 
   case Command::GROUP_TRANS:
-    g.type            = Group::Type::TRANSLATE;
-    g.opA             = SS.GW.activeGroup;
-    g.valA            = 3;
-    g.subtype         = Group::Subtype::ONE_SIDED;
-    g.predef.entityB  = SS.GW.ActiveWorkplane();
+    g.type = Group::Type::TRANSLATE;
+    g.opA = SS.GW.activeGroup;
+    g.valA = 3;
+    g.subtype = Group::Subtype::ONE_SIDED;
+    g.predef.entityB = SS.GW.ActiveWorkplane();
     g.activeWorkplane = SS.GW.ActiveWorkplane();
-    g.name            = C_("group-name", "translate");
+    g.name = C_("group-name", "translate");
     break;
 
   case Command::GROUP_LINK: {
@@ -1714,7 +1714,7 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
     if (afterActive)
       gi->order += 1;
     if (gi->h == SS.GW.activeGroup) {
-      g.order     = gi->order + 1;
+      g.order = gi->order + 1;
       afterActive = true;
     }
   }
@@ -1725,7 +1725,7 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
   if (gg->type == Group::Type::LINKED) {
     SS.ReloadAllLinked(SS.saveFile);
   }
-  gg->clean         = false;
+  gg->clean = false;
   SS.GW.activeGroup = gg->h;
   SS.GenerateAll();
   if (gg->type == Group::Type::DRAWING_WORKPLANE) {

@@ -16,9 +16,9 @@ static std::vector<std::string> splitString(const std::string line) {
   if (line.length() == 0)
     return v;
 
-  std::string s        = "";
-  bool        inString = false;
-  bool        inQuotes = false;
+  std::string s = "";
+  bool inString = false;
+  bool inQuotes = false;
 
   for (size_t i = 0; i < line.length(); i++) {
     char c = line.at(i);
@@ -29,7 +29,7 @@ static std::vector<std::string> splitString(const std::string line) {
         v.push_back(s);
         inQuotes = false;
         inString = false;
-        s        = "";
+        s = "";
       }
     } else if (inString) {
       if (c != ' ') {
@@ -37,7 +37,7 @@ static std::vector<std::string> splitString(const std::string line) {
       } else {
         v.push_back(s);
         inString = false;
-        s        = "";
+        s = "";
       }
     } else if (c == '"') {
       inString = true;
@@ -61,37 +61,37 @@ static std::vector<std::string> splitString(const std::string line) {
 
 // Make a new point - type doesn't matter since we will make a copy later
 static hEntity newPoint(EntityList *el, int *id, Vector p, bool visible = true) {
-  Entity en       = {};
-  en.type         = Entity::Type::POINT_N_COPY;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::POINT_N_COPY;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 462;
-  en.actPoint     = p;
+  en.group.v = 462;
+  en.actPoint = p;
   en.construction = false;
-  en.style.v      = Style::DATUM;
-  en.actVisible   = visible;
-  en.forceHidden  = false;
+  en.style.v = Style::DATUM;
+  en.actVisible = visible;
+  en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
 }
 
 static hEntity newLine(EntityList *el, int *id, hEntity p0, hEntity p1, bool keepout) {
-  Entity en       = {};
-  en.type         = Entity::Type::LINE_SEGMENT;
-  en.point[0]     = p0;
-  en.point[1]     = p1;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::LINE_SEGMENT;
+  en.point[0] = p0;
+  en.point[1] = p1;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 493;
+  en.group.v = 493;
   en.construction = keepout;
-  en.style.v      = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
-  en.actVisible   = true;
-  en.forceHidden  = false;
+  en.style.v = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
+  en.actVisible = true;
+  en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
@@ -99,20 +99,20 @@ static hEntity newLine(EntityList *el, int *id, hEntity p0, hEntity p1, bool kee
 
 static hEntity newNormal(EntityList *el, int *id, Quaternion normal) {
   // normals have parameters, but we don't need them to make a NORMAL_N_COPY from this
-  Entity en       = {};
-  en.type         = Entity::Type::NORMAL_N_COPY;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::NORMAL_N_COPY;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 472;
-  en.actNormal    = normal;
+  en.group.v = 472;
+  en.actNormal = normal;
   en.construction = false;
-  en.style.v      = Style::ACTIVE_GRP;
+  en.style.v = Style::ACTIVE_GRP;
   // to be visible we need to add a point.
-  en.point[0]    = newPoint(el, id, Vector::From(0, 0, 3), /*visible=*/true);
-  en.actVisible  = true;
+  en.point[0] = newPoint(el, id, Vector::From(0, 0, 3), /*visible=*/true);
+  en.actVisible = true;
   en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
@@ -120,22 +120,22 @@ static hEntity newNormal(EntityList *el, int *id, Quaternion normal) {
 
 static hEntity newArc(EntityList *el, int *id, hEntity p0, hEntity p1, hEntity pc, hEntity hnorm,
                       bool keepout) {
-  Entity en       = {};
-  en.type         = Entity::Type::ARC_OF_CIRCLE;
-  en.point[0]     = pc;
-  en.point[1]     = p0;
-  en.point[2]     = p1;
-  en.normal       = hnorm;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::ARC_OF_CIRCLE;
+  en.point[0] = pc;
+  en.point[1] = p0;
+  en.point[2] = p1;
+  en.normal = hnorm;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 403;
+  en.group.v = 403;
   en.construction = keepout;
-  en.style.v      = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
-  en.actVisible   = true;
-  en.forceHidden  = false;
-  *id             = *id + 1;
+  en.style.v = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
+  en.actVisible = true;
+  en.forceHidden = false;
+  *id = *id + 1;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
@@ -143,19 +143,19 @@ static hEntity newArc(EntityList *el, int *id, hEntity p0, hEntity p1, hEntity p
 
 static hEntity newDistance(EntityList *el, int *id, double distance) {
   // normals have parameters, but we don't need them to make a NORMAL_N_COPY from this
-  Entity en       = {};
-  en.type         = Entity::Type::DISTANCE;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::DISTANCE;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 472;
-  en.actDistance  = distance;
+  en.group.v = 472;
+  en.actDistance = distance;
   en.construction = false;
-  en.style.v      = Style::ACTIVE_GRP;
+  en.style.v = Style::ACTIVE_GRP;
   // to be visible we'll need to add a point?
-  en.actVisible  = false;
+  en.actVisible = false;
   en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
@@ -163,20 +163,20 @@ static hEntity newDistance(EntityList *el, int *id, double distance) {
 
 static hEntity newCircle(EntityList *el, int *id, hEntity p0, hEntity hdist, hEntity hnorm,
                          bool keepout) {
-  Entity en       = {};
-  en.type         = Entity::Type::CIRCLE;
-  en.point[0]     = p0;
-  en.normal       = hnorm;
-  en.distance     = hdist;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::CIRCLE;
+  en.point[0] = p0;
+  en.normal = hnorm;
+  en.distance = hdist;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 399;
+  en.group.v = 399;
   en.construction = keepout;
-  en.style.v      = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
-  en.actVisible   = true;
-  en.forceHidden  = false;
+  en.style.v = keepout ? Style::CONSTRUCTION : Style::ACTIVE_GRP;
+  en.actVisible = true;
+  en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
@@ -184,7 +184,7 @@ static hEntity newCircle(EntityList *el, int *id, hEntity p0, hEntity hdist, hEn
 
 static Vector ArcCenter(Vector p0, Vector p1, double angle) {
   // locate the center of an arc
-  Vector m    = p0.Plus(p1).ScaledBy(0.5);
+  Vector m = p0.Plus(p1).ScaledBy(0.5);
   Vector perp = Vector::From(p1.y - p0.y, p0.x - p1.x, 0.0).WithMagnitude(1.0);
   double dist = 0;
   if (angle != 180) {
@@ -210,7 +210,7 @@ static void CreateEntity(EntityList *el, int *id, hEntity h0, hEntity h1, hEntit
 
   } else if (angle == 360.0) {
     // circle
-    double  d  = p1.Minus(p0).Magnitude();
+    double d = p1.Minus(p0).Magnitude();
     hEntity hd = newDistance(el, id, d);
     newCircle(el, id, h1, hd, hnorm, keepout);
 
@@ -221,7 +221,7 @@ static void CreateEntity(EntityList *el, int *id, hEntity h0, hEntity h1, hEntit
       std::swap(h0, h1);
     }
     // locate the center of the arc
-    Vector m    = p0.Plus(p1).ScaledBy(0.5);
+    Vector m = p0.Plus(p1).ScaledBy(0.5);
     Vector perp = Vector::From(p1.y - p0.y, p0.x - p1.x, 0.0).WithMagnitude(1.0);
     double dist = 0;
     if (angle != 180) {
@@ -229,7 +229,7 @@ static void CreateEntity(EntityList *el, int *id, hEntity h0, hEntity h1, hEntit
     } else {
       dist = 0.0;
     }
-    Vector  c  = m.Minus(perp.ScaledBy(dist));
+    Vector c = m.Minus(perp.ScaledBy(dist));
     hEntity hc = newPoint(el, id, c, /*visible=*/false);
     newArc(el, id, h0, h1, hc, hnorm, keepout);
   }
@@ -246,7 +246,7 @@ static void MakeBeziersForArcs(SBezierList *sbl, Vector center, Vector pa, Vecto
   if (angle == 360.0) {
     theta = 0;
   } else {
-    Point2d c2  = center.Project2d(u, v);
+    Point2d c2 = center.Project2d(u, v);
     Point2d pa2 = (pa.Project2d(u, v)).Minus(c2);
 
     theta = atan2(pa2.y, pa2.x);
@@ -277,8 +277,8 @@ static void MakeBeziersForArcs(SBezierList *sbl, Vector center, Vector pa, Vecto
 
     theta += dtheta;
 
-    c         = cos(theta);
-    s         = sin(theta);
+    c = cos(theta);
+    s = sin(theta);
     Vector p2 = center.Plus(u.ScaledBy(r * c)).Plus(v.ScaledBy(r * s)),
            t2 = u.ScaledBy(-r * s).Plus(v.ScaledBy(r * c));
 
@@ -286,7 +286,7 @@ static void MakeBeziersForArcs(SBezierList *sbl, Vector center, Vector pa, Vecto
     VectorAtIntersectionOfLines_ret eeep =
         VectorAtIntersectionOfLines(p0, p0.Plus(t0), p2, p2.Plus(t2), false);
 
-    SBezier sb   = SBezier::From(p0, eeep.intersectionPoint, p2);
+    SBezier sb = SBezier::From(p0, eeep.intersectionPoint, p2);
     sb.weight[1] = cos(dtheta / 2);
     sbl->l.Add(&sb);
   }
@@ -324,23 +324,23 @@ namespace SolveSpace {
       component_placement
     } section;
 
-    section           = IDF_SECTION::none;
+    section = IDF_SECTION::none;
     int record_number = 0;
-    int curve         = -1;
-    int entityCount   = 0;
+    int curve = -1;
+    int entityCount = 0;
 
     hEntity hprev;
     hEntity hprevTop;
-    Vector  pprev    = Vector::From(0, 0, 0);
-    Vector  pprevTop = Vector::From(0, 0, 0);
+    Vector pprev = Vector::From(0, 0, 0);
+    Vector pprevTop = Vector::From(0, 0, 0);
 
     double board_thickness = 10.0;
-    double scale           = 1.0; // mm
-    bool   topEntities     = false;
-    bool   bottomEntities  = false;
+    double scale = 1.0; // mm
+    bool topEntities = false;
+    bool bottomEntities = false;
 
     Quaternion normal = Quaternion::From(Vector::From(1, 0, 0), Vector::From(0, 1, 0));
-    hEntity    hnorm  = newNormal(el, &entityCount, normal);
+    hEntity hnorm = newNormal(el, &entityCount, normal);
 
     // to create the extursion we will need to collect a set of bezier curves defined
     // by the perimeter, cutouts, and holes.
@@ -350,21 +350,21 @@ namespace SolveSpace {
     for (std::string line; getline(stream, line);) {
       if (line.find(".END_") == 0) {
         section = none;
-        curve   = -1;
+        curve = -1;
       }
       switch (section) {
       case none:
         if (line.find(".HEADER") == 0) {
-          section       = header;
+          section = header;
           record_number = 1;
         } else if (line.find(".BOARD_OUTLINE") == 0) {
-          section       = board_outline;
+          section = board_outline;
           record_number = 1;
         } else if (line.find(".ROUTE_KEEPOUT") == 0) {
-          section       = routing_keepout;
+          section = routing_keepout;
           record_number = 1;
         } else if (line.find(".DRILLED_HOLES") == 0) {
-          section       = drilled_holes;
+          section = drilled_holes;
           record_number = 1;
         }
         break;
@@ -387,12 +387,12 @@ namespace SolveSpace {
       case board_outline:
         if (record_number == 2) {
           if (section == board_outline) {
-            topEntities     = true;
-            bottomEntities  = true;
+            topEntities = true;
+            bottomEntities = true;
             board_thickness = std::stod(line) * scale;
             dbp("IDF board thickness: %lf", board_thickness);
           } else if (section == routing_keepout) {
-            topEntities    = false;
+            topEntities = false;
             bottomEntities = false;
             if (line.find("TOP") == 0 || line.find("BOTH") == 0)
               topEntities = true;
@@ -403,19 +403,19 @@ namespace SolveSpace {
           std::vector<std::string> values = splitString(line);
           if (values.size() != 4)
             continue;
-          int    c     = stoi(values[0]);
-          double x     = stof(values[1]);
-          double y     = stof(values[2]);
-          double ang   = stof(values[3]);
+          int c = stoi(values[0]);
+          double x = stof(values[1]);
+          double y = stof(values[2]);
+          double ang = stof(values[3]);
           Vector point = Vector::From(x, y, 0.0);
-          Vector pTop  = Vector::From(x, y, board_thickness);
+          Vector pTop = Vector::From(x, y, board_thickness);
           if (c != curve) { // start a new curve
             curve = c;
             if (bottomEntities)
               hprev = newPoint(el, &entityCount, point, /*visible=*/false);
             if (topEntities)
               hprevTop = newPoint(el, &entityCount, pTop, /*visible=*/false);
-            pprev    = point;
+            pprev = point;
             pprevTop = pTop;
           } else {
             if (section == board_outline) {
@@ -471,14 +471,14 @@ namespace SolveSpace {
         if ((d > 1.7) || (values[5].compare(0, 3, "PIN") == 0) ||
             (values[5].compare(0, 3, "MTG") == 0)) {
           // create the entity
-          Vector  cent  = Vector::From(x, y, 0.0);
+          Vector cent = Vector::From(x, y, 0.0);
           hEntity hcent = newPoint(el, &entityCount, cent);
           hEntity hdist = newDistance(el, &entityCount, d / 2);
           newCircle(el, &entityCount, hcent, hdist, hnorm, false);
           // and again for the top
           Vector cTop = Vector::From(x, y, board_thickness);
-          hcent       = newPoint(el, &entityCount, cTop);
-          hdist       = newDistance(el, &entityCount, d / 2);
+          hcent = newPoint(el, &entityCount, cTop);
+          hdist = newDistance(el, &entityCount, d / 2);
           newCircle(el, &entityCount, hcent, hdist, hnorm, false);
           // create the curves for the extrusion
           Vector pt = Vector::From(x + d / 2, y, 0.0);
@@ -497,10 +497,10 @@ namespace SolveSpace {
     // now we can create an extrusion from all the Bezier curves. We can skip things
     // like checking for a coplanar sketch because everything is at z=0.
     SPolygon polyLoops = {};
-    bool     allClosed;
-    bool     allCoplanar;
-    Vector   errorPointAt = Vector::From(0, 0, 0);
-    SEdge    errorAt      = {};
+    bool allClosed;
+    bool allCoplanar;
+    Vector errorPointAt = Vector::From(0, 0, 0);
+    SEdge errorAt = {};
 
     SBezierLoopSetSet sblss = {};
     sblss.FindOuterFacesFrom(&sbl, &polyLoops, NULL, 100.0, &allClosed, &errorAt, &allCoplanar,

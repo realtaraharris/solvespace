@@ -73,9 +73,9 @@ void GraphicsWindow::DeleteSelection() {
 void GraphicsWindow::CopySelection() {
   SS.clipboard.Clear();
 
-  Entity *wrkpl  = SK.GetEntity(ActiveWorkplane());
+  Entity *wrkpl = SK.GetEntity(ActiveWorkplane());
   Entity *wrkpln = SK.GetEntity(wrkpl->normal);
-  Vector  u = wrkpln->NormalU(), v = wrkpln->NormalV(), n = wrkpln->NormalN(),
+  Vector u = wrkpln->NormalU(), v = wrkpln->NormalV(), n = wrkpln->NormalN(),
          p = SK.GetEntity(wrkpl->point[0])->PointGetNum();
 
   List<Selection> *ls = &(selection);
@@ -83,10 +83,10 @@ void GraphicsWindow::CopySelection() {
     if (!s->entity.v)
       continue;
     // Work only on entities that have requests that will generate them.
-    Entity       *e = SK.GetEntity(s->entity);
-    bool          hasDistance;
+    Entity *e = SK.GetEntity(s->entity);
+    bool hasDistance;
     Request::Type req;
-    int           pts;
+    int pts;
     if (!EntReqTable::GetEntityInfo(e->type, e->extraPoints, &req, &pts, NULL, &hasDistance)) {
       if (!e->h.isFromRequest())
         continue;
@@ -99,13 +99,13 @@ void GraphicsWindow::CopySelection() {
       continue;
 
     ClipboardRequest cr = {};
-    cr.type             = req;
-    cr.extraPoints      = e->extraPoints;
-    cr.style            = e->style;
-    cr.str              = e->str;
-    cr.font             = e->font;
-    cr.file             = e->file;
-    cr.construction     = e->construction;
+    cr.type = req;
+    cr.extraPoints = e->extraPoints;
+    cr.style = e->style;
+    cr.str = e->str;
+    cr.font = e->font;
+    cr.file = e->file;
+    cr.construction = e->construction;
     {
       for (int i = 0; i < pts; i++) {
         Vector pt = Vector(0, 0, 0);
@@ -114,8 +114,8 @@ void GraphicsWindow::CopySelection() {
         } else {
           pt = SK.GetEntity(e->point[i])->PointGetNum();
         }
-        pt          = pt.Minus(p);
-        pt          = pt.DotInToCsys(u, v, n);
+        pt = pt.Minus(p);
+        pt = pt.DotInToCsys(u, v, n);
         cr.point[i] = pt;
       }
     }
@@ -153,9 +153,9 @@ void GraphicsWindow::CopySelection() {
 }
 
 void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
-  Entity *wrkpl  = SK.GetEntity(ActiveWorkplane());
+  Entity *wrkpl = SK.GetEntity(ActiveWorkplane());
   Entity *wrkpln = SK.GetEntity(wrkpl->normal);
-  Vector  u = wrkpln->NormalU(), v = wrkpln->NormalV(), n = wrkpln->NormalN(),
+  Vector u = wrkpln->NormalU(), v = wrkpln->NormalV(), n = wrkpln->NormalN(),
          p = SK.GetEntity(wrkpl->point[0])->PointGetNum();
 
   // For arcs, reflection involves swapping the endpoints, or otherwise
@@ -166,7 +166,7 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
 
     if (scale < 0) {
       hRequest hr = he.request();
-      Request *r  = SK.GetRequest(hr);
+      Request *r = SK.GetRequest(hr);
       if (r->type == Request::Type::ARC_OF_CIRCLE) {
         if (he == hr.entity(2)) {
           return hr.entity(3);
@@ -180,20 +180,20 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
 
   ClipboardRequest *cr;
   for (cr = SS.clipboard.r.First(); cr; cr = SS.clipboard.r.NextAfter(cr)) {
-    hRequest hr     = AddRequest(cr->type, /*rememberForUndo=*/false);
-    Request *r      = SK.GetRequest(hr);
-    r->extraPoints  = cr->extraPoints;
-    r->style        = cr->style;
-    r->str          = cr->str;
-    r->font         = cr->font;
-    r->file         = cr->file;
+    hRequest hr = AddRequest(cr->type, /*rememberForUndo=*/false);
+    Request *r = SK.GetRequest(hr);
+    r->extraPoints = cr->extraPoints;
+    r->style = cr->style;
+    r->str = cr->str;
+    r->font = cr->font;
+    r->file = cr->file;
     r->construction = cr->construction;
     // Need to regen to get the right number of points, if extraPoints
     // changed.
     SS.GenerateAll(SolveSpaceUI::Generate::REGEN);
     SS.MarkGroupDirty(r->group);
     bool hasDistance;
-    int  i, pts;
+    int i, pts;
     EntReqTable::GetRequestInfo(r->type, r->extraPoints, NULL, &pts, NULL, &hasDistance);
     for (i = 0; i < pts; i++) {
       Vector pt = cr->point[i];
@@ -204,11 +204,11 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
       }
       // Likewise the scale, which could otherwise take us out of the
       // workplane.
-      pt    = pt.ScaledBy(fabs(scale));
-      pt    = pt.ScaleOutOfCsys(u, v, Vector::From(0, 0, 0));
-      pt    = pt.Plus(p);
-      pt    = pt.RotatedAbout(n, theta);
-      pt    = pt.Plus(trans);
+      pt = pt.ScaledBy(fabs(scale));
+      pt = pt.ScaleOutOfCsys(u, v, Vector::From(0, 0, 0));
+      pt = pt.Plus(p);
+      pt = pt.RotatedAbout(n, theta);
+      pt = pt.Plus(trans);
       int j = (r->type == Request::Type::DATUM_POINT) ? i : i + 1;
       SK.GetEntity(mapPoint(hr.entity(j)))->PointForceTo(pt);
     }
@@ -225,22 +225,22 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
   }
   Constraint *cc;
   for (cc = SS.clipboard.c.First(); cc; cc = SS.clipboard.c.NextAfter(cc)) {
-    Constraint c           = {};
-    c.group                = SS.GW.activeGroup;
-    c.workplane            = SS.GW.ActiveWorkplane();
-    c.type                 = cc->type;
-    c.valA                 = cc->valA;
-    c.ptA                  = SS.clipboard.NewEntityFor(mapPoint(cc->ptA));
-    c.ptB                  = SS.clipboard.NewEntityFor(mapPoint(cc->ptB));
-    c.entityA              = SS.clipboard.NewEntityFor(cc->entityA);
-    c.entityB              = SS.clipboard.NewEntityFor(cc->entityB);
-    c.entityC              = SS.clipboard.NewEntityFor(cc->entityC);
-    c.entityD              = SS.clipboard.NewEntityFor(cc->entityD);
-    c.other                = cc->other;
-    c.other2               = cc->other2;
-    c.reference            = cc->reference;
-    c.disp                 = cc->disp;
-    c.comment              = cc->comment;
+    Constraint c = {};
+    c.group = SS.GW.activeGroup;
+    c.workplane = SS.GW.ActiveWorkplane();
+    c.type = cc->type;
+    c.valA = cc->valA;
+    c.ptA = SS.clipboard.NewEntityFor(mapPoint(cc->ptA));
+    c.ptB = SS.clipboard.NewEntityFor(mapPoint(cc->ptB));
+    c.entityA = SS.clipboard.NewEntityFor(cc->entityA);
+    c.entityB = SS.clipboard.NewEntityFor(cc->entityB);
+    c.entityC = SS.clipboard.NewEntityFor(cc->entityC);
+    c.entityD = SS.clipboard.NewEntityFor(cc->entityD);
+    c.other = cc->other;
+    c.other2 = cc->other2;
+    c.reference = cc->reference;
+    c.disp = cc->disp;
+    c.comment = cc->comment;
     bool dontAddConstraint = false;
     switch (c.type) {
     case Constraint::Type::COMMENT: c.disp.offset = c.disp.offset.Plus(trans); break;
@@ -316,7 +316,7 @@ bool TextWindow::EditControlDoneForPaste(const std::string &s) {
     break;
 
   case Edit::PASTE_SCALE: {
-    e        = Expr::From(s, /*popUpError=*/true);
+    e = Expr::From(s, /*popUpError=*/true);
     double v = e->Eval();
     if (fabs(v) > 1e-6) {
       shown.paste.scale = shown.paste.scale < 0 ? -v : v;
@@ -357,7 +357,7 @@ void TextWindow::ScreenPasteTransformed(int link, uint32_t v) {
   switch (link) {
   case 'o':
     if (SS.GW.gs.points == 1 && SS.GW.gs.n == 1) {
-      Entity *e                = SK.GetEntity(SS.GW.gs.point[0]);
+      Entity *e = SK.GetEntity(SS.GW.gs.point[0]);
       SS.TW.shown.paste.origin = e->PointGetNum();
     } else {
       Error(_("Select one point to define origin of rotation."));
@@ -391,9 +391,9 @@ void TextWindow::ScreenPasteTransformed(int link, uint32_t v) {
       Error(_("No workplane active."));
       break;
     }
-    Entity *wrkpl  = SK.GetEntity(SS.GW.ActiveWorkplane());
+    Entity *wrkpl = SK.GetEntity(SS.GW.ActiveWorkplane());
     Entity *wrkpln = SK.GetEntity(wrkpl->normal);
-    Vector  wn     = wrkpln->NormalN();
+    Vector wn = wrkpln->NormalN();
     SS.UndoRemember();
     SS.GW.ClearSelection();
     for (int i = 0; i < SS.TW.shown.paste.times; i++) {

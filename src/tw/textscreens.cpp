@@ -21,10 +21,10 @@ void TextWindow::ShowHeader(bool withNav) {
   std::string desc;
   if (SS.GW.LockedInWorkplane()) {
     header = "in plane: ";
-    desc   = SK.GetEntity(SS.GW.ActiveWorkplane())->DescriptionString();
+    desc = SK.GetEntity(SS.GW.ActiveWorkplane())->DescriptionString();
   } else {
     header = "drawing / constraining in 3d";
-    desc   = "";
+    desc = "";
   }
 
   // Navigation buttons
@@ -49,8 +49,8 @@ void TextWindow::ScreenSelectGroup(int link, uint32_t v) {
   // SS.TW.shown.group.v = v;
 }
 void TextWindow::ScreenToggleGroupShown(int link, uint32_t v) {
-  hGroup hg  = {v};
-  Group *g   = SK.GetGroup(hg);
+  hGroup hg = {v};
+  Group *g = SK.GetGroup(hg);
   g->visible = !(g->visible);
   // If a group was just shown, then it might not have been generated
   // previously, so regenerate.
@@ -97,20 +97,20 @@ void TextWindow::ShowListOfGroups() {
 
   Printf(true, "%Ft active");
   Printf(false, "%Ft    shown dof group-name%E");
-  bool afterActive      = false;
+  bool afterActive = false;
   bool backgroundParity = false;
   for (hGroup hg : SK.groupOrder) {
     Group *g = SK.GetGroup(hg);
 
-    std::string s      = g->DescriptionString();
-    bool        active = (g->h == SS.GW.activeGroup);
-    bool        shown  = g->visible;
-    bool        ok     = g->IsSolvedOkay();
-    bool        warn =
+    std::string s = g->DescriptionString();
+    bool active = (g->h == SS.GW.activeGroup);
+    bool shown = g->visible;
+    bool ok = g->IsSolvedOkay();
+    bool warn =
         (g->type == Group::Type::DRAWING_WORKPLANE && g->polyError.how != PolyError::GOOD) ||
         ((g->type == Group::Type::EXTRUDE || g->type == Group::Type::LATHE) &&
          SK.GetGroup(g->opA)->polyError.how != PolyError::GOOD);
-    int  dof      = g->solved.dof;
+    int dof = g->solved.dof;
     char sdof[16] = "ok ";
     if (ok && dof > 0) {
       if (dof > 999) {
@@ -168,20 +168,20 @@ void TextWindow::ShowListOfGroups() {
 //-----------------------------------------------------------------------------
 void TextWindow::ScreenHoverGroupWorkplane(int link, uint32_t v) {
   SS.GW.hover.Clear();
-  hGroup hg              = {v};
-  SS.GW.hover.entity     = hg.entity(0);
+  hGroup hg = {v};
+  SS.GW.hover.entity = hg.entity(0);
   SS.GW.hover.emphasized = true;
 }
 void TextWindow::ScreenHoverEntity(int link, uint32_t v) {
   SS.GW.hover.Clear();
-  hEntity he             = {v};
-  SS.GW.hover.entity     = he;
+  hEntity he = {v};
+  SS.GW.hover.entity = he;
   SS.GW.hover.emphasized = true;
 }
 void TextWindow::ScreenHoverRequest(int link, uint32_t v) {
   SS.GW.hover.Clear();
-  hRequest hr            = {v};
-  SS.GW.hover.entity     = hr.entity(0);
+  hRequest hr = {v};
+  SS.GW.hover.entity = hr.entity(0);
   SS.GW.hover.emphasized = true;
 }
 void TextWindow::ScreenHoverConstraint(int link, uint32_t v) {
@@ -196,21 +196,21 @@ void TextWindow::ScreenHoverConstraint(int link, uint32_t v) {
 void TextWindow::ScreenSelectEntity(int link, uint32_t v) {
   SS.GW.ClearSelection();
   GraphicsWindow::Selection sel = {};
-  hEntity                   he  = {v};
-  sel.entity                    = he;
+  hEntity he = {v};
+  sel.entity = he;
   SS.GW.selection.Add(&sel);
 }
 void TextWindow::ScreenSelectRequest(int link, uint32_t v) {
   SS.GW.ClearSelection();
   GraphicsWindow::Selection sel = {};
-  hRequest                  hr  = {v};
-  sel.entity                    = hr.entity(0);
+  hRequest hr = {v};
+  sel.entity = hr.entity(0);
   SS.GW.selection.Add(&sel);
 }
 void TextWindow::ScreenSelectConstraint(int link, uint32_t v) {
   SS.GW.ClearSelection();
   GraphicsWindow::Selection sel = {};
-  sel.constraint.v              = v;
+  sel.constraint.v = v;
   SS.GW.selection.Add(&sel);
 }
 
@@ -278,7 +278,7 @@ void TextWindow::ScreenOpacity(int link, uint32_t v) {
 
   SS.TW.ShowEditControl(11, ssprintf("%.2f", g->color.alphaF()));
   SS.TW.edit.meaning = Edit::GROUP_OPACITY;
-  SS.TW.edit.group   = g->h;
+  SS.TW.edit.group = g->h;
 }
 void TextWindow::ScreenChangeExprA(int link, uint32_t v) {
   Group *g = SK.GetGroup(SS.TW.shown.group);
@@ -301,7 +301,7 @@ void TextWindow::ScreenChangeGroupScale(int link, uint32_t v) {
   SS.TW.edit.group.v = v;
 }
 void TextWindow::ScreenChangeHelixPitch(int link, uint32_t v) {
-  Group *g     = SK.GetGroup(SS.TW.shown.group);
+  Group *g = SK.GetGroup(SS.TW.shown.group);
   double pitch = g->valB / SS.MmPerUnit();
   SS.TW.ShowEditControl(3, ssprintf("%.8f", pitch));
   SS.TW.edit.meaning = Edit::HELIX_PITCH;
@@ -337,7 +337,7 @@ void TextWindow::ScreenDeleteGroup(int link, uint32_t v) {
   SS.GW.ClearSuper(3);
 }
 void TextWindow::ShowGroupInfo() {
-  Group      *g = SK.GetGroup(shown.group);
+  Group *g = SK.GetGroup(shown.group);
   const char *s = "???";
 
   if (shown.group == Group::HGROUP_REFERENCES) {
@@ -429,10 +429,10 @@ void TextWindow::ShowGroupInfo() {
   if (g->type == Group::Type::EXTRUDE || g->type == Group::Type::LATHE ||
       g->type == Group::Type::REVOLVE || g->type == Group::Type::LINKED ||
       g->type == Group::Type::HELIX) {
-    bool un   = (g->meshCombine == Group::CombineAs::UNION);
+    bool un = (g->meshCombine == Group::CombineAs::UNION);
     bool diff = (g->meshCombine == Group::CombineAs::DIFFERENCE);
     bool intr = (g->meshCombine == Group::CombineAs::INTERSECTION);
-    bool asy  = (g->meshCombine == Group::CombineAs::ASSEMBLE);
+    bool asy = (g->meshCombine == Group::CombineAs::ASSEMBLE);
 
     Printf(false, " %Ftsolid model as");
     Printf(false,
@@ -538,7 +538,7 @@ list_items:
 void TextWindow::ScreenAllowRedundant(int link, uint32_t v) {
   SS.UndoRemember();
 
-  Group *g          = SK.GetGroup(SS.TW.shown.group);
+  Group *g = SK.GetGroup(SS.TW.shown.group);
   g->allowRedundant = true;
   SS.MarkGroupDirty(SS.TW.shown.group);
 
@@ -578,7 +578,7 @@ void TextWindow::ShowGroupSolveInfo() {
 
   for (int i = 0; i < g->solved.remove.n; i++) {
     hConstraint hc = g->solved.remove[i];
-    Constraint *c  = SK.constraint.FindByIdNoOops(hc);
+    Constraint *c = SK.constraint.FindByIdNoOops(hc);
     if (!c)
       continue;
 
@@ -624,7 +624,7 @@ void TextWindow::ScreenStepDimSteps(int link, uint32_t v) {
 }
 void TextWindow::ScreenStepDimGo(int link, uint32_t v) {
   hConstraint hc = SS.TW.shown.constraint;
-  Constraint *c  = SK.constraint.FindByIdNoOops(hc);
+  Constraint *c = SK.constraint.FindByIdNoOops(hc);
   if (c) {
     SS.UndoRemember();
 
@@ -647,7 +647,7 @@ void TextWindow::ScreenStepDimGo(int link, uint32_t v) {
         SS.TW.stepDim.step++;
 
         const int64_t STEP_MILLIS = 50;
-        int64_t       time        = GetMilliseconds();
+        int64_t time = GetMilliseconds();
         if (time - SS.TW.stepDim.time < STEP_MILLIS) {
           SS.TW.stepDim.timer->RunAfterNextFrame();
         } else {
@@ -752,7 +752,7 @@ void TextWindow::EditControlDone(std::string s) {
       }
 
       Group *g = SK.GetGroup(edit.group);
-      g->valA  = ev;
+      g->valA = ev;
 
       if (g->type == Group::Type::ROTATE) {
         // If the group does not contain any constraints, then
@@ -761,7 +761,7 @@ void TextWindow::EditControlDone(std::string s) {
         // already constrained, because that would break
         // convergence.
         if (g->GetNumConstraints() == 0) {
-          double copies                   = (g->skipFirst) ? (ev + 1) : ev;
+          double copies = (g->skipFirst) ? (ev + 1) : ev;
           SK.GetParam(g->h.param(3))->val = PI / (2 * copies);
         }
       }
@@ -777,7 +777,7 @@ void TextWindow::EditControlDone(std::string s) {
       SS.UndoRemember();
 
       Group *g = SK.GetGroup(edit.group);
-      g->name  = s;
+      g->name = s;
     }
     break;
 
@@ -797,8 +797,8 @@ void TextWindow::EditControlDone(std::string s) {
   case Edit::HELIX_PITCH: // stored in valB
     if (Expr *e = Expr::From(s, /*popUpError=*/true)) {
       double ev = e->Eval();
-      Group *g  = SK.GetGroup(edit.group);
-      g->valB   = ev * SS.MmPerUnit();
+      Group *g = SK.GetGroup(edit.group);
+      g->valB = ev * SS.MmPerUnit();
       SS.MarkGroupDirty(g->h);
     }
     break;
@@ -826,7 +826,7 @@ void TextWindow::EditControlDone(std::string s) {
       if (alpha < 0 || alpha > 1) {
         Error(_("Opacity must be between zero and one."));
       } else {
-        Group *g       = SK.GetGroup(edit.group);
+        Group *g = SK.GetGroup(edit.group);
         g->color.alpha = (int)(255.1f * alpha);
         SS.MarkGroupDirty(g->h);
         SS.GW.ClearSuper(5);

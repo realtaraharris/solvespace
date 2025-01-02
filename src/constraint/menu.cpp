@@ -95,24 +95,24 @@ hConstraint Constraint::AddConstraint(Constraint *c, bool rememberForUndo) {
 hConstraint Constraint::Constrain(Constraint::Type type, hEntity ptA, hEntity ptB, hEntity entityA,
                                   hEntity entityB, bool other, bool other2) {
   Constraint c = {};
-  c.group      = SS.GW.activeGroup;
-  c.workplane  = SS.GW.ActiveWorkplane();
-  c.type       = type;
-  c.ptA        = ptA;
-  c.ptB        = ptB;
-  c.entityA    = entityA;
-  c.entityB    = entityB;
-  c.other      = other;
-  c.other2     = other2;
+  c.group = SS.GW.activeGroup;
+  c.workplane = SS.GW.ActiveWorkplane();
+  c.type = type;
+  c.ptA = ptA;
+  c.ptB = ptB;
+  c.entityA = entityA;
+  c.entityB = entityB;
+  c.other = other;
+  c.other2 = other2;
   return AddConstraint(&c, /*rememberForUndo=*/false);
 }
 
 hConstraint Constraint::TryConstrain(Constraint::Type type, hEntity ptA, hEntity ptB,
                                      hEntity entityA, hEntity entityB, bool other, bool other2) {
-  int         rankBefore, rankAfter;
+  int rankBefore, rankAfter;
   SolveResult howBefore = SS.TestRankForGroup(SS.GW.activeGroup, &rankBefore);
-  hConstraint hc        = Constrain(type, ptA, ptB, entityA, entityB, other, other2);
-  SolveResult howAfter  = SS.TestRankForGroup(SS.GW.activeGroup, &rankAfter);
+  hConstraint hc = Constrain(type, ptA, ptB, entityA, entityB, other, other2);
+  SolveResult howAfter = SS.TestRankForGroup(SS.GW.activeGroup, &rankAfter);
   // There are two cases where the constraint is clearly redundant:
   //   * If the group wasn't overconstrained and now it is;
   //   * If the group was overconstrained, and adding the constraint doesn't change rank at all.
@@ -170,16 +170,16 @@ bool Constraint::ConstrainCurveCurveTangent(Constraint *c, Entity *eA, Entity *e
   Vector as = eA->EndpointStart(), af = eA->EndpointFinish(), bs = eB->EndpointStart(),
          bf = eB->EndpointFinish();
   if (as.Equals(bs)) {
-    c->other  = false;
+    c->other = false;
     c->other2 = false;
   } else if (as.Equals(bf)) {
-    c->other  = false;
+    c->other = false;
     c->other2 = true;
   } else if (af.Equals(bs)) {
-    c->other  = true;
+    c->other = true;
     c->other2 = false;
   } else if (af.Equals(bf)) {
-    c->other  = true;
+    c->other = true;
     c->other2 = true;
   } else {
     Error(_("The curves must share an endpoint. Constrain them "

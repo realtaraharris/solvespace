@@ -9,18 +9,18 @@
 #include "platform/EventHooks.h"
 
 void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
-  width            = 500;
-  height           = 500;
+  width = 500;
+  height = 500;
   devicePixelRatio = 1;
-  scale            = 5;
-  offset           = Vector::From(0, 0, 0);
-  projRight        = Vector::From(1, 0, 0);
-  projUp           = Vector::From(0, 1, 0);
+  scale = 5;
+  offset = Vector::From(0, 0, 0);
+  projRight = Vector::From(1, 0, 0);
+  projUp = Vector::From(0, 1, 0);
 
   // Make sure those are valid; could get a mouse move without a mouse
   // down if someone depresses the button, then drags into our window.
   orig.projRight = projRight;
-  orig.projUp    = projUp;
+  orig.projUp = projUp;
 
   // And with the last group active
   ssassert(!SK.groupOrder.IsEmpty(),
@@ -28,23 +28,23 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
   activeGroup = *SK.groupOrder.Last();
   SK.GetGroup(activeGroup)->Activate();
 
-  showWorkplanes      = false;
-  showNormals         = true;
-  showPoints          = true;
-  showConstruction    = true;
-  showConstraints     = true;
-  showShaded          = true;
-  showEdges           = true;
-  showMesh            = false;
-  showOutlines        = false;
-  showFacesDrawing    = false;
+  showWorkplanes = false;
+  showNormals = true;
+  showPoints = true;
+  showConstruction = true;
+  showConstraints = true;
+  showShaded = true;
+  showEdges = true;
+  showMesh = false;
+  showOutlines = false;
+  showFacesDrawing = false;
   showFacesNonDrawing = true;
-  drawOccludedAs      = DrawOccludedAs::INVISIBLE;
+  drawOccludedAs = DrawOccludedAs::INVISIBLE;
 
   showTextWindow = true;
 
-  showSnapGrid   = false;
-  dimSolidModel  = true;
+  showSnapGrid = false;
+  dimSolidModel = true;
   context.active = false;
 
   if (!window) {
@@ -54,14 +54,14 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
       // Do this first, so that if it causes an onRender event we don't try to paint without
       // a canvas.
       window->SetMinContentSize(720, /*ToolbarDrawOrHitTest 636*/ 32 * 18 + 3 * 16 + 8 + 4);
-      window->onClose       = std::bind(&SolveSpaceUI::MenuFile, Command::EXIT);
+      window->onClose = std::bind(&SolveSpaceUI::MenuFile, Command::EXIT);
       window->onContextLost = [&] {
-        canvas           = NULL;
+        canvas = NULL;
         persistentCanvas = NULL;
-        persistentDirty  = true;
+        persistentDirty = true;
       };
-      window->onRender      = std::bind(&GraphicsWindow::Paint, this);
-      window->onMouseEvent  = std::bind(&GraphicsWindow::MouseEvent, this, _1);
+      window->onRender = std::bind(&GraphicsWindow::Paint, this);
+      window->onMouseEvent = std::bind(&GraphicsWindow::MouseEvent, this, _1);
       window->onSixDofEvent = std::bind(&GraphicsWindow::SixDofEvent, this, _1);
       window->onEditingDone = std::bind(&GraphicsWindow::EditControlDone, this, _1);
       //          PopulateMainMenu();
@@ -72,7 +72,7 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
     canvas = CreateRenderer();
     if (canvas) {
       persistentCanvas = canvas->CreateBatch();
-      persistentDirty  = true;
+      persistentDirty = true;
     }
   }
 
@@ -84,20 +84,20 @@ void GraphicsWindow::AnimateOntoWorkplane() {
   if (!LockedInWorkplane())
     return;
 
-  Entity    *w     = SK.GetEntity(ActiveWorkplane());
+  Entity *w = SK.GetEntity(ActiveWorkplane());
   Quaternion quatf = w->Normal()->NormalGetNum();
 
   // Get Z pointing vertical, if we're on turntable nav mode:
   if (SS.turntableNav) {
     Vector normalRight = quatf.RotationU();
-    Vector normalUp    = quatf.RotationV();
-    Vector normal      = normalRight.Cross(normalUp);
+    Vector normalUp = quatf.RotationV();
+    Vector normal = normalRight.Cross(normalUp);
     if (normalRight.z != 0) {
       double theta = atan2(normalUp.z, normalRight.z);
       theta -= atan2(1, 0);
       normalRight = normalRight.RotatedAbout(normal, theta);
-      normalUp    = normalUp.RotatedAbout(normal, theta);
-      quatf       = Quaternion::From(normalRight, normalUp);
+      normalUp = normalUp.RotatedAbout(normal, theta);
+      quatf = Quaternion::From(normalRight, normalUp);
     }
   }
 
@@ -112,21 +112,21 @@ void GraphicsWindow::AnimateOntoWorkplane() {
 void GraphicsWindow::AnimateOnto(Quaternion quatf, Vector offsetf) {
   // TODO: add animation once the Haiku timer code is added; just skip the animation for now
   projRight = quatf.RotationU();
-  projUp    = quatf.RotationV();
-  offset    = offsetf;
+  projUp = quatf.RotationV();
+  offset = offsetf;
   //    window->Invalidate();
   return;
 
   // Get our initial orientation and translation.
-  Quaternion quat0   = Quaternion::From(projRight, projUp);
-  Vector     offset0 = offset;
+  Quaternion quat0 = Quaternion::From(projRight, projUp);
+  Vector offset0 = offset;
 
   // Make sure we take the shorter of the two possible paths.
   double mp = (quatf.Minus(quat0)).Magnitude();
   double mm = (quatf.Plus(quat0)).Magnitude();
   if (mp > mm) {
     quatf = quatf.ScaledBy(-1);
-    mp    = mm;
+    mp = mm;
   }
   double mo = (offset0.Minus(offsetf)).Magnitude() * scale;
 
@@ -148,16 +148,16 @@ void GraphicsWindow::AnimateOnto(Quaternion quatf, Vector offsetf) {
     if ((tn - t0) < dt) {
       animateTimer->RunAfterNextFrame();
 
-      double s        = (tn - t0) / ((double)dt);
-      offset          = (offset0.ScaledBy(1 - s)).Plus(offsetf.ScaledBy(s));
+      double s = (tn - t0) / ((double)dt);
+      offset = (offset0.ScaledBy(1 - s)).Plus(offsetf.ScaledBy(s));
       Quaternion quat = (dq.ToThe(s)).Times(quat0).WithMagnitude(1);
 
       projRight = quat.RotationU();
-      projUp    = quat.RotationV();
+      projUp = quat.RotationV();
     } else {
       projRight = quatf.RotationU();
-      projUp    = quatf.RotationV();
-      offset    = offsetf;
+      projUp = quatf.RotationV();
+      offset = offsetf;
     }
     window->Invalidate();
   };
@@ -179,9 +179,9 @@ void GraphicsWindow::HandlePointForZoomToFit(Vector p, Point2d *pmax, Point2d *p
   pmax->y = std::max(pmax->y, pp.y);
   pmin->x = std::min(pmin->x, pp.x);
   pmin->y = std::min(pmin->y, pp.y);
-  *wmin   = std::min(*wmin, w);
+  *wmin = std::min(*wmin, w);
 }
-void GraphicsWindow::LoopOverPoints(const std::vector<Entity *>     &entities,
+void GraphicsWindow::LoopOverPoints(const std::vector<Entity *> &entities,
                                     const std::vector<Constraint *> &constraints,
                                     const std::vector<hEntity> &faces, Point2d *pmax, Point2d *pmin,
                                     double *wmin, bool usePerspective, bool includeMesh,
@@ -195,8 +195,8 @@ void GraphicsWindow::LoopOverPoints(const std::vector<Entity *>     &entities,
       // but circles are particularly bad. We want to get things halfway
       // reasonable without the mesh, because a zoom to fit is used to
       // set the zoom level to set the chord tol.
-      double     r = e->CircleGetRadiusNum();
-      Vector     c = SK.GetEntity(e->point[0])->PointGetNum();
+      double r = e->CircleGetRadiusNum();
+      Vector c = SK.GetEntity(e->point[0])->PointGetNum();
       Quaternion q = SK.GetEntity(e->normal)->NormalGetNum();
       for (int j = 0; j < 4; j++) {
         Vector p = (j == 0)   ? (c.Plus(q.RotationU().ScaledBy(r)))
@@ -263,9 +263,9 @@ void GraphicsWindow::ZoomToFit(bool includingInvisibles, bool useSelection) {
 }
 double GraphicsWindow::ZoomToFit(const Camera &camera, bool includingInvisibles,
                                  bool useSelection) {
-  std::vector<Entity *>     entities;
+  std::vector<Entity *> entities;
   std::vector<Constraint *> constraints;
-  std::vector<hEntity>      faces;
+  std::vector<hEntity> faces;
 
   if (useSelection) {
     for (int i = 0; i < selection.n; i++) {
@@ -306,7 +306,7 @@ double GraphicsWindow::ZoomToFit(const Camera &camera, bool includingInvisibles,
 
   // On the first run, ignore perspective.
   Point2d pmax = {-1e12, -1e12}, pmin = {1e12, 1e12};
-  double  wmin = 1;
+  double wmin = 1;
   LoopOverPoints(entities, constraints, faces, &pmax, &pmin, &wmin,
                  /*usePerspective=*/false, /*includeMesh=*/!selectionUsed, camera);
 
@@ -336,7 +336,7 @@ double GraphicsWindow::ZoomToFit(const Camera &camera, bool includingInvisibles,
   pmax.y = -1e12;
   pmin.x = 1e12;
   pmin.y = 1e12;
-  wmin   = 1;
+  wmin = 1;
   LoopOverPoints(entities, constraints, faces, &pmax, &pmin, &wmin,
                  /*usePerspective=*/true, /*includeMesh=*/!selectionUsed, camera);
 
@@ -355,13 +355,13 @@ double GraphicsWindow::ZoomToFit(const Camera &camera, bool includingInvisibles,
 
 void GraphicsWindow::ZoomToMouse(double zoomMultiplyer) {
   double offsetRight = offset.Dot(projRight);
-  double offsetUp    = offset.Dot(projUp);
+  double offsetUp = offset.Dot(projUp);
 
   double width, height;
   window->GetContentSize(&width, &height);
 
   double righti = currentMousePosition.x / scale - offsetRight;
-  double upi    = currentMousePosition.y / scale - offsetUp;
+  double upi = currentMousePosition.y / scale - offsetUp;
 
   // zoomMultiplyer of 1 gives a default zoom factor of 1.2x: zoomMultiplyer * 1.2
   // zoom = adjusted zoom negative zoomMultiplyer will zoom out, positive will zoom in
@@ -370,7 +370,7 @@ void GraphicsWindow::ZoomToMouse(double zoomMultiplyer) {
   scale *= exp(0.1823216 * zoomMultiplyer); // ln(1.2) = 0.1823216
 
   double rightf = currentMousePosition.x / scale - offsetRight;
-  double upf    = currentMousePosition.y / scale - offsetUp;
+  double upf = currentMousePosition.y / scale - offsetUp;
 
   offset = offset.Plus(projRight.ScaledBy(rightf - righti));
   offset = offset.Plus(projUp.ScaledBy(upf - upi));
@@ -530,13 +530,13 @@ Vector GraphicsWindow::SnapToGrid(Vector p) {
     return p;
 
   Entity *wrkpl = SK.GetEntity(ActiveWorkplane()), *norm = wrkpl->Normal();
-  Vector  wo = SK.GetEntity(wrkpl->point[0])->PointGetNum(), wu = norm->NormalU(),
+  Vector wo = SK.GetEntity(wrkpl->point[0])->PointGetNum(), wu = norm->NormalU(),
          wv = norm->NormalV(), wn = norm->NormalN();
 
   Vector pp = (p.Minus(wo)).DotInToCsys(wu, wv, wn);
-  pp.x      = floor((pp.x / SS.gridSpacing) + 0.5) * SS.gridSpacing;
-  pp.y      = floor((pp.y / SS.gridSpacing) + 0.5) * SS.gridSpacing;
-  pp.z      = 0;
+  pp.x = floor((pp.x / SS.gridSpacing) + 0.5) * SS.gridSpacing;
+  pp.y = floor((pp.y / SS.gridSpacing) + 0.5) * SS.gridSpacing;
+  pp.z = 0;
 
   return pp.ScaleOutOfCsys(wu, wv, wn).Plus(wo);
 }

@@ -23,7 +23,7 @@
 #include <iostream>
 
 namespace SolveSpace {
-  typedef agg::pixfmt_bgra32                    pixel_format_type;
+  typedef agg::pixfmt_bgra32 pixel_format_type;
   typedef agg::renderer_base<pixel_format_type> renderer_base;
 
   AggRenderer::AggRenderer() {}
@@ -32,14 +32,14 @@ namespace SolveSpace {
     SurfaceRenderer::Clear();
 
     pixel_format_type pixf(buffer);
-    renderer_base     rb(pixf);
+    renderer_base rb(pixf);
     rb.clear(agg::rgba(0.0, 0.0, 0.0));
   }
 
   void AggRenderer::GetIdent(const char **vendor, const char **renderer, const char **version) {
-    *vendor   = "AGG";
+    *vendor = "AGG";
     *renderer = "AGG";
-    *version  = "2.4";
+    *version = "2.4";
   }
 
   void AggRenderer::FlushFrame() {
@@ -55,7 +55,7 @@ namespace SolveSpace {
     cameraMatrix = agg::trans_affine_translation(camera.width / 2.0, camera.height / 2.0);
 
     pixel_format_type pixf(buffer);
-    renderer_base     rb(pixf);
+    renderer_base rb(pixf);
 
     pf.reset();
   }
@@ -75,20 +75,20 @@ namespace SolveSpace {
   void AggRenderer::FinishPath() {}
 
   void AggRenderer::OutputBezier(const SBezier &b, hStroke hcs) {
-    Stroke   *stroke = strokes.FindById(hcs);
-    RgbaColor color  = stroke->color;
+    Stroke *stroke = strokes.FindById(hcs);
+    RgbaColor color = stroke->color;
 
     agg::rasterizer_scanline_aa<> pf;
-    agg::scanline_p8              sl;
+    agg::scanline_p8 sl;
 
-    typedef agg::pixfmt_bgra32                    pixel_format_type;
+    typedef agg::pixfmt_bgra32 pixel_format_type;
     typedef agg::renderer_base<pixel_format_type> renderer_base;
 
     typedef agg::renderer_scanline_aa_solid<renderer_base> renderer_scanline;
-    typedef agg::rasterizer_scanline_aa<>                  rasterizer_scanline;
+    typedef agg::rasterizer_scanline_aa<> rasterizer_scanline;
 
     pixel_format_type pixf(buffer);
-    renderer_base     rb(pixf);
+    renderer_base rb(pixf);
 
     double strokeWidth = stroke->WidthPx(camera);
 
@@ -99,7 +99,7 @@ namespace SolveSpace {
       std::vector<double> dashes = StipplePatternDashes(stroke->stipplePattern);
 
       if (dashes.size() == 0) { // no dashes
-        agg::path_storage                   ps;
+        agg::path_storage ps;
         agg::conv_stroke<agg::path_storage> stroke(ps);
         ps.move_to(b.ctrl[0].x, b.ctrl[0].y);
         ps.line_to(b.ctrl[1].x, b.ctrl[1].y);
@@ -109,13 +109,13 @@ namespace SolveSpace {
 
         pf.add_path(camtrans);
       } else {
-        agg::path_storage                         path;
+        agg::path_storage path;
         typedef agg::conv_dash<agg::path_storage> dash_t;
 
         dash_t dash(path);
 
         for (int i = 0, n = dashes.size(); i < n - 1; i += 2) {
-          double on  = dashes[i];
+          double on = dashes[i];
           double off = dashes[(i + 1) % n];
           dash.add_dash(on * 8, off * 8);
         }
@@ -149,19 +149,19 @@ namespace SolveSpace {
       pf.add_path(camtrans);
     } else if (b.deg == 3 && !b.IsRational()) {
       // TODO: are these defaults good?
-      double m_angle_tolerance     = 15;  // 0 - 90
+      double m_angle_tolerance = 15;      // 0 - 90
       double m_approximation_scale = 1.0; // 0.1 - 5
-      double m_cusp_limit          = 45;  // 0 - 90
-      double m_width               = 4.0; // -50 - 100
+      double m_cusp_limit = 45;           // 0 - 90
+      double m_width = 4.0;               // -50 - 100
 
       int m_curve_type = 1; // 0 is incremental, 1 is subdivision
-      int m_case_type  = 0; // cases 0 - 8
+      int m_case_type = 0;  // cases 0 - 8
       int m_inner_join = 0; // "Inner Bevel", "Inner Miter", "Inner Jag", "Inner Round"
       int m_line_join =
           0;              // "Miter Join", "Miter Revert", "Round Join", "Bevel Join", "Miter Round"
       int m_line_cap = 2; // "Butt Cap", "Square Cap", "Round Cap"
 
-      bool m_show_points  = true;
+      bool m_show_points = true;
       bool m_show_outline = false;
 
       agg::ellipse e1;
@@ -206,13 +206,13 @@ namespace SolveSpace {
   }
 
   void AggRenderer::OutputTriangle(const STriangle &tr) {
-    agg::rasterizer_scanline_aa<>                 ras;
-    agg::scanline_p8                              sl;
-    typedef agg::pixfmt_bgra32                    pixel_format_type;
+    agg::rasterizer_scanline_aa<> ras;
+    agg::scanline_p8 sl;
+    typedef agg::pixfmt_bgra32 pixel_format_type;
     typedef agg::renderer_base<pixel_format_type> renderer_base;
 
     pixel_format_type pixf(buffer);
-    renderer_base     rb(pixf);
+    renderer_base rb(pixf);
 
     RgbaColor color = tr.meta.color;
 
@@ -226,7 +226,7 @@ namespace SolveSpace {
     ras.add_path(camtrans);
     agg::rgba tcolor = agg::rgba(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 
-    agg::conv_stroke<agg::path_storage>                      stroke(ps);
+    agg::conv_stroke<agg::path_storage> stroke(ps);
     agg::conv_transform<agg::conv_stroke<agg::path_storage>> camtransstroke(stroke, cameraMatrix);
     ras.add_path(camtransstroke);
     agg::render_scanlines_aa_solid(ras, sl, rb, tcolor);
@@ -235,12 +235,12 @@ namespace SolveSpace {
   void AggPixmapRenderer::Init(bool standalone) {
     Clear();
 
-    pixmap         = std::make_shared<Pixmap>();
+    pixmap = std::make_shared<Pixmap>();
     pixmap->format = Pixmap::Format::BGRA;
-    pixmap->width  = (size_t)camera.width;
+    pixmap->width = (size_t)camera.width;
     pixmap->height = (size_t)camera.height;
     pixmap->stride = 32 * camera.width; // TODO: remove hardcoded value
-    pixmap->data   = std::vector<uint8_t>(pixmap->stride * pixmap->height);
+    pixmap->data = std::vector<uint8_t>(pixmap->stride * pixmap->height);
 
     if (standalone) {
       buffer.attach(pixmap->data.data(), pixmap->width, pixmap->height, pixmap->stride);

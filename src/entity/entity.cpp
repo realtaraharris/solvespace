@@ -10,7 +10,7 @@
 #include "bandedmatrix.h"
 
 const hEntity Entity::FREE_IN_3D = {0};
-const hEntity Entity::NO_ENTITY  = {0};
+const hEntity Entity::NO_ENTITY = {0};
 
 bool Entity::HasVector() const {
   switch (type) {
@@ -44,7 +44,7 @@ ExprVector Entity::VectorGetExprsInWorkplane(hEntity wrkpl) const {
       return ev;
     }
     // Get the offset and basis vectors for this weird exotic csys.
-    Entity    *w  = SK.GetEntity(wrkpl);
+    Entity *w = SK.GetEntity(wrkpl);
     ExprVector wu = w->Normal()->NormalExprsU();
     ExprVector wv = w->Normal()->NormalExprsV();
 
@@ -132,7 +132,7 @@ double Entity::CircleGetRadiusNum() const {
   if (type == Type::CIRCLE) {
     return SK.GetEntity(distance)->DistanceGetNum();
   } else if (type == Type::ARC_OF_CIRCLE) {
-    Vector c  = SK.GetEntity(point[0])->PointGetNum();
+    Vector c = SK.GetEntity(point[0])->PointGetNum();
     Vector pa = SK.GetEntity(point[1])->PointGetNum();
     return (pa.Minus(c)).Magnitude();
   } else
@@ -143,13 +143,13 @@ void Entity::ArcGetAngles(double *thetaa, double *thetab, double *dtheta) const 
   ssassert(type == Type::ARC_OF_CIRCLE, "Unexpected entity type");
 
   Quaternion q = Normal()->NormalGetNum();
-  Vector     u = q.RotationU(), v = q.RotationV();
+  Vector u = q.RotationU(), v = q.RotationV();
 
-  Vector c  = SK.GetEntity(point[0])->PointGetNum();
+  Vector c = SK.GetEntity(point[0])->PointGetNum();
   Vector pa = SK.GetEntity(point[1])->PointGetNum();
   Vector pb = SK.GetEntity(point[2])->PointGetNum();
 
-  Point2d c2  = c.Project2d(u, v);
+  Point2d c2 = c.Project2d(u, v);
   Point2d pa2 = (pa.Project2d(u, v)).Minus(c2);
   Point2d pb2 = (pb.Project2d(u, v)).Minus(c2);
 
@@ -171,12 +171,12 @@ Vector Entity::CubicGetFinishNum() const {
   return SK.GetEntity(point[3 + extraPoints])->PointGetNum();
 }
 ExprVector Entity::CubicGetStartTangentExprs() const {
-  ExprVector pon  = SK.GetEntity(point[0])->PointGetExprs(),
+  ExprVector pon = SK.GetEntity(point[0])->PointGetExprs(),
              poff = SK.GetEntity(point[1])->PointGetExprs();
   return (pon.Minus(poff));
 }
 ExprVector Entity::CubicGetFinishTangentExprs() const {
-  ExprVector pon  = SK.GetEntity(point[3 + extraPoints])->PointGetExprs(),
+  ExprVector pon = SK.GetEntity(point[3 + extraPoints])->PointGetExprs(),
              poff = SK.GetEntity(point[2 + extraPoints])->PointGetExprs();
   return (pon.Minus(poff));
 }
@@ -185,7 +185,7 @@ Vector Entity::CubicGetStartTangentNum() const {
   return (pon.Minus(poff));
 }
 Vector Entity::CubicGetFinishTangentNum() const {
-  Vector pon  = SK.GetEntity(point[3 + extraPoints])->PointGetNum(),
+  Vector pon = SK.GetEntity(point[3 + extraPoints])->PointGetNum(),
          poff = SK.GetEntity(point[2 + extraPoints])->PointGetNum();
   return (pon.Minus(poff));
 }
@@ -280,8 +280,8 @@ Quaternion Entity::NormalGetNum() const {
 
   case Type::NORMAL_IN_2D: {
     Entity *wrkpl = SK.GetEntity(workplane);
-    Entity *norm  = SK.GetEntity(wrkpl->normal);
-    q             = norm->NormalGetNum();
+    Entity *norm = SK.GetEntity(wrkpl->normal);
+    q = norm->NormalGetNum();
     break;
   }
   case Type::NORMAL_N_COPY: q = numNormal; break;
@@ -360,15 +360,15 @@ ExprQuaternion Entity::NormalGetExprs() const {
 
   case Type::NORMAL_IN_2D: {
     Entity *wrkpl = SK.GetEntity(workplane);
-    Entity *norm  = SK.GetEntity(wrkpl->normal);
-    q             = norm->NormalGetExprs();
+    Entity *norm = SK.GetEntity(wrkpl->normal);
+    q = norm->NormalGetExprs();
     break;
   }
   case Type::NORMAL_N_COPY: q = ExprQuaternion::From(numNormal); break;
 
   case Type::NORMAL_N_ROT: {
     ExprQuaternion orig = ExprQuaternion::From(numNormal);
-    q                   = ExprQuaternion::From(param[0], param[1], param[2], param[3]);
+    q = ExprQuaternion::From(param[0], param[1], param[2], param[3]);
 
     q = q.Times(orig);
     break;
@@ -376,8 +376,8 @@ ExprQuaternion Entity::NormalGetExprs() const {
 
   case Type::NORMAL_N_ROT_AA: {
     ExprQuaternion orig = ExprQuaternion::From(numNormal);
-    q                   = GetAxisAngleQuaternionExprs(0);
-    q                   = q.Times(orig);
+    q = GetAxisAngleQuaternionExprs(0);
+    q = q.Times(orig);
     break;
   }
 
@@ -412,8 +412,8 @@ void Entity::PointForceTo(Vector p) {
     break;
 
   case Type::POINT_IN_2D: {
-    Entity *c                  = SK.GetEntity(workplane);
-    p                          = p.Minus(c->WorkplaneGetOffset());
+    Entity *c = SK.GetEntity(workplane);
+    p = p.Minus(c->WorkplaneGetOffset());
     SK.GetParam(param[0])->val = p.Dot(c->Normal()->NormalU());
     SK.GetParam(param[1])->val = p.Dot(c->Normal()->NormalV());
     break;
@@ -422,7 +422,7 @@ void Entity::PointForceTo(Vector p) {
   case Type::POINT_N_TRANS: {
     if (timesApplied == 0)
       break;
-    Vector trans               = (p.Minus(numPoint)).ScaledBy(1.0 / timesApplied);
+    Vector trans = (p.Minus(numPoint)).ScaledBy(1.0 / timesApplied);
     SK.GetParam(param[0])->val = trans.x;
     SK.GetParam(param[1])->val = trans.y;
     SK.GetParam(param[2])->val = trans.z;
@@ -433,7 +433,7 @@ void Entity::PointForceTo(Vector p) {
     // Force only the translation; leave the rotation unchanged. But
     // remember that we're working with respect to the rotated
     // point.
-    Vector trans               = p.Minus(PointGetQuaternion().Rotate(numPoint));
+    Vector trans = p.Minus(PointGetQuaternion().Rotate(numPoint));
     SK.GetParam(param[0])->val = trans.x;
     SK.GetParam(param[1])->val = trans.y;
     SK.GetParam(param[2])->val = trans.z;
@@ -468,9 +468,9 @@ void Entity::PointForceTo(Vector p) {
     // is the point on the rotation axis?
     Vector offset = VectorFromH(param[0], param[1], param[2]);
     Vector normal = VectorFromH(param[4], param[5], param[6]).WithMagnitude(1.0);
-    Vector check  = numPoint.Minus(offset).Cross(normal);
+    Vector check = numPoint.Minus(offset).Cross(normal);
     if (check.Dot(check) < LENGTH_EPS) { // if so, do extrusion style drag
-      Vector trans               = (p.Minus(numPoint));
+      Vector trans = (p.Minus(numPoint));
       SK.GetParam(param[7])->val = trans.Dot(normal) / timesApplied;
     } else { // otherwise do rotation style
       Vector u = normal.Normal(0), v = normal.Normal(1);
@@ -507,46 +507,46 @@ Vector Entity::PointGetNum() const {
 
   case Type::POINT_IN_2D: {
     Entity *c = SK.GetEntity(workplane);
-    Vector  u = c->Normal()->NormalU();
-    Vector  v = c->Normal()->NormalV();
-    p         = u.ScaledBy(SK.GetParam(param[0])->val);
-    p         = p.Plus(v.ScaledBy(SK.GetParam(param[1])->val));
-    p         = p.Plus(c->WorkplaneGetOffset());
+    Vector u = c->Normal()->NormalU();
+    Vector v = c->Normal()->NormalV();
+    p = u.ScaledBy(SK.GetParam(param[0])->val);
+    p = p.Plus(v.ScaledBy(SK.GetParam(param[1])->val));
+    p = p.Plus(c->WorkplaneGetOffset());
     break;
   }
 
   case Type::POINT_N_TRANS: {
     Vector trans = VectorFromH(param[0], param[1], param[2]);
-    p            = numPoint.Plus(trans.ScaledBy(timesApplied));
+    p = numPoint.Plus(trans.ScaledBy(timesApplied));
     break;
   }
 
   case Type::POINT_N_ROT_TRANS: {
-    Vector     offset = VectorFromH(param[0], param[1], param[2]);
-    Quaternion q      = PointGetQuaternion();
-    p                 = q.Rotate(numPoint);
-    p                 = p.Plus(offset);
+    Vector offset = VectorFromH(param[0], param[1], param[2]);
+    Quaternion q = PointGetQuaternion();
+    p = q.Rotate(numPoint);
+    p = p.Plus(offset);
     break;
   }
 
   case Type::POINT_N_ROT_AA: {
-    Vector     offset = VectorFromH(param[0], param[1], param[2]);
-    Quaternion q      = PointGetQuaternion();
-    p                 = numPoint.Minus(offset);
-    p                 = q.Rotate(p);
-    p                 = p.Plus(offset);
+    Vector offset = VectorFromH(param[0], param[1], param[2]);
+    Quaternion q = PointGetQuaternion();
+    p = numPoint.Minus(offset);
+    p = q.Rotate(p);
+    p = p.Plus(offset);
     break;
   }
 
   case Type::POINT_N_ROT_AXIS_TRANS: {
-    Vector offset   = VectorFromH(param[0], param[1], param[2]);
+    Vector offset = VectorFromH(param[0], param[1], param[2]);
     Vector displace = VectorFromH(param[4], param[5], param[6])
                           .WithMagnitude(SK.GetParam(param[7])->val)
                           .ScaledBy(timesApplied);
     Quaternion q = PointGetQuaternion();
-    p            = numPoint.Minus(offset);
-    p            = q.Rotate(p);
-    p            = p.Plus(offset).Plus(displace);
+    p = numPoint.Minus(offset);
+    p = q.Rotate(p);
+    p = p.Plus(offset).Plus(displace);
     break;
   }
 
@@ -563,49 +563,49 @@ ExprVector Entity::PointGetExprs() const {
   case Type::POINT_IN_3D: r = ExprVector::From(param[0], param[1], param[2]); break;
 
   case Type::POINT_IN_2D: {
-    Entity    *c = SK.GetEntity(workplane);
+    Entity *c = SK.GetEntity(workplane);
     ExprVector u = c->Normal()->NormalExprsU();
     ExprVector v = c->Normal()->NormalExprsV();
-    r            = c->WorkplaneGetOffsetExprs();
-    r            = r.Plus(u.ScaledBy(Expr::From(param[0])));
-    r            = r.Plus(v.ScaledBy(Expr::From(param[1])));
+    r = c->WorkplaneGetOffsetExprs();
+    r = r.Plus(u.ScaledBy(Expr::From(param[0])));
+    r = r.Plus(v.ScaledBy(Expr::From(param[1])));
     break;
   }
   case Type::POINT_N_TRANS: {
-    ExprVector orig  = ExprVector::From(numPoint);
+    ExprVector orig = ExprVector::From(numPoint);
     ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
-    r                = orig.Plus(trans.ScaledBy(Expr::From(timesApplied)));
+    r = orig.Plus(trans.ScaledBy(Expr::From(timesApplied)));
     break;
   }
   case Type::POINT_N_ROT_TRANS: {
-    ExprVector     orig  = ExprVector::From(numPoint);
-    ExprVector     trans = ExprVector::From(param[0], param[1], param[2]);
-    ExprQuaternion q     = ExprQuaternion::From(param[3], param[4], param[5], param[6]);
-    orig                 = q.Rotate(orig);
-    r                    = orig.Plus(trans);
+    ExprVector orig = ExprVector::From(numPoint);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
+    ExprQuaternion q = ExprQuaternion::From(param[3], param[4], param[5], param[6]);
+    orig = q.Rotate(orig);
+    r = orig.Plus(trans);
     break;
   }
   case Type::POINT_N_ROT_AA: {
-    ExprVector     orig  = ExprVector::From(numPoint);
-    ExprVector     trans = ExprVector::From(param[0], param[1], param[2]);
-    ExprQuaternion q     = GetAxisAngleQuaternionExprs(3);
-    orig                 = orig.Minus(trans);
-    orig                 = q.Rotate(orig);
-    r                    = orig.Plus(trans);
+    ExprVector orig = ExprVector::From(numPoint);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
+    ExprQuaternion q = GetAxisAngleQuaternionExprs(3);
+    orig = orig.Minus(trans);
+    orig = q.Rotate(orig);
+    r = orig.Plus(trans);
     break;
   }
   case Type::POINT_N_ROT_AXIS_TRANS: {
-    ExprVector orig     = ExprVector::From(numPoint);
-    ExprVector trans    = ExprVector::From(param[0], param[1], param[2]);
+    ExprVector orig = ExprVector::From(numPoint);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
     ExprVector displace = ExprVector::From(param[4], param[5], param[6])
                               .WithMagnitude(Expr::From(1.0))
                               .ScaledBy(Expr::From(timesApplied))
                               .ScaledBy(Expr::From(param[7]));
 
     ExprQuaternion q = GetAxisAngleQuaternionExprs(3);
-    orig             = orig.Minus(trans);
-    orig             = q.Rotate(orig);
-    r                = orig.Plus(trans).Plus(displace);
+    orig = orig.Minus(trans);
+    orig = q.Rotate(orig);
+    r = orig.Plus(trans).Plus(displace);
     break;
   }
   case Type::POINT_N_COPY: r = ExprVector::From(numPoint); break;
@@ -623,7 +623,7 @@ void Entity::PointGetExprsInWorkplane(hEntity wrkpl, Expr **u, Expr **v) const {
     *v = Expr::From(param[1]);
   } else {
     // Get the offset and basis vectors for this weird exotic csys.
-    Entity    *w  = SK.GetEntity(wrkpl);
+    Entity *w = SK.GetEntity(wrkpl);
     ExprVector wp = w->WorkplaneGetOffsetExprs();
     ExprVector wu = w->Normal()->NormalExprsU();
     ExprVector wv = w->Normal()->NormalExprsV();
@@ -631,9 +631,9 @@ void Entity::PointGetExprsInWorkplane(hEntity wrkpl, Expr **u, Expr **v) const {
     // Get our coordinates in three-space, and project them into that
     // coordinate system.
     ExprVector ev = PointGetExprs();
-    ev            = ev.Minus(wp);
-    *u            = ev.Dot(wu);
-    *v            = ev.Dot(wv);
+    ev = ev.Minus(wp);
+    *u = ev.Dot(wu);
+    *v = ev.Dot(wv);
   }
 }
 
@@ -659,9 +659,9 @@ void Entity::PointForceQuaternionTo(Quaternion q) {
 
 Quaternion Entity::GetAxisAngleQuaternion(int param0) const {
   Quaternion q;
-  double     theta = timesApplied * SK.GetParam(param[param0 + 0])->val;
-  double     s = sin(theta), c = cos(theta);
-  q.w  = c;
+  double theta = timesApplied * SK.GetParam(param[param0 + 0])->val;
+  double s = sin(theta), c = cos(theta);
+  q.w = c;
   q.vx = s * SK.GetParam(param[param0 + 1])->val;
   q.vy = s * SK.GetParam(param[param0 + 2])->val;
   q.vz = s * SK.GetParam(param[param0 + 3])->val;
@@ -673,7 +673,7 @@ ExprQuaternion Entity::GetAxisAngleQuaternionExprs(int param0) const {
 
   Expr *theta = Expr::From(timesApplied)->Times(Expr::From(param[param0 + 0]));
   Expr *c = theta->Cos(), *s = theta->Sin();
-  q.w  = c;
+  q.w = c;
   q.vx = s->Times(Expr::From(param[param0 + 1]));
   q.vy = s->Times(Expr::From(param[param0 + 2]));
   q.vz = s->Times(Expr::From(param[param0 + 3]));
@@ -710,25 +710,25 @@ ExprVector Entity::FaceGetNormalExprs() const {
   ExprVector r;
   if (type == Type::FACE_NORMAL_PT) {
     Vector v = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
-    r        = ExprVector::From(v.WithMagnitude(1));
+    r = ExprVector::From(v.WithMagnitude(1));
   } else if (type == Type::FACE_XPROD) {
     ExprVector vc = ExprVector::From(param[0], param[1], param[2]);
     ExprVector vn = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
-    r             = vc.Cross(vn);
-    r             = r.WithMagnitude(Expr::From(1.0));
+    r = vc.Cross(vn);
+    r = r.WithMagnitude(Expr::From(1.0));
   } else if (type == Type::FACE_N_ROT_TRANS) {
     // The numerical normal vector gets the rotation; the numerical
     // normal has magnitude one, and the rotation doesn't change that,
     // so there's no need to fix it up.
-    r                = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
+    r = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
     ExprQuaternion q = ExprQuaternion::From(param[3], param[4], param[5], param[6]);
-    r                = q.Rotate(r);
+    r = q.Rotate(r);
   } else if (type == Type::FACE_N_TRANS) {
     r = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
   } else if ((type == Type::FACE_N_ROT_AA) || (type == Type::FACE_ROT_NORMAL_PT)) {
-    r                = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
+    r = ExprVector::From(numNormal.vx, numNormal.vy, numNormal.vz);
     ExprQuaternion q = GetAxisAngleQuaternionExprs(3);
-    r                = q.Rotate(r);
+    r = q.Rotate(r);
   } else
     ssassert(false, "Unexpected entity type");
   return r;
@@ -741,18 +741,18 @@ Vector Entity::FaceGetNormalNum() const {
   } else if (type == Type::FACE_XPROD) {
     Vector vc = VectorFromH(param[0], param[1], param[2]);
     Vector vn = Vector(numNormal.vx, numNormal.vy, numNormal.vz);
-    r         = vc.Cross(vn);
+    r = vc.Cross(vn);
   } else if (type == Type::FACE_N_ROT_TRANS) {
     // The numerical normal vector gets the rotation
-    r            = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
+    r = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
     Quaternion q = Quaternion::From(param[3], param[4], param[5], param[6]);
-    r            = q.Rotate(r);
+    r = q.Rotate(r);
   } else if (type == Type::FACE_N_TRANS) {
     r = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
   } else if ((type == Type::FACE_N_ROT_AA) || (type == Type::FACE_ROT_NORMAL_PT)) {
-    r            = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
+    r = Vector::From(numNormal.vx, numNormal.vy, numNormal.vz);
     Quaternion q = GetAxisAngleQuaternion(3);
-    r            = q.Rotate(r);
+    r = q.Rotate(r);
   } else
     ssassert(false, "Unexpected entity type");
   return r.WithMagnitude(1);
@@ -766,32 +766,32 @@ ExprVector Entity::FaceGetPointExprs() const {
     r = ExprVector::From(numPoint);
   } else if (type == Type::FACE_N_ROT_TRANS) {
     // The numerical point gets the rotation and translation.
-    ExprVector     trans = ExprVector::From(param[0], param[1], param[2]);
-    ExprQuaternion q     = ExprQuaternion::From(param[3], param[4], param[5], param[6]);
-    r                    = ExprVector::From(numPoint);
-    r                    = q.Rotate(r);
-    r                    = r.Plus(trans);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
+    ExprQuaternion q = ExprQuaternion::From(param[3], param[4], param[5], param[6]);
+    r = ExprVector::From(numPoint);
+    r = q.Rotate(r);
+    r = r.Plus(trans);
   } else if (type == Type::FACE_N_ROT_AXIS_TRANS) {
-    ExprVector orig     = ExprVector::From(numPoint);
-    ExprVector trans    = ExprVector::From(param[0], param[1], param[2]);
+    ExprVector orig = ExprVector::From(numPoint);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
     ExprVector displace = ExprVector::From(param[4], param[5], param[6])
                               .WithMagnitude(Expr::From(param[7]))
                               .ScaledBy(Expr::From(timesApplied));
     ExprQuaternion q = GetAxisAngleQuaternionExprs(3);
-    orig             = orig.Minus(trans);
-    orig             = q.Rotate(orig);
-    r                = orig.Plus(trans).Plus(displace);
+    orig = orig.Minus(trans);
+    orig = q.Rotate(orig);
+    r = orig.Plus(trans).Plus(displace);
   } else if (type == Type::FACE_N_TRANS) {
     ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
-    r                = ExprVector::From(numPoint);
-    r                = r.Plus(trans.ScaledBy(Expr::From(timesApplied)));
+    r = ExprVector::From(numPoint);
+    r = r.Plus(trans.ScaledBy(Expr::From(timesApplied)));
   } else if (type == Type::FACE_N_ROT_AA) {
-    ExprVector     trans = ExprVector::From(param[0], param[1], param[2]);
-    ExprQuaternion q     = GetAxisAngleQuaternionExprs(3);
-    r                    = ExprVector::From(numPoint);
-    r                    = r.Minus(trans);
-    r                    = q.Rotate(r);
-    r                    = r.Plus(trans);
+    ExprVector trans = ExprVector::From(param[0], param[1], param[2]);
+    ExprQuaternion q = GetAxisAngleQuaternionExprs(3);
+    r = ExprVector::From(numPoint);
+    r = r.Minus(trans);
+    r = q.Rotate(r);
+    r = r.Plus(trans);
   } else
     ssassert(false, "Unexpected entity type");
   return r;
@@ -805,28 +805,28 @@ Vector Entity::FaceGetPointNum() const {
     r = numPoint;
   } else if (type == Type::FACE_N_ROT_TRANS) {
     // The numerical point gets the rotation and translation.
-    Vector     trans = VectorFromH(param[0], param[1], param[2]);
-    Quaternion q     = Quaternion::From(param[3], param[4], param[5], param[6]);
-    r                = q.Rotate(numPoint);
-    r                = r.Plus(trans);
+    Vector trans = VectorFromH(param[0], param[1], param[2]);
+    Quaternion q = Quaternion::From(param[3], param[4], param[5], param[6]);
+    r = q.Rotate(numPoint);
+    r = r.Plus(trans);
   } else if (type == Type::FACE_N_ROT_AXIS_TRANS) {
-    Vector offset   = VectorFromH(param[0], param[1], param[2]);
+    Vector offset = VectorFromH(param[0], param[1], param[2]);
     Vector displace = VectorFromH(param[4], param[5], param[6])
                           .WithMagnitude(SK.GetParam(param[7])->val)
                           .ScaledBy(timesApplied);
     Quaternion q = PointGetQuaternion();
-    r            = numPoint.Minus(offset);
-    r            = q.Rotate(r);
-    r            = r.Plus(offset).Plus(displace);
+    r = numPoint.Minus(offset);
+    r = q.Rotate(r);
+    r = r.Plus(offset).Plus(displace);
   } else if (type == Type::FACE_N_TRANS) {
     Vector trans = VectorFromH(param[0], param[1], param[2]);
-    r            = numPoint.Plus(trans.ScaledBy(timesApplied));
+    r = numPoint.Plus(trans.ScaledBy(timesApplied));
   } else if (type == Type::FACE_N_ROT_AA) {
-    Vector     trans = VectorFromH(param[0], param[1], param[2]);
-    Quaternion q     = GetAxisAngleQuaternion(3);
-    r                = numPoint.Minus(trans);
-    r                = q.Rotate(r);
-    r                = r.Plus(trans);
+    Vector trans = VectorFromH(param[0], param[1], param[2]);
+    Quaternion q = GetAxisAngleQuaternion(3);
+    r = numPoint.Minus(trans);
+    r = q.Rotate(r);
+    r = r.Plus(trans);
   } else
     ssassert(false, "Unexpected entity type");
   return r;
@@ -867,8 +867,8 @@ bool Entity::IsInPlane(Vector norm, double distance) const {
   case Type::CUBIC:
   case Type::CUBIC_PERIODIC: {
     bool periodic = type == Type::CUBIC_PERIODIC;
-    int  n        = periodic ? 3 + extraPoints : extraPoints;
-    int  i;
+    int n = periodic ? 3 + extraPoints : extraPoints;
+    int i;
     for (i = 0; i < n; i++) {
       if (!PointInPlane(point[i], norm, distance))
         return false;
@@ -960,8 +960,8 @@ void Entity::GenerateEquations(IdList<Equation, hEquation> *l) const {
   case Type::TTF_TEXT: {
     if (SK.GetEntity(point[0])->type != Type::POINT_IN_2D)
       break;
-    Entity    *b  = SK.GetEntity(point[2]);
-    Entity    *c  = SK.GetEntity(point[3]);
+    Entity *b = SK.GetEntity(point[2]);
+    Entity *c = SK.GetEntity(point[3]);
     ExprVector eb = b->PointGetExprsInWorkplane(workplane);
     ExprVector ec = c->PointGetExprsInWorkplane(workplane);
 
@@ -1046,13 +1046,13 @@ BBox Entity::GetOrGenerateScreenBBox(bool *hasBBox) {
 
   if (IsPoint()) {
     Vector proj = SS.GW.ProjectPoint3(PointGetNum());
-    screenBBox  = BBox::From(proj, proj);
+    screenBBox = BBox::From(proj, proj);
   } else if (IsNormal()) {
     Vector proj = SS.GW.ProjectPoint3(SK.GetEntity(point[0])->PointGetNum());
-    screenBBox  = BBox::From(proj, proj);
+    screenBBox = BBox::From(proj, proj);
   } else if (!sbl->l.IsEmpty()) {
     Vector first = SS.GW.ProjectPoint3(sbl->l[0].ctrl[0]);
-    screenBBox   = BBox::From(first, first);
+    screenBBox = BBox::From(first, first);
     for (auto &sb : sbl->l) {
       for (int i = 0; i <= sb.deg; ++i) {
         screenBBox.Include(SS.GW.ProjectPoint3(sb.ctrl[i]));
@@ -1111,9 +1111,9 @@ int Entity::GetPositionOfPoint(const Camera &camera, Point2d p) {
   int position;
 
   ObjectPicker canvas = {};
-  canvas.camera       = camera;
-  canvas.point        = p;
-  canvas.minDistance  = 1e12;
+  canvas.camera = camera;
+  canvas.point = p;
+  canvas.minDistance = 1e12;
   Draw(DrawAs::DEFAULT, &canvas);
   position = canvas.position;
   canvas.Clear();
@@ -1198,8 +1198,8 @@ void Entity::CalculateNumerical(bool forExport) {
     actDistance = DistanceGetNum();
   }
   if (IsFace()) {
-    actPoint  = FaceGetPointNum();
-    Vector n  = FaceGetNormalNum();
+    actPoint = FaceGetPointNum();
+    Vector n = FaceGetNormalNum();
     actNormal = Quaternion::From(0, n.x, n.y, n.z);
   }
   if (forExport) {
@@ -1218,7 +1218,7 @@ void Entity::CalculateNumerical(bool forExport) {
 //-----------------------------------------------------------------------------
 void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
   static const int MAX_N = BandedMatrix::MAX_UNKNOWNS;
-  int              ep    = extraPoints;
+  int ep = extraPoints;
 
   // The number of unknowns to solve for.
   int n = periodic ? 3 + ep : ep;
@@ -1239,9 +1239,9 @@ void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
     }
     pt[i++] = SK.GetEntity(point[0])->PointGetNum();
   } else {
-    ctrl_s  = SK.GetEntity(point[1])->PointGetNum();
-    ctrl_f  = SK.GetEntity(point[ep + 2])->PointGetNum();
-    j       = 0;
+    ctrl_s = SK.GetEntity(point[1])->PointGetNum();
+    ctrl_f = SK.GetEntity(point[ep + 2])->PointGetNum();
+    j = 0;
     pt[j++] = SK.GetEntity(point[0])->PointGetNum();
     for (i = 2; i <= ep + 1; i++) {
       pt[j++] = SK.GetEntity(point[i])->PointGetNum();
@@ -1258,7 +1258,7 @@ void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
   //    f''(1) = 6*(P3 - 2*P2 + P1)
   for (a = 0; a < 3; a++) {
     BandedMatrix bm = {};
-    bm.n            = n;
+    bm.n = n;
 
     for (i = 0; i < n; i++) {
       int im, it, ip;
@@ -1303,7 +1303,7 @@ void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
       if (periodic) {
         bm.A[i][WRAP(i - 2, n)] = eq.x;
         bm.A[i][WRAP(i - 1, n)] = eq.y;
-        bm.A[i][i]              = eq.z;
+        bm.A[i][i] = eq.z;
       } else {
         // The wrapping would work, except when n = 1 and everything
         // wraps to zero...
@@ -1324,9 +1324,9 @@ void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
   for (i = 0; i < pts - 1; i++) {
     Vector p0, p1, p2, p3;
     if (periodic) {
-      p0     = pt[i];
+      p0 = pt[i];
       int iw = WRAP(i - 1, n);
-      p1     = p0.Plus(Vector::From(Xx[iw], Xy[iw], Xz[iw]));
+      p1 = p0.Plus(Vector::From(Xx[iw], Xy[iw], Xz[iw]));
     } else if (i == 0) {
       p0 = pt[0];
       p1 = ctrl_s;
@@ -1335,9 +1335,9 @@ void Entity::ComputeInterpolatingSpline(SBezierList *sbl, bool periodic) const {
       p1 = p0.Plus(Vector::From(Xx[i - 1], Xy[i - 1], Xz[i - 1]));
     }
     if (periodic) {
-      p3     = pt[i + 1];
+      p3 = pt[i + 1];
       int iw = WRAP(i, n);
-      p2     = p3.Minus(Vector::From(Xx[iw], Xy[iw], Xz[iw]));
+      p2 = p3.Minus(Vector::From(Xx[iw], Xy[iw], Xz[iw]));
     } else if (i == (pts - 2)) {
       p3 = pt[pts - 1];
       p2 = ctrl_f;
@@ -1357,9 +1357,9 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
 
   switch (type) {
   case Type::LINE_SEGMENT: {
-    Vector a  = SK.GetEntity(point[0])->PointGetNum();
-    Vector b  = SK.GetEntity(point[1])->PointGetNum();
-    sb        = SBezier::From(a, b);
+    Vector a = SK.GetEntity(point[0])->PointGetNum();
+    Vector b = SK.GetEntity(point[1])->PointGetNum();
+    sb = SBezier::From(a, b);
     sb.entity = h.v;
     sbl->l.Add(&sb);
     break;
@@ -1370,11 +1370,11 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
 
   case Type::CIRCLE:
   case Type::ARC_OF_CIRCLE: {
-    Vector     center = SK.GetEntity(point[0])->PointGetNum();
-    Quaternion q      = SK.GetEntity(normal)->NormalGetNum();
-    Vector     u = q.RotationU(), v = q.RotationV();
-    double     r = CircleGetRadiusNum();
-    double     thetaa, thetab, dtheta;
+    Vector center = SK.GetEntity(point[0])->PointGetNum();
+    Quaternion q = SK.GetEntity(normal)->NormalGetNum();
+    Vector u = q.RotationU(), v = q.RotationV();
+    double r = CircleGetRadiusNum();
+    double thetaa, thetab, dtheta;
 
     if (r < LENGTH_EPS) {
       // If a circle or an arc gets dragged through zero radius,
@@ -1413,8 +1413,8 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
 
       thetaa += dtheta;
 
-      c         = cos(thetaa);
-      s         = sin(thetaa);
+      c = cos(thetaa);
+      s = sin(thetaa);
       Vector p2 = center.Plus(u.ScaledBy(r * c)).Plus(v.ScaledBy(r * s)),
              t2 = u.ScaledBy(-r * s).Plus(v.ScaledBy(r * c));
 
@@ -1422,7 +1422,7 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
       VectorAtIntersectionOfLines_ret eeep =
           VectorAtIntersectionOfLines(p0, p0.Plus(t0), p2, p2.Plus(t2), NULL);
 
-      SBezier sb   = SBezier::From(p0, eeep.intersectionPoint, p2);
+      SBezier sb = SBezier::From(p0, eeep.intersectionPoint, p2);
       sb.weight[1] = cos(dtheta / 2);
       sbl->l.Add(&sb);
     }
@@ -1432,9 +1432,9 @@ void Entity::GenerateBezierCurves(SBezierList *sbl) const {
   case Type::TTF_TEXT: {
     Vector topLeft = SK.GetEntity(point[0])->PointGetNum();
     Vector botLeft = SK.GetEntity(point[1])->PointGetNum();
-    Vector n       = Normal()->NormalN();
-    Vector v       = topLeft.Minus(botLeft);
-    Vector u       = (v.Cross(n)).WithMagnitude(v.Magnitude());
+    Vector n = Normal()->NormalN();
+    Vector v = topLeft.Minus(botLeft);
+    Vector u = (v.Cross(n)).WithMagnitude(v.Magnitude());
 
     SS.fonts.PlotString(font, str, sbl, botLeft, u, v);
     break;
@@ -1457,8 +1457,8 @@ bool Entity::ShouldDrawExploded() const {
 
 Vector Entity::ExplodeOffset() const {
   if (ShouldDrawExploded() && workplane.v != 0) {
-    int    requestIdx = SK.GetRequest(h.request())->groupRequestIndex;
-    double offset     = SS.explodeDistance * (requestIdx + 1);
+    int requestIdx = SK.GetRequest(h.request())->groupRequestIndex;
+    double offset = SS.explodeDistance * (requestIdx + 1);
     return SK.GetEntity(workplane)->Normal()->NormalN().ScaledBy(offset);
   } else {
     return Vector::From(0, 0, 0);
@@ -1505,9 +1505,9 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
   case DrawAs::OVERLAY: stroke.layer = Canvas::Layer::FRONT; break;
 
   case DrawAs::HIDDEN:
-    stroke.layer          = Canvas::Layer::OCCLUDED;
+    stroke.layer = Canvas::Layer::OCCLUDED;
     stroke.stipplePattern = Style::PatternType({Style::HIDDEN_EDGE});
-    stroke.stippleScale   = Style::Get({Style::HIDDEN_EDGE})->stippleScale;
+    stroke.stippleScale = Style::Get({Style::HIDDEN_EDGE})->stippleScale;
     break;
 
   case DrawAs::HOVERED:
@@ -1520,7 +1520,7 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     stroke.color = Style::Color(Style::SELECTED);
     break;
   }
-  stroke.zIndex       = zIndex;
+  stroke.zIndex = zIndex;
   Canvas::hStroke hcs = canvas->GetStroke(stroke);
 
   switch (type) {
@@ -1549,19 +1549,19 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     }
 
     Canvas::Stroke pointStroke = {};
-    pointStroke.layer          = (free) ? Canvas::Layer::FRONT : stroke.layer;
-    pointStroke.zIndex         = stroke.zIndex;
-    pointStroke.color          = stroke.color;
-    pointStroke.width          = 7.0;
-    pointStroke.unit           = Canvas::Unit::PX;
-    Canvas::hStroke hcsPoint   = canvas->GetStroke(pointStroke);
+    pointStroke.layer = (free) ? Canvas::Layer::FRONT : stroke.layer;
+    pointStroke.zIndex = stroke.zIndex;
+    pointStroke.color = stroke.color;
+    pointStroke.width = 7.0;
+    pointStroke.unit = Canvas::Unit::PX;
+    Canvas::hStroke hcsPoint = canvas->GetStroke(pointStroke);
 
     Vector p = PointGetDrawNum();
     if (free) {
       Canvas::Stroke analyzeStroke = Style::Stroke(Style::ANALYZE);
-      analyzeStroke.width          = 14.0;
-      analyzeStroke.layer          = Canvas::Layer::FRONT;
-      Canvas::hStroke hcsAnalyze   = canvas->GetStroke(analyzeStroke);
+      analyzeStroke.width = 14.0;
+      analyzeStroke.layer = Canvas::Layer::FRONT;
+      Canvas::hStroke hcsAnalyze = canvas->GetStroke(analyzeStroke);
 
       canvas->DrawPoint(p, hcsAnalyze);
     }
@@ -1595,8 +1595,8 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
         // Always draw the x, y, and z axes in red, green, and blue;
         // brighter for the ones at the bottom left of the screen,
         // dimmer for the ones at the model origin.
-        hRequest hr   = h.request();
-        uint8_t  luma = (asReference) ? 255 : 100;
+        hRequest hr = h.request();
+        uint8_t luma = (asReference) ? 255 : 100;
         if (hr == Request::HREQUEST_REFERENCE_XY) {
           stroke.color = RgbaColor::From(0, 0, luma);
         } else if (hr == Request::HREQUEST_REFERENCE_YZ) {
@@ -1607,15 +1607,15 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
       }
 
       Quaternion q = NormalGetNum();
-      Vector     tail;
+      Vector tail;
       if (asReference) {
         // Draw an extra copy of the x, y, and z axes, that's
         // always in the corner of the view and at the front.
         // So those are always available, perhaps useful.
         stroke.width = 2;
-        double s     = camera.scale;
-        double h     = 60 - camera.height / 2.0;
-        double w     = 60 - camera.width / 2.0;
+        double s = camera.scale;
+        double h = 60 - camera.height / 2.0;
+        double w = 60 - camera.width / 2.0;
 
         tail = camera.projRight.ScaledBy(w / s)
                    .Plus(camera.projUp.ScaledBy(h / s))
@@ -1625,12 +1625,12 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
       }
       tail = camera.AlignToPixelGrid(tail);
 
-      hcs        = canvas->GetStroke(stroke);
-      Vector v   = (q.RotationN()).WithMagnitude(50.0 / camera.scale);
+      hcs = canvas->GetStroke(stroke);
+      Vector v = (q.RotationN()).WithMagnitude(50.0 / camera.scale);
       Vector tip = tail.Plus(v);
       canvas->DrawLine(tail, tip, hcs);
 
-      v           = v.WithMagnitude(12.0 / camera.scale);
+      v = v.WithMagnitude(12.0 / camera.scale);
       Vector axis = q.RotationV();
       canvas->DrawLine(tip, tip.Minus(v.RotatedAbout(axis, 0.6)), hcs);
       canvas->DrawLine(tip, tip.Minus(v.RotatedAbout(axis, -0.6)), hcs);
@@ -1641,8 +1641,8 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
 
         if (nw->free || nx->free || ny->free || nz->free) {
           Canvas::Stroke analyzeStroke = Style::Stroke(Style::ANALYZE);
-          analyzeStroke.layer          = Canvas::Layer::FRONT;
-          Canvas::hStroke hcsAnalyze   = canvas->GetStroke(analyzeStroke);
+          analyzeStroke.layer = Canvas::Layer::FRONT;
+          Canvas::hStroke hcsAnalyze = canvas->GetStroke(analyzeStroke);
           canvas->DrawLine(tail, tip, hcsAnalyze);
         }
       }
@@ -1659,7 +1659,7 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     const Camera &camera = canvas->GetCamera();
 
     Vector p = SK.GetEntity(point[0])->PointGetNum();
-    p        = camera.AlignToPixelGrid(p);
+    p = camera.AlignToPixelGrid(p);
 
     Vector u = Normal()->NormalU();
     Vector v = Normal()->NormalV();
@@ -1677,13 +1677,13 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     Canvas::Stroke strokeBorder = stroke;
     strokeBorder.zIndex -= 3;
     strokeBorder.stipplePattern = StipplePattern::SHORT_DASH;
-    strokeBorder.stippleScale   = 8.0;
-    Canvas::hStroke hcsBorder   = canvas->GetStroke(strokeBorder);
+    strokeBorder.stippleScale = 8.0;
+    Canvas::hStroke hcsBorder = canvas->GetStroke(strokeBorder);
 
     double textHeight = Style::TextHeight(hs) / camera.scale;
 
     if (!h.isFromRequest()) {
-      mm  = mm.Plus(v.ScaledBy(textHeight * 4.7));
+      mm = mm.Plus(v.ScaledBy(textHeight * 4.7));
       mm2 = mm2.Plus(u.ScaledBy(textHeight * 4.7));
       canvas->DrawLine(mm2, mm, hcsBorder);
     }
@@ -1692,7 +1692,7 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     canvas->DrawLine(mm, mp, hcsBorder);
     canvas->DrawLine(pp, mp, hcsBorder);
 
-    Vector      o = mm2.Plus(u.ScaledBy(3.0 / camera.scale)).Plus(v.ScaledBy(3.0 / camera.scale));
+    Vector o = mm2.Plus(u.ScaledBy(3.0 / camera.scale)).Plus(v.ScaledBy(3.0 / camera.scale));
     std::string shortDesc = DescriptionString().substr(5);
     canvas->DrawVectorText(shortDesc, textHeight, o, u, v, hcs);
     return;
@@ -1707,10 +1707,10 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     // Generate the rational polynomial curves, then piecewise linearize
     // them, and display those.
     // Calculating the draw offset, if necessary.
-    const bool   shouldExplode = ShouldDrawExploded();
-    Vector       explodeOffset;
-    SBezierList  offsetBeziers = {};
-    SBezierList *beziers       = GetOrGenerateBezierCurves();
+    const bool shouldExplode = ShouldDrawExploded();
+    Vector explodeOffset;
+    SBezierList offsetBeziers = {};
+    SBezierList *beziers = GetOrGenerateBezierCurves();
     if (shouldExplode) {
       explodeOffset = ExplodeOffset();
       for (const SBezier &b : beziers->l) {
@@ -1720,8 +1720,8 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
       beziers = &offsetBeziers;
     }
 
-    SEdgeList *edges       = nullptr;
-    SEdgeList  offsetEdges = {};
+    SEdgeList *edges = nullptr;
+    SEdgeList offsetEdges = {};
 
     if (!canvas->DrawBeziers(*beziers, hcs)) {
       edges = GetOrGenerateEdges();
@@ -1740,8 +1740,8 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
         Param *p = SK.GetParam(dist->param[0]);
         if (p->free) {
           Canvas::Stroke analyzeStroke = Style::Stroke(Style::ANALYZE);
-          analyzeStroke.layer          = Canvas::Layer::FRONT;
-          Canvas::hStroke hcsAnalyze   = canvas->GetStroke(analyzeStroke);
+          analyzeStroke.layer = Canvas::Layer::FRONT;
+          Canvas::hStroke hcsAnalyze = canvas->GetStroke(analyzeStroke);
           if (!canvas->DrawBeziers(*beziers, hcsAnalyze)) {
             canvas->DrawEdges(*edges, hcsAnalyze);
           }
@@ -1753,33 +1753,33 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
     return;
   }
   case Type::IMAGE: {
-    Canvas::Fill            fill = {};
+    Canvas::Fill fill = {};
     std::shared_ptr<Pixmap> pixmap;
     switch (how) {
     case DrawAs::HIDDEN: return;
 
     case DrawAs::HOVERED: {
-      fill.color   = Style::Color(Style::HOVERED).WithAlpha(180);
+      fill.color = Style::Color(Style::HOVERED).WithAlpha(180);
       fill.pattern = Canvas::FillPattern::CHECKERED_A;
-      fill.zIndex  = 2;
+      fill.zIndex = 2;
       break;
     }
 
     case DrawAs::SELECTED: {
-      fill.color   = Style::Color(Style::SELECTED).WithAlpha(180);
+      fill.color = Style::Color(Style::SELECTED).WithAlpha(180);
       fill.pattern = Canvas::FillPattern::CHECKERED_B;
-      fill.zIndex  = 1;
+      fill.zIndex = 1;
       break;
     }
 
     default:
       fill.color = RgbaColor::FromFloat(1.0f, 1.0f, 1.0f);
-      pixmap     = SS.images[file];
+      pixmap = SS.images[file];
       break;
     }
 
-    Canvas::hFill hf   = canvas->GetFill(fill);
-    Vector        v[4] = {Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0)};
+    Canvas::hFill hf = canvas->GetFill(fill);
+    Vector v[4] = {Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0)};
     for (int i = 0; i < 4; i++) {
       v[i] = SK.GetEntity(point[i])->PointGetDrawNum();
     }
@@ -1788,8 +1788,8 @@ void Entity::Draw(DrawAs how, Canvas *canvas) {
 
     if (how == DrawAs::DEFAULT && pixmap == NULL) {
       Canvas::Stroke stroke = Style::Stroke(Style::DRAW_ERROR);
-      stroke.color          = stroke.color.WithAlpha(50);
-      Canvas::hStroke hs    = canvas->GetStroke(stroke);
+      stroke.color = stroke.color.WithAlpha(50);
+      Canvas::hStroke hs = canvas->GetStroke(stroke);
       canvas->DrawLine(v[0], v[2], hs);
       canvas->DrawLine(v[1], v[3], hs);
       for (int i = 0; i < 4; i++) {

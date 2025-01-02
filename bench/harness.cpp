@@ -42,10 +42,10 @@ static bool RunBenchmark(std::function<void()> setupFn, std::function<bool()> be
 int main(int argc, char **argv) {
   std::vector<std::string> args = Platform::InitCli(argc, argv);
 
-  std::string    mode;
+  std::string mode;
   Platform::Path filename;
   if (args.size() == 3) {
-    mode     = args[1];
+    mode = args[1];
     filename = Platform::Path::From(args[2]);
   } else {
     fprintf(stderr, "Usage: %s [mode] [filename]\n", args[0].c_str());

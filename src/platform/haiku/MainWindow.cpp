@@ -41,7 +41,7 @@ std::string getOpenPanelFilename(BMessage *message) {
   }
 
   BEntry entry(&ref, true);
-  BPath  filePath(&ref);
+  BPath filePath(&ref);
 
   entry.GetPath(&filePath);
 
@@ -53,14 +53,14 @@ std::string getSavePanelFilename(BMessage *msg) {
   if (!msg->HasRef("directory") || !msg->HasString("name")) {
     return std::string();
   }
-  entry_ref   ref;
+  entry_ref ref;
   const char *name;
 
   if (msg->FindRef("directory", 0, &ref) != B_OK || msg->FindString("name", &name) != B_OK) {
     return std::string();
   }
   BEntry entry(&ref, true);
-  BPath  filePath(&ref);
+  BPath filePath(&ref);
   if (entry.GetPath(&filePath) != B_OK) {
     return std::string();
   }
@@ -70,7 +70,7 @@ std::string getSavePanelFilename(BMessage *msg) {
 }
 
 void MainWindow::SetupMenubar(BRect rect) {
-  menuBar         = new BMenuBar(rect, "menubar");
+  menuBar = new BMenuBar(rect, "menubar");
   BMenu *fileMenu = new BMenu("File");
   fileMenu->AddItem(new BMenuItem("New", new BMessage(M_NEW_FILE), 'N'));
   fileMenu->AddItem(new BMenuItem("Open…", new BMessage(M_OPEN_FILE), 'O'));
@@ -89,7 +89,7 @@ void MainWindow::SetupMenubar(BRect rect) {
   menuBar->AddItem(fileMenu);
 
   BMenu *editMenu = new BMenu("Edit");
-  undoMenuItem    = new BMenuItem("Undo", new BMessage(M_UNDO), 'Z');
+  undoMenuItem = new BMenuItem("Undo", new BMessage(M_UNDO), 'Z');
   editMenu->AddItem(undoMenuItem);
   redoMenuItem = new BMenuItem("Redo", new BMessage(M_REDO), 'Z', B_SHIFT_KEY);
   editMenu->AddItem(redoMenuItem);
@@ -295,8 +295,8 @@ MainWindow::MainWindow(void)
   SS.Init();
 
   const BSize toolbarIconSize = be_control_look->ComposeIconSize(B_LARGE_ICON);
-  BRect       toolbarRect     = BRect(BPoint(10, 35), BSize(0, 0));
-  toolWindow                  = new AppToolbar(toolbarRect, toolbarIconSize);
+  BRect toolbarRect = BRect(BPoint(10, 35), BSize(0, 0));
+  toolWindow = new AppToolbar(toolbarRect, toolbarIconSize);
   toolWindow->ResizeToPreferred();
 
   propertyBrowser = new PropertyBrowser();

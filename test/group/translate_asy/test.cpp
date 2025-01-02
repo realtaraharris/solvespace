@@ -19,7 +19,7 @@ TEST_CASE(normal_inters) {
   SMesh *m = &g->displayMesh;
 
   SEdgeList el = {};
-  bool      inters, leaks;
+  bool inters, leaks;
   SKdNode::From(m)->MakeCertainEdgesInto(&el, EdgeKind::SELF_INTER, /*coplanarIsInter=*/false,
                                          &inters, &leaks);
   el.Clear();

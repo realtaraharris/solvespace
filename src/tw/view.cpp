@@ -72,26 +72,26 @@ void TextWindow::ScreenChangeViewOrigin(int link, uint32_t v) {
 
 void TextWindow::ScreenChangeViewProjection(int link, uint32_t v) {
   std::string edit_value = ssprintf("%.3f, %.3f, %.3f", CO(SS.GW.projRight));
-  SS.TW.edit.meaning     = Edit::VIEW_PROJ_RIGHT;
+  SS.TW.edit.meaning = Edit::VIEW_PROJ_RIGHT;
   SS.TW.ShowEditControl(10, edit_value);
 }
 
 void TextWindow::ScreenChangeLightDirection(int link, uint32_t v) {
   SS.TW.ShowEditControl(8, ssprintf("%.2f, %.2f, %.2f", CO(SS.lightDir[v])));
   SS.TW.edit.meaning = Edit::LIGHT_DIRECTION;
-  SS.TW.edit.i       = v;
+  SS.TW.edit.i = v;
 }
 
 void TextWindow::ScreenChangeLightIntensity(int link, uint32_t v) {
   SS.TW.ShowEditControl(31, ssprintf("%.2f", SS.lightIntensity[v]));
   SS.TW.edit.meaning = Edit::LIGHT_INTENSITY;
-  SS.TW.edit.i       = v;
+  SS.TW.edit.i = v;
 }
 
 void TextWindow::ScreenChangeLightAmbient(int link, uint32_t v) {
   SS.TW.ShowEditControl(31, ssprintf("%.2f", SS.ambientIntensity));
   SS.TW.edit.meaning = Edit::LIGHT_AMBIENT;
-  SS.TW.edit.i       = 0;
+  SS.TW.edit.i = 0;
 }
 
 void TextWindow::ScreenChangeCameraTangent(int link, uint32_t v) {
@@ -122,7 +122,7 @@ bool TextWindow::EditControlDoneForView(const std::string &s) {
   case Edit::VIEW_ORIGIN: {
     Vector pt;
     if (sscanf(s.c_str(), "%lf, %lf, %lf", &pt.x, &pt.y, &pt.z) == 3) {
-      pt           = pt.ScaledBy(SS.MmPerUnit());
+      pt = pt.ScaledBy(SS.MmPerUnit());
       SS.GW.offset = pt.ScaledBy(-1);
     } else {
       Error(_("Bad format: specify x, y, z"));

@@ -7,10 +7,10 @@
 
 TEST_CASE(Constraint__DescriptionString) {
   Constraint c = {};
-  c.group      = SS.GW.activeGroup;
-  c.workplane  = SS.GW.ActiveWorkplane();
-  c.type       = SS.GW.pending.suggestion;
-  c.entityA    = SS.GW.pending.request.entity(0);
+  c.group = SS.GW.activeGroup;
+  c.workplane = SS.GW.ActiveWorkplane();
+  c.type = SS.GW.pending.suggestion;
+  c.entityA = SS.GW.pending.request.entity(0);
 
   CHECK_EQ_STR(c.DescriptionString(), "c000-???");
 }

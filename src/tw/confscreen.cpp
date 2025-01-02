@@ -15,31 +15,31 @@ void TextWindow::ScreenChangeColor(int link, uint32_t v) {
   SS.TW.ShowEditControlWithColorPicker(13, SS.modelColor[v]);
 
   SS.TW.edit.meaning = Edit::COLOR;
-  SS.TW.edit.i       = v;
+  SS.TW.edit.i = v;
 }
 
 void TextWindow::ScreenChangeChordTolerance(int link, uint32_t v) {
   SS.TW.ShowEditControl(3, ssprintf("%lg", SS.chordTol));
   SS.TW.edit.meaning = Edit::CHORD_TOLERANCE;
-  SS.TW.edit.i       = 0;
+  SS.TW.edit.i = 0;
 }
 
 void TextWindow::ScreenChangeMaxSegments(int link, uint32_t v) {
   SS.TW.ShowEditControl(3, ssprintf("%d", SS.maxSegments));
   SS.TW.edit.meaning = Edit::MAX_SEGMENTS;
-  SS.TW.edit.i       = 0;
+  SS.TW.edit.i = 0;
 }
 
 void TextWindow::ScreenChangeExportChordTolerance(int link, uint32_t v) {
   SS.TW.ShowEditControl(3, ssprintf("%lg", SS.exportChordTol));
   SS.TW.edit.meaning = Edit::CHORD_TOLERANCE;
-  SS.TW.edit.i       = 1;
+  SS.TW.edit.i = 1;
 }
 
 void TextWindow::ScreenChangeExportMaxSegments(int link, uint32_t v) {
   SS.TW.ShowEditControl(3, ssprintf("%d", SS.exportMaxSegments));
   SS.TW.edit.meaning = Edit::MAX_SEGMENTS;
-  SS.TW.edit.i       = 1;
+  SS.TW.edit.i = 1;
 }
 
 void TextWindow::ScreenChangeGridSpacing(int link, uint32_t v) {
@@ -153,7 +153,7 @@ void TextWindow::ScreenChangeCanvasSize(int link, uint32_t v) {
     col = 11;
   SS.TW.ShowEditControl(col, SS.MmToString(d, true));
   SS.TW.edit.meaning = Edit::CANVAS_SIZE;
-  SS.TW.edit.i       = v;
+  SS.TW.edit.i = v;
 }
 
 void TextWindow::ScreenChangeGCodeParameter(int link, uint32_t v) {
@@ -364,7 +364,7 @@ bool TextWindow::EditControlDoneForConfiguration(const std::string &s) {
   case Edit::COLOR: {
     Vector rgb = Vector(0, 0, 0);
     if (sscanf(s.c_str(), "%lf, %lf, %lf", &rgb.x, &rgb.y, &rgb.z) == 3) {
-      rgb                   = rgb.ClampWithin(0, 1);
+      rgb = rgb.ClampWithin(0, 1);
       SS.modelColor[edit.i] = RGBf(rgb.x, rgb.y, rgb.z);
     } else {
       Error(_("Bad format: specify color as r, g, b"));

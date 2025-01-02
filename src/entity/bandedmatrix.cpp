@@ -10,7 +10,7 @@
 #include <algorithm> // std::min
 
 void BandedMatrix::Solve() {
-  int    i, ip, j, jp;
+  int i, ip, j, jp;
   double temp;
 
   // Reduce the matrix to upper triangular form.

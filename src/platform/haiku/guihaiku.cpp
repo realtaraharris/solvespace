@@ -103,7 +103,7 @@ namespace SolveSpace {
       // TODO: rip this method out and just make the internals read
       // SS.GW.width/height instead
       virtual void GetContentSize(double *width, double *height) override {
-        *width  = SS.GW.width;
+        *width = SS.GW.width;
         *height = SS.GW.height;
       }
 
@@ -142,10 +142,10 @@ namespace SolveSpace {
       }
       virtual void HideEditor() override {}
 
-      virtual void   SetScrollbarVisible(bool visible) override {}
-      virtual void   ConfigureScrollbar(double min, double max, double pageSize) override {}
+      virtual void SetScrollbarVisible(bool visible) override {}
+      virtual void ConfigureScrollbar(double min, double max, double pageSize) override {}
       virtual double GetScrollbarPosition() override { return 0; }
-      virtual void   SetScrollbarPosition(double pos) override {}
+      virtual void SetScrollbarPosition(double pos) override {}
 
       virtual void Invalidate() override {}
     };

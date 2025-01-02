@@ -225,9 +225,9 @@ void StepFileWriter::ExportSurface(SSurface *ss, SBezierList *sbl) {
   // Now we do the trim curves. We must group each outer loop separately
   // along with its inner faces, so do that now.
   SBezierLoopSetSet sblss = {};
-  SPolygon          spxyz = {};
-  bool              allClosed;
-  SEdge             notClosedAt;
+  SPolygon spxyz = {};
+  bool allClosed;
+  SEdge notClosedAt;
   // We specify a surface, so it doesn't check for coplanarity; and we
   // don't want it to give us any open contours. The polygon and chord
   // tolerance are required, because they are used to calculate the
@@ -322,7 +322,7 @@ void StepFileWriter::WriteFooter() {
 }
 
 void StepFileWriter::ExportSurfacesTo(const Platform::Path &filename) {
-  Group  *g     = SK.GetGroup(SS.GW.activeGroup);
+  Group *g = SK.GetGroup(SS.GW.activeGroup);
   SShell *shell = &(g->runningShell);
 
   if (shell->surface.IsEmpty()) {

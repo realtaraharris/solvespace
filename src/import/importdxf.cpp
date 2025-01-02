@@ -64,16 +64,16 @@ public:
 
     Vector blockTransform(Vector v) {
       Vector r = blockT;
-      r        = r.Plus(blockX.ScaledBy(v.x));
-      r        = r.Plus(blockY.ScaledBy(v.y));
-      r        = r.Plus(blockZ.ScaledBy(v.z));
+      r = r.Plus(blockX.ScaledBy(v.x));
+      r = r.Plus(blockY.ScaledBy(v.y));
+      r = r.Plus(blockZ.ScaledBy(v.z));
       return r;
     }
 
     void blockTransformArc(Vector *c, Vector *p0, Vector *p1) {
       bool oldSign = p0->Minus(*c).Cross(p1->Minus(*c)).z > 0.0;
 
-      *c  = blockTransform(*c);
+      *c = blockTransform(*c);
       *p0 = blockTransform(*p0);
       *p1 = blockTransform(*p1);
 
@@ -110,17 +110,17 @@ public:
     }
 
     hRequest createBulge(Vector p0, Vector p1, double bulge) {
-      bool   reversed = bulge < 0.0;
-      double alpha    = atan(bulge) * 4.0;
+      bool reversed = bulge < 0.0;
+      double alpha = atan(bulge) * 4.0;
 
       Vector middle = p1.Plus(p0).ScaledBy(0.5);
-      double dist   = p1.Minus(p0).Magnitude() / 2.0;
-      double angle  = angleTo(p0, p1);
+      double dist = p1.Minus(p0).Magnitude() / 2.0;
+      double angle = angleTo(p0, p1);
 
       // alpha can't be 0.0 at this point
       double radius = fabs(dist / sin(alpha / 2.0));
-      double wu     = fabs(radius * radius - dist * dist);
-      double h      = sqrt(wu);
+      double wu = fabs(radius * radius - dist * dist);
+      double h = sqrt(wu);
 
       if (bulge > 0.0) {
         angle += M_PI_2;
@@ -133,7 +133,7 @@ public:
       }
 
       Vector center = polar(h, angle);
-      center        = center.Plus(middle);
+      center = center.Plus(middle);
 
       if (reversed)
         std::swap(p0, p1);
@@ -151,16 +151,16 @@ public:
 
     struct Block {
       std::vector<std::unique_ptr<DRW_Entity>> entities;
-      DRW_Block                                data;
+      DRW_Block data;
     };
 
-    bool                             asConstruction  = false;
-    unsigned                         unknownEntities = 0;
-    std::map<std::string, hStyle>    styles;
-    std::map<std::string, Block>     blocks;
+    bool asConstruction = false;
+    unsigned unknownEntities = 0;
+    std::map<std::string, hStyle> styles;
+    std::map<std::string, Block> blocks;
     std::map<std::string, DRW_Layer> layers;
-    Block                           *readBlock    = NULL;
-    const DRW_Insert                *insertInsert = NULL;
+    Block *readBlock = NULL;
+    const DRW_Insert *insertInsert = NULL;
 
     template<class T>
     bool addPendingBlockEntity(const T &e) {
@@ -223,13 +223,13 @@ public:
     DRW_Layer *getSourceLayer(const DRW_Entity *e) {
       DRW_Layer *layer = NULL;
       if (insertInsert != NULL) {
-        std::string l  = insertInsert->layer;
-        auto        bi = layers.find(l);
+        std::string l = insertInsert->layer;
+        auto bi = layers.find(l);
         if (bi != layers.end())
           layer = &bi->second;
       } else {
-        std::string l  = e->layer;
-        auto        bi = layers.find(l);
+        std::string l = e->layer;
+        auto bi = layers.find(l);
         if (bi != layers.end())
           layer = &bi->second;
       }
@@ -304,9 +304,9 @@ public:
         return si->second;
       }
 
-      hStyle hs  = {Style::CreateCustomStyle(/*rememberForUndo=*/false)};
-      Style *s   = Style::Get(hs);
-      s->name    = id;
+      hStyle hs = {Style::CreateCustomStyle(/*rememberForUndo=*/false)};
+      Style *s = Style::Get(hs);
+      s->name = id;
       s->visible = false;
 
       styles.emplace(id, hs);
@@ -316,20 +316,20 @@ public:
     hStyle styleFor(const DRW_Entity *e) {
       // Color.
       //! @todo which color to choose: index or RGB one?
-      int       col = getColor(e);
+      int col = getColor(e);
       RgbaColor c =
           RgbaColor::From(DRW::dxfColors[col][0], DRW::dxfColors[col][1], DRW::dxfColors[col][2]);
 
       // Line width.
-      DRW_LW_Conv::lineWidth lw    = getLineWidth(e);
-      double                 width = DRW_LW_Conv::lineWidth2dxfInt(e->lWeight) / 100.0;
+      DRW_LW_Conv::lineWidth lw = getLineWidth(e);
+      double width = DRW_LW_Conv::lineWidth2dxfInt(e->lWeight) / 100.0;
       if (width < 0.0)
         width = 1.0;
 
       // Line stipple.
       //! @todo Probably, we can load default autocad patterns and match it with ours.
-      std::string    lineType = getLineType(e);
-      StipplePattern stipple  = StipplePattern::CONTINUOUS;
+      std::string lineType = getLineType(e);
+      StipplePattern stipple = StipplePattern::CONTINUOUS;
       for (uint32_t i = 0; i <= (uint32_t)StipplePattern::LAST; i++) {
         StipplePattern st = (StipplePattern)i;
         if (lineType == DxfFileWriter::lineTypeName(st)) {
@@ -339,17 +339,17 @@ public:
       }
 
       // Text properties.
-      DRW_Text::HAlign alignH     = DRW_Text::HLeft;
-      DRW_Text::VAlign alignV     = DRW_Text::VBaseLine;
-      double           textAngle  = 0.0;
-      double           textHeight = Style::DefaultTextHeight();
+      DRW_Text::HAlign alignH = DRW_Text::HLeft;
+      DRW_Text::VAlign alignV = DRW_Text::VBaseLine;
+      double textAngle = 0.0;
+      double textHeight = Style::DefaultTextHeight();
 
       if (e->eType == DRW::TEXT || e->eType == DRW::MTEXT) {
         const DRW_Text *text = static_cast<const DRW_Text *>(e);
-        alignH               = text->alignH;
-        alignV               = text->alignV;
-        textHeight           = text->height;
-        textAngle            = text->angle;
+        alignH = text->alignH;
+        alignV = text->alignV;
+        textHeight = text->height;
+        textAngle = text->angle;
         // I have no idea why, but works
         if (alignH == DRW_Text::HMiddle) {
           alignV = DRW_Text::VMiddle;
@@ -379,35 +379,35 @@ public:
       }
 
       hStyle hs = {Style::CreateCustomStyle(/*rememberForUndo=*/false)};
-      Style *s  = Style::Get(hs);
+      Style *s = Style::Get(hs);
       if (lw != DRW_LW_Conv::widthDefault) {
-        s->widthAs      = Style::UnitsAs::MM;
-        s->width        = width;
+        s->widthAs = Style::UnitsAs::MM;
+        s->width = width;
         s->stippleScale = 1.0 + width * 2.0;
       }
-      s->name        = id;
+      s->name = id;
       s->stippleType = stipple;
       if (c.red != 0 || c.green != 0 || c.blue != 0)
         s->color = c;
       s->textHeightAs = Style::UnitsAs::MM;
-      s->textHeight   = textHeight;
-      s->textAngle    = textAngle;
-      s->textOrigin   = dxfAlignToOrigin(alignH, alignV);
+      s->textHeight = textHeight;
+      s->textAngle = textAngle;
+      s->textOrigin = dxfAlignToOrigin(alignH, alignV);
 
       styles.emplace(id, hs);
       return hs;
     }
 
     void configureRequest(hRequest hr, hStyle hs) {
-      Request *r      = SK.GetRequest(hr);
+      Request *r = SK.GetRequest(hr);
       r->construction = asConstruction;
-      r->style        = hs;
+      r->style = hs;
     }
 
     struct VectorHash {
       size_t operator() (const Vector &v) const {
         static const size_t size = std::numeric_limits<size_t>::max() / 2 - 1;
-        static const double eps  = (4.0 * LENGTH_EPS);
+        static const double eps = (4.0 * LENGTH_EPS);
 
         double x = fabs(v.x) / eps;
         double y = fabs(v.y) / eps;
@@ -426,9 +426,9 @@ public:
     std::unordered_map<Vector, hEntity, VectorHash, VectorPred> points;
 
     void processPoint(hEntity he, bool constrain = true) {
-      Entity *e   = SK.GetEntity(he);
-      Vector  pos = e->PointGetNum();
-      hEntity p   = findPoint(pos);
+      Entity *e = SK.GetEntity(he);
+      Vector pos = e->PointGetNum();
+      hEntity p = findPoint(pos);
       if (p == he)
         return;
       if (p != Entity::NO_ENTITY) {
@@ -455,7 +455,7 @@ public:
         return he;
 
       hRequest hr = SS.GW.AddRequest(Request::Type::DATUM_POINT, /*rememberForUndo=*/false);
-      he          = hr.entity(0);
+      he = hr.entity(0);
       SK.GetEntity(he)->PointForceTo(p);
       points.emplace(p, he);
       return he;
@@ -471,14 +471,14 @@ public:
       processPoint(hr.entity(2));
 
       if (constrainHV && SS.GW.LockedInWorkplane()) {
-        bool             hasConstraint = false;
+        bool hasConstraint = false;
         Constraint::Type cType;
         if (fabs(p0.x - p1.x) < LENGTH_EPS) {
           hasConstraint = true;
-          cType         = Constraint::Type::VERTICAL;
+          cType = Constraint::Type::VERTICAL;
         } else if (fabs(p0.y - p1.y) < LENGTH_EPS) {
           hasConstraint = true;
-          cType         = Constraint::Type::HORIZONTAL;
+          cType = Constraint::Type::HORIZONTAL;
         }
         if (hasConstraint) {
           Constraint::Constrain(cType, Entity::NO_ENTITY, Entity::NO_ENTITY, hr.entity(0));
@@ -514,7 +514,7 @@ public:
     }
 
     static void activateWorkplane(hEntity he) {
-      Group *g           = SK.GetGroup(SS.GW.activeGroup);
+      Group *g = SK.GetGroup(SS.GW.activeGroup);
       g->activeWorkplane = he;
     }
 
@@ -531,7 +531,7 @@ public:
     void addLayer(const DRW_Layer &data) override { layers.emplace(data.name, data); }
 
     void addBlock(const DRW_Block &data) override {
-      readBlock       = &blocks[data.name];
+      readBlock = &blocks[data.name];
       readBlock->data = data;
     }
 
@@ -564,14 +564,14 @@ public:
       if (addPendingBlockEntity<DRW_Arc>(data))
         return;
 
-      double     r  = data.radious;
-      double     sa = data.staangle;
-      double     ea = data.endangle;
-      Vector     c  = toVector(data.basePoint);
-      Vector     nz = toVector(data.extPoint);
-      Quaternion q  = NormalFromExtPoint(nz);
+      double r = data.radious;
+      double sa = data.staangle;
+      double ea = data.endangle;
+      Vector c = toVector(data.basePoint);
+      Vector nz = toVector(data.extPoint);
+      Quaternion q = NormalFromExtPoint(nz);
 
-      bool planar  = q.RotationN().Equals(Vector::From(0, 0, 1));
+      bool planar = q.RotationN().Equals(Vector::From(0, 0, 1));
       bool onPlane = c.z < LENGTH_EPS;
 
       hEntity oldWorkplane = SS.GW.ActiveWorkplane();
@@ -580,12 +580,12 @@ public:
       }
 
       hRequest hr = SS.GW.AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false);
-      Vector   u = q.RotationU(), v = q.RotationV();
-      Vector   rvs = c.Plus(u.ScaledBy(r * cos(sa))).Plus(v.ScaledBy(r * sin(sa)));
-      Vector   rve = c.Plus(u.ScaledBy(r * cos(ea))).Plus(v.ScaledBy(r * sin(ea)));
+      Vector u = q.RotationU(), v = q.RotationV();
+      Vector rvs = c.Plus(u.ScaledBy(r * cos(sa))).Plus(v.ScaledBy(r * sin(sa)));
+      Vector rve = c.Plus(u.ScaledBy(r * cos(ea))).Plus(v.ScaledBy(r * sin(ea)));
 
       if (data.extPoint.z == -1.0) {
-        c.x   = -c.x;
+        c.x = -c.x;
         rvs.x = -rvs.x;
         rve.x = -rve.x;
         std::swap(rvs, rve);
@@ -609,7 +609,7 @@ public:
       if (addPendingBlockEntity<DRW_Circle>(data))
         return;
 
-      Vector     nz     = toVector(data.extPoint);
+      Vector nz = toVector(data.extPoint);
       Quaternion normal = NormalFromExtPoint(nz);
       createCircle(toVector(data.basePoint), normal, data.radious, styleFor(&data));
     }
@@ -635,8 +635,8 @@ public:
         DRW_Vertex2D c1 = *data.vertlist[(i + 1) % data.vertlist.size()];
 
         if (needSwapX) {
-          c0.x     = -c0.x;
-          c1.x     = -c1.x;
+          c0.x = -c0.x;
+          c1.x = -c1.x;
           c0.bulge = -c0.bulge;
         }
 
@@ -675,8 +675,8 @@ public:
 
         double bulge = data.vertlist[i]->bulge;
         if (needSwapX) {
-          c0.x  = -c0.x;
-          c1.x  = -c1.x;
+          c0.x = -c0.x;
+          c1.x = -c1.x;
           bulge = -bulge;
         }
 
@@ -725,7 +725,7 @@ public:
       Vector t = blockT;
 
       const DRW_Insert *oldInsert = insertInsert;
-      insertInsert                = &data;
+      insertInsert = &data;
 
       if (data.extPoint.z == -1.0)
         invertXTransform();
@@ -749,7 +749,7 @@ public:
         return;
 
       DRW_MText text = data;
-      text.secPoint  = text.basePoint;
+      text.secPoint = text.basePoint;
       addText(text);
     }
 
@@ -760,15 +760,15 @@ public:
         return;
 
       Constraint c = {};
-      c.group      = SS.GW.activeGroup;
-      c.workplane  = SS.GW.ActiveWorkplane();
-      c.type       = Constraint::Type::COMMENT;
+      c.group = SS.GW.activeGroup;
+      c.workplane = SS.GW.ActiveWorkplane();
+      c.type = Constraint::Type::COMMENT;
       if (data.alignH == DRW_Text::HLeft && data.alignV == DRW_Text::VBaseLine) {
         c.disp.offset = toVector(data.basePoint);
       } else {
         c.disp.offset = toVector(data.secPoint);
       }
-      c.comment    = data.text;
+      c.comment = data.text;
       c.disp.style = styleFor(&data);
       Constraint::AddConstraint(&c, /*rememberForUndo=*/false);
     }
@@ -779,9 +779,9 @@ public:
       if (addPendingBlockEntity<DRW_DimAligned>(*data))
         return;
 
-      Vector      p0 = toVector(data->getDef1Point());
-      Vector      p1 = toVector(data->getDef2Point());
-      Vector      p2 = toVector(data->getTextPoint());
+      Vector p0 = toVector(data->getDef1Point());
+      Vector p1 = toVector(data->getDef2Point());
+      Vector p2 = toVector(data->getTextPoint());
       hConstraint hc = Constraint::Constrain(Constraint::Type::PT_PT_DISTANCE, createOrGetPoint(p0),
                                              createOrGetPoint(p1), Entity::NO_ENTITY);
 
@@ -805,8 +805,8 @@ public:
       Vector p2 = toVector(data->getTextPoint(), /*transform=*/false);
 
       double angle = data->getAngle() * PI / 180.0;
-      Vector dir   = Vector::From(cos(angle), sin(angle), 0.0);
-      Vector p3    = p1.Minus(p1.ClosestPointOnLine(p2, dir)).Plus(p1);
+      Vector dir = Vector::From(cos(angle), sin(angle), 0.0);
+      Vector p3 = p1.Minus(p1.ClosestPointOnLine(p2, dir)).Plus(p1);
       if (p1.Minus(p3).Magnitude() < LENGTH_EPS) {
         p3 = p0.Minus(p0.ClosestPointOnLine(p2, dir)).Plus(p1);
       }
@@ -891,16 +891,16 @@ public:
       if (addPendingBlockEntity<DRW_DimRadial>(*data))
         return;
 
-      Vector cp     = toVector(data->getCenterPoint());
-      Vector dp     = toVector(data->getDiameterPoint());
-      Vector tp     = toVector(data->getTextPoint());
+      Vector cp = toVector(data->getCenterPoint());
+      Vector dp = toVector(data->getDiameterPoint());
+      Vector tp = toVector(data->getTextPoint());
       double actual = -1.0;
       if (data->hasActualMeasurement()) {
         actual = data->getActualMeasurement();
       }
 
-      Vector     nz = toVector(data->getExtrusion());
-      Quaternion q  = NormalFromExtPoint(nz);
+      Vector nz = toVector(data->getExtrusion());
+      Quaternion q = NormalFromExtPoint(nz);
       createDiametric(cp, q, cp.Minus(dp).Magnitude(), tp, actual, /*asRadius=*/true);
     }
 
@@ -913,15 +913,15 @@ public:
       Vector dp1 = toVector(data->getDiameter1Point());
       Vector dp2 = toVector(data->getDiameter2Point());
 
-      Vector cp     = dp1.Plus(dp2).ScaledBy(0.5);
-      Vector tp     = toVector(data->getTextPoint());
+      Vector cp = dp1.Plus(dp2).ScaledBy(0.5);
+      Vector tp = toVector(data->getTextPoint());
       double actual = -1.0;
       if (data->hasActualMeasurement()) {
         actual = data->getActualMeasurement();
       }
 
-      Vector     nz = toVector(data->getExtrusion());
-      Quaternion q  = NormalFromExtPoint(nz);
+      Vector nz = toVector(data->getExtrusion());
+      Quaternion q = NormalFromExtPoint(nz);
       createDiametric(cp, q, cp.Minus(dp1).Magnitude(), tp, actual, /*asRadius=*/false);
     }
 
@@ -1021,7 +1021,7 @@ public:
         return;
 
       DRW_MText text = data;
-      text.secPoint  = text.basePoint;
+      text.secPoint = text.basePoint;
       addText(text);
     }
 
@@ -1102,7 +1102,7 @@ public:
   };
 
   static void
-  ImportDwgDxf(const Platform::Path                                                    &filename,
+  ImportDwgDxf(const Platform::Path &filename,
                const std::function<bool(const std::string &data, DRW_Interface *intf)> &read) {
     std::string fileType = ToUpper(filename.Extension());
 
@@ -1129,7 +1129,7 @@ public:
 
     SS.UndoRemember();
 
-    DxfImport importer      = {};
+    DxfImport importer = {};
     importer.asConstruction = asConstruction;
     importer.clearBlockTransform();
     if (!read(data, &importer)) {

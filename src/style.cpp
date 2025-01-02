@@ -71,7 +71,7 @@ void Style::CreateAllDefaultStyles() {
 }
 
 void Style::CreateDefaultStyle(hStyle h) {
-  bool           isDefaultStyle = true;
+  bool isDefaultStyle = true;
   const Default *d;
   for (d = &(Defaults[0]); d->h.v; d++) {
     if (d->h == h)
@@ -80,7 +80,7 @@ void Style::CreateDefaultStyle(hStyle h) {
   if (!d->h.v) {
     // Not a default style; so just create it the same as our default
     // active group entity style.
-    d              = &(Defaults[0]);
+    d = &(Defaults[0]);
     isDefaultStyle = false;
   }
 
@@ -103,22 +103,22 @@ void Style::FillDefaultStyle(Style *s, const Default *d, bool factory) {
     d = &Defaults[0];
   s->color = (factory) ? d->color : settings->ThawColor(CnfColor(d->cnfPrefix), d->color);
   s->width = (factory) ? d->width : settings->ThawFloat(CnfWidth(d->cnfPrefix), (float)(d->width));
-  s->widthAs      = UnitsAs::PIXELS;
-  s->textHeight   = (factory) ? 11.5 : settings->ThawFloat(CnfTextHeight(d->cnfPrefix), 11.5);
+  s->widthAs = UnitsAs::PIXELS;
+  s->textHeight = (factory) ? 11.5 : settings->ThawFloat(CnfTextHeight(d->cnfPrefix), 11.5);
   s->textHeightAs = UnitsAs::PIXELS;
-  s->textOrigin   = TextOrigin::NONE;
-  s->textAngle    = 0;
-  s->visible      = true;
+  s->textOrigin = TextOrigin::NONE;
+  s->textAngle = 0;
+  s->visible = true;
   s->exportable =
       (factory) ? d->exportable : settings->ThawBool(CnfExportable(d->cnfPrefix), d->exportable);
-  s->filled       = false;
-  s->fillColor    = RGBf(0.3, 0.3, 0.3);
-  s->stippleType  = (factory)
-                        ? d->stippleType
-                        : Style::StipplePatternFromString(settings->ThawString(
+  s->filled = false;
+  s->fillColor = RGBf(0.3, 0.3, 0.3);
+  s->stippleType = (factory)
+                       ? d->stippleType
+                       : Style::StipplePatternFromString(settings->ThawString(
                              CnfStippleType(d->cnfPrefix), StipplePatternName(d->stippleType)));
   s->stippleScale = (factory) ? 15.0 : settings->ThawFloat(CnfStippleScale(d->cnfPrefix), 15.0);
-  s->zIndex       = d->zIndex;
+  s->zIndex = d->zIndex;
 }
 
 void Style::LoadFactoryDefaults() {
@@ -146,7 +146,7 @@ uint32_t Style::CreateCustomStyle(bool rememberForUndo) {
   if (rememberForUndo)
     SS.UndoRemember();
   uint32_t vs = std::max((uint32_t)Style::FIRST_CUSTOM, SK.style.MaximumId() + 1);
-  hStyle   hs = {vs};
+  hStyle hs = {vs};
   (void)Style::Get(hs);
   return hs.v;
 }
@@ -159,7 +159,7 @@ void Style::AssignSelectionToStyle(uint32_t v) {
   int i;
   for (i = 0; i < SS.GW.gs.entities; i++) {
     hEntity he = SS.GW.gs.entity[i];
-    Entity *e  = SK.GetEntity(he);
+    Entity *e = SK.GetEntity(he);
     if (!e->IsStylable())
       continue;
 
@@ -169,13 +169,13 @@ void Style::AssignSelectionToStyle(uint32_t v) {
     }
 
     hRequest hr = he.request();
-    Request *r  = SK.GetRequest(hr);
-    r->style.v  = v;
+    Request *r = SK.GetRequest(hr);
+    r->style.v = v;
     SS.MarkGroupDirty(r->group);
   }
   for (i = 0; i < SS.GW.gs.constraints; i++) {
     hConstraint hc = SS.GW.gs.constraint[i];
-    Constraint *c  = SK.GetConstraint(hc);
+    Constraint *c = SK.GetConstraint(hc);
     if (!c->IsStylable())
       continue;
 
@@ -235,7 +235,7 @@ double Style::Width(int s) {
 //-----------------------------------------------------------------------------
 RgbaColor Style::RewriteColor(RgbaColor rgbin) {
   Vector rgb = Vector::From(rgbin.redF(), rgbin.greenF(), rgbin.blueF());
-  rgb        = rgb.Minus(Vector::From(1, 1, 1));
+  rgb = rgb.Minus(Vector::From(1, 1, 1));
   if (rgb.Magnitude() < 0.4 && SS.fixExportColors) {
     // This is an almost-white color in a default style, which is
     // good for the default on-screen view (black bg) but probably
@@ -313,11 +313,11 @@ double Style::DefaultTextHeight() {
 //-----------------------------------------------------------------------------
 Canvas::Stroke Style::Stroke(hStyle hs) {
   Canvas::Stroke stroke = {};
-  Style         *style  = Style::Get(hs);
-  stroke.color          = style->color;
+  Style *style = Style::Get(hs);
+  stroke.color = style->color;
   stroke.stipplePattern = style->stippleType;
-  stroke.stippleScale   = style->stippleScale;
-  stroke.width          = style->width;
+  stroke.stippleScale = style->stippleScale;
+  stroke.width = style->width;
   switch (style->widthAs) {
   case Style::UnitsAs::PIXELS: stroke.unit = Canvas::Unit::PX; break;
   case Style::UnitsAs::MM: stroke.unit = Canvas::Unit::MM; break;
@@ -336,7 +336,7 @@ Canvas::Stroke Style::Stroke(int hsv) {
 //-----------------------------------------------------------------------------
 bool Style::Exportable(int si) {
   hStyle hs = {(uint32_t)si};
-  Style *s  = Get(hs);
+  Style *s = Get(hs);
   return (s->exportable) && (s->visible);
 }
 

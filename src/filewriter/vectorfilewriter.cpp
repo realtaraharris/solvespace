@@ -16,10 +16,10 @@ double VectorFileWriter::MmToPts(double mm) {
 
 VectorFileWriter *VectorFileWriter::ForFile(const Platform::Path &filename) {
   VectorFileWriter *ret;
-  bool              needOpen = true;
+  bool needOpen = true;
   if (filename.HasExtension("dxf")) {
     static DxfFileWriter DxfWriter;
-    ret      = &DxfWriter;
+    ret = &DxfWriter;
     needOpen = false;
   } else if (filename.HasExtension("ps") || filename.HasExtension("eps")) {
     static EpsFileWriter EpsWriter;
@@ -63,12 +63,12 @@ VectorFileWriter *VectorFileWriter::ForFile(const Platform::Path &filename) {
 void VectorFileWriter::SetModelviewProjection(const Vector &u, const Vector &v, const Vector &n,
                                               const Vector &origin, double cameraTan,
                                               double scale) {
-  this->u         = u;
-  this->v         = v;
-  this->n         = n;
-  this->origin    = origin;
+  this->u = u;
+  this->v = v;
+  this->n = n;
+  this->origin = origin;
   this->cameraTan = cameraTan;
-  this->scale     = scale;
+  this->scale = scale;
 }
 
 Vector VectorFileWriter::Transform(Vector &pos) const {
@@ -77,7 +77,7 @@ Vector VectorFileWriter::Transform(Vector &pos) const {
 
 void VectorFileWriter::OutputLinesAndMesh(SBezierLoopSetSet *sblss, SMesh *sm) {
   STriangle *tr;
-  SBezier   *b;
+  SBezier *b;
 
   // First calculate the bounding box.
   ptMin = Vector::From(VERY_POSITIVE, VERY_POSITIVE, VERY_POSITIVE);
@@ -136,11 +136,11 @@ void VectorFileWriter::OutputLinesAndMesh(SBezierLoopSetSet *sblss, SMesh *sm) {
         if (!b || !Style::Exportable(b->auxA))
           continue;
 
-        hStyle    hs        = {(uint32_t)b->auxA};
-        Style    *stl       = Style::Get(hs);
-        double    lineWidth = Style::WidthMm(b->auxA) * s;
+        hStyle hs = {(uint32_t)b->auxA};
+        Style *stl = Style::Get(hs);
+        double lineWidth = Style::WidthMm(b->auxA) * s;
         RgbaColor strokeRgb = Style::Color(hs, /*forExport=*/true);
-        RgbaColor fillRgb   = Style::FillColor(hs, /*forExport=*/true);
+        RgbaColor fillRgb = Style::FillColor(hs, /*forExport=*/true);
 
         StartPath(strokeRgb, lineWidth, stl->filled, fillRgb, hs);
         for (b = sbl->l.First(); b; b = sbl->l.NextAfter(b)) {
@@ -177,9 +177,9 @@ void VectorFileWriter::BezierAsNonrationalCubic(SBezier *sb, int depth) {
   tol /= 2;
 
   bool closeEnough = true;
-  int  i;
+  int i;
   for (i = 1; i <= 3; i++) {
-    double t  = i / 4.0;
+    double t = i / 4.0;
     Vector p0 = sb->PointAt(t), pn = bnr.PointAt(t);
     double d = (p0.Minus(pn)).Magnitude();
     if (d > tol) {

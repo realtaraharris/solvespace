@@ -57,7 +57,7 @@ namespace SolveSpace {
   //-----------------------------------------------------------------------------
 
   static GLuint CompileShader(const std::string &res, GLenum type) {
-    size_t      size;
+    size_t size;
     const char *resData = (const char *)Platform::LoadResource(res, &size);
 
     // Sigh, here we go... We want to deploy to four platforms: Linux, Windows, OS X, mobile+web.
@@ -103,7 +103,7 @@ precision highp float;
     GLuint shader = glCreateShader(type);
     ssassert(shader != 0, "glCreateShader failed");
 
-    const GLint   glSize[]   = {(int)src.length()};
+    const GLint glSize[] = {(int)src.length()};
     const GLchar *glSource[] = {src.c_str()};
     glShaderSource(shader, 1, glSource, glSize);
     glCompileShader(shader);
@@ -241,13 +241,13 @@ precision highp float;
 
     MeshVertex *vertices = new MeshVertex[m.l.n * 3];
     for (int i = 0; i < m.l.n; i++) {
-      const STriangle &t      = m.l[i];
+      const STriangle &t = m.l[i];
       vertices[i * 3 + 0].pos = Vector3f::From(t.a);
       vertices[i * 3 + 1].pos = Vector3f::From(t.b);
       vertices[i * 3 + 2].pos = Vector3f::From(t.c);
 
       if (t.an.EqualsExactly(Vector::From(0, 0, 0))) {
-        Vector3f normal         = Vector3f::From(t.Normal());
+        Vector3f normal = Vector3f::From(t.Normal());
         vertices[i * 3 + 0].nor = normal;
         vertices[i * 3 + 1].nor = normal;
         vertices[i * 3 + 2].nor = normal;
@@ -333,8 +333,8 @@ precision highp float;
   void MeshRenderer::UseShaded(const Lighting &lighting) {
     Vector dir0 = lighting.lightDirection[0];
     Vector dir1 = lighting.lightDirection[1];
-    dir0.z      = -dir0.z;
-    dir1.z      = -dir1.z;
+    dir0.z = -dir0.z;
+    dir1.z = -dir1.z;
 
     lightShader.SetUniformVector("lightDir0", dir0);
     lightShader.SetUniformFloat("lightInt0", (float)lighting.lightIntensity[0]);
@@ -358,7 +358,7 @@ precision highp float;
   }
 
   static RgbaColor EncodeLengthAsFloat(double v) {
-    v         = std::max(0.0, std::min(1.0, v));
+    v = std::max(0.0, std::min(1.0, v));
     double er = v;
     double eg = Frac(255.0 * v);
     double eb = Frac(65025.0 * v);
@@ -388,9 +388,9 @@ precision highp float;
     size /= 2;
 
     RgbaColor *textureData = new RgbaColor[size];
-    int        mipCount    = (int)log2(size) + 1;
+    int mipCount = (int)log2(size) + 1;
     for (int mip = 0; mip < mipCount; mip++) {
-      int    dashI = 0;
+      int dashI = 0;
       double dashT = 0.0;
       for (int i = 0; i < size; i++) {
         if (pattern.empty()) {
@@ -413,7 +413,7 @@ precision highp float;
           } else {
             value = dashT + dashW - t;
           }
-          value          = value * patternLen;
+          value = value * patternLen;
           textureData[i] = EncodeLengthAsFloat(value);
         }
       }
@@ -470,11 +470,11 @@ precision highp float;
     glBindBuffer(GL_ARRAY_BUFFER, handle.vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle.indexBuffer);
 
-    EdgeVertex *vertices  = new EdgeVertex[edges.l.n * 8];
-    uint32_t   *indices   = new uint32_t[edges.l.n * 6 * 3];
-    double      phase     = 0.0;
-    uint32_t    curVertex = 0;
-    uint32_t    curIndex  = 0;
+    EdgeVertex *vertices = new EdgeVertex[edges.l.n * 8];
+    uint32_t *indices = new uint32_t[edges.l.n * 6 * 3];
+    double phase = 0.0;
+    uint32_t curVertex = 0;
+    uint32_t curIndex = 0;
     for (int i = 0; i < edges.l.n; i++) {
       const SEdge &curr = edges.l[i];
       const SEdge &next = edges.l[(i + 1) % edges.l.n];
@@ -655,19 +655,19 @@ precision highp float;
     glBindBuffer(GL_ARRAY_BUFFER, handle.vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle.indexBuffer);
 
-    OutlineVertex *vertices  = new OutlineVertex[outlines.l.n * 8];
-    uint32_t      *indices   = new uint32_t[outlines.l.n * 6 * 3];
-    double         phase     = 0.0;
-    uint32_t       curVertex = 0;
-    uint32_t       curIndex  = 0;
+    OutlineVertex *vertices = new OutlineVertex[outlines.l.n * 8];
+    uint32_t *indices = new uint32_t[outlines.l.n * 6 * 3];
+    double phase = 0.0;
+    uint32_t curVertex = 0;
+    uint32_t curIndex = 0;
 
     for (int i = 0; i < outlines.l.n; i++) {
       const SOutline &curr = outlines.l[i];
       const SOutline &next = outlines.l[(i + 1) % outlines.l.n];
 
       // 3d positions
-      Vector3f a  = Vector3f::From(curr.a);
-      Vector3f b  = Vector3f::From(curr.b);
+      Vector3f a = Vector3f::From(curr.a);
+      Vector3f b = Vector3f::From(curr.b);
       Vector3f nl = Vector3f::From(curr.nl);
       Vector3f nr = Vector3f::From(curr.nr);
 
@@ -676,7 +676,7 @@ precision highp float;
 
       // length
       double len = curr.b.Minus(curr.a).Magnitude();
-      float  tag = (float)curr.tag;
+      float tag = (float)curr.tag;
 
       // make line start cap
       for (int j = 0; j < 2; j++) {

@@ -20,7 +20,7 @@ public:
         GLuint id;
         glGenTextures(1, &id);
         items[ptr] = id;
-        *result    = id;
+        *result = id;
         return false;
       }
 
@@ -44,53 +44,53 @@ public:
   class OpenGl3Renderer final : public ViewportCanvas {
 public:
     struct SEdgeListItem {
-      hStroke   h;
+      hStroke h;
       SEdgeList lines;
 
       void Clear() { lines.Clear(); }
     };
 
     struct SMeshListItem {
-      hFill        h;
+      hFill h;
       SIndexedMesh mesh;
 
       void Clear() { mesh.Clear(); }
     };
 
     struct SPointListItem {
-      hStroke      h;
+      hStroke h;
       SIndexedMesh points;
 
       void Clear() { points.Clear(); }
     };
 
-    IdList<SEdgeListItem, hStroke>  lines;
-    IdList<SMeshListItem, hFill>    meshes;
+    IdList<SEdgeListItem, hStroke> lines;
+    IdList<SMeshListItem, hFill> meshes;
     IdList<SPointListItem, hStroke> points;
 
-    TextureCache            pixmapCache;
+    TextureCache pixmapCache;
     std::shared_ptr<Pixmap> masks[3];
 
-    bool                initialized;
-    StippleAtlas        atlas;
-    MeshRenderer        meshRenderer;
+    bool initialized;
+    StippleAtlas atlas;
+    MeshRenderer meshRenderer;
     IndexedMeshRenderer imeshRenderer;
-    EdgeRenderer        edgeRenderer;
-    OutlineRenderer     outlineRenderer;
+    EdgeRenderer edgeRenderer;
+    OutlineRenderer outlineRenderer;
 
-    Camera   camera;
+    Camera camera;
     Lighting lighting;
     // Cached OpenGL state.
     struct {
-      hStroke                     hcs;
-      Stroke                     *stroke;
-      hFill                       hcf;
-      Fill                       *fill;
+      hStroke hcs;
+      Stroke *stroke;
+      hFill hcf;
+      Fill *fill;
       std::weak_ptr<const Pixmap> texture;
     } current;
-    const char *vendor   = "<uninitialized>";
+    const char *vendor = "<uninitialized>";
     const char *renderer = "<uninitialized>";
-    const char *version  = "<uninitialized>";
+    const char *version = "<uninitialized>";
 
     // List-initialize current to work around MSVC bug 746973.
     OpenGl3Renderer()
@@ -122,23 +122,23 @@ public:
     std::shared_ptr<BatchCanvas> CreateBatch() override;
 
     Stroke *SelectStroke(hStroke hcs);
-    Fill   *SelectFill(hFill hcf);
-    void    SelectMask(FillPattern pattern);
-    void    SelectTexture(std::shared_ptr<const Pixmap> pm);
-    void    DoFatLineEndcap(const Vector &p, const Vector &u, const Vector &v);
-    void    DoFatLine(const Vector &a, const Vector &b, double width);
-    void    DoLine(const Vector &a, const Vector &b, hStroke hcs);
-    void    DoPoint(Vector p, hStroke hs);
-    void    DoStippledLine(const Vector &a, const Vector &b, hStroke hcs);
+    Fill *SelectFill(hFill hcf);
+    void SelectMask(FillPattern pattern);
+    void SelectTexture(std::shared_ptr<const Pixmap> pm);
+    void DoFatLineEndcap(const Vector &p, const Vector &u, const Vector &v);
+    void DoFatLine(const Vector &a, const Vector &b, double width);
+    void DoLine(const Vector &a, const Vector &b, hStroke hcs);
+    void DoPoint(Vector p, hStroke hs);
+    void DoStippledLine(const Vector &a, const Vector &b, hStroke hcs);
 
     void UpdateProjection();
     void SetCamera(const Camera &c) override;
     void SetLighting(const Lighting &l) override;
 
-    void                    StartFrame() override;
-    void                    FlushFrame() override;
-    void                    FinishFrame() override;
-    void                    Clear() override;
+    void StartFrame() override;
+    void FlushFrame() override;
+    void FinishFrame() override;
+    void Clear() override;
     std::shared_ptr<Pixmap> ReadFrame() override;
 
     void GetIdent(const char **vendor, const char **renderer, const char **version) override;
@@ -199,10 +199,10 @@ public:
     Stroke *stroke = strokes.FindById(hcs);
     ssglDepthRange(stroke->layer, stroke->zIndex);
 
-    current.hcs    = hcs;
+    current.hcs = hcs;
     current.stroke = stroke;
-    current.hcf    = {};
-    current.fill   = NULL;
+    current.hcf = {};
+    current.fill = NULL;
     current.texture.reset();
     return stroke;
   }
@@ -240,10 +240,10 @@ public:
     Fill *fill = fills.FindById(hcf);
     ssglDepthRange(fill->layer, fill->zIndex);
 
-    current.hcs    = {};
+    current.hcs = {};
     current.stroke = NULL;
-    current.hcf    = hcf;
-    current.fill   = fill;
+    current.hcf = hcf;
+    current.fill = fill;
     if (fill->pattern != FillPattern::SOLID) {
       SelectMask(fill->pattern);
     } else if (fill->texture) {
@@ -306,7 +306,7 @@ public:
     SEdgeListItem *eli = lines.FindByIdNoOops(hcs);
     if (eli == NULL) {
       SEdgeListItem item = {};
-      item.h             = hcs;
+      item.h = hcs;
       lines.Add(&item);
       eli = lines.FindByIdNoOops(hcs);
     }
@@ -318,7 +318,7 @@ public:
     SPointListItem *pli = points.FindByIdNoOops(hs);
     if (pli == NULL) {
       SPointListItem item = {};
-      item.h              = hs;
+      item.h = hs;
       points.Add(&item);
       pli = points.FindByIdNoOops(hs);
     }
@@ -335,9 +335,9 @@ public:
     }
 
     const char *patternSeq = NULL;
-    Stroke      s          = *stroke;
-    s.stipplePattern       = StipplePattern::CONTINUOUS;
-    hcs                    = GetStroke(s);
+    Stroke s = *stroke;
+    s.stipplePattern = StipplePattern::CONTINUOUS;
+    hcs = GetStroke(s);
     switch (stroke->stipplePattern) {
     case StipplePattern::CONTINUOUS: DoLine(a, b, hcs); return;
     case StipplePattern::SHORT_DASH: patternSeq = "-  "; break;
@@ -352,11 +352,11 @@ public:
 
     Vector dir = b.Minus(a);
     double len = dir.Magnitude();
-    dir        = dir.WithMagnitude(1.0);
+    dir = dir.WithMagnitude(1.0);
 
-    const char *si  = patternSeq;
-    double      end = len;
-    double      ss  = stroke->stippleScale / 2.0;
+    const char *si = patternSeq;
+    double end = len;
+    double ss = stroke->stippleScale / 2.0;
     do {
       double start = end;
       switch (*si) {
@@ -364,7 +364,7 @@ public:
 
       case '-':
         start = std::max(start - 0.5 * ss, 0.0);
-        end   = std::max(start - 2.0 * ss, 0.0);
+        end = std::max(start - 2.0 * ss, 0.0);
         if (start == end)
           break;
         DoLine(a.Plus(dir.ScaledBy(start)), a.Plus(dir.ScaledBy(end)), hcs);
@@ -385,13 +385,13 @@ public:
         break;
 
       case '~': {
-        Vector ab  = b.Minus(a);
-        Vector gn  = (camera.projRight).Cross(camera.projUp);
+        Vector ab = b.Minus(a);
+        Vector gn = (camera.projRight).Cross(camera.projUp);
         Vector abn = (ab.Cross(gn)).WithMagnitude(1);
-        abn        = abn.Minus(gn.ScaledBy(gn.Dot(abn)));
+        abn = abn.Minus(gn.ScaledBy(gn.Dot(abn)));
         double pws = 2.0 * stroke->width / camera.scale;
 
-        end       = std::max(end - 0.5 * ss, 0.0);
+        end = std::max(end - 0.5 * ss, 0.0);
         Vector aa = a.Plus(dir.ScaledBy(start));
         Vector bb = a.Plus(dir.ScaledBy(end)).Plus(abn.ScaledBy(pws * (start - end) / (0.5 * ss)));
         DoLine(aa, bb, hcs);
@@ -399,8 +399,8 @@ public:
           break;
 
         start = end;
-        end   = std::max(end - 1.0 * ss, 0.0);
-        aa    = a.Plus(dir.ScaledBy(end))
+        end = std::max(end - 1.0 * ss, 0.0);
+        aa = a.Plus(dir.ScaledBy(end))
                  .Plus(abn.ScaledBy(pws))
                  .Minus(abn.ScaledBy(2.0 * pws * (start - end) / ss));
         DoLine(bb, aa, hcs);
@@ -408,8 +408,8 @@ public:
           break;
 
         start = end;
-        end   = std::max(end - 0.5 * ss, 0.0);
-        bb    = a.Plus(dir.ScaledBy(end))
+        end = std::max(end - 0.5 * ss, 0.0);
+        bb = a.Plus(dir.ScaledBy(end))
                  .Minus(abn.ScaledBy(pws))
                  .Plus(abn.ScaledBy(pws * (start - end) / (0.5 * ss)));
         DoLine(aa, bb, hcs);
@@ -434,9 +434,9 @@ public:
     meshRenderer.Init();
     imeshRenderer.Init();
 
-    vendor   = (const char *)glGetString(GL_VENDOR);
+    vendor = (const char *)glGetString(GL_VENDOR);
     renderer = (const char *)glGetString(GL_RENDERER);
-    version  = (const char *)glGetString(GL_VERSION);
+    version = (const char *)glGetString(GL_VERSION);
 
 #if !defined(HAVE_GLES) && !defined(__APPLE__)
     GLuint array;
@@ -474,12 +474,12 @@ public:
     SEdgeListItem *eli = lines.FindByIdNoOops(hcs);
     if (eli == NULL) {
       SEdgeListItem item = {};
-      item.h             = hcs;
+      item.h = hcs;
       lines.Add(&item);
       eli = lines.FindByIdNoOops(hcs);
     }
-    SEdgeList &lines     = eli->lines;
-    auto       traceEdge = [&](Vector a, Vector b) { lines.AddEdge(a, b); };
+    SEdgeList &lines = eli->lines;
+    auto traceEdge = [&](Vector a, Vector b) { lines.AddEdge(a, b); };
     VectorFont::Builtin()->Trace(height, o, u, v, text, traceEdge, camera);
   }
 
@@ -488,7 +488,7 @@ public:
     SMeshListItem *li = meshes.FindByIdNoOops(hcf);
     if (li == NULL) {
       SMeshListItem item = {};
-      item.h             = hcf;
+      item.h = hcf;
       meshes.Add(&item);
       li = meshes.FindByIdNoOops(hcf);
     }
@@ -536,14 +536,14 @@ public:
   void OpenGl3Renderer::DrawPixmap(std::shared_ptr<const Pixmap> pm, const Vector &o,
                                    const Vector &u, const Vector &v, const Point2d &ta,
                                    const Point2d &tb, hFill hcf) {
-    Fill fill    = *fills.FindById(hcf);
+    Fill fill = *fills.FindById(hcf);
     fill.texture = pm;
-    hcf          = GetFill(fill);
+    hcf = GetFill(fill);
 
     SMeshListItem *mli = meshes.FindByIdNoOops(hcf);
     if (mli == NULL) {
       SMeshListItem item = {};
-      item.h             = hcf;
+      item.h = hcf;
       meshes.Add(&item);
       mli = meshes.FindByIdNoOops(hcf);
     }
@@ -662,8 +662,8 @@ public:
   }
 
   std::shared_ptr<Pixmap> OpenGl3Renderer::ReadFrame() {
-    int                     width  = (int)(camera.width * camera.pixelRatio);
-    int                     height = (int)(camera.height * camera.pixelRatio);
+    int width = (int)(camera.width * camera.pixelRatio);
+    int height = (int)(camera.height * camera.pixelRatio);
     std::shared_ptr<Pixmap> pixmap =
         Pixmap::Create(Pixmap::Format::RGBA, (size_t)width, (size_t)height);
     glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, &pixmap->data[0]);
@@ -672,9 +672,9 @@ public:
   }
 
   void OpenGl3Renderer::GetIdent(const char **vendor, const char **renderer, const char **version) {
-    *vendor   = this->vendor;
+    *vendor = this->vendor;
     *renderer = this->renderer;
-    *version  = this->version;
+    *version = this->version;
   }
 
   void OpenGl3Renderer::SetCamera(const Camera &c) {
@@ -694,10 +694,10 @@ public:
 
   class DrawCall {
 public:
-    virtual Canvas::Layer GetLayer() const  = 0;
-    virtual int           GetZIndex() const = 0;
+    virtual Canvas::Layer GetLayer() const = 0;
+    virtual int GetZIndex() const = 0;
 
-    virtual void Draw(OpenGl3Renderer *renderer)   = 0;
+    virtual void Draw(OpenGl3Renderer *renderer) = 0;
     virtual void Remove(OpenGl3Renderer *renderer) = 0;
   };
 
@@ -709,13 +709,13 @@ public:
     EdgeRenderer::Handle handle;
 
     Canvas::Layer GetLayer() const override { return stroke.layer; }
-    int           GetZIndex() const override { return stroke.zIndex; }
+    int GetZIndex() const override { return stroke.zIndex; }
 
     static std::shared_ptr<DrawCall> Create(OpenGl3Renderer *renderer, const SEdgeList &el,
                                             Canvas::Stroke *stroke) {
       EdgeDrawCall *dc = new EdgeDrawCall();
-      dc->stroke       = *stroke;
-      dc->handle       = renderer->edgeRenderer.Add(el);
+      dc->stroke = *stroke;
+      dc->handle = renderer->edgeRenderer.Add(el);
       return std::shared_ptr<DrawCall>(dc);
     }
 
@@ -734,17 +734,17 @@ public:
     Canvas::Stroke stroke;
     // Data
     OutlineRenderer::Handle handle;
-    Canvas::DrawOutlinesAs  drawAs;
+    Canvas::DrawOutlinesAs drawAs;
 
     Canvas::Layer GetLayer() const override { return stroke.layer; }
-    int           GetZIndex() const override { return stroke.zIndex; }
+    int GetZIndex() const override { return stroke.zIndex; }
 
     static std::shared_ptr<DrawCall> Create(OpenGl3Renderer *renderer, const SOutlineList &ol,
                                             Canvas::Stroke *stroke, Canvas::DrawOutlinesAs drawAs) {
       OutlineDrawCall *dc = new OutlineDrawCall();
-      dc->stroke          = *stroke;
-      dc->handle          = renderer->outlineRenderer.Add(ol);
-      dc->drawAs          = drawAs;
+      dc->stroke = *stroke;
+      dc->handle = renderer->outlineRenderer.Add(ol);
+      dc->drawAs = drawAs;
       return std::shared_ptr<DrawCall>(dc);
     }
 
@@ -765,13 +765,13 @@ public:
     IndexedMeshRenderer::Handle handle;
 
     Canvas::Layer GetLayer() const override { return stroke.layer; }
-    int           GetZIndex() const override { return stroke.zIndex; }
+    int GetZIndex() const override { return stroke.zIndex; }
 
     static std::shared_ptr<DrawCall> Create(OpenGl3Renderer *renderer, const SIndexedMesh &mesh,
                                             Canvas::Stroke *stroke) {
       PointDrawCall *dc = new PointDrawCall();
-      dc->stroke        = *stroke;
-      dc->handle        = renderer->imeshRenderer.Add(mesh);
+      dc->stroke = *stroke;
+      dc->handle = renderer->imeshRenderer.Add(mesh);
       return std::shared_ptr<DrawCall>(dc);
     }
 
@@ -792,13 +792,13 @@ public:
     IndexedMeshRenderer::Handle handle;
 
     Canvas::Layer GetLayer() const override { return fill.layer; }
-    int           GetZIndex() const override { return fill.zIndex; }
+    int GetZIndex() const override { return fill.zIndex; }
 
     static std::shared_ptr<DrawCall> Create(OpenGl3Renderer *renderer, const SIndexedMesh &mesh,
                                             Canvas::Fill *fill) {
       PixmapDrawCall *dc = new PixmapDrawCall();
-      dc->fill           = *fill;
-      dc->handle         = renderer->imeshRenderer.Add(mesh);
+      dc->fill = *fill;
+      dc->handle = renderer->imeshRenderer.Add(mesh);
       return std::shared_ptr<DrawCall>(dc);
     }
 
@@ -824,22 +824,22 @@ public:
     Canvas::Fill fillFront;
     // Data
     MeshRenderer::Handle handle;
-    Canvas::Fill         fillBack;
-    bool                 hasFillBack;
-    bool                 isShaded;
+    Canvas::Fill fillBack;
+    bool hasFillBack;
+    bool isShaded;
 
     Canvas::Layer GetLayer() const override { return fillFront.layer; }
-    int           GetZIndex() const override { return fillFront.zIndex; }
+    int GetZIndex() const override { return fillFront.zIndex; }
 
     static std::shared_ptr<DrawCall> Create(OpenGl3Renderer *renderer, const SMesh &m,
                                             Canvas::Fill *fillFront, Canvas::Fill *fillBack = NULL,
                                             bool isShaded = false) {
       MeshDrawCall *dc = new MeshDrawCall();
-      dc->fillFront    = *fillFront;
-      dc->handle       = renderer->meshRenderer.Add(m);
-      dc->fillBack     = *fillBack;
-      dc->isShaded     = isShaded;
-      dc->hasFillBack  = (fillBack != NULL);
+      dc->fillFront = *fillFront;
+      dc->handle = renderer->meshRenderer.Add(m);
+      dc->fillBack = *fillBack;
+      dc->isShaded = isShaded;
+      dc->hasFillBack = (fillBack != NULL);
       return std::shared_ptr<DrawCall>(dc);
     }
 
@@ -893,14 +893,14 @@ public:
   class OpenGl3RendererBatch final : public BatchCanvas {
 public:
     struct EdgeBuffer {
-      hStroke   h;
+      hStroke h;
       SEdgeList edges;
 
       void Clear() { edges.Clear(); }
     };
 
     struct PointBuffer {
-      hStroke      h;
+      hStroke h;
       SIndexedMesh points;
 
       void Clear() { points.Clear(); }
@@ -908,7 +908,7 @@ public:
 
     OpenGl3Renderer *renderer;
 
-    IdList<EdgeBuffer, hStroke>  edgeBuffer;
+    IdList<EdgeBuffer, hStroke> edgeBuffer;
     IdList<PointBuffer, hStroke> pointBuffer;
 
     std::multiset<std::shared_ptr<DrawCall>, CompareDrawCall> drawCalls;
@@ -919,7 +919,7 @@ public:
       EdgeBuffer *eb = edgeBuffer.FindByIdNoOops(hcs);
       if (!eb) {
         EdgeBuffer neb = {};
-        neb.h          = hcs;
+        neb.h = hcs;
         edgeBuffer.Add(&neb);
         eb = edgeBuffer.FindById(hcs);
       }
@@ -931,7 +931,7 @@ public:
       EdgeBuffer *eb = edgeBuffer.FindByIdNoOops(hcs);
       if (!eb) {
         EdgeBuffer neb = {};
-        neb.h          = hcs;
+        neb.h = hcs;
         edgeBuffer.Add(&neb);
         eb = edgeBuffer.FindById(hcs);
       }
@@ -961,7 +961,7 @@ public:
       PointBuffer *pb = pointBuffer.FindByIdNoOops(hcs);
       if (!pb) {
         PointBuffer npb = {};
-        npb.h           = hcs;
+        npb.h = hcs;
         pointBuffer.Add(&npb);
         pb = pointBuffer.FindById(hcs);
       }
@@ -989,9 +989,9 @@ public:
 
     void DrawPixmap(std::shared_ptr<const Pixmap> pm, const Vector &o, const Vector &u,
                     const Vector &v, const Point2d &ta, const Point2d &tb, hFill hcf) override {
-      Fill fill    = *fills.FindById(hcf);
+      Fill fill = *fills.FindById(hcf);
       fill.texture = pm;
-      hcf          = GetFill(fill);
+      hcf = GetFill(fill);
 
       SIndexedMesh mesh = {};
       mesh.AddPixmap(o, u, v, ta, tb);
@@ -1037,7 +1037,7 @@ public:
 
   std::shared_ptr<BatchCanvas> OpenGl3Renderer::CreateBatch() {
     OpenGl3RendererBatch *batch = new OpenGl3RendererBatch();
-    batch->renderer             = this;
+    batch->renderer = this;
     return std::shared_ptr<BatchCanvas>(batch);
   }
 

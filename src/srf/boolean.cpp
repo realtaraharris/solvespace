@@ -77,7 +77,7 @@ static void FindVertsOnCurve(List<SInter> *l, const SCurve *curve, SShell *sh) {
 SCurve SCurve::MakeCopySplitAgainst(SShell *agnstA, SShell *agnstB, SSurface *srfA,
                                     SSurface *srfB) const {
   SCurve ret;
-  ret     = *this;
+  ret = *this;
   ret.pts = {};
 
   // First find any vertex that lies on our curve.
@@ -131,9 +131,9 @@ SCurve SCurve::MakeCopySplitAgainst(SShell *agnstA, SShell *agnstB, SSurface *sr
         // trim curves, or within the chord tol of the trim curve; want
         // some slop if points are close to edge and pwl is too coarse,
         // and it doesn't hurt to split unnecessarily.
-        Point2d       dummy = {0, 0};
-        SBspUv::Class c     = (pi->srf->bsp) ? pi->srf->bsp->ClassifyPoint(puv, dummy, pi->srf)
-                                             : SBspUv::Class::OUTSIDE;
+        Point2d dummy = {0, 0};
+        SBspUv::Class c = (pi->srf->bsp) ? pi->srf->bsp->ClassifyPoint(puv, dummy, pi->srf)
+                                         : SBspUv::Class::OUTSIDE;
         if (c == SBspUv::Class::OUTSIDE) {
           double d = VERY_POSITIVE;
           if (pi->srf->bsp)
@@ -158,7 +158,7 @@ SCurve SCurve::MakeCopySplitAgainst(SShell *agnstA, SShell *agnstB, SSurface *sr
       il.RemoveTagged();
     }
     // Now add any vertex that is on this segment
-    const Vector lineStart     = prev.p;
+    const Vector lineStart = prev.p;
     const Vector lineDirection = (p->p).Minus(prev.p);
     for (auto vtx : vertpts) {
       double t = (vtx.p.Minus(lineStart)).DivProjected(lineDirection);
@@ -186,8 +186,8 @@ SCurve SCurve::MakeCopySplitAgainst(SShell *agnstA, SShell *agnstB, SSurface *sr
         // both surfaces, so don't create zero-length edge.
         if (!prev.Equals(pi->p)) {
           SCurvePt scpt;
-          scpt.tag    = 0;
-          scpt.p      = pi->p;
+          scpt.tag = 0;
+          scpt.p = pi->p;
           scpt.vertex = true;
           ret.pts.Add(&scpt);
         }
@@ -203,13 +203,13 @@ SCurve SCurve::MakeCopySplitAgainst(SShell *agnstA, SShell *agnstB, SSurface *sr
   return ret;
 }
 
-void        SShell::CopyCurvesSplitAgainst(bool opA, SShell *agnst, SShell *into) {
+void SShell::CopyCurvesSplitAgainst(bool opA, SShell *agnst, SShell *into) {
 #pragma omp parallel for
   for (int i = 0; i < curve.n; i++) {
-    SCurve *sc  = &curve[i];
-    SCurve  scn = sc->MakeCopySplitAgainst(agnst, NULL, surface.FindById(sc->surfA),
-                                           surface.FindById(sc->surfB));
-    scn.source  = opA ? SCurve::Source::A : SCurve::Source::B;
+    SCurve *sc = &curve[i];
+    SCurve scn = sc->MakeCopySplitAgainst(agnst, NULL, surface.FindById(sc->surfA),
+                                          surface.FindById(sc->surfB));
+    scn.source = opA ? SCurve::Source::A : SCurve::Source::B;
 #pragma omp critical
     {
       hSCurve hsc = into->curve.AddAndAssignId(&scn);
@@ -233,10 +233,10 @@ void SSurface::TrimFromEdgeList(SEdgeList *el, bool asUv) {
     }
     if (!se)
       break;
-    se->tag       = 1;
-    stb.start     = se->a;
-    stb.finish    = se->b;
-    stb.curve.v   = se->auxA;
+    se->tag = 1;
+    stb.start = se->a;
+    stb.finish = se->b;
+    stb.curve.v = se->auxA;
     stb.backwards = se->auxB ? true : false;
 
     // Find adjoining edges from the same curve; those should be
@@ -254,18 +254,18 @@ void SSurface::TrimFromEdgeList(SEdgeList *el, bool asUv) {
 
         if ((se->a).Equals(stb.finish)) {
           stb.finish = se->b;
-          se->tag    = 1;
-          merged     = true;
+          se->tag = 1;
+          merged = true;
         } else if ((se->b).Equals(stb.start)) {
           stb.start = se->a;
-          se->tag   = 1;
-          merged    = true;
+          se->tag = 1;
+          merged = true;
         }
       }
     } while (merged);
 
     if (asUv) {
-      stb.start  = PointAt(stb.start.x, stb.start.y);
+      stb.start = PointAt(stb.start.x, stb.start.y);
       stb.finish = PointAt(stb.finish.x, stb.finish.y);
     }
 
@@ -309,7 +309,7 @@ static bool KeepRegion(SSurface::CombineAs type, bool opA, SShell::Class shell,
 static bool KeepEdge(SSurface::CombineAs type, bool opA, SShell::Class indir_shell,
                      SShell::Class outdir_shell, SShell::Class indir_orig,
                      SShell::Class outdir_orig) {
-  bool keepIn  = KeepRegion(type, opA, indir_shell, indir_orig),
+  bool keepIn = KeepRegion(type, opA, indir_shell, indir_orig),
        keepOut = KeepRegion(type, opA, outdir_shell, outdir_orig);
 
   // If the regions to the left and right of this edge are both in or both
@@ -323,28 +323,28 @@ static void TagByClassifiedEdge(SBspUv::Class bspclass, SShell::Class *indir,
                                 SShell::Class *outdir) {
   switch (bspclass) {
   case SBspUv::Class::INSIDE:
-    *indir  = SShell::Class::INSIDE;
+    *indir = SShell::Class::INSIDE;
     *outdir = SShell::Class::INSIDE;
     break;
 
   case SBspUv::Class::OUTSIDE:
-    *indir  = SShell::Class::OUTSIDE;
+    *indir = SShell::Class::OUTSIDE;
     *outdir = SShell::Class::OUTSIDE;
     break;
 
   case SBspUv::Class::EDGE_PARALLEL:
-    *indir  = SShell::Class::INSIDE;
+    *indir = SShell::Class::INSIDE;
     *outdir = SShell::Class::OUTSIDE;
     break;
 
   case SBspUv::Class::EDGE_ANTIPARALLEL:
-    *indir  = SShell::Class::OUTSIDE;
+    *indir = SShell::Class::OUTSIDE;
     *outdir = SShell::Class::INSIDE;
     break;
 
   default:
     dbp("TagByClassifiedEdge: fail!");
-    *indir  = SShell::Class::OUTSIDE;
+    *indir = SShell::Class::OUTSIDE;
     *outdir = SShell::Class::OUTSIDE;
     break;
   }
@@ -354,7 +354,7 @@ static void DEBUGEDGELIST(SEdgeList *sel, SSurface *surf) {
   dbp("print %d edges", sel->l.n);
   SEdge *se;
   for (se = sel->l.First(); se; se = sel->l.NextAfter(se)) {
-    Vector mid   = (se->a).Plus(se->b).ScaledBy(0.5);
+    Vector mid = (se->a).Plus(se->b).ScaledBy(0.5);
     Vector arrow = (se->b).Minus(se->a);
     std::swap(arrow.x, arrow.y);
     arrow.x *= -1;
@@ -397,13 +397,13 @@ void SSurface::FindChainAvoiding(SEdgeList *src, SEdgeList *dest, SPointList *av
         continue;
       if (startOkay && s.Equals(se->b)) {
         dest->l.AddToBeginning(se);
-        s         = se->a;
-        se->tag   = 1;
+        s = se->a;
+        se->tag = 1;
         startOkay = !avoid->ContainsPoint(s);
       } else if (finishOkay && f.Equals(se->a)) {
         dest->l.Add(se);
-        f          = se->b;
-        se->tag    = 1;
+        f = se->b;
+        se->tag = 1;
         finishOkay = !avoid->ContainsPoint(f);
       } else {
         continue;
@@ -444,7 +444,7 @@ void SSurface::EdgeNormalsWithinSurface(Point2d auv, Point2d buv, Vector *pt, Ve
   *surfn = NormalAt(muv.x, muv.y);
 
   // Compute the edge's inner normal in xyz space.
-  Vector ab    = (PointAt(auv)).Minus(PointAt(buv)),
+  Vector ab = (PointAt(auv)).Minus(PointAt(buv)),
          enxyz = (ab.Cross(*surfn)).WithMagnitude(SS.ChordTolMm());
   // And based on that, compute the edge's inner normal in uv space. This
   // vector is perpendicular to the edge in xyz, but not necessarily in uv.
@@ -475,12 +475,12 @@ void SSurface::EdgeNormalsWithinSurface(Point2d auv, Point2d buv, Vector *pt, Ve
 //-----------------------------------------------------------------------------
 SSurface SSurface::MakeCopyTrimAgainst(SShell *parent, SShell *sha, SShell *shb, SShell *into,
                                        SSurface::CombineAs type, int dbg_index) {
-  bool    opA   = (parent == sha);
+  bool opA = (parent == sha);
   SShell *agnst = opA ? shb : sha;
 
   SSurface ret;
   // The returned surface is identical, just the trim curves change
-  ret      = *this;
+  ret = *this;
   ret.trim = {};
 
   // First, build a list of the existing trim curves; update them to use
@@ -488,7 +488,7 @@ SSurface SSurface::MakeCopyTrimAgainst(SShell *parent, SShell *sha, SShell *shb,
   STrimBy *stb;
   for (stb = trim.First(); stb; stb = trim.NextAfter(stb)) {
     STrimBy stn = *stb;
-    stn.curve   = (parent->curve.FindById(stn.curve))->newH;
+    stn.curve = (parent->curve.FindById(stn.curve))->newH;
     ret.trim.Add(&stn);
   }
 
@@ -565,7 +565,7 @@ SSurface SSurface::MakeCopyTrimAgainst(SShell *parent, SShell *sha, SShell *shb,
   // they must either both be kept or both be discarded (since that would
   // otherwise create an open contour).
   SPointList choosing = {};
-  SEdge     *se;
+  SEdge *se;
   for (se = orig.l.First(); se; se = orig.l.NextAfter(se)) {
     choosing.IncrementTagFor(se->a);
     choosing.IncrementTagFor(se->b);
@@ -603,7 +603,7 @@ SSurface SSurface::MakeCopyTrimAgainst(SShell *parent, SShell *sha, SShell *shb,
 
     SShell::Class indir_shell, outdir_shell, indir_orig, outdir_orig;
 
-    indir_orig  = SShell::Class::INSIDE;
+    indir_orig = SShell::Class::INSIDE;
     outdir_orig = SShell::Class::OUTSIDE;
 
     agnst->ClassifyEdge(&indir_shell, &outdir_shell, ret.PointAt(auv), ret.PointAt(buv), pt, enin,
@@ -679,7 +679,7 @@ void SShell::CopySurfacesTrimAgainst(SShell *sha, SShell *shb, SShell *into,
 #pragma omp parallel for
   for (int i = 0; i < surface.n; i++) {
     SSurface *ss = &surface[i];
-    ssn[i]       = ss->MakeCopyTrimAgainst(this, sha, shb, into, type, i);
+    ssn[i] = ss->MakeCopyTrimAgainst(this, sha, shb, into, type, i);
   }
 
   for (int i = 0; i < surface.n; i++) {
@@ -688,7 +688,7 @@ void SShell::CopySurfacesTrimAgainst(SShell *sha, SShell *shb, SShell *into,
   I += surface.n;
 }
 
-void        SShell::MakeIntersectionCurvesAgainst(SShell *agnst, SShell *into) {
+void SShell::MakeIntersectionCurvesAgainst(SShell *agnst, SShell *into) {
 #pragma omp parallel for
   for (int i = 0; i < surface.n; i++) {
     SSurface *sa = &surface[i];
@@ -729,10 +729,10 @@ void SShell::RewriteSurfaceHandlesForCurves(SShell *a, SShell *b) {
 void SShell::MakeFromAssemblyOf(SShell *a, SShell *b) {
   booleanFailed = false;
 
-  Vector     t = Vector::From(0, 0, 0);
+  Vector t = Vector::From(0, 0, 0);
   Quaternion q = Quaternion::IDENTITY;
-  int        i = 0;
-  SShell    *ab;
+  int i = 0;
+  SShell *ab;
 
   // First, copy over all the curves. Note which shell (a or b) each curve
   // came from, but assign it a new ID.
@@ -741,7 +741,7 @@ void SShell::MakeFromAssemblyOf(SShell *a, SShell *b) {
   for (i = 0; i < 2; i++) {
     ab = (i == 0) ? a : b;
     for (SCurve &c : ab->curve) {
-      cn        = SCurve::FromTransformationOf(&c, t, q, 1.0);
+      cn = SCurve::FromTransformationOf(&c, t, q, 1.0);
       cn.source = (i == 0) ? SCurve::Source::A : SCurve::Source::B;
       // surfA and surfB are wrong now, and we can't fix them until
       // we've assigned IDs to the surfaces. So we'll get that later.
@@ -823,7 +823,7 @@ void SShell::MakeFromBoolean(SShell *a, SShell *b, SSurface::CombineAs type) {
 //-----------------------------------------------------------------------------
 // All of the BSP routines that we use to perform and accelerate polygon ops.
 //-----------------------------------------------------------------------------
-void        SShell::MakeClassifyingBsps(SShell *useCurvesFrom) {
+void SShell::MakeClassifyingBsps(SShell *useCurvesFrom) {
 #pragma omp parallel for
   for (int i = 0; i < surface.n; i++) {
     surface[i].MakeClassifyingBsp(this, useCurvesFrom);
@@ -894,7 +894,7 @@ double SBspUv::ScaledSignedDistanceToLine(Point2d pt, Point2d a, Point2d b, SSur
   ScalePoints(&pt, &a, &b, srf);
 
   Point2d n = ((b.Minus(a)).Normal()).WithMagnitude(1);
-  double  d = a.Dot(n);
+  double d = a.Dot(n);
 
   return pt.Dot(n) - d;
 }
@@ -909,8 +909,8 @@ double SBspUv::ScaledDistanceToLine(Point2d pt, Point2d a, Point2d b, bool asSeg
 SBspUv *SBspUv::InsertOrCreateEdge(SBspUv *where, Point2d ea, Point2d eb, SSurface *srf) {
   if (where == NULL) {
     SBspUv *ret = Alloc();
-    ret->a      = ea;
-    ret->b      = eb;
+    ret->a = ea;
+    ret->b = eb;
     return ret;
   }
   where->InsertEdge(ea, eb, srf);
@@ -924,10 +924,10 @@ void SBspUv::InsertEdge(Point2d ea, Point2d eb, SSurface *srf) {
   if (fabs(dea) < LENGTH_EPS && fabs(deb) < LENGTH_EPS) {
     // Line segment is coincident with this one, store in same node
     SBspUv *m = Alloc();
-    m->a      = ea;
-    m->b      = eb;
-    m->more   = more;
-    more      = m;
+    m->a = ea;
+    m->b = eb;
+    m->more = more;
+    more = m;
   } else if (fabs(dea) < LENGTH_EPS) {
     // Point A lies on this line, but point B does not
     if (deb > 0) {
@@ -948,9 +948,9 @@ void SBspUv::InsertEdge(Point2d ea, Point2d eb, SSurface *srf) {
     neg = InsertOrCreateEdge(neg, ea, eb, srf);
   } else {
     // New edge crosses this one; we need to split.
-    Point2d n  = ((b.Minus(a)).Normal()).WithMagnitude(1);
-    double  d  = a.Dot(n);
-    double  t  = (d - n.Dot(ea)) / (n.Dot(eb.Minus(ea)));
+    Point2d n = ((b.Minus(a)).Normal()).WithMagnitude(1);
+    double d = a.Dot(n);
+    double t = (d - n.Dot(ea)) / (n.Dot(eb.Minus(ea)));
     Point2d pi = ea.Plus((eb.Minus(ea)).ScaledBy(t));
     if (dea > 0) {
       pos = InsertOrCreateEdge(pos, ea, pi, srf);

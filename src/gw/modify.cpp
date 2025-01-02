@@ -107,7 +107,7 @@ void GraphicsWindow::FixConstraintsForPointBeingDeleted(hEntity hpt) {
 // arcs by a numerical method.
 //-----------------------------------------------------------------------------
 void GraphicsWindow::ParametricCurve::MakeFromEntity(hEntity he, bool reverse) {
-  *this     = {};
+  *this = {};
   Entity *e = SK.GetEntity(he);
   if (e->type == Entity::Type::LINE_SEGMENT) {
     isLine = true;
@@ -116,18 +116,18 @@ void GraphicsWindow::ParametricCurve::MakeFromEntity(hEntity he, bool reverse) {
       std::swap(p0, p1);
     }
   } else if (e->type == Entity::Type::ARC_OF_CIRCLE) {
-    isLine    = false;
-    p0        = SK.GetEntity(e->point[0])->PointGetNum();
+    isLine = false;
+    p0 = SK.GetEntity(e->point[0])->PointGetNum();
     Vector pe = SK.GetEntity(e->point[1])->PointGetNum();
-    r         = (pe.Minus(p0)).Magnitude();
+    r = (pe.Minus(p0)).Magnitude();
     e->ArcGetAngles(&theta0, &theta1, &dtheta);
     if (reverse) {
       std::swap(theta0, theta1);
       dtheta = -dtheta;
     }
     Entity *wrkpln = SK.GetEntity(e->workplane)->Normal();
-    u              = wrkpln->NormalU();
-    v              = wrkpln->NormalV();
+    u = wrkpln->NormalU();
+    v = wrkpln->NormalV();
   } else
     ssassert(false, "Unexpected entity type");
 }
@@ -154,8 +154,8 @@ Vector GraphicsWindow::ParametricCurve::TangentAt(double t) {
     return p1.Minus(p0);
   } else {
     double theta = theta0 + dtheta * t;
-    Vector t     = u.ScaledBy(-r * sin(theta)).Plus(v.ScaledBy(r * cos(theta)));
-    t            = t.ScaledBy(dtheta);
+    Vector t = u.ScaledBy(-r * sin(theta)).Plus(v.ScaledBy(r * cos(theta)));
+    t = t.ScaledBy(dtheta);
     return t;
   }
 }
@@ -171,16 +171,16 @@ void GraphicsWindow::ParametricCurve::CreateRequestTrimmedTo(double t, bool reus
                                                              hEntity arc, bool arcFinish,
                                                              bool pointf) {
   hRequest hr;
-  Entity  *e;
+  Entity *e;
   if (isLine) {
     if (reuseOrig) {
-      e     = SK.GetEntity(orig);
+      e = SK.GetEntity(orig);
       int i = pointf ? 1 : 0;
       SK.GetEntity(e->point[i])->PointForceTo(PointAt(t));
       ConstrainPointIfCoincident(e->point[i]);
     } else {
       hr = SS.GW.AddRequest(Request::Type::LINE_SEGMENT, /*rememberForUndo=*/false),
-      e  = SK.GetEntity(hr.entity(0));
+      e = SK.GetEntity(hr.entity(0));
       SK.GetEntity(e->point[0])->PointForceTo(PointAt(t));
       SK.GetEntity(e->point[1])->PointForceTo(PointAt(1));
       ConstrainPointIfCoincident(e->point[0]);
@@ -191,13 +191,13 @@ void GraphicsWindow::ParametricCurve::CreateRequestTrimmedTo(double t, bool reus
                           arc, e->h, /*other=*/arcFinish, /*other2=*/false);
   } else {
     if (reuseOrig) {
-      e     = SK.GetEntity(orig);
+      e = SK.GetEntity(orig);
       int i = pointf ? 2 : 1;
       SK.GetEntity(e->point[i])->PointForceTo(PointAt(t));
       ConstrainPointIfCoincident(e->point[i]);
     } else {
       hr = SS.GW.AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false),
-      e  = SK.GetEntity(hr.entity(0));
+      e = SK.GetEntity(hr.entity(0));
       SK.GetEntity(e->point[0])->PointForceTo(p0);
       if (dtheta > 0) {
         SK.GetEntity(e->point[1])->PointForceTo(PointAt(t));
@@ -265,12 +265,12 @@ void GraphicsWindow::MakeTangentArc() {
   // First, find two requests (that are not construction, and that are
   // in our group and workplane) that generate entities that have an
   // endpoint at our vertex to be rounded.
-  int      i, c = 0;
-  Entity  *ent[2];
+  int i, c = 0;
+  Entity *ent[2];
   Request *req[2];
   hRequest hreq[2];
-  hEntity  hent[2];
-  bool     pointf[2];
+  hEntity hent[2];
+  bool pointf[2];
   for (auto &r : SK.request) {
     if (r.group != activeGroup)
       continue;
@@ -282,18 +282,18 @@ void GraphicsWindow::MakeTangentArc() {
       continue;
     }
 
-    Entity *e  = SK.GetEntity(r.h.entity(0));
-    Vector  ps = e->EndpointStart(), pf = e->EndpointFinish();
+    Entity *e = SK.GetEntity(r.h.entity(0));
+    Vector ps = e->EndpointStart(), pf = e->EndpointFinish();
 
     if (ps.Equals(pshared) || pf.Equals(pshared)) {
       if (c < 2) {
         // We record the entity and request and their handles,
         // and whether the vertex to be rounded is the start or
         // finish of this entity.
-        ent[c]    = e;
-        hent[c]   = e->h;
-        req[c]    = &r;
-        hreq[c]   = r.h;
+        ent[c] = e;
+        hent[c] = e->h;
+        req[c] = &r;
+        hreq[c] = r.h;
         pointf[c] = (pf.Equals(pshared));
       }
       c++;
@@ -307,7 +307,7 @@ void GraphicsWindow::MakeTangentArc() {
   }
 
   Entity *wrkpl = SK.GetEntity(ActiveWorkplane());
-  Vector  wn    = wrkpl->Normal()->NormalN();
+  Vector wn = wrkpl->Normal()->NormalN();
 
   // Based on these two entities, we make the objects that we'll use to
   // numerically find the tangent arc.
@@ -327,8 +327,8 @@ void GraphicsWindow::MakeTangentArc() {
   // t back along the two curves, starting from shared point of the curves
   // at t = 0. Lots of iterations helps convergence, and this is still
   // ~10 ms for everything.
-  int    iters = 1000;
-  double t[2]  = {0, 0}, tp[2];
+  int iters = 1000;
+  double t[2] = {0, 0}, tp[2];
   for (i = 0; i < iters + 20; i++) {
     Vector p0 = pc[0].PointAt(t[0]), p1 = pc[1].PointAt(t[1]), t0 = pc[0].TangentAt(t[0]),
            t1 = pc[1].TangentAt(t[1]);
@@ -340,9 +340,9 @@ void GraphicsWindow::MakeTangentArc() {
     // The sign of vv determines whether shortest distance is
     // clockwise or anti-clockwise.
     Vector v = (wn.Cross(t0)).WithMagnitude(1);
-    vv       = t1.Dot(v);
+    vv = t1.Dot(v);
 
-    double dot   = (t0.WithMagnitude(1)).Dot(t1.WithMagnitude(1));
+    double dot = (t0.WithMagnitude(1)).Dot(t1.WithMagnitude(1));
     double theta = acos(dot);
 
     if (SS.tangentArcManual) {
@@ -390,14 +390,14 @@ void GraphicsWindow::MakeTangentArc() {
 
   // Compute the location of the center of the arc
   Vector center = pc[0].PointAt(t[0]), v0inter = pinter.Minus(center);
-  int    a, b;
+  int a, b;
   if (vv < 0) {
-    a      = 1;
-    b      = 2;
+    a = 1;
+    b = 2;
     center = center.Minus(v0inter.Cross(wn).WithMagnitude(r));
   } else {
-    a      = 2;
-    b      = 1;
+    a = 2;
+    b = 1;
     center = center.Plus(v0inter.Cross(wn).WithMagnitude(r));
   }
 
@@ -427,9 +427,9 @@ void GraphicsWindow::MakeTangentArc() {
   }
 
   // Create and position the new tangent arc.
-  hRequest harc  = AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false);
-  Entity  *earc  = SK.GetEntity(harc.entity(0));
-  hEntity  hearc = earc->h;
+  hRequest harc = AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false);
+  Entity *earc = SK.GetEntity(harc.entity(0));
+  hEntity hearc = earc->h;
 
   SK.GetEntity(earc->point[0])->PointForceTo(center);
   SK.GetEntity(earc->point[a])->PointForceTo(pc[0].PointAt(t[0]));
@@ -446,9 +446,9 @@ void GraphicsWindow::MakeTangentArc() {
 
 hEntity GraphicsWindow::SplitLine(hEntity he, Vector pinter) {
   // Save the original endpoints, since we're about to delete this entity.
-  Entity *e01  = SK.GetEntity(he);
+  Entity *e01 = SK.GetEntity(he);
   hEntity hep0 = e01->point[0], hep1 = e01->point[1];
-  Vector  p0 = SK.GetEntity(hep0)->PointGetNum(), p1 = SK.GetEntity(hep1)->PointGetNum();
+  Vector p0 = SK.GetEntity(hep0)->PointGetNum(), p1 = SK.GetEntity(hep1)->PointGetNum();
 
   // Add the two line segments this one gets split into.
   hRequest r0i = AddRequest(Request::Type::LINE_SEGMENT, /*rememberForUndo=*/false),
@@ -474,7 +474,7 @@ hEntity GraphicsWindow::SplitCircle(hEntity he, Vector pinter) {
     // Start with an unbroken circle, split it into a 360 degree arc.
     Vector center = SK.GetEntity(circle->point[0])->PointGetNum();
 
-    circle      = NULL; // shortly invalid!
+    circle = NULL; // shortly invalid!
     hRequest hr = AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false);
 
     Entity *arc = SK.GetEntity(hr.entity(0));
@@ -488,10 +488,10 @@ hEntity GraphicsWindow::SplitCircle(hEntity he, Vector pinter) {
   } else {
     // Start with an arc, break it in to two arcs
     hEntity hc = circle->point[0], hs = circle->point[1], hf = circle->point[2];
-    Vector  center = SK.GetEntity(hc)->PointGetNum(), start = SK.GetEntity(hs)->PointGetNum(),
+    Vector center = SK.GetEntity(hc)->PointGetNum(), start = SK.GetEntity(hs)->PointGetNum(),
            finish = SK.GetEntity(hf)->PointGetNum();
 
-    circle       = NULL; // shortly invalid!
+    circle = NULL; // shortly invalid!
     hRequest hr0 = AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false),
              hr1 = AddRequest(Request::Type::ARC_OF_CIRCLE, /*rememberForUndo=*/false);
 
@@ -514,19 +514,19 @@ hEntity GraphicsWindow::SplitCircle(hEntity he, Vector pinter) {
 
 hEntity GraphicsWindow::SplitCubic(hEntity he, Vector pinter) {
   // Save the original endpoints, since we're about to delete this entity.
-  Entity     *e01 = SK.GetEntity(he);
+  Entity *e01 = SK.GetEntity(he);
   SBezierList sbl = {};
   e01->GenerateBezierCurves(&sbl);
 
   hEntity hep0 = e01->point[0], hep1 = e01->point[3 + e01->extraPoints],
           hep0n = Entity::NO_ENTITY, // the new start point
-      hep1n     = Entity::NO_ENTITY, // the new finish point
-      hepin     = Entity::NO_ENTITY; // the intersection point
+      hep1n = Entity::NO_ENTITY,     // the new finish point
+      hepin = Entity::NO_ENTITY;     // the intersection point
 
   // The curve may consist of multiple cubic segments. So find which one
   // contains the intersection point.
   double t;
-  int    i, j;
+  int i, j;
   for (i = 0; i < sbl.l.n; i++) {
     SBezier *sb = &(sbl.l[i]);
     ssassert(sb->deg == 3, "Expected a cubic bezier");
@@ -558,7 +558,7 @@ hEntity GraphicsWindow::SplitCubic(hEntity he, Vector pinter) {
       hepin = e0i->point[3];
     } else {
       hRequest r = AddRequest(Request::Type::CUBIC, /*rememberForUndo=*/false);
-      Entity  *e = SK.GetEntity(r.entity(0));
+      Entity *e = SK.GetEntity(r.entity(0));
 
       for (j = 0; j <= 3; j++) {
         SK.GetEntity(e->point[j])->PointForceTo(sb->ctrl[j]);
@@ -578,7 +578,7 @@ hEntity GraphicsWindow::SplitCubic(hEntity he, Vector pinter) {
 }
 
 hEntity GraphicsWindow::SplitEntity(hEntity he, Vector pinter) {
-  Entity      *e          = SK.GetEntity(he);
+  Entity *e = SK.GetEntity(he);
   Entity::Type entityType = e->type;
 
   hEntity ret;
@@ -628,13 +628,13 @@ void GraphicsWindow::SplitLinesOrCurves() {
     return;
   }
 
-  bool    splitAtPoint = (gs.points == 1);
+  bool splitAtPoint = (gs.points == 1);
   hEntity ha = gs.entity[0], hb = splitAtPoint ? gs.point[0] : gs.entity[1];
 
-  Entity     *ea = SK.GetEntity(ha), *eb = SK.GetEntity(hb);
-  SPointList  inters = {};
+  Entity *ea = SK.GetEntity(ha), *eb = SK.GetEntity(hb);
+  SPointList inters = {};
   SBezierList sbla = {}, sblb = {};
-  Vector      pi = Vector::From(0, 0, 0);
+  Vector pi = Vector::From(0, 0, 0);
 
   SK.constraint.ClearTags();
 
@@ -659,7 +659,7 @@ void GraphicsWindow::SplitLinesOrCurves() {
           continue;
         }
 
-        c.tag       = 1;
+        c.tag = 1;
         foundInters = true;
         break;
       }
@@ -673,13 +673,13 @@ void GraphicsWindow::SplitLinesOrCurves() {
 
     // If there's multiple points, then take the one closest to the mouse pointer.
     if (!inters.l.IsEmpty()) {
-      double  dmin = VERY_POSITIVE;
+      double dmin = VERY_POSITIVE;
       SPoint *sp;
       for (sp = inters.l.First(); sp; sp = inters.l.NextAfter(sp)) {
         double d = ProjectPoint(sp->p).DistanceTo(currentMousePosition);
         if (d < dmin) {
           dmin = d;
-          pi   = sp->p;
+          pi = sp->p;
         }
       }
     }

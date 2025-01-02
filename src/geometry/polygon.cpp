@@ -12,21 +12,21 @@
 
 SEdge SEdge::From(Vector a, Vector b) {
   SEdge se = {};
-  se.a     = a;
-  se.b     = b;
+  se.a = a;
+  se.b = b;
   return se;
 }
 
 bool SEdge::EdgeCrosses(Vector ea, Vector eb, Vector *ppi, SPointList *spl) const {
-  Vector d     = eb.Minus(ea);
+  Vector d = eb.Minus(ea);
   double t_eps = LENGTH_EPS / d.Magnitude();
 
   double t, tthis;
-  bool   skew;
+  bool skew;
   Vector pi;
-  bool   inOrEdge0, inOrEdge1;
+  bool inOrEdge0, inOrEdge1;
 
-  Vector dthis     = b.Minus(a);
+  Vector dthis = b.Minus(a);
   double tthis_eps = LENGTH_EPS / dthis.Magnitude();
 
   if ((ea.Equals(a) && eb.Equals(b)) || (eb.Equals(a) && ea.Equals(b))) {
@@ -48,7 +48,7 @@ bool SEdge::EdgeCrosses(Vector ea, Vector eb, Vector *ppi, SPointList *spl) cons
     }
     // The edges are coincident. Make sure that neither endpoint lies
     // on the other
-    bool   inters = false;
+    bool inters = false;
     double t;
     t = a.Minus(ea).DivProjected(d);
     if (t > t_eps && t < (1 - t_eps))
@@ -77,9 +77,9 @@ bool SEdge::EdgeCrosses(Vector ea, Vector eb, Vector *ppi, SPointList *spl) cons
 
   // Lines are not parallel, so look for an intersection.
   VectorAtIntersectionOfLines_ret eeep = VectorAtIntersectionOfLines(ea, eb, a, b, skew);
-  t                                    = eeep.parama;
-  tthis                                = eeep.paramb;
-  pi                                   = eeep.intersectionPoint;
+  t = eeep.parama;
+  tthis = eeep.paramb;
+  pi = eeep.intersectionPoint;
 
   if (eeep.skewed) {
     return false;
@@ -111,11 +111,11 @@ void SEdgeList::Clear() {
 
 void SEdgeList::AddEdge(Vector a, Vector b, int auxA, int auxB, int tag) {
   SEdge e = {};
-  e.tag   = tag;
-  e.a     = a;
-  e.b     = b;
-  e.auxA  = auxA;
-  e.auxB  = auxB;
+  e.tag = tag;
+  e.a = a;
+  e.b = b;
+  e.auxA = auxA;
+  e.auxB = auxB;
   l.Add(&e);
 }
 
@@ -135,14 +135,14 @@ bool SEdgeList::AssembleContour(Vector first, Vector last, SContour *dest, SEdge
 
       if (se->a.Equals(last)) {
         dest->AddPoint(se->b);
-        last    = se->b;
+        last = se->b;
         se->tag = 1;
         break;
       }
       // Don't allow backwards edges if keepDir is true.
       if (!keepDir && se->b.Equals(last)) {
         dest->AddPoint(se->a);
-        last    = se->a;
+        last = se->a;
         se->tag = 1;
         break;
       }
@@ -164,14 +164,14 @@ bool SEdgeList::AssembleContour(Vector first, Vector last, SContour *dest, SEdge
 bool SEdgeList::AssemblePolygon(SPolygon *dest, SEdge *errorAt, bool keepDir) const {
   dest->Clear();
 
-  bool   allClosed = true;
-  Vector first     = Vector::From(0, 0, 0);
-  Vector last      = Vector::From(0, 0, 0);
-  int    i;
+  bool allClosed = true;
+  Vector first = Vector::From(0, 0, 0);
+  Vector last = Vector::From(0, 0, 0);
+  int i;
   for (i = 0; i < l.n; i++) {
     if (!l[i].tag) {
       first = l[i].a;
-      last  = l[i].b;
+      last = l[i].b;
       /// @todo fix const!
       const_cast<SEdge *>(&(l[i]))->tag = 1;
       // Create a new empty contour in our polygon, and finish assembling
@@ -254,22 +254,22 @@ void SEdgeList::CullExtraneousEdges(bool both) {
 //-----------------------------------------------------------------------------
 SKdNodeEdges *SKdNodeEdges::Alloc() {
   SKdNodeEdges *ne = (SKdNodeEdges *)AllocTemporary(sizeof(SKdNodeEdges));
-  *ne              = {};
+  *ne = {};
   return ne;
 }
 SEdgeLl *SEdgeLl::Alloc() {
   SEdgeLl *sell = (SEdgeLl *)AllocTemporary(sizeof(SEdgeLl));
-  *sell         = {};
+  *sell = {};
   return sell;
 }
 SKdNodeEdges *SKdNodeEdges::From(SEdgeList *sel) {
   SEdgeLl *sell = NULL;
-  SEdge   *se;
+  SEdge *se;
   for (se = sel->l.First(); se; se = sel->l.NextAfter(se)) {
     SEdgeLl *n = SEdgeLl::Alloc();
-    n->se      = se;
-    n->next    = sell;
-    sell       = n;
+    n->se = se;
+    n->next = sell;
+    sell = n;
   }
   return SKdNodeEdges::From(sell);
 }
@@ -278,9 +278,9 @@ SKdNodeEdges *SKdNodeEdges::From(SEdgeLl *sell) {
 
   // Compute the midpoints (just mean, though median would be better) of
   // each component.
-  Vector   ptAve = Vector::From(0, 0, 0);
+  Vector ptAve = Vector::From(0, 0, 0);
   SEdgeLl *flip;
-  int      totaln = 0;
+  int totaln = 0;
   for (flip = sell; flip; flip = flip->next) {
     ptAve = ptAve.Plus(flip->se->a);
     ptAve = ptAve.Plus(flip->se->b);
@@ -289,7 +289,7 @@ SKdNodeEdges *SKdNodeEdges::From(SEdgeLl *sell) {
   ptAve = ptAve.ScaledBy(1.0 / (2 * totaln));
 
   // For each component, see how it splits.
-  int    ltln[3] = {0, 0, 0}, gtln[3] = {0, 0, 0};
+  int ltln[3] = {0, 0, 0}, gtln[3] = {0, 0, 0};
   double badness[3];
   for (flip = sell; flip; flip = flip->next) {
     for (int i = 0; i < 3; i++) {
@@ -329,16 +329,16 @@ SKdNodeEdges *SKdNodeEdges::From(SEdgeLl *sell) {
     if (flip->se->a.Element(n->which) < n->c + KDTREE_EPS ||
         flip->se->b.Element(n->which) < n->c + KDTREE_EPS) {
       SEdgeLl *selln = SEdgeLl::Alloc();
-      selln->se      = flip->se;
-      selln->next    = ltl;
-      ltl            = selln;
+      selln->se = flip->se;
+      selln->next = ltl;
+      ltl = selln;
     }
     if (flip->se->a.Element(n->which) > n->c - KDTREE_EPS ||
         flip->se->b.Element(n->which) > n->c - KDTREE_EPS) {
       SEdgeLl *selln = SEdgeLl::Alloc();
-      selln->se      = flip->se;
-      selln->next    = gtl;
-      gtl            = selln;
+      selln->se = flip->se;
+      selln->next = gtl;
+      gtl = selln;
     }
   }
 
@@ -376,7 +376,7 @@ int SKdNodeEdges::AnyEdgeCrossings(Vector a, Vector b, int cnt, Vector *pi, SPoi
 // splits than necessary. Merge any collinear segments that join.
 //-----------------------------------------------------------------------------
 void SEdgeList::MergeCollinearSegments(Vector a, Vector b) {
-  const Vector lineStart     = a;
+  const Vector lineStart = a;
   const Vector lineDirection = b.Minus(a);
   std::sort(l.begin(), l.end(), [&](const SEdge &a, const SEdge &b) {
     double ta = (a.a.Minus(lineStart)).DivProjected(lineDirection);
@@ -392,7 +392,7 @@ void SEdgeList::MergeCollinearSegments(Vector a, Vector b) {
       if ((prev->b).Equals(now.a) && prev->auxA == now.auxA) {
         // The previous segment joins up to us; so merge it into us.
         prev->tag = 1;
-        now.a     = prev->a;
+        now.a = prev->a;
       }
     }
     prev = &now;
@@ -429,21 +429,21 @@ void SPointList::IncrementTagFor(Vector pt) {
     }
   }
   SPoint pa;
-  pa.p   = pt;
+  pa.p = pt;
   pa.tag = 1;
   l.Add(&pa);
 }
 
 void SPointList::Add(Vector pt) {
   SPoint p = {};
-  p.p      = pt;
+  p.p = pt;
   l.Add(&p);
 }
 
 void SContour::AddPoint(Vector p) {
   SPoint sp;
   sp.tag = 0;
-  sp.p   = p;
+  sp.p = p;
 
   l.Add(&sp);
 }
@@ -474,8 +474,8 @@ Vector SContour::ComputeNormal() const {
   Vector n = Vector::From(0, 0, 0);
 
   for (int i = 0; i < l.n - 2; i++) {
-    Vector u  = (l[i + 1].p).Minus(l[i + 0].p).WithMagnitude(1);
-    Vector v  = (l[i + 2].p).Minus(l[i + 1].p).WithMagnitude(1);
+    Vector u = (l[i + 1].p).Minus(l[i + 0].p).WithMagnitude(1);
+    Vector v = (l[i + 2].p).Minus(l[i + 1].p).WithMagnitude(1);
     Vector nt = u.Cross(v);
     if (nt.Magnitude() > n.Magnitude()) {
       n = nt;
@@ -606,7 +606,7 @@ void SPolygon::FixContourDirections() {
     Vector pt = (((sc->l[0]).p).Plus(sc->l[1].p)).ScaledBy(0.5);
 
     sc->timesEnclosed = 0;
-    bool outer        = true;
+    bool outer = true;
     for (j = 0; j < l.n; j++) {
       if (i == j)
         continue;
@@ -644,7 +644,7 @@ bool SPolygon::SelfIntersecting(Vector *intersectsAt) const {
   int cnt = 1;
   el.l.ClearTags();
 
-  bool   ret = false;
+  bool ret = false;
   SEdge *se;
   for (se = el.l.First(); se; se = el.l.NextAfter(se)) {
     int inters = kdtree->AnyEdgeCrossings(se->a, se->b, cnt, intersectsAt);
@@ -661,7 +661,7 @@ bool SPolygon::SelfIntersecting(Vector *intersectsAt) const {
 
 void SPolygon::InverseTransformInto(SPolygon *sp, Vector u, Vector v, Vector n) const {
   for (const SContour &sc : l) {
-    SContour tsc      = {};
+    SContour tsc = {};
     tsc.timesEnclosed = sc.timesEnclosed;
     for (const SPoint &sp : sc.l) {
       tsc.AddPoint(sp.p.DotInToCsys(u, v, n));
@@ -704,17 +704,17 @@ static bool IntersectionOfLines(double x0A, double y0A, double dxA, double dyA, 
   if (std::fabs(dyA) > std::fabs(dyB)) {
     A[0][0] = dyA;
     A[0][1] = -dxA;
-    b[0]    = x0A * dyA - y0A * dxA;
+    b[0] = x0A * dyA - y0A * dxA;
     A[1][0] = dyB;
     A[1][1] = -dxB;
-    b[1]    = x0B * dyB - y0B * dxB;
+    b[1] = x0B * dyB - y0B * dxB;
   } else {
     A[1][0] = dyA;
     A[1][1] = -dxA;
-    b[1]    = x0A * dyA - y0A * dxA;
+    b[1] = x0A * dyA - y0A * dxA;
     A[0][0] = dyB;
     A[0][1] = -dxB;
-    b[0]    = x0B * dyB - y0B * dxB;
+    b[0] = x0B * dyB - y0B * dxB;
   }
 
   // Check the determinant; if it's zero then no solution.
@@ -746,10 +746,10 @@ void SContour::OffsetInto(SContour *dest, double r) const {
     b = l[WRAP(i, (l.n - 1))].p;
     c = l[WRAP(i + 1, (l.n - 1))].p;
 
-    dp     = a.Minus(b);
+    dp = a.Minus(b);
     thetap = atan2(dp.y, dp.x);
 
-    dn     = b.Minus(c);
+    dn = b.Minus(c);
     thetan = atan2(dn.y, dn.x);
 
     // A short line segment in a badly-generated polygon might look

@@ -31,11 +31,11 @@ void SvgFileWriter::StartFile() {
   fprintf(f, "}\r\n");
 
   auto export_style = [&](hStyle hs) {
-    Style         *s            = Style::Get(hs);
-    RgbaColor      strokeRgb    = Style::Color(hs, /*forExport=*/true);
-    RgbaColor      fillRgb      = Style::FillColor(hs, /*forExport=*/true);
-    StipplePattern pattern      = Style::PatternType(hs);
-    double         stippleScale = Style::StippleScaleMm(hs);
+    Style *s = Style::Get(hs);
+    RgbaColor strokeRgb = Style::Color(hs, /*forExport=*/true);
+    RgbaColor fillRgb = Style::FillColor(hs, /*forExport=*/true);
+    StipplePattern pattern = Style::PatternType(hs);
+    double stippleScale = Style::StippleScaleMm(hs);
 
     fprintf(f, ".s%x {\r\n", hs.v);
     fprintf(f, "stroke:#%02x%02x%02x;\r\n", strokeRgb.red, strokeRgb.green, strokeRgb.blue);

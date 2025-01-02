@@ -36,7 +36,7 @@ void SPolygon::UvTriangulateInto(SMesh *m, SSurface *srf) {
 
     // Start with the outer contour
     SContour merged = {};
-    top->tag        = 1;
+    top->tag = 1;
     top->CopyInto(&merged);
     merged.l.RemoveLast(1);
 
@@ -70,7 +70,7 @@ void SPolygon::UvTriangulateInto(SMesh *m, SSurface *srf) {
 
     //        dbp("finished finding holes: %d ms", (int)(GetMilliseconds() - in));
     for (;;) {
-      double    xmin  = 1e10;
+      double xmin = 1e10;
       SContour *scmin = NULL;
 
       for (sc = l.First(); sc; sc = l.NextAfter(sc)) {
@@ -78,7 +78,7 @@ void SPolygon::UvTriangulateInto(SMesh *m, SSurface *srf) {
           continue;
 
         if (sc->xminPt.x < xmin) {
-          xmin  = sc->xminPt.x;
+          xmin = sc->xminPt.x;
           scmin = sc;
         }
       }
@@ -112,7 +112,7 @@ void SPolygon::UvTriangulateInto(SMesh *m, SSurface *srf) {
 }
 
 bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector> *avoidPts) {
-  int  i, j;
+  int i, j;
   bool withbridge = true;
 
   // Start looking for a bridge on our new hole near its leftmost (min x)
@@ -126,13 +126,13 @@ bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector>
 
   // And start looking on our merged contour at whichever point is nearest
   // to the leftmost point of the new segment.
-  int    thiso = 0;
-  double dmin  = 1e10;
+  int thiso = 0;
+  double dmin = 1e10;
   for (i = 0; i < l.n - 1; i++) {
     Vector p = l[i].p;
     double d = (p.Minus(sc->xminPt)).MagSquared();
     if (d < dmin) {
-      dmin  = d;
+      dmin = d;
       thiso = i;
     }
   }
@@ -145,7 +145,7 @@ bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector>
   // merge them there, without a bridge.
   for (i = 0; i < l.n; i++) {
     thisp = WRAP(i + thiso, l.n - 1);
-    a     = l[thisp].p;
+    a = l[thisp].p;
 
     for (f = avoidPts->First(); f; f = avoidPts->NextAfter(f)) {
       if (f->Equals(a))
@@ -156,7 +156,7 @@ bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector>
 
     for (j = 0; j < (sc->l.n - 1); j++) {
       scp = WRAP(j + sco, (sc->l.n - 1));
-      b   = sc->l[scp].p;
+      b = sc->l[scp].p;
 
       if (a.Equals(b)) {
         withbridge = false;
@@ -168,7 +168,7 @@ bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector>
   // If that fails, look for a bridge that does not intersect any edges.
   for (i = 0; i < l.n; i++) {
     thisp = WRAP(i + thiso, l.n);
-    a     = l[thisp].p;
+    a = l[thisp].p;
 
     for (f = avoidPts->First(); f; f = avoidPts->NextAfter(f)) {
       if (f->Equals(a))
@@ -179,7 +179,7 @@ bool SContour::BridgeToContour(SContour *sc, SEdgeList *avoidEdges, List<Vector>
 
     for (j = 0; j < (sc->l.n - 1); j++) {
       scp = WRAP(j + sco, (sc->l.n - 1));
-      b   = sc->l[scp].p;
+      b = sc->l[scp].p;
 
       for (f = avoidPts->First(); f; f = avoidPts->NextAfter(f)) {
         if (f->Equals(b))
@@ -233,9 +233,9 @@ haveEdge:
 
 bool SContour::IsEmptyTriangle(int ap, int bp, int cp, double scaledEPS) const {
   STriangle tr = STriangle();
-  tr.a         = l[ap].p;
-  tr.b         = l[bp].p;
-  tr.c         = l[cp].p;
+  tr.a = l[ap].p;
+  tr.b = l[bp].p;
+  tr.c = l[cp].p;
 
   // Accelerate with an axis-aligned bounding box test
   Vector maxv = tr.a, minv = tr.a;
@@ -298,9 +298,9 @@ bool SContour::IsEar(int bp, double scaledEps) const {
   int ap = WRAP(bp - 1, l.n), cp = WRAP(bp + 1, l.n);
 
   STriangle tr = STriangle();
-  tr.a         = l[ap].p;
-  tr.b         = l[bp].p;
-  tr.c         = l[cp].p;
+  tr.a = l[ap].p;
+  tr.b = l[bp].p;
+  tr.c = l[cp].p;
 
   if ((tr.a).Equals(tr.c)) {
     // This is two coincident and anti-parallel edges. Zero-area, so
@@ -339,8 +339,8 @@ bool SContour::IsEar(int bp, double scaledEps) const {
     // points coincident with bp have to be allowed for bridges but edges
     // from that other point must not cross through our triangle.
     if (p.EqualsExactly(tr.b)) {
-      int    j  = WRAP(i - 1, l.n);
-      int    k  = WRAP(i + 1, l.n);
+      int j = WRAP(i - 1, l.n);
+      int k = WRAP(i + 1, l.n);
       Vector jp = l[j].p;
       Vector kp = l[k].p;
 
@@ -363,9 +363,9 @@ void SContour::ClipEarInto(SMesh *m, int bp, double scaledEps) {
   int ap = WRAP(bp - 1, l.n), cp = WRAP(bp + 1, l.n);
 
   STriangle tr = STriangle();
-  tr.a         = l[ap].p;
-  tr.b         = l[bp].p;
-  tr.c         = l[cp].p;
+  tr.a = l[ap].p;
+  tr.b = l[bp].p;
+  tr.c = l[cp].p;
   if (tr.Normal().MagSquared() < scaledEps * scaledEps) {
     // A vertex with more than two edges will cause us to generate
     // zero-area triangles, which must be culled.
@@ -411,22 +411,22 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
   // Handle simple triangle fans all at once. This pass is optional.
   if (srf->degm == 1 && srf->degn == 1) {
     l.ClearTags();
-    int    j       = 0;
-    int    pstart  = 0;
-    double elen    = -1.0;
+    int j = 0;
+    int pstart = 0;
+    double elen = -1.0;
     double oldspan = 0.0;
     for (i = 1; i < l.n; i++) {
       Vector ab = l[i].p.Minus(l[i - 1].p);
       // first time just measure the segment
       if (elen < 0.0) {
-        elen    = ab.Dot(ab);
+        elen = ab.Dot(ab);
         oldspan = elen;
-        j       = 1;
+        j = 1;
         continue;
       }
       // check for consecutive segments of similar size which are also
       // ears and where the group forms a convex ear
-      bool   end   = false;
+      bool end = false;
       double ratio = ab.Dot(ab) / elen;
       if ((ratio < 0.25) || (ratio > 4.0))
         end = true;
@@ -454,24 +454,24 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
           Vector center = l[pstart + 1].p.Plus(l[pstart + j - 1].p).ScaledBy(0.5);
           for (int x = 0; x < j; x++) {
             STriangle tr = STriangle();
-            tr.a         = center;
-            tr.b         = l[pstart + x].p;
-            tr.c         = l[pstart + x + 1].p;
+            tr.a = center;
+            tr.b = l[pstart + x].p;
+            tr.c = l[pstart + x + 1].p;
             m->AddTriangle(&tr);
           }
           for (int x = 1; x < j; x++) {
             l[pstart + x].tag = 1;
           }
           STriangle tr = STriangle();
-          tr.a         = center;
-          tr.b         = l[pstart + j].p;
-          tr.c         = l[pstart].p;
+          tr.a = center;
+          tr.b = l[pstart + j].p;
+          tr.c = l[pstart].p;
           m->AddTriangle(&tr);
         }
-        pstart  = i - 1;
-        elen    = ab.Dot(ab);
+        pstart = i - 1;
+        elen = ab.Dot(ab);
         oldspan = elen;
-        j       = 1;
+        j = 1;
       }
     }
     l.RemoveTagged();
@@ -479,11 +479,11 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
 
   bool toggle = false;
   while (l.n > 3) {
-    int    bestEar      = -1;
+    int bestEar = -1;
     double bestChordTol = VERY_POSITIVE;
     // Alternate the starting position so we generate strip-like
     // triangulations instead of fan-like
-    toggle     = !toggle;
+    toggle = !toggle;
     int offset = toggle ? -1 : 0;
     for (i = 0; i < l.n; i++) {
       int ear = WRAP(i + offset, l.n);
@@ -502,7 +502,7 @@ void SContour::UvTriangulateInto(SMesh *m, SSurface *srf) {
         Vector prev = l[WRAP((i + offset - 1), l.n)].p, next = l[WRAP((i + offset + 1), l.n)].p;
         double tol = srf->ChordToleranceForEdge(prev, next);
         if (tol < bestChordTol - scaledEps) {
-          bestEar      = ear;
+          bestEar = ear;
           bestChordTol = tol;
         }
         if (bestChordTol < 0.1 * SS.ChordTolMm()) {
@@ -524,13 +524,13 @@ double SSurface::ChordToleranceForEdge(Vector a, Vector b) const {
   Vector as = PointAt(a.x, a.y), bs = PointAt(b.x, b.y);
 
   double worst = VERY_NEGATIVE;
-  int    i;
+  int i;
   for (i = 1; i <= 3; i++) {
-    Vector p  = a.Plus((b.Minus(a)).ScaledBy(i / 4.0)),
+    Vector p = a.Plus((b.Minus(a)).ScaledBy(i / 4.0)),
            ps = as.Plus((bs.Minus(as)).ScaledBy(i / 4.0));
 
     Vector pps = PointAt(p.x, p.y);
-    worst      = std::max(worst, (pps.Minus(ps)).MagSquared());
+    worst = std::max(worst, (pps.Minus(ps)).MagSquared());
   }
   return sqrt(worst);
 }
@@ -560,7 +560,7 @@ void SSurface::MakeTriangulationGridInto(List<double> *l, double vs, double vf, 
   // Try piecewise linearizing four curves, at u = 0, 1/3, 2/3, 1; choose
   // the worst chord tolerance of any of those.
   double worst_twist = 1.0;
-  int    i;
+  int i;
   for (i = 0; i <= 3; i++) {
     double u = i / 3.0;
 
@@ -606,8 +606,8 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
   // Build a rectangular grid, with horizontal and vertical lines in the
   // uv plane. The spacing of these lines is adaptive, so calculate that.
   List<double> li, lj;
-  li          = {};
-  lj          = {};
+  li = {};
+  lj = {};
   double v[5] = {0.0, 0.25, 0.5, 0.75, 1.0};
   li.Add(&v[0]);
   srf->MakeTriangulationGridInto(&li, 0, 1, /*swapped=*/true, 0);
@@ -638,12 +638,12 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
     // generate two triangles in the mesh, and cut it out of our polygon.
     // Quads around the perimeter would be rejected by AnyEdgeCrossings.
     std::vector<bool> bottom(lj.n, false); // did we use this quad?
-    Vector            tu = Vector(0, 0, 0), tv = Vector(0, 0, 0);
-    int               i, j;
+    Vector tu = Vector(0, 0, 0), tv = Vector(0, 0, 0);
+    int i, j;
     for (i = 1; i < (li.n - 1); i++) {
       bool prev_flag = false;
       for (j = 1; j < (lj.n - 1); j++) {
-        bool   this_flag = true;
+        bool this_flag = true;
         double us = li[i], uf = li[i + 1], vs = lj[j], vf = lj[j + 1];
 
         Vector a = Vector(us, vs, 0), b = Vector(us, vf, 0), c = Vector(uf, vf, 0),
@@ -677,9 +677,9 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
                "orientations" when the tangents are orthogonal (revolve, lathe etc.)
                this results in a higher quality mesh. */
             STriangle tr = STriangle();
-            tr.a         = a;
-            tr.b         = b;
-            tr.c         = c;
+            tr.a = a;
+            tr.b = b;
+            tr.c = c;
             mesh->AddTriangle(&tr);
             tr.a = a;
             tr.b = c;
@@ -687,9 +687,9 @@ void SPolygon::UvGridTriangulateInto(SMesh *mesh, SSurface *srf) {
             mesh->AddTriangle(&tr);
           } else {
             STriangle tr = STriangle();
-            tr.a         = a;
-            tr.b         = b;
-            tr.c         = d;
+            tr.a = a;
+            tr.b = b;
+            tr.c = d;
             mesh->AddTriangle(&tr);
             tr.a = b;
             tr.b = c;
@@ -741,7 +741,7 @@ void SPolygon::TriangulateInto(SMesh *m) const {
 
   SSurface srf = SSurface::FromPlane(Vector::From(0.0, 0.0, 0.0), Vector::From(1.0, 0.0, 0.0),
                                      Vector::From(0.0, 1.0, 0.0));
-  SMesh    pm  = {};
+  SMesh pm = {};
   p.UvTriangulateInto(&pm, &srf);
   for (STriangle st : pm.l) {
     st = st.Transform(u, v, n);

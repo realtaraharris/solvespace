@@ -11,14 +11,14 @@ void Sketch::Clear() {
 }
 
 BBox Sketch::CalculateEntityBBox(bool includingInvisible) {
-  BBox box   = {};
+  BBox box = {};
   bool first = true;
 
   auto includePoint = [&](const Vector &point) {
     if (first) {
       box.minp = point;
       box.maxp = point;
-      first    = false;
+      first = false;
     } else {
       box.Include(point);
     }

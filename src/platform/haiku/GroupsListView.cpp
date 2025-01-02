@@ -34,8 +34,8 @@ void GroupsListView::MoveItems(BList &items, int32 toIndex) {
 
   int32 count = items.CountItems();
   for (int32 i = 0; i < count; i++) {
-    BListItem *item      = (BListItem *)items.ItemAt(i);
-    int32      fromIndex = IndexOf(item);
+    BListItem *item = (BListItem *)items.ItemAt(i);
+    int32 fromIndex = IndexOf(item);
 
     dbp("moving fromIndex: %d, toIndex: %d\n", fromIndex, toIndex);
   }

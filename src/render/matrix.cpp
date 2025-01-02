@@ -1,16 +1,16 @@
 void MakeMatrix(double *mat, double a11, double a12, double a13, double a14, double a21, double a22,
                 double a23, double a24, double a31, double a32, double a33, double a34, double a41,
                 double a42, double a43, double a44) {
-  mat[0]  = a11;
-  mat[1]  = a21;
-  mat[2]  = a31;
-  mat[3]  = a41;
-  mat[4]  = a12;
-  mat[5]  = a22;
-  mat[6]  = a32;
-  mat[7]  = a42;
-  mat[8]  = a13;
-  mat[9]  = a23;
+  mat[0] = a11;
+  mat[1] = a21;
+  mat[2] = a31;
+  mat[3] = a41;
+  mat[4] = a12;
+  mat[5] = a22;
+  mat[6] = a32;
+  mat[7] = a42;
+  mat[8] = a13;
+  mat[9] = a23;
   mat[10] = a33;
   mat[11] = a43;
   mat[12] = a14;

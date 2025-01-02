@@ -12,13 +12,13 @@
 // we will check for duplicate vertices and keep all their normals
 class vertex {
   public:
-  Vector              p;
+  Vector p;
   std::vector<Vector> normal;
 };
 
 static bool isEdgeVertex(vertex &v) {
   unsigned int i, j;
-  bool         result = false;
+  bool result = false;
   for (i = 0; i < v.normal.size(); i++) {
     for (j = i; j < v.normal.size(); j++) {
       if (v.normal[i].Dot(v.normal[j]) < 0.9) {
@@ -47,19 +47,19 @@ static void addUnique(std::vector<vertex> &lv, Vector &p, Vector &n) {
 
 // Make a new point - type doesn't matter since we will make a copy later
 static hEntity newPoint(EntityList *el, int *id, Vector p) {
-  Entity en       = {};
-  en.type         = Entity::Type::POINT_N_COPY;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::POINT_N_COPY;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 462;
-  en.actPoint     = p;
+  en.group.v = 462;
+  en.actPoint = p;
   en.construction = false;
-  en.style.v      = Style::DATUM;
-  en.actVisible   = true;
-  en.forceHidden  = false;
+  en.style.v = Style::DATUM;
+  en.actVisible = true;
+  en.forceHidden = false;
 
   en.h.v = *id + en.group.v * 65536;
-  *id    = *id + 1;
+  *id = *id + 1;
   el->Add(&en);
   return en.h;
 }
@@ -74,41 +74,41 @@ static void addVertex(EntityList *el, Vector v) {
 
 static hEntity newNormal(EntityList *el, int *id, Quaternion normal, hEntity p) {
   // normals have parameters, but we don't need them to make a NORMAL_N_COPY from this
-  Entity en       = {};
-  en.type         = Entity::Type::NORMAL_N_COPY;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::NORMAL_N_COPY;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 472;
-  en.actNormal    = normal;
+  en.group.v = 472;
+  en.actNormal = normal;
   en.construction = false;
-  en.style.v      = Style::NORMALS;
+  en.style.v = Style::NORMALS;
   // to be visible we need to add a point.
   //    en.point[0] = newPoint(el, id, Vector::From(0,0,0));
-  en.point[0]    = p;
-  en.actVisible  = true;
+  en.point[0] = p;
+  en.actVisible = true;
   en.forceHidden = false;
 
-  *id    = *id + 1;
+  *id = *id + 1;
   en.h.v = *id + en.group.v * 65536;
   el->Add(&en);
   return en.h;
 }
 
 static hEntity newLine(EntityList *el, int *id, hEntity p0, hEntity p1) {
-  Entity en       = {};
-  en.type         = Entity::Type::LINE_SEGMENT;
-  en.point[0]     = p0;
-  en.point[1]     = p1;
-  en.extraPoints  = 0;
+  Entity en = {};
+  en.type = Entity::Type::LINE_SEGMENT;
+  en.point[0] = p0;
+  en.point[1] = p1;
+  en.extraPoints = 0;
   en.timesApplied = 0;
-  en.group.v      = 493;
+  en.group.v = 493;
   en.construction = true;
-  en.style.v      = Style::CONSTRUCTION;
-  en.actVisible   = true;
-  en.forceHidden  = false;
+  en.style.v = Style::CONSTRUCTION;
+  en.actVisible = true;
+  en.forceHidden = false;
 
   en.h.v = *id + en.group.v * 65536;
-  *id    = *id + 1;
+  *id = *id + 1;
   el->Add(&en);
   return en.h;
 }
@@ -181,14 +181,14 @@ namespace SolveSpace {
 
       f.read((char *)&color, 2);
       if (color & 0x8000) {
-        tr.meta.color.red   = (color >> 7) & 0xf8;
+        tr.meta.color.red = (color >> 7) & 0xf8;
         tr.meta.color.green = (color >> 2) & 0xf8;
-        tr.meta.color.blue  = (color << 3);
+        tr.meta.color.blue = (color << 3);
         tr.meta.color.alpha = 255;
       } else {
-        tr.meta.color.red   = 90;
+        tr.meta.color.red = 90;
         tr.meta.color.green = 120;
-        tr.meta.color.blue  = 140;
+        tr.meta.color.blue = 140;
         tr.meta.color.alpha = 255;
       }
 

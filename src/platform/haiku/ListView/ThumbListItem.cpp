@@ -8,18 +8,18 @@
 
 ThumbListItem::ThumbListItem(BBitmap *thumb, const char *text, int32 w, int level, bool expanded)
     : BListItem(level, expanded) {
-  width   = w;
+  width = w;
   f_thumb = 0;
-  BFont       font(be_plain_font);
+  BFont font(be_plain_font);
   font_height FontAttributes;
   be_plain_font->GetHeight(&FontAttributes);
   float FontHeight = ceil(FontAttributes.ascent) + ceil(FontAttributes.descent);
-  float Width      = font.StringWidth(text);
+  float Width = font.StringWidth(text);
 
   if (thumb != NULL) {
-    Width      = thumb->Bounds().Width() + 8;
+    Width = thumb->Bounds().Width() + 8;
     BRect rect = thumb->Bounds();
-    icon       = new BBitmap(rect, B_RGBA32);
+    icon = new BBitmap(rect, B_RGBA32);
     if ((thumb->BytesPerRow() == icon->BytesPerRow()) &&
         (thumb->BitsLength() == icon->BitsLength())) {
       memcpy(icon->Bits(), thumb->Bits(), thumb->BitsLength());
@@ -43,11 +43,11 @@ ThumbListItem::~ThumbListItem() {
 }
 
 void ThumbListItem::ChangeIcon(ThumbListItem *item, BBitmap *micon) {
-  BFont       font(be_plain_font);
+  BFont font(be_plain_font);
   font_height FontAttributes;
   be_plain_font->GetHeight(&FontAttributes);
   float FontHeight = ceil(FontAttributes.ascent) + ceil(FontAttributes.descent);
-  float Width      = font.StringWidth(label.String());
+  float Width = font.StringWidth(label.String());
 
   if (item->icon != NULL) {
     delete item->icon;
@@ -82,8 +82,8 @@ void ThumbListItem::DrawItem(BView *view, BRect frame, bool complete) {
   BString truncatedString(label);
   view->TruncateString(&truncatedString, B_TRUNCATE_MIDDLE, frame.Width() - TEXT_OFFSET - 4.0);
 
-  float  height     = frame.Height();
-  float  textHeight = fh.ascent + fh.descent;
+  float height = frame.Height();
+  float textHeight = fh.ascent + fh.descent;
   BPoint textPoint;
   textPoint.x = frame.left + TEXT_OFFSET;
   textPoint.y = frame.top + ceilf(height / 2.0 - textHeight / 2.0 + fh.ascent);

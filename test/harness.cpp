@@ -22,10 +22,10 @@ namespace SolveSpace {
 
 #ifdef TEST_BUILD_ON_WINDOWS
 static const char *VALID_BUILD_PATH_SEPS = "/\\";
-static char        BUILD_PATH_SEP        = '\\';
+static char BUILD_PATH_SEP = '\\';
 #else
 static const char *VALID_BUILD_PATH_SEPS = "/";
-static char        BUILD_PATH_SEP        = '/';
+static char BUILD_PATH_SEP = '/';
 #endif
 
 static std::string BuildRoot() {
@@ -95,7 +95,7 @@ static std::string PrepareSavefile(std::string data) {
 
     size_t eqPos = data.find('=', lineBegin);
     if (eqPos < nextLineBegin) {
-      std::string key   = data.substr(lineBegin, eqPos - lineBegin),
+      std::string key = data.substr(lineBegin, eqPos - lineBegin),
                   value = data.substr(eqPos + 1, nextLineBegin - eqPos - 2);
 
       for (int i = 0; SolveSpaceUI::SAVED[i].type != 0; i++) {
@@ -103,8 +103,8 @@ static std::string PrepareSavefile(std::string data) {
           continue;
         if (SolveSpaceUI::SAVED[i].desc != key)
           continue;
-        double f             = strtod(value.c_str(), NULL);
-        f                    = round(f * precision) / precision;
+        double f = strtod(value.c_str(), NULL);
+        f = round(f * precision) / precision;
         std::string newValue = ssprintf("%.20f", f);
         ssassert(value.size() == newValue.size(), "Expected no change in value length");
         std::copy(newValue.begin(), newValue.end(), data.begin() + eqPos + 1);
@@ -196,14 +196,14 @@ bool Test::Helper::CheckEqualEpsilon(const char *file, int line, const char *val
 bool Test::Helper::CheckLoad(const char *file, int line, const char *fixture) {
   Platform::Path fixturePath = GetAssetPath(file, fixture);
 
-  FILE *f             = OpenFile(fixturePath, "rb");
-  bool  fixtureExists = (f != NULL);
+  FILE *f = OpenFile(fixturePath, "rb");
+  bool fixtureExists = (f != NULL);
   if (f)
     fclose(f);
 
   bool result = fixtureExists && SS.LoadFromFile(fixturePath);
 
-  hGroup activeGroup  = *SK.groupOrder.Last();
+  hGroup activeGroup = *SK.groupOrder.Last();
   SS.GW.activeGroup.v = activeGroup.v;
 
   if (!RecordCheck(result)) {
@@ -212,7 +212,7 @@ bool Test::Helper::CheckLoad(const char *file, int line, const char *fixture) {
   } else {
     SS.AfterNewFile();
     SS.GW.offset = Vector(0, 0, 0);
-    SS.GW.scale  = 10.0;
+    SS.GW.scale = 10.0;
     return true;
   }
 }
@@ -238,14 +238,14 @@ bool Test::Helper::CheckSave(const char *file, int line, const char *reference) 
 }
 
 bool Test::Helper::CheckRender(const char *file, int line, const char *reference) {
-  Camera camera     = {};
+  Camera camera = {};
   camera.pixelRatio = 1;
-  camera.gridFit    = true;
-  camera.width      = 600;
-  camera.height     = 600;
-  camera.projUp     = SS.GW.projUp;
-  camera.projRight  = SS.GW.projRight;
-  camera.scale      = 10.0;
+  camera.gridFit = true;
+  camera.width = 600;
+  camera.height = 600;
+  camera.projUp = SS.GW.projUp;
+  camera.projRight = SS.GW.projRight;
+  camera.scale = 10.0;
 
   SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
   std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->SetLighting(SS.GW.GetLighting());
@@ -260,8 +260,8 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
   std::shared_ptr<Pixmap> frame = SS.GW.canvas.get()->ReadFrame();
 
   // Now, diff framebuffer against reference render.
-  Platform::Path refPath  = GetAssetPath(file, reference),
-                 outPath  = GetAssetPath(file, reference, "out"),
+  Platform::Path refPath = GetAssetPath(file, reference),
+                 outPath = GetAssetPath(file, reference, "out"),
                  diffPath = GetAssetPath(file, reference, "diff");
 
   std::shared_ptr<Pixmap> refPixmap = Pixmap::ReadPng(refPath, /*flip=*/true);
@@ -306,20 +306,20 @@ bool Test::Helper::CheckRender(const char *file, int line, const char *reference
 
 bool Test::Helper::CheckRenderXY(const char *file, int line, const char *fixture) {
   SS.GW.projRight = Vector::From(1, 0, 0);
-  SS.GW.projUp    = Vector::From(0, 1, 0);
+  SS.GW.projUp = Vector::From(0, 1, 0);
   return CheckRender(file, line, fixture);
 }
 
 bool Test::Helper::CheckRenderIso(const char *file, int line, const char *fixture) {
   SS.GW.projRight = Vector::From(0.707, 0.000, -0.707);
-  SS.GW.projUp    = Vector::From(-0.408, 0.816, -0.408);
+  SS.GW.projUp = Vector::From(-0.408, 0.816, -0.408);
   return CheckRender(file, line, fixture);
 }
 
 // Avoid global constructors; using a global static vector instead of a local one
 // breaks MinGW for some obscure reason.
 static std::vector<Test::Case> *testCasesPtr;
-int                             Test::Case::Register(Test::Case testCase) {
+int Test::Case::Register(Test::Case testCase) {
   static std::vector<Test::Case> testCases;
   testCases.push_back(testCase);
   testCasesPtr = &testCases;
@@ -343,7 +343,7 @@ int main(int argc, char **argv) {
   // Wreck order dependencies between tests!
   std::random_shuffle(testCasesPtr->begin(), testCasesPtr->end());
 
-  auto   testStartTime = std::chrono::steady_clock::now();
+  auto testStartTime = std::chrono::steady_clock::now();
   size_t ranTally = 0, skippedTally = 0, checkTally = 0, failTally = 0;
   for (Test::Case &testCase : *testCasesPtr) {
     std::string testCaseName = testCase.fileName;
@@ -361,7 +361,7 @@ int main(int argc, char **argv) {
     SS.GW.Init(600, 600, 1.0);
     SS.GW.overrideCamera = true;
 
-    SS.showToolbar        = false;
+    SS.showToolbar = false;
     SS.checkClosedContour = false;
 
     Test::Helper helper = {};
@@ -385,8 +385,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  auto                          testEndTime = std::chrono::steady_clock::now();
-  std::chrono::duration<double> testTime    = testEndTime - testStartTime;
+  auto testEndTime = std::chrono::steady_clock::now();
+  std::chrono::duration<double> testTime = testEndTime - testStartTime;
 
   if (failTally > 0) {
     fprintf(stderr, "Failure! %u checks failed\n", (unsigned)failTally);

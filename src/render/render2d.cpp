@@ -99,11 +99,11 @@ namespace SolveSpace {
   void SurfaceRenderer::DrawPoint(const Vector &o, Canvas::hStroke hcs) {
     Stroke *stroke = strokes.FindById(hcs);
 
-    Fill fill   = {};
-    fill.layer  = stroke->layer;
+    Fill fill = {};
+    fill.layer = stroke->layer;
     fill.zIndex = stroke->zIndex;
-    fill.color  = stroke->color;
-    hFill hcf   = GetFill(fill);
+    fill.color = stroke->color;
+    hFill hcf = GetFill(fill);
 
     Vector u = camera.projRight.ScaledBy(stroke->width / 2.0 / camera.scale),
            v = camera.projUp.ScaledBy(stroke->width / 2.0 / camera.scale);
@@ -132,13 +132,13 @@ namespace SolveSpace {
       if (CanOutputTriangles() && fill->layer == Layer::NORMAL) {
         if (fill->color.IsEmpty()) {
           // Compute lighting, since we're going to draw the shaded triangles.
-          Vector n         = tr.Normal().WithMagnitude(1);
+          Vector n = tr.Normal().WithMagnitude(1);
           double intensity = lighting.ambientIntensity +
                              std::max(0.0, (lighting.lightIntensity[0]) * (n.Dot(l0))) +
                              std::max(0.0, (lighting.lightIntensity[1]) * (n.Dot(l1)));
-          double r      = std::min(1.0, tr.meta.color.redF() * intensity),
-                 g      = std::min(1.0, tr.meta.color.greenF() * intensity),
-                 b      = std::min(1.0, tr.meta.color.blueF() * intensity);
+          double r = std::min(1.0, tr.meta.color.redF() * intensity),
+                 g = std::min(1.0, tr.meta.color.greenF() * intensity),
+                 b = std::min(1.0, tr.meta.color.blueF() * intensity);
           tr.meta.color = RGBf(r, g, b);
         } else {
           // We're going to draw this triangle, but it's not shaded.
@@ -221,8 +221,8 @@ namespace SolveSpace {
 
   void SurfaceRenderer::ConvertBeziersToEdges() {
     for (auto &it : beziers) {
-      hStroke      hcs = it.first;
-      SBezierList &bl  = it.second;
+      hStroke hcs = it.first;
+      SBezierList &bl = it.second;
 
       SEdgeList &el = edges[hcs];
       for (const SBezier &b : bl.l) {
@@ -256,8 +256,8 @@ namespace SolveSpace {
 
     int cnt = 1234;
     for (auto &eit : edges) {
-      hStroke    hcs = eit.first;
-      SEdgeList &el  = eit.second;
+      hStroke hcs = eit.first;
+      SEdgeList &el = eit.second;
 
       Stroke *stroke = strokes.FindById(hcs);
       if (stroke->layer != Layer::NORMAL && stroke->layer != Layer::OCCLUDED)
@@ -303,7 +303,7 @@ namespace SolveSpace {
     std::sort(paintOrder.begin(), paintOrder.end(),
               [&](std::pair<Layer, int> a, std::pair<Layer, int> b) {
                 Layer aLayer = a.first, bLayer = b.first;
-                int   aZIndex = a.second, bZIndex = b.second;
+                int aZIndex = a.second, bZIndex = b.second;
 
                 size_t aLayerIndex =
                     std::find(std::begin(stackup), std::end(stackup), aLayer) - std::begin(stackup);
@@ -322,11 +322,11 @@ namespace SolveSpace {
     // Output geometry in paint order.
     OutputStart();
     for (auto &it : paintOrder) {
-      Layer layer  = it.first;
-      int   zIndex = it.second;
+      Layer layer = it.first;
+      int zIndex = it.second;
 
       if (layer == Layer::NORMAL && zIndex == 0) {
-        SMesh  mp  = {};
+        SMesh mp = {};
         SBsp3 *bsp = SBsp3::FromMesh(&mesh);
         if (bsp)
           bsp->GenerateInPaintOrder(&mp);
@@ -344,8 +344,8 @@ namespace SolveSpace {
       }
 
       for (auto eit : edges) {
-        hStroke          hcs = eit.first;
-        const SEdgeList &el  = eit.second;
+        hStroke hcs = eit.first;
+        const SEdgeList &el = eit.second;
 
         Stroke *stroke = strokes.FindById(hcs);
         if (stroke->layer != layer || stroke->zIndex != zIndex)
@@ -357,8 +357,8 @@ namespace SolveSpace {
       }
 
       for (auto &bit : beziers) {
-        hStroke            hcs = bit.first;
-        const SBezierList &bl  = bit.second;
+        hStroke hcs = bit.first;
+        const SBezierList &bl = bit.second;
 
         Stroke *stroke = strokes.FindById(hcs);
         if (stroke->layer != layer || stroke->zIndex != zIndex)

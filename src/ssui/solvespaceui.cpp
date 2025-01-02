@@ -24,9 +24,9 @@ void SolveSpaceUI::Init() {
 
   Platform::SettingsRef settings = Platform::GetSettings();
 
-  okayToStartNewFile  = true;
+  okayToStartNewFile = true;
   SS.tangentArcRadius = 10.0;
-  SS.explodeDistance  = 1.0;
+  SS.explodeDistance = 1.0;
 
   // Then, load the registry settings.
   // Default list of colors for the model material
@@ -41,7 +41,7 @@ void SolveSpaceUI::Init() {
   // Light intensities
   lightIntensity[0] = settings->ThawFloat("LightIntensity_0", 1.0);
   lightIntensity[1] = settings->ThawFloat("LightIntensity_1", 0.5);
-  ambientIntensity  = settings->ThawFloat("Light_Ambient", 0.3);
+  ambientIntensity = settings->ThawFloat("Light_Ambient", 0.3);
   // Light positions
   lightDir[0].x = settings->ThawFloat("LightDir_0_Right", -1.0);
   lightDir[0].y = settings->ThawFloat("LightDir_0_Up", 1.0);
@@ -64,10 +64,10 @@ void SolveSpaceUI::Init() {
   // View units
   viewUnits = (Unit)settings->ThawInt("ViewUnits", (uint32_t)Unit::MM);
   // Number of digits after the decimal point
-  afterDecimalMm     = settings->ThawInt("AfterDecimalMm", 2);
-  afterDecimalInch   = settings->ThawInt("AfterDecimalInch", 3);
+  afterDecimalMm = settings->ThawInt("AfterDecimalMm", 2);
+  afterDecimalInch = settings->ThawInt("AfterDecimalInch", 3);
   afterDecimalDegree = settings->ThawInt("AfterDecimalDegree", 2);
-  useSIPrefixes      = settings->ThawBool("UseSIPrefixes", false);
+  useSIPrefixes = settings->ThawBool("UseSIPrefixes", false);
   // Camera tangent (determines perspective)
   cameraTangent = settings->ThawFloat("CameraTangent", 0.3f / 1e3);
   // Grid spacing
@@ -101,20 +101,20 @@ void SolveSpaceUI::Init() {
   // Whether export canvas size is fixed or derived from bbox
   exportCanvasSizeAuto = settings->ThawBool("ExportCanvasSizeAuto", true);
   // Margins for automatic canvas size
-  exportMargin.left   = settings->ThawFloat("ExportMargin_Left", 5.0);
-  exportMargin.right  = settings->ThawFloat("ExportMargin_Right", 5.0);
+  exportMargin.left = settings->ThawFloat("ExportMargin_Left", 5.0);
+  exportMargin.right = settings->ThawFloat("ExportMargin_Right", 5.0);
   exportMargin.bottom = settings->ThawFloat("ExportMargin_Bottom", 5.0);
-  exportMargin.top    = settings->ThawFloat("ExportMargin_Top", 5.0);
+  exportMargin.top = settings->ThawFloat("ExportMargin_Top", 5.0);
   // Dimensions for fixed canvas size
-  exportCanvas.width  = settings->ThawFloat("ExportCanvas_Width", 100.0);
+  exportCanvas.width = settings->ThawFloat("ExportCanvas_Width", 100.0);
   exportCanvas.height = settings->ThawFloat("ExportCanvas_Height", 100.0);
-  exportCanvas.dx     = settings->ThawFloat("ExportCanvas_Dx", 5.0);
-  exportCanvas.dy     = settings->ThawFloat("ExportCanvas_Dy", 5.0);
+  exportCanvas.dx = settings->ThawFloat("ExportCanvas_Dx", 5.0);
+  exportCanvas.dy = settings->ThawFloat("ExportCanvas_Dy", 5.0);
   // Extra parameters when exporting G code
-  gCode.depth      = settings->ThawFloat("GCode_Depth", 10.0);
+  gCode.depth = settings->ThawFloat("GCode_Depth", 10.0);
   gCode.safeHeight = settings->ThawFloat("GCode_SafeHeight", 5.0);
-  gCode.passes     = settings->ThawInt("GCode_Passes", 1);
-  gCode.feed       = settings->ThawFloat("GCode_Feed", 10.0);
+  gCode.passes = settings->ThawInt("GCode_Passes", 1);
+  gCode.feed = settings->ThawFloat("GCode_Feed", 10.0);
   gCode.plungeFeed = settings->ThawFloat("GCode_PlungeFeed", 10.0);
   // Show toolbar in the graphics window
   showToolbar = settings->ThawBool("ShowToolbar", true);
@@ -133,10 +133,10 @@ void SolveSpaceUI::Init() {
     SetLocale(locale);
   }
 
-  refreshTimer            = Platform::CreateTimer();
+  refreshTimer = Platform::CreateTimer();
   refreshTimer->onTimeout = std::bind(&SolveSpaceUI::Refresh, &SS);
 
-  autosaveTimer            = Platform::CreateTimer();
+  autosaveTimer = Platform::CreateTimer();
   autosaveTimer->onTimeout = std::bind(&SolveSpaceUI::Autosave, &SS);
 
   // The default styles (colors, line widths, etc.) are also stored in the
@@ -160,7 +160,7 @@ bool SolveSpaceUI::LoadAutosaveFor(const Platform::Path &filename) {
 
 bool SolveSpaceUI::Load(const Platform::Path &filename) {
   bool autosaveLoaded = LoadAutosaveFor(filename);
-  bool fileLoaded     = autosaveLoaded || LoadFromFile(filename, /*canCancel=*/true);
+  bool fileLoaded = autosaveLoaded || LoadFromFile(filename, /*canCancel=*/true);
   if (fileLoaded) {
     saveFile = filename;
     AddToRecentList(filename);
@@ -329,12 +329,12 @@ std::string SolveSpaceUI::MmToString(double v, bool editable) {
   // same as INCHES and just return the unadorned decimal number of inches.
   if (viewUnits == Unit::FEET_INCHES && !editable) {
     // Now convert v from inches to 64'ths of an inch, to make rounding easier.
-    v        = floor((v + (1.0 / 128.0)) * 64.0);
+    v = floor((v + (1.0 / 128.0)) * 64.0);
     int feet = (int)(v / (12.0 * 64.0));
-    v        = v - (feet * 12.0 * 64.0);
+    v = v - (feet * 12.0 * 64.0);
     // v is now the feet-less remainder in 1/64 inches
-    int inches      = (int)(v / 64.0);
-    int numerator   = (int)(v - ((double)inches * 64.0));
+    int inches = (int)(v / 64.0);
+    int numerator = (int)(v - ((double)inches * 64.0));
     int denominator = 64;
     // Divide down to smallest denominator where the numerator is still a whole number
     while ((numerator != 0) && ((numerator & 1) == 0)) {
@@ -356,7 +356,7 @@ std::string SolveSpaceUI::MmToString(double v, bool editable) {
     return str.str();
   }
 
-  int    digits  = UnitDigitsAfterDecimal();
+  int digits = UnitDigitsAfterDecimal();
   double minimum = 0.5 * pow(10, -digits);
   while ((v < minimum) && (v > LENGTH_EPS)) {
     digits++;
@@ -435,15 +435,15 @@ std::string SolveSpaceUI::MmToStringSI(double v, int dim) {
     if (!useSIPrefixes)
       return MmToString(v);
     compact = true;
-    dim     = 1;
+    dim = 1;
   }
 
   bool inches = (viewUnits == Unit::INCHES) || (viewUnits == Unit::FEET_INCHES);
   v /= pow(inches ? 25.4 : 1000, dim);
-  int         vdeg = (int)(log10(fabs(v)));
+  int vdeg = (int)(log10(fabs(v)));
   std::string unit;
   if (fabs(v) > 0.0) {
-    int sdeg             = 0;
+    int sdeg = 0;
     std::tie(sdeg, unit) = inches ? SelectSIPrefixInch(vdeg / dim) : SelectSIPrefixMm(vdeg, dim);
     v /= pow(10.0, sdeg * dim);
   }
@@ -510,15 +510,15 @@ void SolveSpaceUI::AfterNewFile() {
 
   // Quit export mode
   justExportedInfo.draw = false;
-  centerOfMass.draw     = false;
-  exportMode            = false;
+  centerOfMass.draw = false;
+  exportMode = false;
 
   // GenerateAll() expects the view to be valid, because it uses that to
   // fill in default values for extrusion depths etc. (which won't matter
   // here, but just don't let it work on garbage)
-  SS.GW.offset    = Vector::From(0, 0, 0);
+  SS.GW.offset = Vector::From(0, 0, 0);
   SS.GW.projRight = Vector::From(1, 0, 0);
-  SS.GW.projUp    = Vector::From(0, 1, 0);
+  SS.GW.projUp = Vector::From(0, 1, 0);
 
   GenerateAll(Generate::ALL);
 
@@ -574,10 +574,10 @@ void SolveSpaceUI::GetPngExportImageFilename() {
 void SolveSpaceUI::ShowNakedEdges(bool reportOnlyWhenNotOkay) {
   SS.nakedEdges.Clear();
 
-  Group   *g    = SK.GetGroup(SS.GW.activeGroup);
-  SMesh   *m    = &(g->displayMesh);
+  Group *g = SK.GetGroup(SS.GW.activeGroup);
+  SMesh *m = &(g->displayMesh);
   SKdNode *root = SKdNode::From(m);
-  bool     inters, leaks;
+  bool inters, leaks;
   root->MakeCertainEdgesInto(&(SS.nakedEdges), EdgeKind::NAKED_OR_SELF_INTER,
                              /*coplanarIsInter=*/true, &inters, &leaks);
 
@@ -588,8 +588,8 @@ void SolveSpaceUI::ShowNakedEdges(bool reportOnlyWhenNotOkay) {
 
   const char *intersMsg = inters ? _("The mesh is self-intersecting (NOT okay, invalid).")
                                  : _("The mesh is not self-intersecting (okay, valid).");
-  const char *leaksMsg  = leaks ? _("The mesh has naked edges (NOT okay, invalid).")
-                                : _("The mesh is watertight (okay, valid).");
+  const char *leaksMsg = leaks ? _("The mesh has naked edges (NOT okay, invalid).")
+                               : _("The mesh is watertight (okay, valid).");
 
   std::string cntMsg = ssprintf(_("\n\nThe model contains %d triangles, from %d surfaces."),
                                 g->displayMesh.l.n, g->runningShell.surface.n);
@@ -610,23 +610,23 @@ void SolveSpaceUI::Clear() {
     if (i < redo.cnt)
       redo.d[i].Clear();
   }
-  GW.openRecentMenu          = NULL;
-  GW.linkRecentMenu          = NULL;
-  GW.showGridMenuItem        = NULL;
-  GW.dimSolidModelMenuItem   = NULL;
+  GW.openRecentMenu = NULL;
+  GW.linkRecentMenu = NULL;
+  GW.showGridMenuItem = NULL;
+  GW.dimSolidModelMenuItem = NULL;
   GW.perspectiveProjMenuItem = NULL;
-  GW.explodeMenuItem         = NULL;
-  GW.showToolbarMenuItem     = NULL;
-  GW.showTextWndMenuItem     = NULL;
-  GW.fullScreenMenuItem      = NULL;
-  GW.unitsMmMenuItem         = NULL;
-  GW.unitsMetersMenuItem     = NULL;
-  GW.unitsInchesMenuItem     = NULL;
+  GW.explodeMenuItem = NULL;
+  GW.showToolbarMenuItem = NULL;
+  GW.showTextWndMenuItem = NULL;
+  GW.fullScreenMenuItem = NULL;
+  GW.unitsMmMenuItem = NULL;
+  GW.unitsMetersMenuItem = NULL;
+  GW.unitsInchesMenuItem = NULL;
   GW.unitsFeetInchesMenuItem = NULL;
-  GW.inWorkplaneMenuItem     = NULL;
-  GW.in3dMenuItem            = NULL;
-  GW.undoMenuItem            = NULL;
-  GW.redoMenuItem            = NULL;
+  GW.inWorkplaneMenuItem = NULL;
+  GW.in3dMenuItem = NULL;
+  GW.undoMenuItem = NULL;
+  GW.redoMenuItem = NULL;
 }
 
 #include "geometry/vector.hpp"

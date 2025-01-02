@@ -10,7 +10,7 @@
 void SShell::MergeCoincidentSurfaces() {
   surface.ClearTags();
 
-  int       i, j;
+  int i, j;
   SSurface *si, *sj;
 
   for (i = 0; i < surface.n; i++) {
@@ -56,8 +56,8 @@ void SShell::MergeCoincidentSurfaces() {
         }
         tel.Clear();
 
-        sj->tag        = 1;
-        merged         = true;
+        sj->tag = 1;
+        merged = true;
         mergedThisTime = true;
         sj->MakeEdgesInto(this, &sel, SSurface::MakeAs::XYZ);
         sj->trim.Clear();
@@ -116,7 +116,7 @@ void SShell::MergeCoincidentSurfaces() {
       // We move in the +v direction as v goes from 0 to 1, and in the
       // +u direction as u goes from 0 to 1. So our normal ends up
       // pointed the same direction.
-      double nt      = (si->ctrl[0][0]).Dot(n);
+      double nt = (si->ctrl[0][0]).Dot(n);
       si->ctrl[0][0] = Vector::From(umin, vmin, nt).ScaleOutOfCsys(u, v, n);
       si->ctrl[0][1] = Vector::From(umin, vmax, nt).ScaleOutOfCsys(u, v, n);
       si->ctrl[1][1] = Vector::From(umax, vmax, nt).ScaleOutOfCsys(u, v, n);

@@ -17,10 +17,10 @@ ViewParameters::ViewParameters(void)
               B_FLOATING_APP_WINDOW_FEEL, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS,
               B_CURRENT_WORKSPACE) {
   overallScaleFactor = new BStringView(NULL, "");
-  origin             = new BStringView(NULL, "");
-  projection         = new BStringView(NULL, "");
-  perspectiveFactor  = new BStringView(NULL, "");
-  explodeDistance    = new BStringView(NULL, "");
+  origin = new BStringView(NULL, "");
+  projection = new BStringView(NULL, "");
+  perspectiveFactor = new BStringView(NULL, "");
+  explodeDistance = new BStringView(NULL, "");
 
   BLayoutBuilder::Group<>(this, B_VERTICAL, 0.0f)
       .Add(overallScaleFactor)

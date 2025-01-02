@@ -101,7 +101,7 @@ static bool RunCommand(const std::vector<std::string> args) {
   std::function<void(const Platform::Path &)> runner;
 
   std::vector<Platform::Path> inputFiles;
-  auto                        ParseInputFile = [&](size_t &argn) {
+  auto ParseInputFile = [&](size_t &argn) {
     std::string arg = args[argn];
     if (arg[0] != '-') {
       inputFiles.push_back(Platform::Path::From(arg));
@@ -111,7 +111,7 @@ static bool RunCommand(const std::vector<std::string> args) {
   };
 
   std::string outputPattern;
-  auto        ParseOutputPattern = [&](size_t &argn) {
+  auto ParseOutputPattern = [&](size_t &argn) {
     if (argn + 1 < args.size() && (args[argn] == "--output" || args[argn] == "-o")) {
       argn++;
       outputPattern = args[argn];
@@ -121,30 +121,30 @@ static bool RunCommand(const std::vector<std::string> args) {
   };
 
   Vector projUp = {}, projRight = {};
-  auto   ParseViewDirection = [&](size_t &argn) {
+  auto ParseViewDirection = [&](size_t &argn) {
     if (argn + 1 < args.size() && (args[argn] == "--view" || args[argn] == "-v")) {
       argn++;
       if (args[argn] == "top") {
         projRight = Vector::From(1, 0, 0);
-        projUp    = Vector::From(0, 0, -1);
+        projUp = Vector::From(0, 0, -1);
       } else if (args[argn] == "bottom") {
         projRight = Vector::From(1, 0, 0);
-        projUp    = Vector::From(0, 0, 1);
+        projUp = Vector::From(0, 0, 1);
       } else if (args[argn] == "left") {
         projRight = Vector::From(0, 0, 1);
-        projUp    = Vector::From(0, 1, 0);
+        projUp = Vector::From(0, 1, 0);
       } else if (args[argn] == "right") {
         projRight = Vector::From(0, 0, -1);
-        projUp    = Vector::From(0, 1, 0);
+        projUp = Vector::From(0, 1, 0);
       } else if (args[argn] == "front") {
         projRight = Vector::From(1, 0, 0);
-        projUp    = Vector::From(0, 1, 0);
+        projUp = Vector::From(0, 1, 0);
       } else if (args[argn] == "back") {
         projRight = Vector::From(-1, 0, 0);
-        projUp    = Vector::From(0, 1, 0);
+        projUp = Vector::From(0, 1, 0);
       } else if (args[argn] == "isometric") {
         projRight = Vector::From(0.707, 0.000, -0.707);
-        projUp    = Vector::From(-0.408, 0.816, -0.408);
+        projUp = Vector::From(-0.408, 0.816, -0.408);
       } else {
         fprintf(stderr, "Unrecognized view direction '%s'\n", args[argn].c_str());
       }
@@ -153,8 +153,8 @@ static bool RunCommand(const std::vector<std::string> args) {
       return false;
   };
 
-  double chordTol            = 1.0;
-  auto   ParseChordTolerance = [&](size_t &argn) {
+  double chordTol = 1.0;
+  auto ParseChordTolerance = [&](size_t &argn) {
     if (argn + 1 < args.size() && (args[argn] == "--chord-tol" || args[argn] == "-t")) {
       argn++;
       if (sscanf(args[argn].c_str(), "%lf", &chordTol) == 1) {
@@ -165,7 +165,7 @@ static bool RunCommand(const std::vector<std::string> args) {
       return false;
   };
 
-  bool bg_color     = false;
+  bool bg_color = false;
   auto ParseBgColor = [&](size_t &argn) {
     if (argn + 1 < args.size() && (args[argn] == "--bg-color" || args[argn] == "-b")) {
       argn++;
@@ -216,19 +216,19 @@ static bool RunCommand(const std::vector<std::string> args) {
     }
 
     runner = [&](const Platform::Path &output) {
-      Camera camera     = {};
+      Camera camera = {};
       camera.pixelRatio = 1;
-      camera.gridFit    = true;
-      camera.width      = width;
-      camera.height     = height;
-      camera.projUp     = projUp;
-      camera.projRight  = projRight;
+      camera.gridFit = true;
+      camera.width = width;
+      camera.height = height;
+      camera.projUp = projUp;
+      camera.projRight = projRight;
 
-      SS.GW.projUp    = projUp;
+      SS.GW.projUp = projUp;
       SS.GW.projRight = projRight;
-      SS.GW.scale     = SS.GW.ZoomToFit(camera);
-      camera.scale    = SS.GW.scale;
-      camera.offset   = SS.GW.offset;
+      SS.GW.scale = SS.GW.ZoomToFit(camera);
+      camera.scale = SS.GW.scale;
+      camera.offset = SS.GW.offset;
       SS.GenerateAll();
 
       CairoPixmapRenderer pixmapCanvas; // TODO: switch to AGG
@@ -260,9 +260,9 @@ static bool RunCommand(const std::vector<std::string> args) {
     }
 
     runner = [&](const Platform::Path &output) {
-      SS.GW.projRight          = projRight;
-      SS.GW.projUp             = projUp;
-      SS.exportChordTol        = chordTol;
+      SS.GW.projRight = projRight;
+      SS.GW.projUp = projUp;
+      SS.exportChordTol = chordTol;
       SS.exportBackgroundColor = bg_color;
 
       SS.ExportViewOrWireframeTo(output, /*exportWireframe=*/false);
@@ -317,7 +317,7 @@ static bool RunCommand(const std::vector<std::string> args) {
 
     runner = [&](const Platform::Path &output) {
       SS.exportChordTol = chordTol;
-      SS.exportMode     = true;
+      SS.exportMode = true;
 
       SS.SaveToFile(output);
     };
@@ -343,7 +343,7 @@ static bool RunCommand(const std::vector<std::string> args) {
     Platform::Path absInputFile = inputFile.Expand(/*fromCurrentDirectory=*/true);
 
     Platform::Path outputFile = Platform::Path::From(outputPattern);
-    size_t         replaceAt  = outputFile.raw.find('%');
+    size_t replaceAt = outputFile.raw.find('%');
     if (replaceAt != std::string::npos) {
       Platform::Path outputSubst = inputFile.Parent();
       if (outputSubst.IsEmpty()) {

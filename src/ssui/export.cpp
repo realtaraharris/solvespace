@@ -12,7 +12,7 @@
 
 void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
   Vector gn = (SS.GW.projRight).Cross(SS.GW.projUp);
-  gn        = gn.WithMagnitude(1);
+  gn = gn.WithMagnitude(1);
 
   Group *g = SK.GetGroup(SS.GW.activeGroup);
   g->GenerateDisplayItems();
@@ -31,14 +31,14 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
   auto const &gs = SS.GW.gs;
   if ((gs.n == 0 && g->activeWorkplane != Entity::FREE_IN_3D)) {
     Entity *wrkpl = SK.GetEntity(g->activeWorkplane);
-    origin        = wrkpl->WorkplaneGetOffset();
-    n             = wrkpl->Normal()->NormalN();
-    u             = wrkpl->Normal()->NormalU();
-    v             = wrkpl->Normal()->NormalV();
+    origin = wrkpl->WorkplaneGetOffset();
+    n = wrkpl->Normal()->NormalN();
+    u = wrkpl->Normal()->NormalU();
+    v = wrkpl->Normal()->NormalV();
   } else if (gs.n == 1 && gs.faces == 1) {
     Entity *face = SK.GetEntity(gs.entity[0]);
-    origin       = face->FaceGetPointNum();
-    n            = face->FaceGetNormalNum();
+    origin = face->FaceGetPointNum();
+    n = face->FaceGetNormalNum();
     if (n.Dot(gn) < 0)
       n = n.ScaledBy(-1);
     u = n.Normal(0);
@@ -46,8 +46,8 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
   } else if (gs.n == 3 && gs.vectors == 2 && gs.points == 1) {
     Vector ut = SK.GetEntity(gs.entity[0])->VectorGetNum(),
            vt = SK.GetEntity(gs.entity[1])->VectorGetNum();
-    ut        = ut.WithMagnitude(1);
-    vt        = vt.WithMagnitude(1);
+    ut = ut.WithMagnitude(1);
+    vt = vt.WithMagnitude(1);
 
     if (fabs(SS.GW.projUp.Dot(vt)) < fabs(SS.GW.projUp.Dot(ut))) {
       std::swap(ut, vt);
@@ -58,9 +58,9 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
       vt = vt.ScaledBy(-1);
 
     origin = SK.GetEntity(gs.point[0])->PointGetNum();
-    n      = ut.Cross(vt);
-    u      = ut.WithMagnitude(1);
-    v      = (n.Cross(u)).WithMagnitude(1);
+    n = ut.Cross(vt);
+    u = ut.WithMagnitude(1);
+    v = (n.Cross(u)).WithMagnitude(1);
   } else {
     Error(_("Bad selection for export section. Please select:\n\n"
             "    * nothing, with an active workplane "
@@ -75,7 +75,7 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
   n = n.WithMagnitude(1);
   d = origin.Dot(n);
 
-  SEdgeList   el = {};
+  SEdgeList el = {};
   SBezierList bl = {};
 
   // If there's a mesh, then grab the edges from it.
@@ -135,7 +135,7 @@ void SolveSpaceUI::ExportSectionTo(const Platform::Path &filename) {
 // export through Canvas.
 class GetEdgesCanvas : public Canvas {
   public:
-  Camera     camera;
+  Camera camera;
   SEdgeList *edges;
 
   const Camera &GetCamera() const override { return camera; }
@@ -183,7 +183,7 @@ class GetEdgesCanvas : public Canvas {
 };
 
 void SolveSpaceUI::ExportViewOrWireframeTo(const Platform::Path &filename, bool exportWireframe) {
-  SEdgeList   edges   = {};
+  SEdgeList edges = {};
   SBezierList beziers = {};
 
   VectorFileWriter *out = VectorFileWriter::ForFile(filename);
@@ -230,8 +230,8 @@ void SolveSpaceUI::ExportViewOrWireframeTo(const Platform::Path &filename, bool 
   if (SS.GW.showConstraints) {
     if (!out->OutputConstraints(&SK.constraint)) {
       GetEdgesCanvas canvas = {};
-      canvas.camera         = SS.GW.GetCamera();
-      canvas.edges          = &edges;
+      canvas.camera = SS.GW.GetCamera();
+      canvas.edges = &edges;
 
       // The output format cannot represent constraints directly,
       // so convert them to edges.
@@ -265,9 +265,9 @@ void SolveSpaceUI::ExportViewOrWireframeTo(const Platform::Path &filename, bool 
       // get exported in the raw coordinate system. So indicate what
       // that was on-screen.
       SS.justExportedInfo.showOrigin = true;
-      SS.justExportedInfo.pt         = origin;
-      SS.justExportedInfo.u          = u;
-      SS.justExportedInfo.v          = v;
+      SS.justExportedInfo.pt = origin;
+      SS.justExportedInfo.u = u;
+      SS.justExportedInfo.v = v;
     } else {
       SS.justExportedInfo.showOrigin = false;
     }
@@ -282,7 +282,7 @@ void SolveSpaceUI::ExportViewOrWireframeTo(const Platform::Path &filename, bool 
 
 void SolveSpaceUI::ExportWireframeCurves(SEdgeList *sel, SBezierList *sbl, VectorFileWriter *out) {
   SBezierLoopSetSet sblss = {};
-  SEdge            *se;
+  SEdge *se;
   for (se = sel->l.First(); se; se = sel->l.NextAfter(se)) {
     SBezier sb = SBezier::From((se->a).ScaledBy(1.0 / SS.exportScale),
                                (se->b).ScaledBy(1.0 / SS.exportScale));
@@ -330,7 +330,7 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
     sel->Clear();
 
     SPolygon compd = {};
-    sp.normal      = Vector::From(0, 0, -1);
+    sp.normal = Vector::From(0, 0, -1);
     sp.FixContourDirections();
     sp.OffsetInto(&compd, SS.exportOffset * s);
     sp.Clear();
@@ -343,22 +343,22 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
   // occlusion testing and generated the shaded surfaces.
   SMesh smp = {};
   if (sm) {
-    Vector     l0 = (SS.lightDir[0]).WithMagnitude(1), l1 = (SS.lightDir[1]).WithMagnitude(1);
+    Vector l0 = (SS.lightDir[0]).WithMagnitude(1), l1 = (SS.lightDir[1]).WithMagnitude(1);
     STriangle *tr;
     for (tr = sm->l.First(); tr; tr = sm->l.NextAfter(tr)) {
       STriangle tt = *tr;
-      tt.a         = (tt.a).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
-      tt.b         = (tt.b).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
-      tt.c         = (tt.c).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
+      tt.a = (tt.a).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
+      tt.b = (tt.b).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
+      tt.c = (tt.c).InPerspective(u, v, n, origin, cameraTan).ScaledBy(s);
 
       // And calculate lighting for the triangle
       Vector n = tt.Normal().WithMagnitude(1);
       double lighting =
           std::min(1.0, SS.ambientIntensity + std::max(0.0, (SS.lightIntensity[0]) * (n.Dot(l0))) +
                             std::max(0.0, (SS.lightIntensity[1]) * (n.Dot(l1))));
-      double r      = std::min(1.0, tt.meta.color.redF() * lighting),
-             g      = std::min(1.0, tt.meta.color.greenF() * lighting),
-             b      = std::min(1.0, tt.meta.color.blueF() * lighting);
+      double r = std::min(1.0, tt.meta.color.redF() * lighting),
+             g = std::min(1.0, tt.meta.color.greenF() * lighting),
+             b = std::min(1.0, tt.meta.color.blueF() * lighting);
       tt.meta.color = RGBf(r, g, b);
       smp.AddTriangle(&tt);
     }
@@ -444,15 +444,15 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
   for (int i = 0; i < sel->l.n; ++i) {
     SEdge *sei = &sel->l[i];
     hStyle hsi = {(uint32_t)sei->auxA};
-    Style *si  = Style::Get(hsi);
+    Style *si = Style::Get(hsi);
     if (sei->tag != 0)
       continue;
 
     // Remove segments with zero length projections.
     Vector ai = sei->a;
-    ai.z      = 0.0;
+    ai.z = 0.0;
     Vector bi = sei->b;
-    bi.z      = 0.0;
+    bi.z = 0.0;
     Vector di = bi.Minus(ai);
     if (fabs(di.x) < LENGTH_EPS && fabs(di.y) < LENGTH_EPS) {
       sei->tag = 1;
@@ -469,9 +469,9 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
 
       // Remove segments with zero length projections.
       Vector aj = sej->a;
-      aj.z      = 0.0;
+      aj.z = 0.0;
       Vector bj = sej->b;
-      bj.z      = 0.0;
+      bj.z = 0.0;
       Vector dj = bj.Minus(aj);
       if (fabs(dj.x) < LENGTH_EPS && fabs(dj.y) < LENGTH_EPS) {
         sej->tag = 1;
@@ -493,7 +493,7 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
       }
 
       hStyle hsj = {(uint32_t)sej->auxA};
-      Style *sj  = Style::Get(hsj);
+      Style *sj = Style::Get(hsj);
 
       bool canRemoveI = sej->auxA == sei->auxA || si->zIndex < sj->zIndex;
       bool canRemoveJ = sej->auxA == sei->auxA || sj->zIndex < si->zIndex;
@@ -568,7 +568,7 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
   ssassert(sbl != nullptr, "Adding line segments to beziers assumes bezier list is non-null.");
   for (SEdge *e = sel->l.First(); e; e = sel->l.NextAfter(e)) {
     SBezier sb = SBezier::From(e->a, e->b);
-    sb.auxA    = e->auxA;
+    sb.auxA = e->auxA;
     sbl->l.Add(&sb);
   }
   for (SBezier *b = sbl->l.First(); b; b = sbl->l.NextAfter(b)) {
@@ -579,13 +579,13 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
 
   // If possible, then we will assemble these output curves into loops. They
   // will then get exported as closed paths.
-  SBezierLoopSetSet sblss     = {};
-  SBezierLoopSet    leftovers = {};
-  SSurface          srf =
+  SBezierLoopSetSet sblss = {};
+  SBezierLoopSet leftovers = {};
+  SSurface srf =
       SSurface::FromPlane(Vector::From(0, 0, 0), Vector::From(1, 0, 0), Vector::From(0, 1, 0));
   SPolygon spxyz = {};
-  bool     allClosed;
-  SEdge    notClosedAt;
+  bool allClosed;
+  SEdge notClosedAt;
   sbl->l.ClearTags();
   sblss.FindOuterFacesFrom(sbl, &spxyz, &srf, SS.ExportChordTolMm(), &allClosed, &notClosedAt, NULL,
                            NULL, &leftovers);
@@ -627,7 +627,7 @@ void SolveSpaceUI::ExportMeshTo(const Platform::Path &filename) {
     ExportMeshAsStlTo(f, m);
   } else if (filename.HasExtension("obj")) {
     Platform::Path mtlFilename = filename.WithExtension("mtl");
-    FILE          *fMtl        = OpenFile(mtlFilename, "wb");
+    FILE *fMtl = OpenFile(mtlFilename, "wb");
     if (!fMtl) {
       Error("Couldn't write to '%s'", filename.raw.c_str());
       return;
@@ -651,7 +651,7 @@ void SolveSpaceUI::ExportMeshTo(const Platform::Path &filename) {
   fclose(f);
 
   SS.justExportedInfo.showOrigin = false;
-  SS.justExportedInfo.draw       = true;
+  SS.justExportedInfo.draw = true;
   GW.Invalidate();
 }
 
@@ -668,11 +668,11 @@ void SolveSpaceUI::ExportMeshAsStlTo(FILE *f, SMesh *sm) {
   fwrite(&n, 4, 1, f);
 
   double s = SS.exportScale;
-  int    i;
+  int i;
   for (i = 0; i < sm->l.n; i++) {
     STriangle *tr = &(sm->l[i]);
-    Vector     n  = tr->Normal().WithMagnitude(1);
-    float      w;
+    Vector n = tr->Normal().WithMagnitude(1);
+    float w;
     w = (float)n.x;
     fwrite(&w, 4, 1, f);
     w = (float)n.y;
@@ -751,7 +751,7 @@ void SolveSpaceUI::ExportMeshAsThreeJsTo(FILE *f, const Platform::Path &filename
                                          SOutlineList *sol) {
   SPointList spl = {};
   STriangle *tr;
-  Vector     bndl, bndh;
+  Vector bndl, bndh;
 
   const std::string THREE_FN("three-r111.min.js");
   const std::string HAMMER_FN("hammer-2.0.8.js");
@@ -773,7 +773,7 @@ void SolveSpaceUI::ExportMeshAsThreeJsTo(FILE *f, const Platform::Path &filename
   <body>
     <script>
 )";
-  const char htmlend[]   = R"(
+  const char htmlend[] = R"(
     document.body.appendChild(solvespace(solvespace_model_%s, {
         scale: %g,
         offset: new THREE.Vector3(%g, %g, %g),
@@ -804,7 +804,7 @@ void SolveSpaceUI::ExportMeshAsThreeJsTo(FILE *f, const Platform::Path &filename
 
   sm->GetBounding(&bndh, &bndl);
   double largerBoundXY = std::max((bndh.x - bndl.x), (bndh.y - bndl.y));
-  double largerBoundZ  = std::max(largerBoundXY, (bndh.z - bndl.z + 1));
+  double largerBoundZ = std::max(largerBoundXY, (bndh.z - bndl.z + 1));
 
   std::string basename = filename.FileStem();
   for (size_t i = 0; i < basename.length(); i++) {
@@ -941,12 +941,12 @@ void SolveSpaceUI::ExportMeshAsVrmlTo(FILE *f, const Platform::Path &filename, S
           PACKAGE_VERSION, basename.c_str());
 
   std::map<std::uint8_t, std::vector<STriangleSpan>> opacities;
-  STriangle                                         *start        = sm->l.begin();
-  std::uint8_t                                       last_opacity = start->meta.color.alpha;
+  STriangle *start = sm->l.begin();
+  std::uint8_t last_opacity = start->meta.color.alpha;
   for (auto &tr : sm->l) {
     if (tr.meta.color.alpha != last_opacity) {
       opacities[last_opacity].push_back(STriangleSpan{start, &tr});
-      start        = &tr;
+      start = &tr;
       last_opacity = start->meta.color.alpha;
     }
   }
@@ -1000,7 +1000,7 @@ void SolveSpaceUI::ExportMeshAsVrmlTo(FILE *f, const Platform::Path &filename, S
           "        color Color { color [\n",
           f);
     // Output triangle colors.
-    std::vector<int>       triangle_colour_ids;
+    std::vector<int> triangle_colour_ids;
     std::vector<RgbaColor> colours_present;
     for (const auto &sp : op.second) {
       for (const auto &tr : sp) {

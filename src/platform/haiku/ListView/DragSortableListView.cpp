@@ -63,7 +63,7 @@ void DragSortableListView::FrameResized(float width, float height) {
 
 void DragSortableListView::Draw(BRect updateRect) {
   int32 firstIndex = IndexOf(updateRect.LeftTop());
-  int32 lastIndex  = IndexOf(updateRect.RightBottom());
+  int32 lastIndex = IndexOf(updateRect.RightBottom());
   if (firstIndex >= 0) {
     if (lastIndex < firstIndex)
       lastIndex = CountItems() - 1;
@@ -118,8 +118,8 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
     return false;
   }
 
-  bool       success = false;
-  BListItem *item    = ItemAt(CurrentSelection(0));
+  bool success = false;
+  BListItem *item = ItemAt(CurrentSelection(0));
   if (!item) {
     // workaround a timing problem
     Select(index);
@@ -134,11 +134,11 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
     BRect dragRect(0.0, 0.0, width, -1.0);
     // figure out, how many items fit into our bitmap
     int32 numItems;
-    bool  fade = false;
+    bool fade = false;
     for (numItems = 0; BListItem *item = ItemAt(CurrentSelection(numItems)); numItems++) {
       dragRect.bottom += ceilf(item->Height()) + 1.0;
       if (dragRect.Height() > MAX_DRAG_HEIGHT) {
-        fade            = true;
+        fade = true;
         dragRect.bottom = MAX_DRAG_HEIGHT;
         numItems++;
         break;
@@ -153,8 +153,8 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
         itemBounds.bottom = 0.0;
         // let all selected items, that fit into our drag_bitmap, draw
         for (int32 i = 0; i < numItems; i++) {
-          int32      index  = CurrentSelection(i);
-          BListItem *item   = ItemAt(index);
+          int32 index = CurrentSelection(i);
+          BListItem *item = ItemAt(index);
           itemBounds.bottom = itemBounds.top + ceilf(item->Height());
           if (itemBounds.bottom > dragRect.bottom)
             itemBounds.bottom = dragRect.bottom;
@@ -166,10 +166,10 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
         v->StrokeRect(v->Bounds());
         v->Sync();
 
-        uint8 *bits   = (uint8 *)dragBitmap->Bits();
-        int32  height = (int32)dragBitmap->Bounds().Height() + 1;
-        int32  width  = (int32)dragBitmap->Bounds().Width() + 1;
-        int32  bpr    = dragBitmap->BytesPerRow();
+        uint8 *bits = (uint8 *)dragBitmap->Bits();
+        int32 height = (int32)dragBitmap->Bounds().Height() + 1;
+        int32 width = (int32)dragBitmap->Bounds().Width() + 1;
+        int32 bpr = dragBitmap->BytesPerRow();
 
         if (fade) {
           for (int32 y = 0; y < height - ALPHA / 2; y++, bits += bpr) {
@@ -196,8 +196,8 @@ bool DragSortableListView::InitiateDrag(BPoint point, int32 index, bool) {
       dragBitmap = NULL;
     }
     if (dragBitmap) {
-      BRect  itemFrame = ItemFrame(index);
-      BPoint offset    = BPoint(point.x - itemFrame.left, point.y - itemFrame.top);
+      BRect itemFrame = ItemFrame(index);
+      BPoint offset = BPoint(point.x - itemFrame.left, point.y - itemFrame.top);
       DragMessage(&msg, dragBitmap, B_OP_ALPHA, offset);
     } else {
       DragMessage(&msg, dragRect.OffsetToCopy(point), this);
@@ -242,8 +242,8 @@ void DragSortableListView::MessageReceived(BMessage *message) {
   } else {
     switch (message->what) {
     case MSG_TICK: {
-      float  scrollV = 0.0;
-      BRect  rect(Bounds());
+      float scrollV = 0.0;
+      BRect rect(Bounds());
       BPoint point;
       uint32 buttons;
       GetMouse(&point, &buttons, false);
@@ -301,7 +301,7 @@ void DragSortableListView::KeyDown(const char *bytes, int32 numBytes) {
 }
 
 void DragSortableListView::MouseDown(BPoint where) {
-  int32  clicks  = 1;
+  int32 clicks = 1;
   uint32 buttons = 0;
   Window()->CurrentMessage()->FindInt32("clicks", &clicks);
   Window()->CurrentMessage()->FindInt32("buttons", (int32 *)&buttons);
@@ -424,9 +424,9 @@ bool DragSortableListView::AcceptDragMessage(const BMessage *message) const {
 
 void DragSortableListView::SetDropTargetRect(const BMessage *message, BPoint where) {
   if (AcceptDragMessage(message)) {
-    bool  copy       = modifiers() & B_SHIFT_KEY;
-    bool  replaceAll = !message->HasPointer("list") && !copy;
-    BRect r          = Bounds();
+    bool copy = modifiers() & B_SHIFT_KEY;
+    bool replaceAll = !message->HasPointer("list") && !copy;
+    BRect r = Bounds();
     if (replaceAll) {
       r.bottom--; // compensate for scrollbar offset
       _SetDropAnticipationRect(r);
@@ -454,7 +454,7 @@ void DragSortableListView::SetAutoScrolling(bool enable) {
     return;
   if (enable) {
     BMessenger messenger(this, Window());
-    BMessage   message(MSG_TICK);
+    BMessage message(MSG_TICK);
     fScrollPulse = new BMessageRunner(messenger, &message, 40000LL);
   } else {
     delete fScrollPulse;
@@ -474,7 +474,7 @@ void DragSortableListView::ScrollTo(int32 index) {
 
   if (BListItem *item = ItemAt(index)) {
     BRect itemFrame = ItemFrame(index);
-    BRect bounds    = Bounds();
+    BRect bounds = Bounds();
     if (itemFrame.top < bounds.top) {
       ScrollTo(itemFrame.LeftTop());
     } else if (itemFrame.bottom > bounds.bottom) {
@@ -491,8 +491,8 @@ void DragSortableListView::MoveItems(BList &items, int32 index) {
   BList removedItems;
   int32 count = items.CountItems();
   for (int32 i = 0; i < count; i++) {
-    BListItem *item        = (BListItem *)items.ItemAt(i);
-    int32      removeIndex = IndexOf(item);
+    BListItem *item = (BListItem *)items.ItemAt(i);
+    int32 removeIndex = IndexOf(item);
     if (RemoveItem(item) && removedItems.AddItem((void *)item)) {
       if (removeIndex < index)
         index--;
@@ -591,8 +591,8 @@ void DragSortableListView::_SetDropIndex(int32 index) {
       if (fDropIndex == count) {
         BRect r;
         if (BListItem *item = ItemAt(count - 1)) {
-          r        = ItemFrame(count - 1);
-          r.top    = r.bottom;
+          r = ItemFrame(count - 1);
+          r.top = r.bottom;
           r.bottom = r.top + 1.0;
         } else {
           r = Bounds();

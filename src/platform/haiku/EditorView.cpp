@@ -11,17 +11,17 @@
 #include <iostream>
 
 void attachBufferToBBitmap(agg::rendering_buffer &buffer, BBitmap *bitmap) {
-  uint8 *bits   = (uint8 *)bitmap->Bits();
-  uint32 width  = bitmap->Bounds().IntegerWidth() + 1;
+  uint8 *bits = (uint8 *)bitmap->Bits();
+  uint32 width = bitmap->Bounds().IntegerWidth() + 1;
   uint32 height = bitmap->Bounds().IntegerHeight() + 1;
-  int32  bpr    = bitmap->BytesPerRow();
+  int32 bpr = bitmap->BytesPerRow();
   buffer.attach(bits, width, height, -bpr);
 }
 
 EditorView::EditorView()
     : BView(Bounds(), "SolveSpace Editor View", B_FOLLOW_ALL_SIDES,
             B_FRAME_EVENTS | B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE) {
-  SS.GW.canvas         = std::make_shared<AggPixmapRenderer>();
+  SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
   SS.GW.overrideCamera = false;
 
   InitBitmapAndBuffer();
@@ -50,10 +50,10 @@ void EditorView::Draw(BRect updateRect) {
 
 void EditorView::FrameResized(float width, float height) {
   InitBitmapAndBuffer(); // do this before drawing
-  camera.width  = width;
+  camera.width = width;
   camera.height = height;
-  SS.GW.width   = width;
-  SS.GW.height  = height;
+  SS.GW.width = width;
+  SS.GW.height = height;
 
   std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)
       ->SetCamera(camera); // do this before Init so it has the new values
@@ -75,11 +75,11 @@ void EditorView::Load(std::string path) {
 void EditorView::New() {
   SS.GW.Init(Bounds().Width(), Bounds().Height(),
              1.0); // width, height, pixelDeviceRatio
-  SS.GW.offset    = Vector(0, 0, 0);
-  SS.GW.scale     = 5.0;
+  SS.GW.offset = Vector(0, 0, 0);
+  SS.GW.scale = 5.0;
   SS.GW.projRight = Vector::From(1, 0, 0);
-  SS.GW.projUp    = Vector::From(0, 1, 0);
-  SS.gridSpacing  = 5.0; // TODO: get these from settings file?
+  SS.GW.projUp = Vector::From(0, 1, 0);
+  SS.gridSpacing = 5.0; // TODO: get these from settings file?
 
   std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);
 
@@ -105,10 +105,10 @@ SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
 
 void EditorView::MouseDown(BPoint point) {
   SolveSpace::Platform::MouseEvent event = {};
-  event.type                             = SolveSpace::Platform::MouseEvent::Type::PRESS;
-  event.button                           = GetMouseButton();
-  event.x                                = point.x;
-  event.y                                = point.y;
+  event.type = SolveSpace::Platform::MouseEvent::Type::PRESS;
+  event.button = GetMouseButton();
+  event.x = point.x;
+  event.y = point.y;
 
   SS.GW.MouseEvent(event);
   SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
@@ -119,10 +119,10 @@ void EditorView::MouseMoved(BPoint point, uint32 transit, const BMessage *messag
   currentMousePosition = point;
 
   SolveSpace::Platform::MouseEvent event = {};
-  event.type                             = SolveSpace::Platform::MouseEvent::Type::MOTION;
-  event.button                           = GetMouseButton();
-  event.x                                = point.x;
-  event.y                                = point.y;
+  event.type = SolveSpace::Platform::MouseEvent::Type::MOTION;
+  event.button = GetMouseButton();
+  event.x = point.x;
+  event.y = point.y;
 
   SS.GW.MouseEvent(event);
   SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);
@@ -131,10 +131,10 @@ void EditorView::MouseMoved(BPoint point, uint32 transit, const BMessage *messag
 
 void EditorView::MouseUp(BPoint point) {
   SolveSpace::Platform::MouseEvent event = {};
-  event.type                             = SolveSpace::Platform::MouseEvent::Type::RELEASE;
-  event.button                           = GetMouseButton();
-  event.x                                = point.x;
-  event.y                                = point.y;
+  event.type = SolveSpace::Platform::MouseEvent::Type::RELEASE;
+  event.button = GetMouseButton();
+  event.x = point.x;
+  event.y = point.y;
 
   SS.GW.MouseEvent(event);
   SS.GenerateAll(SolveSpaceUI::Generate::UNTIL_ACTIVE);

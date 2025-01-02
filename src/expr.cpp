@@ -100,7 +100,7 @@ Vector ExprVector::Eval() const {
 
 ExprQuaternion ExprQuaternion::From(hParam w, hParam vx, hParam vy, hParam vz) {
   ExprQuaternion q;
-  q.w  = Expr::From(w);
+  q.w = Expr::From(w);
   q.vx = Expr::From(vx);
   q.vy = Expr::From(vy);
   q.vz = Expr::From(vz);
@@ -109,7 +109,7 @@ ExprQuaternion ExprQuaternion::From(hParam w, hParam vx, hParam vy, hParam vz) {
 
 ExprQuaternion ExprQuaternion::From(Expr *w, Expr *vx, Expr *vy, Expr *vz) {
   ExprQuaternion q;
-  q.w  = w;
+  q.w = w;
   q.vx = vx;
   q.vy = vy;
   q.vz = vz;
@@ -118,7 +118,7 @@ ExprQuaternion ExprQuaternion::From(Expr *w, Expr *vx, Expr *vy, Expr *vz) {
 
 ExprQuaternion ExprQuaternion::From(Quaternion qn) {
   ExprQuaternion qe;
-  qe.w  = Expr::From(qn.w);
+  qe.w = Expr::From(qn.w);
   qe.vx = Expr::From(qn.vx);
   qe.vy = Expr::From(qn.vy);
   qe.vz = Expr::From(qn.vz);
@@ -127,7 +127,7 @@ ExprQuaternion ExprQuaternion::From(Quaternion qn) {
 
 ExprVector ExprQuaternion::RotationU() const {
   ExprVector u;
-  Expr      *two = Expr::From(2);
+  Expr *two = Expr::From(2);
 
   u.x = w->Square();
   u.x = (u.x)->Plus(vx->Square());
@@ -145,7 +145,7 @@ ExprVector ExprQuaternion::RotationU() const {
 
 ExprVector ExprQuaternion::RotationV() const {
   ExprVector v;
-  Expr      *two = Expr::From(2);
+  Expr *two = Expr::From(2);
 
   v.x = two->Times(vx->Times(vy));
   v.x = (v.x)->Minus(two->Times(w->Times(vz)));
@@ -163,7 +163,7 @@ ExprVector ExprQuaternion::RotationV() const {
 
 ExprVector ExprQuaternion::RotationN() const {
   ExprVector n;
-  Expr      *two = Expr::From(2);
+  Expr *two = Expr::From(2);
 
   n.x = two->Times(w->Times(vy));
   n.x = (n.x)->Plus(two->Times(vx->Times(vz)));
@@ -187,16 +187,16 @@ ExprVector ExprQuaternion::Rotate(ExprVector p) const {
 }
 
 ExprQuaternion ExprQuaternion::Times(ExprQuaternion b) const {
-  Expr      *sa = w, *sb = b.w;
+  Expr *sa = w, *sb = b.w;
   ExprVector va = {vx, vy, vz};
   ExprVector vb = {b.vx, b.vy, b.vz};
 
   ExprQuaternion r;
-  r.w           = (sa->Times(sb))->Minus(va.Dot(vb));
+  r.w = (sa->Times(sb))->Minus(va.Dot(vb));
   ExprVector vr = vb.ScaledBy(sa).Plus(va.ScaledBy(sb).Plus(va.Cross(vb)));
-  r.vx          = vr.x;
-  r.vy          = vr.y;
-  r.vz          = vr.z;
+  r.vx = vr.x;
+  r.vy = vr.y;
+  r.vz = vr.z;
   return r;
 }
 
@@ -206,7 +206,7 @@ Expr *ExprQuaternion::Magnitude() const {
 
 Expr *Expr::From(hParam p) {
   Expr *r = AllocExpr();
-  r->op   = Op::PARAM;
+  r->op = Op::PARAM;
   r->parh = p;
   return r;
 }
@@ -242,16 +242,16 @@ Expr *Expr::From(double v) {
   }
 
   Expr *r = AllocExpr();
-  r->op   = Op::CONSTANT;
-  r->v    = v;
+  r->op = Op::CONSTANT;
+  r->v = v;
   return r;
 }
 
 Expr *Expr::AnyOp(Op newOp, Expr *b) {
   Expr *r = AllocExpr();
-  r->op   = newOp;
-  r->a    = this;
-  r->b    = b;
+  r->op = newOp;
+  r->a = this;
+  r->b = b;
   return r;
 }
 
@@ -289,8 +289,8 @@ int Expr::Nodes() const {
 
 Expr *Expr::DeepCopy() const {
   Expr *n = AllocExpr();
-  *n      = *this;
-  int c   = n->Children();
+  *n = *this;
+  int c = n->Children();
   if (c > 0)
     n->a = a->DeepCopy();
   if (c > 1)
@@ -310,15 +310,15 @@ Expr *Expr::DeepCopyWithParamsAsPointers(IdList<Param, hParam> *firstTry,
       p = thenTry->FindById(parh);
     if (p->known) {
       n->op = Op::CONSTANT;
-      n->v  = p->val;
+      n->v = p->val;
     } else {
-      n->op   = Op::PARAM_PTR;
+      n->op = Op::PARAM_PTR;
       n->parp = p;
     }
     return n;
   }
 
-  *n    = *this;
+  *n = *this;
   int c = n->Children();
   if (c > 0)
     n->a = a->DeepCopyWithParamsAsPointers(firstTry, thenTry);
@@ -438,7 +438,7 @@ bool Expr::IsZeroConst() const {
 
 Expr *Expr::FoldConstants() {
   Expr *n = AllocExpr();
-  *n      = *this;
+  *n = *this;
 
   int c = Children();
   if (c >= 1)
@@ -459,8 +459,8 @@ Expr *Expr::FoldConstants() {
     // If both ops are known, then we can evaluate immediately
     if (n->a->op == Op::CONSTANT && n->b->op == Op::CONSTANT) {
       double nv = n->Eval();
-      n->op     = Op::CONSTANT;
-      n->v      = nv;
+      n->op = Op::CONSTANT;
+      n->v = nv;
       break;
     }
     // x + 0 = 0 + x = x
@@ -484,12 +484,12 @@ Expr *Expr::FoldConstants() {
     // 0*x = x*0 = 0
     if (op == Op::TIMES && n->b->op == Op::CONSTANT && Tol(n->b->v, 0)) {
       n->op = Op::CONSTANT;
-      n->v  = 0;
+      n->v = 0;
       break;
     }
     if (op == Op::TIMES && n->a->op == Op::CONSTANT && Tol(n->a->v, 0)) {
       n->op = Op::CONSTANT;
-      n->v  = 0;
+      n->v = 0;
       break;
     }
 
@@ -504,8 +504,8 @@ Expr *Expr::FoldConstants() {
   case Op::ACOS:
     if (n->a->op == Op::CONSTANT) {
       double nv = n->Eval();
-      n->op     = Op::CONSTANT;
-      n->v      = nv;
+      n->op = Op::CONSTANT;
+      n->v = nv;
     }
     break;
   }
@@ -530,9 +530,9 @@ void Expr::Substitute(hParam oldh, hParam newh) {
 // return that parameter. If no param is referenced, then return NO_PARAMS.
 // If multiple params are referenced, then return MULTIPLE_PARAMS.
 //-----------------------------------------------------------------------------
-const hParam Expr::NO_PARAMS       = {0};
+const hParam Expr::NO_PARAMS = {0};
 const hParam Expr::MULTIPLE_PARAMS = {1};
-hParam       Expr::ReferencedParams(ParamList *pl) const {
+hParam Expr::ReferencedParams(ParamList *pl) const {
   if (op == Op::PARAM) {
     if (pl->FindByIdNoOops(parh)) {
       return parh;
@@ -622,30 +622,30 @@ class ExprParser {
   class Token {
 public:
     TokenType type;
-    Expr     *expr;
+    Expr *expr;
 
     static Token From(TokenType type = TokenType::ERROR, Expr *expr = NULL);
     static Token From(TokenType type, Expr::Op op);
-    bool         IsError() const { return type == TokenType::ERROR; }
+    bool IsError() const { return type == TokenType::ERROR; }
   };
 
   std::string::const_iterator it, end;
-  std::vector<Token>          stack;
+  std::vector<Token> stack;
 
   char ReadChar();
   char PeekChar();
 
   std::string ReadWord();
-  void        SkipSpace();
+  void SkipSpace();
 
   Token PopOperator(std::string *error);
   Token PopOperand(std::string *error);
 
-  int   Precedence(Token token);
+  int Precedence(Token token);
   Token LexNumber(std::string *error);
   Token Lex(std::string *error);
-  bool  Reduce(std::string *error);
-  bool  Parse(std::string *error, size_t reduceUntil = 0);
+  bool Reduce(std::string *error);
+  bool Parse(std::string *error, size_t reduceUntil = 0);
 
   static Expr *Parse(const std::string &input, std::string *error);
 };
@@ -659,8 +659,8 @@ ExprParser::Token ExprParser::Token::From(TokenType type, Expr *expr) {
 
 ExprParser::Token ExprParser::Token::From(TokenType type, Expr::Op op) {
   Token t;
-  t.type     = type;
-  t.expr     = Expr::AllocExpr();
+  t.type = type;
+  t.expr = Expr::AllocExpr();
   t.expr->op = op;
   return t;
 }
@@ -710,12 +710,12 @@ ExprParser::Token ExprParser::LexNumber(std::string *error) {
     s.push_back(ReadChar());
   }
 
-  char  *endptr;
+  char *endptr;
   double d = strtod(s.c_str(), &endptr);
 
   Token t = Token::From();
   if (endptr == s.c_str() + s.size()) {
-    t         = Token::From(TokenType::OPERAND, Expr::Op::CONSTANT);
+    t = Token::From(TokenType::OPERAND, Expr::Op::CONSTANT);
     t.expr->v = d;
   } else {
     *error = "'" + s + "' is not a valid number";
@@ -727,10 +727,10 @@ ExprParser::Token ExprParser::Lex(std::string *error) {
   SkipSpace();
 
   Token t = Token::From();
-  char  c = PeekChar();
+  char c = PeekChar();
   if (isupper(c)) {
     std::string n = ReadWord();
-    t             = Token::From(TokenType::OPERAND, Expr::Op::VARIABLE);
+    t = Token::From(TokenType::OPERAND, Expr::Op::VARIABLE);
   } else if (isalpha(c)) {
     std::string s = ReadWord();
     if (s == "sqrt") {
@@ -746,7 +746,7 @@ ExprParser::Token ExprParser::Lex(std::string *error) {
     } else if (s == "acos") {
       t = Token::From(TokenType::UNARY_OP, Expr::Op::ACOS);
     } else if (s == "pi") {
-      t         = Token::From(TokenType::OPERAND, Expr::Op::CONSTANT);
+      t = Token::From(TokenType::OPERAND, Expr::Op::CONSTANT);
       t.expr->v = PI;
     } else {
       *error = "'" + s + "' is not a valid variable, function or constant";
@@ -896,7 +896,7 @@ bool ExprParser::Parse(std::string *error, size_t reduceUntil) {
       if ((stack.size() > reduceUntil && stack.back().type != TokenType::OPERAND) ||
           stack.size() == reduceUntil) {
         if (t.expr->op == Expr::Op::MINUS) {
-          t.type     = TokenType::UNARY_OP;
+          t.type = TokenType::UNARY_OP;
           t.expr->op = Expr::Op::NEGATE;
           stack.push_back(t);
           break;
@@ -922,7 +922,7 @@ bool ExprParser::Parse(std::string *error, size_t reduceUntil) {
 
 Expr *ExprParser::Parse(const std::string &input, std::string *error) {
   ExprParser parser;
-  parser.it  = input.cbegin();
+  parser.it = input.cbegin();
   parser.end = input.cend();
   if (!parser.Parse(error))
     return NULL;
@@ -939,7 +939,7 @@ Expr *Expr::Parse(const std::string &input, std::string *error) {
 
 Expr *Expr::From(const std::string &input, bool popUpError) {
   std::string error;
-  Expr       *e = ExprParser::Parse(input, &error);
+  Expr *e = ExprParser::Parse(input, &error);
   if (!e) {
     dbp("Parse/lex error: %s", error.c_str());
     if (popUpError) {

@@ -63,7 +63,7 @@ bool SolveSpaceUI::GroupsInOrder(hGroup before, hGroup after) {
   if (!GroupExists(after))
     return false;
   int beforep = SK.GetGroup(before)->order;
-  int afterp  = SK.GetGroup(after)->order;
+  int afterp = SK.GetGroup(after)->order;
   if (beforep >= afterp)
     return false;
   return true;
@@ -145,7 +145,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
   switch (type) {
   case Generate::DIRTY: {
     first = INT_MAX;
-    last  = 0;
+    last = 0;
 
     // Start from the first dirty group, and solve until the active group,
     // since all groups after the active group are hidden.
@@ -162,7 +162,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
     if (first == INT_MAX || last == 0) {
       // All clean; so just regenerate the entities, and don't solve anything.
       first = -1;
-      last  = -1;
+      last = -1;
     } else {
       SS.nakedEdges.Clear();
     }
@@ -171,12 +171,12 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
 
   case Generate::ALL:
     first = 0;
-    last  = INT_MAX;
+    last = INT_MAX;
     break;
 
   case Generate::REGEN:
     first = -1;
-    last  = -1;
+    last = -1;
     break;
 
   case Generate::UNTIL_ACTIVE: {
@@ -186,7 +186,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
     }
 
     first = 0;
-    last  = i;
+    last = i;
     break;
   }
   }
@@ -195,9 +195,9 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
   // the bounding box to turn relative chord tolerance to absolute.
   if (!SS.exportMode && !genForBBox) {
     GenerateAll(type, andFindFree, /*genForBBox=*/true);
-    BBox   box         = SK.CalculateEntityBBox(/*includeInvisibles=*/true);
-    Vector size        = box.maxp.Minus(box.minp);
-    double maxSize     = std::max({size.x, size.y, size.z});
+    BBox box = SK.CalculateEntityBBox(/*includeInvisibles=*/true);
+    Vector size = box.maxp.Minus(box.minp);
+    double maxSize = std::max({size.x, size.y, size.z});
     chordTolCalculated = maxSize * chordTol / 100.0;
   }
 
@@ -257,16 +257,16 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
 
       Param *prevp = prev.FindByIdNoOops(newp->h);
       if (prevp) {
-        newp->val  = prevp->val;
+        newp->val = prevp->val;
         newp->free = prevp->free;
       }
     }
 
     if (hg == Group::HGROUP_REFERENCES) {
       ForceReferences();
-      Group *g      = SK.GetGroup(hg);
+      Group *g = SK.GetGroup(hg);
       g->solved.how = SolveResult::OKAY;
-      g->clean      = true;
+      g->clean = true;
     } else {
       // this i is an index in groupOrder
       if (i >= first && i <= last) {
@@ -355,7 +355,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
   }
 
   FreeAllTemporary();
-  allConsistent         = true;
+  allConsistent = true;
   SS.GW.persistentDirty = true;
   SS.centerOfMass.dirty = true;
 
@@ -388,7 +388,7 @@ void SolveSpaceUI::ForceReferences() {
   // Force the values of the parameters that define the three reference
   // coordinate systems.
   static const struct {
-    hRequest   hr;
+    hRequest hr;
     Quaternion q;
   } Quat[] = {
       {Request::HREQUEST_REFERENCE_XY,
@@ -414,12 +414,12 @@ void SolveSpaceUI::ForceReferences() {
        }},
   };
   for (int i = 0; i < 3; i++) {
-    hRequest hr    = Quat[i].hr;
-    Entity  *wrkpl = SK.GetEntity(hr.entity(0));
+    hRequest hr = Quat[i].hr;
+    Entity *wrkpl = SK.GetEntity(hr.entity(0));
     // The origin for our coordinate system, always zero
     Entity *origin = SK.GetEntity(wrkpl->point[0]);
     origin->PointForceTo(Vector::From(0, 0, 0));
-    origin->construction                 = true;
+    origin->construction = true;
     SK.GetParam(origin->param[0])->known = true;
     SK.GetParam(origin->param[1])->known = true;
     SK.GetParam(origin->param[2])->known = true;
@@ -434,9 +434,9 @@ void SolveSpaceUI::ForceReferences() {
 }
 
 void SolveSpaceUI::UpdateCenterOfMass() {
-  SMesh *m                 = &(SK.GetGroup(SS.GW.activeGroup)->displayMesh);
+  SMesh *m = &(SK.GetGroup(SS.GW.activeGroup)->displayMesh);
   SS.centerOfMass.position = m->GetCenterOfMass();
-  SS.centerOfMass.dirty    = false;
+  SS.centerOfMass.dirty = false;
 }
 
 void SolveSpaceUI::MarkDraggedParams() {
@@ -509,8 +509,8 @@ void SolveSpaceUI::MarkDraggedParams() {
 void SolveSpaceUI::SolveGroupAndReport(hGroup hg, bool andFindFree) {
   SolveGroup(hg, andFindFree);
 
-  Group *g      = SK.GetGroup(hg);
-  bool   isOkay = g->solved.how == SolveResult::OKAY ||
+  Group *g = SK.GetGroup(hg);
+  bool isOkay = g->solved.how == SolveResult::OKAY ||
                 (g->allowRedundant && g->solved.how == SolveResult::REDUNDANT_OKAY);
   if (!isOkay || (isOkay && !g->IsSolvedOkay())) {
     TextWindow::ReportHowGroupSolved(g->h);
@@ -544,7 +544,7 @@ void SolveSpaceUI::WriteEqSystemForGroup(hGroup hg) {
   for (auto &param : sys.param) {
     Param *p = &param;
     p->known = false;
-    p->val   = SK.GetParam(p->h)->val;
+    p->val = SK.GetParam(p->h)->val;
   }
 
   MarkDraggedParams();
@@ -555,10 +555,10 @@ void SolveSpaceUI::SolveGroup(hGroup hg, bool andFindFree) {
   Group *g = SK.GetGroup(hg);
   g->solved.remove.Clear();
   g->solved.findToFixTimeout = SS.timeoutRedundantConstr;
-  SolveResult how            = sys.Solve(g, NULL, &(g->solved.dof), &(g->solved.remove),
-                                         /*andFindBad=*/!g->allowRedundant,
-                                         /*andFindFree=*/andFindFree,
-                                         /*forceDofCheck=*/!g->dofCheckOk);
+  SolveResult how = sys.Solve(g, NULL, &(g->solved.dof), &(g->solved.remove),
+                              /*andFindBad=*/!g->allowRedundant,
+                              /*andFindFree=*/andFindFree,
+                              /*forceDofCheck=*/!g->dofCheckOk);
   if (how == SolveResult::OKAY) {
     g->dofCheckOk = true;
   }

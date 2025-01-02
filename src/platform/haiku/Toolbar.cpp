@@ -51,25 +51,25 @@ AppToolbar::AppToolbar(BRect rect, BSize toolbarIconSize)
               B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_ASYNCHRONOUS_CONTROLS, B_CURRENT_WORKSPACE) {
   const int iconSize = toolbarIconSize.IntegerWidth() / 1.5f;
 
-  static BBitmap *lineToolIcon         = LoadIconFromResource("line-tool", iconSize);
-  static BBitmap *rectToolIcon         = LoadIconFromResource("rect-tool", iconSize);
-  static BBitmap *circleToolIcon       = LoadIconFromResource("circle-tool", iconSize);
-  static BBitmap *arcToolIcon          = LoadIconFromResource("arc-tool", iconSize);
-  static BBitmap *tangentArcToolIcon   = LoadIconFromResource("tangent-arc-tool", iconSize);
-  static BBitmap *cubicSplineToolIcon  = LoadIconFromResource("cubic-spline-tool", iconSize);
-  static BBitmap *datumPointToolIcon   = LoadIconFromResource("datum-point-tool", iconSize);
+  static BBitmap *lineToolIcon = LoadIconFromResource("line-tool", iconSize);
+  static BBitmap *rectToolIcon = LoadIconFromResource("rect-tool", iconSize);
+  static BBitmap *circleToolIcon = LoadIconFromResource("circle-tool", iconSize);
+  static BBitmap *arcToolIcon = LoadIconFromResource("arc-tool", iconSize);
+  static BBitmap *tangentArcToolIcon = LoadIconFromResource("tangent-arc-tool", iconSize);
+  static BBitmap *cubicSplineToolIcon = LoadIconFromResource("cubic-spline-tool", iconSize);
+  static BBitmap *datumPointToolIcon = LoadIconFromResource("datum-point-tool", iconSize);
   static BBitmap *constructionToolIcon = LoadIconFromResource("construction-tool", iconSize);
-  static BBitmap *splitCurvesToolIcon  = LoadIconFromResource("split-curves-tool", iconSize);
-  static BBitmap *textToolIcon         = LoadIconFromResource("text-tool", iconSize);
+  static BBitmap *splitCurvesToolIcon = LoadIconFromResource("split-curves-tool", iconSize);
+  static BBitmap *textToolIcon = LoadIconFromResource("text-tool", iconSize);
 
   static BBitmap *distanceToolIcon = LoadIconFromResource("distance-tool", iconSize);
-  static BBitmap *angleToolIcon    = LoadIconFromResource("angle-tool", iconSize);
+  static BBitmap *angleToolIcon = LoadIconFromResource("angle-tool", iconSize);
 
   static BBitmap *horizontalToolIcon = LoadIconFromResource("horizontal-tool", iconSize);
-  static BBitmap *verticalToolIcon   = LoadIconFromResource("vertical-tool", iconSize);
-  static BBitmap *parallelToolIcon   = LoadIconFromResource("parallel-tool", iconSize);
+  static BBitmap *verticalToolIcon = LoadIconFromResource("vertical-tool", iconSize);
+  static BBitmap *parallelToolIcon = LoadIconFromResource("parallel-tool", iconSize);
 
-  static BBitmap *nearestIsoToolIcon   = LoadIconFromResource("nearest-iso-tool", iconSize);
+  static BBitmap *nearestIsoToolIcon = LoadIconFromResource("nearest-iso-tool", iconSize);
   static BBitmap *nearestOrthoToolIcon = LoadIconFromResource("nearest-ortho-tool", iconSize);
 
   static BBitmap *constrainPerpendicularToolIcon =
@@ -85,14 +85,14 @@ AppToolbar::AppToolbar(BRect rect, BSize toolbarIconSize)
       LoadIconFromResource("other-supplementary-angle-tool", iconSize);
   static BBitmap *refToolIcon = LoadIconFromResource("ref-tool", iconSize);
 
-  lineToolButton   = MakeButton(toolbarIconSize, lineToolIcon, new BMessage(LINE_TOOL_BTN_CLICKED),
-                                "Sketch line segment (S)");
-  rectToolButton   = MakeButton(toolbarIconSize, rectToolIcon, new BMessage(RECT_TOOL_BTN_CLICKED),
-                                "Sketch rectangle (R)");
+  lineToolButton = MakeButton(toolbarIconSize, lineToolIcon, new BMessage(LINE_TOOL_BTN_CLICKED),
+                              "Sketch line segment (S)");
+  rectToolButton = MakeButton(toolbarIconSize, rectToolIcon, new BMessage(RECT_TOOL_BTN_CLICKED),
+                              "Sketch rectangle (R)");
   circleToolButton = MakeButton(toolbarIconSize, circleToolIcon,
                                 new BMessage(CIRCLE_TOOL_BTN_CLICKED), "Sketch circle (C)");
-  arcToolButton    = MakeButton(toolbarIconSize, arcToolIcon, new BMessage(ARC_TOOL_BTN_CLICKED),
-                                "Sketch arc (A)");
+  arcToolButton = MakeButton(toolbarIconSize, arcToolIcon, new BMessage(ARC_TOOL_BTN_CLICKED),
+                             "Sketch arc (A)");
   tangentArcToolButton =
       MakeButton(toolbarIconSize, tangentArcToolIcon, new BMessage(TANGENT_ARC_TOOL_BTN_CLICKED),
                  "Create tangent arc at selected point (Shift+A)");

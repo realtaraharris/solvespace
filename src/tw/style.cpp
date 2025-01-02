@@ -59,16 +59,16 @@ void TextWindow::ShowListOfStyles() {
 
 void TextWindow::ScreenChangeStyleName(int link, uint32_t v) {
   hStyle hs = {v};
-  Style *s  = Style::Get(hs);
+  Style *s = Style::Get(hs);
   SS.TW.ShowEditControl(12, s->name);
-  SS.TW.edit.style   = hs;
+  SS.TW.edit.style = hs;
   SS.TW.edit.meaning = Edit::STYLE_NAME;
 }
 
 void TextWindow::ScreenDeleteStyle(int link, uint32_t v) {
   SS.UndoRemember();
   hStyle hs = {v};
-  Style *s  = SK.style.FindByIdNoOops(hs);
+  Style *s = SK.style.FindByIdNoOops(hs);
   if (s) {
     SK.style.RemoveById(hs);
     // And it will get recreated automatically if something is still using
@@ -79,39 +79,39 @@ void TextWindow::ScreenDeleteStyle(int link, uint32_t v) {
 }
 
 void TextWindow::ScreenChangeStylePatternType(int link, uint32_t v) {
-  hStyle hs             = {v};
-  Style *s              = Style::Get(hs);
-  s->stippleType        = (StipplePattern)(link - 1);
+  hStyle hs = {v};
+  Style *s = Style::Get(hs);
+  s->stippleType = (StipplePattern)(link - 1);
   SS.GW.persistentDirty = true;
 }
 
 void TextWindow::ScreenChangeStyleMetric(int link, uint32_t v) {
-  hStyle         hs = {v};
-  Style         *s  = Style::Get(hs);
-  double         val;
+  hStyle hs = {v};
+  Style *s = Style::Get(hs);
+  double val;
   Style::UnitsAs units;
-  Edit           meaning;
-  int            col;
+  Edit meaning;
+  int col;
   switch (link) {
   case 't':
-    val     = s->textHeight;
-    units   = s->textHeightAs;
-    col     = 10;
+    val = s->textHeight;
+    units = s->textHeightAs;
+    col = 10;
     meaning = Edit::STYLE_TEXT_HEIGHT;
     break;
 
   case 's':
-    val     = s->stippleScale;
-    units   = s->widthAs;
-    col     = 17;
+    val = s->stippleScale;
+    units = s->widthAs;
+    col = 17;
     meaning = Edit::STYLE_STIPPLE_PERIOD;
     break;
 
   case 'w':
   case 'W':
-    val     = s->width;
-    units   = s->widthAs;
-    col     = 9;
+    val = s->width;
+    units = s->widthAs;
+    col = 9;
     meaning = Edit::STYLE_WIDTH;
     break;
 
@@ -125,41 +125,41 @@ void TextWindow::ScreenChangeStyleMetric(int link, uint32_t v) {
     edit_value = SS.MmToString(val, true);
   }
   SS.TW.ShowEditControl(col, edit_value);
-  SS.TW.edit.style   = hs;
+  SS.TW.edit.style = hs;
   SS.TW.edit.meaning = meaning;
 }
 
 void TextWindow::ScreenChangeStyleTextAngle(int link, uint32_t v) {
   hStyle hs = {v};
-  Style *s  = Style::Get(hs);
+  Style *s = Style::Get(hs);
   SS.TW.ShowEditControl(9, ssprintf("%.2f", s->textAngle));
-  SS.TW.edit.style   = hs;
+  SS.TW.edit.style = hs;
   SS.TW.edit.meaning = Edit::STYLE_TEXT_ANGLE;
 }
 
 void TextWindow::ScreenChangeStyleColor(int link, uint32_t v) {
   hStyle hs = {v};
-  Style *s  = Style::Get(hs);
+  Style *s = Style::Get(hs);
   // Same function used for stroke and fill colors
-  Edit      em;
+  Edit em;
   RgbaColor rgb;
   if (link == 's') {
-    em  = Edit::STYLE_COLOR;
+    em = Edit::STYLE_COLOR;
     rgb = s->color;
   } else if (link == 'f') {
-    em  = Edit::STYLE_FILL_COLOR;
+    em = Edit::STYLE_FILL_COLOR;
     rgb = s->fillColor;
   } else
     ssassert(false, "Unexpected link");
   SS.TW.ShowEditControlWithColorPicker(13, rgb);
-  SS.TW.edit.style   = hs;
+  SS.TW.edit.style = hs;
   SS.TW.edit.meaning = em;
 }
 
 void TextWindow::ScreenChangeStyleYesNo(int link, uint32_t v) {
   SS.UndoRemember();
   hStyle hs = {v};
-  Style *s  = Style::Get(hs);
+  Style *s = Style::Get(hs);
   switch (link) {
   // Units for the width
   case 'w':
@@ -248,7 +248,7 @@ bool TextWindow::EditControlDoneForStyles(const std::string &str) {
     SS.UndoRemember();
     s = Style::Get(edit.style);
 
-    double         v;
+    double v;
     Style::UnitsAs units = (edit.meaning == Edit::STYLE_TEXT_HEIGHT) ? s->textHeightAs : s->widthAs;
     if (units == Style::UnitsAs::MM) {
       v = SS.StringToMm(str);
@@ -267,7 +267,7 @@ bool TextWindow::EditControlDoneForStyles(const std::string &str) {
   }
   case Edit::STYLE_TEXT_ANGLE:
     SS.UndoRemember();
-    s            = Style::Get(edit.style);
+    s = Style::Get(edit.style);
     s->textAngle = WRAP_SYMMETRIC(atof(str.c_str()), 360);
     break;
 
@@ -279,11 +279,11 @@ bool TextWindow::EditControlDoneForStyles(const std::string &str) {
       rgb = rgb.ClampWithin(0, 1);
       if (edit.meaning == Edit::STYLE_COLOR) {
         SS.UndoRemember();
-        s        = Style::Get(edit.style);
+        s = Style::Get(edit.style);
         s->color = RGBf(rgb.x, rgb.y, rgb.z);
       } else if (edit.meaning == Edit::STYLE_FILL_COLOR) {
         SS.UndoRemember();
-        s            = Style::Get(edit.style);
+        s = Style::Get(edit.style);
         s->fillColor = RGBf(rgb.x, rgb.y, rgb.z);
       } else {
         SS.backgroundColor = RGBf(rgb.x, rgb.y, rgb.z);
@@ -298,7 +298,7 @@ bool TextWindow::EditControlDoneForStyles(const std::string &str) {
       Error(_("Style name cannot be empty"));
     } else {
       SS.UndoRemember();
-      s       = Style::Get(edit.style);
+      s = Style::Get(edit.style);
       s->name = str;
     }
     break;
@@ -358,11 +358,11 @@ void TextWindow::ShowStyleInfo() {
 
   Printf(false, "%Ba   %Ftstipple type:%E");
 
-  const size_t patternCount                 = (size_t)StipplePattern::LAST + 1;
-  const char  *patternsSource[patternCount] = {"___________", "-  -  -  - ", "- - - - - -",
-                                               "__ __ __ __", "-.-.-.-.-.-", "..-..-..-..",
-                                               "...........", "~~~~~~~~~~~", "__~__~__~__"};
-  std::string  patterns[patternCount];
+  const size_t patternCount = (size_t)StipplePattern::LAST + 1;
+  const char *patternsSource[patternCount] = {"___________", "-  -  -  - ", "- - - - - -",
+                                              "__ __ __ __", "-.-.-.-.-.-", "..-..-..-..",
+                                              "...........", "~~~~~~~~~~~", "__~__~__~__"};
+  std::string patterns[patternCount];
 
   for (uint32_t i = 0; i <= (uint32_t)StipplePattern::LAST; i++) {
     const char *str = patternsSource[i];

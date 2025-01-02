@@ -31,20 +31,20 @@
 void PropertyBrowser::ShowListOfGroups() {
   dbp("%Ft active");
   dbp("%Ft    shown dof group-name%E");
-  bool afterActive      = false;
+  bool afterActive = false;
   bool backgroundParity = false;
   for (hGroup hg : SK.groupOrder) {
     Group *g = SK.GetGroup(hg);
 
-    std::string s      = g->DescriptionString();
-    bool        active = (g->h == SS.GW.activeGroup);
-    bool        shown  = g->visible;
-    bool        ok     = g->IsSolvedOkay();
-    bool        warn =
+    std::string s = g->DescriptionString();
+    bool active = (g->h == SS.GW.activeGroup);
+    bool shown = g->visible;
+    bool ok = g->IsSolvedOkay();
+    bool warn =
         (g->type == Group::Type::DRAWING_WORKPLANE && g->polyError.how != PolyError::GOOD) ||
         ((g->type == Group::Type::EXTRUDE || g->type == Group::Type::LATHE) &&
          SK.GetGroup(g->opA)->polyError.how != PolyError::GOOD);
-    int  dof      = g->solved.dof;
+    int dof = g->solved.dof;
     char sdof[16] = "ok ";
     if (ok && dof > 0) {
       if (dof > 999) {
@@ -87,7 +87,7 @@ void PropertyBrowser::ShowListOfGroups() {
            suffix.c_str());
            */
 
-    ThumbListItem  *listItem;
+    ThumbListItem *listItem;
     static BBitmap *closedEyeIcon = LoadIconFromResource("closed-eye", 20);
 
     listItem = new ThumbListItem(closedEyeIcon, g->name.c_str(), 20, 0, FALSE);

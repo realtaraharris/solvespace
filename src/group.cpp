@@ -37,8 +37,8 @@ void Group::Clear() {
 
 void Group::AddParam(IdList<Param, hParam> *param, hParam hp, double v) {
   Param pa = {};
-  pa.h     = hp;
-  pa.val   = v;
+  pa.h = hp;
+  pa.val = v;
 
   param->Add(&pa);
 }
@@ -80,10 +80,10 @@ void Group::TransformImportedBy(Vector t, Quaternion q) {
   qz = h.param(6);
 
   Quaternion qg = Quaternion::From(qw, qx, qy, qz);
-  qg            = q.Times(qg);
+  qg = q.Times(qg);
 
   Vector tg = VectorFromH(tx, ty, tz);
-  tg        = tg.Plus(t);
+  tg = tg.Plus(t);
 
   SK.GetParam(tx)->val = tg.x;
   SK.GetParam(ty)->val = tg.y;
@@ -139,8 +139,8 @@ void Group::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *par
   Vector gn = (SS.GW.projRight).Cross(SS.GW.projUp);
   Vector gp = SS.GW.projRight.Plus(SS.GW.projUp);
   Vector gc = (SS.GW.offset).ScaledBy(-1);
-  gn        = gn.WithMagnitude(200 / SS.GW.scale);
-  gp        = gp.WithMagnitude(200 / SS.GW.scale);
+  gn = gn.WithMagnitude(200 / SS.GW.scale);
+  gp = gp.WithMagnitude(200 / SS.GW.scale);
   int a, i;
   switch (type) {
   case Type::DRAWING_3D: return;
@@ -150,9 +150,9 @@ void Group::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *par
     if (subtype == Subtype::WORKPLANE_BY_LINE_SEGMENTS) {
       Vector u = SK.GetEntity(predef.entityB)->VectorGetNum();
       Vector v = SK.GetEntity(predef.entityC)->VectorGetNum();
-      u        = u.WithMagnitude(1);
+      u = u.WithMagnitude(1);
       Vector n = u.Cross(v);
-      v        = (n.Cross(u)).WithMagnitude(1);
+      v = (n.Cross(u)).WithMagnitude(1);
 
       if (predef.swapUV)
         std::swap(u, v);
@@ -169,29 +169,29 @@ void Group::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *par
     } else
       ssassert(false, "Unexpected workplane subtype");
 
-    Entity normal    = {};
-    normal.type      = Entity::Type::NORMAL_N_COPY;
+    Entity normal = {};
+    normal.type = Entity::Type::NORMAL_N_COPY;
     normal.numNormal = q;
 
     normal.point[0] = h.entity(2);
-    normal.group    = h;
-    normal.h        = h.entity(1);
+    normal.group = h;
+    normal.h = h.entity(1);
     entity->Add(&normal);
 
-    Entity point       = {};
-    point.type         = Entity::Type::POINT_N_COPY;
-    point.numPoint     = SK.GetEntity(predef.origin)->PointGetNum();
+    Entity point = {};
+    point.type = Entity::Type::POINT_N_COPY;
+    point.numPoint = SK.GetEntity(predef.origin)->PointGetNum();
     point.construction = true;
-    point.group        = h;
-    point.h            = h.entity(2);
+    point.group = h;
+    point.h = h.entity(2);
     entity->Add(&point);
 
-    Entity wp   = {};
-    wp.type     = Entity::Type::WORKPLANE;
-    wp.normal   = normal.h;
+    Entity wp = {};
+    wp.type = Entity::Type::WORKPLANE;
+    wp.normal = normal.h;
     wp.point[0] = point.h;
-    wp.group    = h;
-    wp.h        = h.entity(0);
+    wp.group = h;
+    wp.h = h.entity(0);
     entity->Add(&wp);
     return;
   }
@@ -224,7 +224,7 @@ void Group::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *par
 
       e->CalculateNumerical(/*forExport=*/false);
       hEntity he = e->h;
-      e          = NULL;
+      e = NULL;
       // As soon as I call CopyEntity, e may become invalid! That
       // adds entities, which may cause a realloc.
       CopyEntity(entity, SK.GetEntity(he), ai, REMAP_BOTTOM, h.param(0), h.param(1), h.param(2),
@@ -375,15 +375,15 @@ void Group::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *par
         if (check.Dot(check) < LENGTH_EPS) {
           //! @todo isn't this the same as &(ent[i])?
           Entity *ep = SK.GetEntity(e->h);
-          Entity  en = {};
+          Entity en = {};
           // A point gets extruded to form a line segment
-          en.point[0]     = Remap(ep->h, REMAP_LATHE_START);
-          en.point[1]     = Remap(ep->h, REMAP_LATHE_END);
-          en.group        = h;
+          en.point[0] = Remap(ep->h, REMAP_LATHE_START);
+          en.point[1] = Remap(ep->h, REMAP_LATHE_END);
+          en.group = h;
           en.construction = ep->construction;
-          en.style        = ep->style;
-          en.h            = Remap(ep->h, REMAP_PT_TO_LINE);
-          en.type         = Entity::Type::LINE_SEGMENT;
+          en.style = ep->style;
+          en.h = Remap(ep->h, REMAP_PT_TO_LINE);
+          en.type = Entity::Type::LINE_SEGMENT;
           entity->Add(&en);
         }
       }
@@ -507,7 +507,7 @@ void Group::GenerateEquations(IdList<Equation, hEquation> *l) {
     AddEq(l, (orig.z)->Minus(EP(2)), 2);
     // param 3 is the angle, which is free
     Vector axis = SK.GetEntity(predef.entityB)->VectorGetNum();
-    axis        = axis.WithMagnitude(1);
+    axis = axis.WithMagnitude(1);
     AddEq(l, (EC(axis.x))->Minus(EP(4)), 3);
     AddEq(l, (EC(axis.y))->Minus(EP(5)), 4);
     AddEq(l, (EC(axis.z))->Minus(EP(6)), 5);
@@ -526,9 +526,9 @@ void Group::GenerateEquations(IdList<Equation, hEquation> *l) {
     if (predef.entityB != Entity::FREE_IN_3D) {
       // The extrusion path is locked along a line, normal to the
       // specified workplane.
-      Entity    *w        = SK.GetEntity(predef.entityB);
-      ExprVector u        = w->Normal()->NormalExprsU();
-      ExprVector v        = w->Normal()->NormalExprsV();
+      Entity *w = SK.GetEntity(predef.entityB);
+      ExprVector u = w->Normal()->NormalExprsU();
+      ExprVector v = w->Normal()->NormalExprsV();
       ExprVector extruden = {Expr::From(h.param(0)), Expr::From(h.param(1)),
                              Expr::From(h.param(2))};
 
@@ -537,7 +537,7 @@ void Group::GenerateEquations(IdList<Equation, hEquation> *l) {
     }
   } else if (type == Type::TRANSLATE) {
     if (predef.entityB != Entity::FREE_IN_3D) {
-      Entity    *w = SK.GetEntity(predef.entityB);
+      Entity *w = SK.GetEntity(predef.entityB);
       ExprVector n = w->Normal()->NormalExprsN();
       ExprVector trans;
       trans = ExprVector::From(h.param(0), h.param(1), h.param(2));
@@ -562,32 +562,32 @@ void Group::MakeExtrusionLines(IdList<Entity, hEntity> *el, hEntity in) {
   Entity en = {};
   if (ep->IsPoint()) {
     // A point gets extruded to form a line segment
-    en.point[0]     = Remap(ep->h, REMAP_TOP);
-    en.point[1]     = Remap(ep->h, REMAP_BOTTOM);
-    en.group        = h;
+    en.point[0] = Remap(ep->h, REMAP_TOP);
+    en.point[1] = Remap(ep->h, REMAP_BOTTOM);
+    en.group = h;
     en.construction = ep->construction;
-    en.style        = ep->style;
-    en.h            = Remap(ep->h, REMAP_PT_TO_LINE);
-    en.type         = Entity::Type::LINE_SEGMENT;
+    en.style = ep->style;
+    en.h = Remap(ep->h, REMAP_PT_TO_LINE);
+    en.type = Entity::Type::LINE_SEGMENT;
     el->Add(&en);
   } else if (ep->type == Entity::Type::LINE_SEGMENT) {
     // A line gets extruded to form a plane face; an endpoint of the
     // original line is a point in the plane, and the line is in the plane.
-    Vector a  = SK.GetEntity(ep->point[0])->PointGetNum();
-    Vector b  = SK.GetEntity(ep->point[1])->PointGetNum();
+    Vector a = SK.GetEntity(ep->point[0])->PointGetNum();
+    Vector b = SK.GetEntity(ep->point[1])->PointGetNum();
     Vector ab = b.Minus(a);
 
-    en.param[0]  = h.param(0);
-    en.param[1]  = h.param(1);
-    en.param[2]  = h.param(2);
-    en.numPoint  = a;
+    en.param[0] = h.param(0);
+    en.param[1] = h.param(1);
+    en.param[2] = h.param(2);
+    en.numPoint = a;
     en.numNormal = Quaternion::From(0, ab.x, ab.y, ab.z);
 
-    en.group        = h;
+    en.group = h;
     en.construction = ep->construction;
-    en.style        = ep->style;
-    en.h            = Remap(ep->h, REMAP_LINE_TO_FACE);
-    en.type         = Entity::Type::FACE_XPROD;
+    en.style = ep->style;
+    en.h = Remap(ep->h, REMAP_LINE_TO_FACE);
+    en.type = Entity::Type::FACE_XPROD;
     el->Add(&en);
   }
 }
@@ -608,27 +608,27 @@ void Group::MakeLatheCircles(IdList<Entity, hEntity> *el, IdList<Param, hParam> 
     Entity *pp = SK.GetEntity(en.point[1]);
 
     // Project arc point to the revolution axis and use it for arc center.
-    double k     = pp->numPoint.Minus(pt).Dot(axis) / axis.Dot(axis);
+    double k = pp->numPoint.Minus(pt).Dot(axis) / axis.Dot(axis);
     pc->numPoint = pt.Plus(axis.ScaledBy(k));
 
     // Create arc entity.
-    en.group        = h;
+    en.group = h;
     en.construction = ep->construction;
-    en.style        = ep->style;
-    en.h            = Remap(ep->h, REMAP_PT_TO_ARC);
-    en.type         = Entity::Type::ARC_OF_CIRCLE;
+    en.style = ep->style;
+    en.h = Remap(ep->h, REMAP_PT_TO_ARC);
+    en.type = Entity::Type::ARC_OF_CIRCLE;
 
     // Generate a normal.
-    Entity n    = {};
+    Entity n = {};
     n.workplane = en.workplane;
-    n.h         = Remap(ep->h, REMAP_PT_TO_NORMAL);
-    n.group     = en.group;
-    n.style     = en.style;
-    n.type      = Entity::Type::NORMAL_N_COPY;
+    n.h = Remap(ep->h, REMAP_PT_TO_NORMAL);
+    n.group = en.group;
+    n.style = en.style;
+    n.type = Entity::Type::NORMAL_N_COPY;
 
     // Create basis for the normal.
-    Vector nu   = pp->numPoint.Minus(pc->numPoint).WithMagnitude(1.0);
-    Vector nv   = nu.Cross(axis).WithMagnitude(1.0);
+    Vector nu = pp->numPoint.Minus(pc->numPoint).WithMagnitude(1.0);
+    Vector nv = nu.Cross(axis).WithMagnitude(1.0);
     n.numNormal = Quaternion::From(nv, nu);
 
     // The point determines where the normal gets displayed on-screen;
@@ -654,19 +654,19 @@ void Group::MakeLatheSurfacesSelectable(IdList<Entity, hEntity> *el, hEntity in,
     // between axis and line direction and check that
     // cos(angle) == 0 <-> angle == +-90 deg.
     if (std::fabs(u.Dot(axis) / axis.Magnitude()) < ANGLE_COS_EPS) {
-      en.param[0]  = h.param(0);
-      en.param[1]  = h.param(1);
-      en.param[2]  = h.param(2);
-      Vector v     = axis.Cross(u).WithMagnitude(1.0);
-      Vector n     = u.Cross(v);
+      en.param[0] = h.param(0);
+      en.param[1] = h.param(1);
+      en.param[2] = h.param(2);
+      Vector v = axis.Cross(u).WithMagnitude(1.0);
+      Vector n = u.Cross(v);
       en.numNormal = Quaternion::From(0, n.x, n.y, n.z);
 
-      en.group        = h;
+      en.group = h;
       en.construction = ep->construction;
-      en.style        = ep->style;
-      en.h            = Remap(ep->h, REMAP_LINE_TO_FACE);
-      en.type         = Entity::Type::FACE_NORMAL_PT;
-      en.point[0]     = ep->point[0];
+      en.style = ep->style;
+      en.h = Remap(ep->h, REMAP_LINE_TO_FACE);
+      en.type = Entity::Type::FACE_NORMAL_PT;
+      en.point[0] = ep->point[0];
       el->Add(&en);
     }
   }
@@ -679,7 +679,7 @@ void Group::MakeRevolveEndFaces(IdList<Entity, hEntity> *el, hEntity pt, int ai,
   if (pt.v == 0)
     return;
   Group *src = SK.GetGroup(opA);
-  Vector n   = src->polyLoops.normal;
+  Vector n = src->polyLoops.normal;
 
   // When there is no loop normal (e.g. if the loop is broken), use normal of workplane
   // as fallback, to avoid breaking constraints depending on the faces.
@@ -688,8 +688,8 @@ void Group::MakeRevolveEndFaces(IdList<Entity, hEntity> *el, hEntity pt, int ai,
   }
 
   Entity en = {};
-  en.type   = Entity::Type::FACE_ROT_NORMAL_PT;
-  en.group  = h;
+  en.type = Entity::Type::FACE_ROT_NORMAL_PT;
+  en.group = h;
   // The center of rotation
   en.param[0] = h.param(0);
   en.param[1] = h.param(1);
@@ -700,15 +700,15 @@ void Group::MakeRevolveEndFaces(IdList<Entity, hEntity> *el, hEntity pt, int ai,
   en.param[5] = h.param(5);
   en.param[6] = h.param(6);
 
-  en.numNormal    = Quaternion::From(0, n.x, n.y, n.z);
-  en.point[0]     = Remap(pt, REMAP_LATHE_START);
+  en.numNormal = Quaternion::From(0, n.x, n.y, n.z);
+  en.point[0] = Remap(pt, REMAP_LATHE_START);
   en.timesApplied = ai;
-  en.h            = Remap(Entity::NO_ENTITY, REMAP_LATHE_START);
+  en.h = Remap(Entity::NO_ENTITY, REMAP_LATHE_START);
   el->Add(&en);
 
-  en.point[0]     = Remap(pt, REMAP_LATHE_END);
+  en.point[0] = Remap(pt, REMAP_LATHE_END);
   en.timesApplied = af;
-  en.h            = Remap(Entity::NO_ENTITY, REMAP_LATHE_END);
+  en.h = Remap(Entity::NO_ENTITY, REMAP_LATHE_END);
   el->Add(&en);
 }
 
@@ -716,7 +716,7 @@ void Group::MakeExtrusionTopBottomFaces(IdList<Entity, hEntity> *el, hEntity pt)
   if (pt.v == 0)
     return;
   Group *src = SK.GetGroup(opA);
-  Vector n   = src->polyLoops.normal;
+  Vector n = src->polyLoops.normal;
 
   // When there is no loop normal (e.g. if the loop is broken), use normal of workplane
   // as fallback, to avoid breaking constraints depending on the faces.
@@ -725,33 +725,33 @@ void Group::MakeExtrusionTopBottomFaces(IdList<Entity, hEntity> *el, hEntity pt)
   }
 
   Entity en = {};
-  en.type   = Entity::Type::FACE_NORMAL_PT;
-  en.group  = h;
+  en.type = Entity::Type::FACE_NORMAL_PT;
+  en.group = h;
 
   en.numNormal = Quaternion::From(0, n.x, n.y, n.z);
-  en.point[0]  = Remap(pt, REMAP_TOP);
-  en.h         = Remap(Entity::NO_ENTITY, REMAP_TOP);
+  en.point[0] = Remap(pt, REMAP_TOP);
+  en.h = Remap(Entity::NO_ENTITY, REMAP_TOP);
   el->Add(&en);
 
   en.point[0] = Remap(pt, REMAP_BOTTOM);
-  en.h        = Remap(Entity::NO_ENTITY, REMAP_BOTTOM);
+  en.h = Remap(Entity::NO_ENTITY, REMAP_BOTTOM);
   el->Add(&en);
 }
 
 void Group::CopyEntity(IdList<Entity, hEntity> *el, Entity *ep, int timesApplied, int remap,
                        hParam dx, hParam dy, hParam dz, hParam qw, hParam qvx, hParam qvy,
                        hParam qvz, hParam dist, CopyAs as) {
-  Entity en       = {};
-  en.type         = ep->type;
-  en.extraPoints  = ep->extraPoints;
-  en.h            = Remap(ep->h, remap);
+  Entity en = {};
+  en.type = ep->type;
+  en.extraPoints = ep->extraPoints;
+  en.h = Remap(ep->h, remap);
   en.timesApplied = timesApplied;
-  en.group        = h;
+  en.group = h;
   en.construction = ep->construction;
-  en.style        = ep->style;
-  en.str          = ep->str;
-  en.font         = ep->font;
-  en.file         = ep->file;
+  en.style = ep->style;
+  en.str = ep->str;
+  en.font = ep->font;
+  en.file = ep->file;
 
   switch (ep->type) {
   case Entity::Type::WORKPLANE:
@@ -766,7 +766,7 @@ void Group::CopyEntity(IdList<Entity, hEntity> *el, Entity *ep, int timesApplied
   case Entity::Type::POINT_IN_3D:
   case Entity::Type::POINT_IN_2D:
     if (as == CopyAs::N_TRANS) {
-      en.type     = Entity::Type::POINT_N_TRANS;
+      en.type = Entity::Type::POINT_N_TRANS;
       en.param[0] = dx;
       en.param[1] = dy;
       en.param[2] = dz;
@@ -821,7 +821,7 @@ void Group::CopyEntity(IdList<Entity, hEntity> *el, Entity *ep, int timesApplied
 
   case Entity::Type::DISTANCE_N_COPY:
   case Entity::Type::DISTANCE:
-    en.type        = Entity::Type::DISTANCE_N_COPY;
+    en.type = Entity::Type::DISTANCE_N_COPY;
     en.numDistance = ep->actDistance * std::fabs(scale);
     break;
 
@@ -833,14 +833,14 @@ void Group::CopyEntity(IdList<Entity, hEntity> *el, Entity *ep, int timesApplied
   case Entity::Type::FACE_ROT_NORMAL_PT:
   case Entity::Type::FACE_N_ROT_AXIS_TRANS:
     if (as == CopyAs::N_TRANS) {
-      en.type     = Entity::Type::FACE_N_TRANS;
+      en.type = Entity::Type::FACE_N_TRANS;
       en.param[0] = dx;
       en.param[1] = dy;
       en.param[2] = dz;
     } else if (as == CopyAs::NUMERIC) {
       en.type = Entity::Type::FACE_NORMAL_PT;
     } else if (as == CopyAs::N_ROT_AXIS_TRANS) {
-      en.type     = Entity::Type::FACE_N_ROT_AXIS_TRANS;
+      en.type = Entity::Type::FACE_N_ROT_AXIS_TRANS;
       en.param[0] = dx;
       en.param[1] = dy;
       en.param[2] = dz;
@@ -863,12 +863,12 @@ void Group::CopyEntity(IdList<Entity, hEntity> *el, Entity *ep, int timesApplied
       en.param[5] = qvy;
       en.param[6] = qvz;
     }
-    en.numPoint  = (ep->actPoint).ScaledBy(scale);
+    en.numPoint = (ep->actPoint).ScaledBy(scale);
     en.numNormal = (ep->actNormal).ScaledBy(scale);
     break;
 
   default: {
-    int  i, points;
+    int i, points;
     bool hasNormal, hasDistance;
     EntReqTable::GetEntityInfo(ep->type, ep->extraPoints, NULL, &points, &hasNormal, &hasDistance);
     for (i = 0; i < points; i++) {
@@ -930,7 +930,7 @@ void Group::AssembleLoops(bool *allClosed, bool *allCoplanar, bool *allNonZeroLe
     }
     if (i > sb->deg) {
       // This is a zero-length edge.
-      *allNonZeroLen         = false;
+      *allNonZeroLen = false;
       polyError.errorPointAt = sb->ctrl[0];
       goto done;
     }
@@ -980,7 +980,7 @@ void SShell::RemapFaces(Group *g, int remap) {
     if (face == Entity::NO_ENTITY)
       continue;
 
-    face    = g->Remap(face, remap);
+    face = g->Remap(face, remap);
     ss.face = face.v;
   }
 }
@@ -992,7 +992,7 @@ void SMesh::RemapFaces(Group *g, int remap) {
     if (face == Entity::NO_ENTITY)
       continue;
 
-    face          = g->Remap(face, remap);
+    face = g->Remap(face, remap);
     tr->meta.face = face.v;
   }
 }
@@ -1015,19 +1015,19 @@ void Group::GenerateForStepAndRepeat(T *steps, T *outs, Group::CombineAs forWhat
 #pragma omp parallel for
   for (a = a0; a < n; a++) {
     transd[a] = {};
-    workA[a]  = {};
-    int ap    = a * 2 - (subtype == Subtype::ONE_SIDED ? 0 : (n - 1));
+    workA[a] = {};
+    int ap = a * 2 - (subtype == Subtype::ONE_SIDED ? 0 : (n - 1));
 
     if (type == Type::TRANSLATE) {
       Vector trans = VectorFromH(h.param(0), h.param(1), h.param(2));
-      trans        = trans.ScaledBy(ap);
+      trans = trans.ScaledBy(ap);
       transd[a].MakeFromTransformationOf(steps, trans, Quaternion::IDENTITY, 1.0);
     } else {
-      Vector     trans = VectorFromH(h.param(0), h.param(1), h.param(2));
-      double     theta = ap * SK.GetParam(h.param(3))->val;
-      double     c = cos(theta), s = sin(theta);
-      Vector     axis = VectorFromH(h.param(4), h.param(5), h.param(6));
-      Quaternion q    = Quaternion::From(c, s * axis.x, s * axis.y, s * axis.z);
+      Vector trans = VectorFromH(h.param(0), h.param(1), h.param(2));
+      double theta = ap * SK.GetParam(h.param(3))->val;
+      double c = cos(theta), s = sin(theta);
+      Vector axis = VectorFromH(h.param(4), h.param(5), h.param(6));
+      Quaternion q = Quaternion::From(c, s * axis.x, s * axis.y, s * axis.z);
       // Rotation is centered at t; so A(x - t) + t = Ax + (t - At)
       transd[a].MakeFromTransformationOf(steps, trans.Minus(q.Rotate(trans)), q, 1.0);
     }
@@ -1038,7 +1038,7 @@ void Group::GenerateForStepAndRepeat(T *steps, T *outs, Group::CombineAs forWhat
     transd[a].RemapFaces(this, remap);
   }
 
-  std::vector<T> *soFar   = &transd;
+  std::vector<T> *soFar = &transd;
   std::vector<T> *scratch = &workA;
   // do the boolean operations on pairs of equal size
   while (n > 1) {
@@ -1094,7 +1094,7 @@ void Group::GenerateForBoolean(T *prevs, T *thiss, T *outs, Group::CombineAs how
 
 void Group::GenerateShellAndMesh() {
   bool prevBooleanFailed = booleanFailed;
-  booleanFailed          = false;
+  booleanFailed = false;
 
   Group *srcg = this;
 
@@ -1129,7 +1129,7 @@ void Group::GenerateShellAndMesh() {
       }
     }
   } else if (type == Type::EXTRUDE && haveSrc) {
-    Group *src       = SK.GetGroup(opA);
+    Group *src = SK.GetGroup(opA);
     Vector translate = VectorFromH(h.param(0), h.param(1), h.param(2));
 
     Vector tbot, ttop;
@@ -1142,7 +1142,7 @@ void Group::GenerateShellAndMesh() {
     }
 
     SBezierLoopSetSet *sblss = &(src->bezierLoops);
-    SBezierLoopSet    *sbls;
+    SBezierLoopSet *sbls;
     for (sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
       int is = thisShell.surface.n;
       // Extrude this outer contour (plus its inner contours, if present)
@@ -1151,12 +1151,12 @@ void Group::GenerateShellAndMesh() {
       // And for any plane faces, annotate the model with the entity for
       // that face, so that the user can select them with the mouse.
       Vector onOrig = sbls->point;
-      int    i;
+      int i;
       // Not using range-for here because we're starting at a different place and using
       // indices for meaning.
       for (i = is; i < thisShell.surface.n; i++) {
-        SSurface *ss   = &(thisShell.surface[i]);
-        hEntity   face = Entity::NO_ENTITY;
+        SSurface *ss = &(thisShell.surface[i]);
+        hEntity face = Entity::NO_ENTITY;
 
         Vector p = ss->PointAt(0, 0), n = ss->NormalAt(0, 0).WithMagnitude(1);
         double d = n.Dot(p);
@@ -1164,11 +1164,11 @@ void Group::GenerateShellAndMesh() {
         if (i == is || i == (is + 1)) {
           // These are the top and bottom of the shell.
           if (std::fabs((onOrig.Plus(ttop)).Dot(n) - d) < LENGTH_EPS) {
-            face     = Remap(Entity::NO_ENTITY, REMAP_TOP);
+            face = Remap(Entity::NO_ENTITY, REMAP_TOP);
             ss->face = face.v;
           }
           if (std::fabs((onOrig.Plus(tbot)).Dot(n) - d) < LENGTH_EPS) {
-            face     = Remap(Entity::NO_ENTITY, REMAP_BOTTOM);
+            face = Remap(Entity::NO_ENTITY, REMAP_BOTTOM);
             ss->face = face.v;
           }
           continue;
@@ -1186,14 +1186,14 @@ void Group::GenerateShellAndMesh() {
 
           Vector a = SK.GetEntity(e.point[0])->PointGetNum(),
                  b = SK.GetEntity(e.point[1])->PointGetNum();
-          a        = a.Plus(ttop);
-          b        = b.Plus(ttop);
+          a = a.Plus(ttop);
+          b = b.Plus(ttop);
           // Could get taken backwards, so check all cases.
           if ((a.Equals(ss->ctrl[0][0]) && b.Equals(ss->ctrl[1][0])) ||
               (b.Equals(ss->ctrl[0][0]) && a.Equals(ss->ctrl[1][0])) ||
               (a.Equals(ss->ctrl[0][1]) && b.Equals(ss->ctrl[1][1])) ||
               (b.Equals(ss->ctrl[0][1]) && a.Equals(ss->ctrl[1][1]))) {
-            face     = Remap(e.h, REMAP_LINE_TO_FACE);
+            face = Remap(e.h, REMAP_LINE_TO_FACE);
             ss->face = face.v;
             break;
           }
@@ -1203,17 +1203,17 @@ void Group::GenerateShellAndMesh() {
   } else if (type == Type::LATHE && haveSrc) {
     Group *src = SK.GetGroup(opA);
 
-    Vector pt   = SK.GetEntity(predef.origin)->PointGetNum(),
+    Vector pt = SK.GetEntity(predef.origin)->PointGetNum(),
            axis = SK.GetEntity(predef.entityB)->VectorGetNum();
-    axis        = axis.WithMagnitude(1);
+    axis = axis.WithMagnitude(1);
 
     SBezierLoopSetSet *sblss = &(src->bezierLoops);
-    SBezierLoopSet    *sbls;
+    SBezierLoopSet *sbls;
     for (sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
       thisShell.MakeFromRevolutionOf(sbls, pt, axis, color, this);
     }
   } else if (type == Type::REVOLVE && haveSrc) {
-    Group *src    = SK.GetGroup(opA);
+    Group *src = SK.GetGroup(opA);
     double anglef = SK.GetParam(h.param(3))->val * 4; // why the 4 is needed?
     double dists = 0, distf = 0;
     double angles = 0.0;
@@ -1221,12 +1221,12 @@ void Group::GenerateShellAndMesh() {
       anglef *= 0.5;
       angles = -anglef;
     }
-    Vector pt   = SK.GetEntity(predef.origin)->PointGetNum(),
+    Vector pt = SK.GetEntity(predef.origin)->PointGetNum(),
            axis = SK.GetEntity(predef.entityB)->VectorGetNum();
-    axis        = axis.WithMagnitude(1);
+    axis = axis.WithMagnitude(1);
 
     SBezierLoopSetSet *sblss = &(src->bezierLoops);
-    SBezierLoopSet    *sbls;
+    SBezierLoopSet *sbls;
     for (sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
       if (std::fabs(anglef - angles) < 2 * PI) {
         thisShell.MakeFromHelicalRevolutionOf(sbls, pt, axis, color, this, angles, anglef, dists,
@@ -1236,23 +1236,23 @@ void Group::GenerateShellAndMesh() {
       }
     }
   } else if (type == Type::HELIX && haveSrc) {
-    Group *src    = SK.GetGroup(opA);
+    Group *src = SK.GetGroup(opA);
     double anglef = SK.GetParam(h.param(3))->val * 4; // why the 4 is needed?
     double dists = 0, distf = 0;
     double angles = 0.0;
-    distf         = SK.GetParam(h.param(7))->val * 2; // dist is applied twice
+    distf = SK.GetParam(h.param(7))->val * 2; // dist is applied twice
     if (subtype != Subtype::ONE_SIDED) {
       anglef *= 0.5;
       angles = -anglef;
       distf *= 0.5;
       dists = -distf;
     }
-    Vector pt   = SK.GetEntity(predef.origin)->PointGetNum(),
+    Vector pt = SK.GetEntity(predef.origin)->PointGetNum(),
            axis = SK.GetEntity(predef.entityB)->VectorGetNum();
-    axis        = axis.WithMagnitude(1);
+    axis = axis.WithMagnitude(1);
 
     SBezierLoopSetSet *sblss = &(src->bezierLoops);
-    SBezierLoopSet    *sbls;
+    SBezierLoopSet *sbls;
     for (sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
       thisShell.MakeFromHelicalRevolutionOf(sbls, pt, axis, color, this, angles, anglef, dists,
                                             distf);
@@ -1260,10 +1260,10 @@ void Group::GenerateShellAndMesh() {
   } else if (type == Type::LINKED) {
     // The imported shell or mesh are copied over, with the appropriate
     // transformation applied. We also must remap the face entities.
-    Vector     offset = Vector(SK.GetParam(h.param(0))->val, SK.GetParam(h.param(1))->val,
-                               SK.GetParam(h.param(2))->val);
-    Quaternion q      = {SK.GetParam(h.param(3))->val, SK.GetParam(h.param(4))->val,
-                         SK.GetParam(h.param(5))->val, SK.GetParam(h.param(6))->val};
+    Vector offset = Vector(SK.GetParam(h.param(0))->val, SK.GetParam(h.param(1))->val,
+                           SK.GetParam(h.param(2))->val);
+    Quaternion q = {SK.GetParam(h.param(3))->val, SK.GetParam(h.param(4))->val,
+                    SK.GetParam(h.param(5))->val, SK.GetParam(h.param(6))->val};
 
     thisMesh.MakeFromTransformationOf(&impMesh, offset, q, scale);
     thisMesh.RemapFaces(this, 0);
@@ -1364,10 +1364,10 @@ void Group::GenerateDisplayItems() {
       STriangle *t;
       for (t = runningMesh.l.First(); t; t = runningMesh.l.NextAfter(t)) {
         STriangle trn = *t;
-        Vector    n   = trn.Normal();
-        trn.an        = n;
-        trn.bn        = n;
-        trn.cn        = n;
+        Vector n = trn.Normal();
+        trn.an = n;
+        trn.bn = n;
+        trn.cn = n;
         displayMesh.AddTriangle(&trn);
       }
 
@@ -1457,9 +1457,9 @@ void Group::DrawMesh(DrawMeshAs how, Canvas *canvas) {
     Canvas::hFill hcfBack = {};
     if (SS.drawBackFaces && !displayMesh.isTransparent) {
       Canvas::Fill fillBack = {};
-      fillBack.layer        = fillFront.layer;
-      fillBack.color        = RgbaColor::FromFloat(1.0f, 0.1f, 0.1f);
-      hcfBack               = canvas->GetFill(fillBack);
+      fillBack.layer = fillFront.layer;
+      fillBack.color = RgbaColor::FromFloat(1.0f, 0.1f, 0.1f);
+      hcfBack = canvas->GetFill(fillBack);
     } else {
       hcfBack = hcfFront;
     }
@@ -1471,12 +1471,12 @@ void Group::DrawMesh(DrawMeshAs how, Canvas *canvas) {
     // Draw mesh edges, for debugging.
     if (SS.GW.showMesh) {
       Canvas::Stroke strokeTriangle = {};
-      strokeTriangle.zIndex         = 1;
-      strokeTriangle.color          = RgbaColor::FromFloat(0.0f, 1.0f, 0.0f);
-      strokeTriangle.width          = 1;
-      strokeTriangle.unit           = Canvas::Unit::PX;
-      Canvas::hStroke hcsTriangle   = canvas->GetStroke(strokeTriangle);
-      SEdgeList       edges         = {};
+      strokeTriangle.zIndex = 1;
+      strokeTriangle.color = RgbaColor::FromFloat(0.0f, 1.0f, 0.0f);
+      strokeTriangle.width = 1;
+      strokeTriangle.unit = Canvas::Unit::PX;
+      Canvas::hStroke hcsTriangle = canvas->GetStroke(strokeTriangle);
+      SEdgeList edges = {};
       for (const STriangle &t : displayMesh.l) {
         edges.AddEdge(t.a, t.b);
         edges.AddEdge(t.b, t.c);
@@ -1490,13 +1490,13 @@ void Group::DrawMesh(DrawMeshAs how, Canvas *canvas) {
 
   case DrawMeshAs::HOVERED: {
     Canvas::Fill fill = {};
-    fill.color        = Style::Color(Style::HOVERED);
-    fill.pattern      = Canvas::FillPattern::CHECKERED_A;
-    fill.zIndex       = 2;
+    fill.color = Style::Color(Style::HOVERED);
+    fill.pattern = Canvas::FillPattern::CHECKERED_A;
+    fill.zIndex = 2;
     Canvas::hFill hcf = canvas->GetFill(fill);
 
     std::vector<uint32_t> faces;
-    hEntity               he = SS.GW.hover.entity;
+    hEntity he = SS.GW.hover.entity;
     if (he.v != 0 && SK.GetEntity(he)->IsFace()) {
       faces.push_back(he.v);
     }
@@ -1506,9 +1506,9 @@ void Group::DrawMesh(DrawMeshAs how, Canvas *canvas) {
 
   case DrawMeshAs::SELECTED: {
     Canvas::Fill fill = {};
-    fill.color        = Style::Color(Style::SELECTED);
-    fill.pattern      = Canvas::FillPattern::CHECKERED_B;
-    fill.zIndex       = 1;
+    fill.color = Style::Color(Style::SELECTED);
+    fill.pattern = Canvas::FillPattern::CHECKERED_B;
+    fill.zIndex = 1;
     Canvas::hFill hcf = canvas->GetFill(fill);
 
     std::vector<uint32_t> faces;
@@ -1534,8 +1534,8 @@ void Group::Draw(Canvas *canvas) {
 
   if (SS.GW.showEdges) {
     Canvas::Stroke strokeEdge = Style::Stroke(Style::SOLID_EDGE);
-    strokeEdge.zIndex         = 1;
-    Canvas::hStroke hcsEdge   = canvas->GetStroke(strokeEdge);
+    strokeEdge.zIndex = 1;
+    Canvas::hStroke hcsEdge = canvas->GetStroke(strokeEdge);
 
     canvas->DrawOutlines(displayOutlines, hcsEdge,
                          SS.GW.showOutlines ? Canvas::DrawOutlinesAs::EMPHASIZED_WITHOUT_CONTOUR
@@ -1546,7 +1546,7 @@ void Group::Draw(Canvas *canvas) {
       if (SS.GW.drawOccludedAs == GraphicsWindow::DrawOccludedAs::VISIBLE) {
         strokeHidden.stipplePattern = StipplePattern::CONTINUOUS;
       }
-      strokeHidden.layer        = Canvas::Layer::OCCLUDED;
+      strokeHidden.layer = Canvas::Layer::OCCLUDED;
       Canvas::hStroke hcsHidden = canvas->GetStroke(strokeHidden);
 
       canvas->DrawOutlines(displayOutlines, hcsHidden,
@@ -1556,8 +1556,8 @@ void Group::Draw(Canvas *canvas) {
 
   if (SS.GW.showOutlines) {
     Canvas::Stroke strokeOutline = Style::Stroke(Style::OUTLINE);
-    strokeOutline.zIndex         = 1;
-    Canvas::hStroke hcsOutline   = canvas->GetStroke(strokeOutline);
+    strokeOutline.zIndex = 1;
+    Canvas::hStroke hcsOutline = canvas->GetStroke(strokeOutline);
 
     canvas->DrawOutlines(displayOutlines, hcsOutline, Canvas::DrawOutlinesAs::CONTOUR_ONLY);
   }
@@ -1567,13 +1567,13 @@ void Group::DrawPolyError(Canvas *canvas) {
   const Camera &camera = canvas->GetCamera();
 
   Canvas::Stroke strokeUnclosed = Style::Stroke(Style::DRAW_ERROR);
-  strokeUnclosed.color          = strokeUnclosed.color.WithAlpha(50);
-  Canvas::hStroke hcsUnclosed   = canvas->GetStroke(strokeUnclosed);
+  strokeUnclosed.color = strokeUnclosed.color.WithAlpha(50);
+  Canvas::hStroke hcsUnclosed = canvas->GetStroke(strokeUnclosed);
 
   Canvas::Stroke strokeError = Style::Stroke(Style::DRAW_ERROR);
-  strokeError.layer          = Canvas::Layer::FRONT;
-  strokeError.width          = 1.0f;
-  Canvas::hStroke hcsError   = canvas->GetStroke(strokeError);
+  strokeError.layer = Canvas::Layer::FRONT;
+  strokeError.width = 1.0f;
+  Canvas::hStroke hcsError = canvas->GetStroke(strokeError);
 
   double textHeight = Style::DefaultTextHeight() / camera.scale;
 
@@ -1616,10 +1616,10 @@ void Group::DrawFilledPaths(Canvas *canvas) {
     // In an assembled loop, all the styles should be the same; so doesn't
     // matter which one we grab.
     const SBezier *sb = &(sbls.l[0].l[0]);
-    Style         *s  = Style::Get({(uint32_t)sb->auxA});
+    Style *s = Style::Get({(uint32_t)sb->auxA});
 
     Canvas::Fill fill = {};
-    fill.zIndex       = 1;
+    fill.zIndex = 1;
     if (s->filled) {
       // This is a filled loop, where the user specified a fill color.
       fill.color = s->fillColor;
@@ -1642,15 +1642,15 @@ void Group::DrawFilledPaths(Canvas *canvas) {
 
 void Group::DrawContourAreaLabels(Canvas *canvas) {
   const Camera &camera = canvas->GetCamera();
-  Vector        gr     = camera.projRight.ScaledBy(1 / camera.scale);
-  Vector        gu     = camera.projUp.ScaledBy(1 / camera.scale);
+  Vector gr = camera.projRight.ScaledBy(1 / camera.scale);
+  Vector gu = camera.projUp.ScaledBy(1 / camera.scale);
 
   for (SBezierLoopSet &sbls : bezierLoops.l) {
     if (sbls.l.IsEmpty() || sbls.l[0].l.IsEmpty())
       continue;
 
-    Vector min  = sbls.l[0].l[0].ctrl[0];
-    Vector max  = min;
+    Vector min = sbls.l[0].l[0].ctrl[0];
+    Vector max = min;
     Vector zero = Vector::From(0.0, 0.0, 0.0);
     sbls.GetBoundingProjd(Vector::From(1.0, 0.0, 0.0), zero, &min.x, &max.x);
     sbls.GetBoundingProjd(Vector::From(0.0, 1.0, 0.0), zero, &min.y, &max.y);
@@ -1658,14 +1658,14 @@ void Group::DrawContourAreaLabels(Canvas *canvas) {
 
     Vector mid = min.Plus(max).ScaledBy(0.5);
 
-    hStyle         hs     = {Style::CONSTRAINT};
+    hStyle hs = {Style::CONSTRAINT};
     Canvas::Stroke stroke = Style::Stroke(hs);
-    stroke.layer          = Canvas::Layer::FRONT;
+    stroke.layer = Canvas::Layer::FRONT;
 
-    std::string label      = SS.MmToStringSI(std::fabs(sbls.SignedArea()), /*dim=*/2);
-    double      fontHeight = Style::TextHeight(hs);
-    double      textWidth  = VectorFont::Builtin()->GetWidth(fontHeight, label),
-           textHeight      = VectorFont::Builtin()->GetCapHeight(fontHeight);
+    std::string label = SS.MmToStringSI(std::fabs(sbls.SignedArea()), /*dim=*/2);
+    double fontHeight = Style::TextHeight(hs);
+    double textWidth = VectorFont::Builtin()->GetWidth(fontHeight, label),
+           textHeight = VectorFont::Builtin()->GetCapHeight(fontHeight);
     Vector pos = mid.Minus(gr.ScaledBy(textWidth / 2.0)).Minus(gu.ScaledBy(textHeight / 2.0));
     canvas->DrawVectorText(label, fontHeight, pos, gr, gu, canvas->GetStroke(stroke));
   }

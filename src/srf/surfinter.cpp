@@ -15,15 +15,15 @@ void SSurface::AddExactIntersectionCurve(SBezier *sb, SSurface *srfB, SShell *ag
   SCurve sc = {};
   // Important to keep the order of (surfA, surfB) consistent; when we later
   // rewrite the identifiers, we rewrite surfA from A and surfB from B.
-  sc.surfA   = h;
-  sc.surfB   = srfB->h;
-  sc.exact   = *sb;
+  sc.surfA = h;
+  sc.surfB = srfB->h;
+  sc.exact = *sb;
   sc.isExact = true;
 
   // Now we have to piecewise linearize the curve. If there's already an
   // identical curve in the shell, then follow that pwl exactly, otherwise
   // calculate from scratch.
-  SCurve  split, *existing = NULL;
+  SCurve split, *existing = NULL;
   SBezier sbrev = *sb;
   sbrev.Reverse();
   bool backwards = false;
@@ -36,7 +36,7 @@ void SSurface::AddExactIntersectionCurve(SBezier *sb, SSurface *srfB, SShell *ag
           break;
         }
         if (sbrev.Equals(&(se.exact))) {
-          existing  = &se;
+          existing = &se;
           backwards = true;
           break;
         }
@@ -51,7 +51,7 @@ void SSurface::AddExactIntersectionCurve(SBezier *sb, SSurface *srfB, SShell *ag
     if (backwards)
       sc.pts.Reverse();
     split = sc;
-    sc    = {};
+    sc = {};
   } else {
     sb->MakePwlInto(&(sc.pts));
     // and split the line where it intersects our existing surfaces
@@ -61,9 +61,9 @@ void SSurface::AddExactIntersectionCurve(SBezier *sb, SSurface *srfB, SShell *ag
 
   // Test if the curve lies entirely outside one of the
   SCurvePt *scpt;
-  bool      withinA = false, withinB = false;
+  bool withinA = false, withinB = false;
   for (scpt = split.pts.First(); scpt; scpt = split.pts.NextAfter(scpt)) {
-    double  tol = 0.01;
+    double tol = 0.01;
     Point2d puv;
     ClosestPointTo(scpt->p, &puv);
     if (puv.x > -tol && puv.x < 1 + tol && puv.y > -tol && puv.y < 1 + tol) {
@@ -115,9 +115,9 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     return;
   }
 
-  Vector  alongt, alongb;
+  Vector alongt, alongb;
   SBezier oft, ofb;
-  bool    isExtdt = this->IsExtrusion(&oft, &alongt), isExtdb = b->IsExtrusion(&ofb, &alongb);
+  bool isExtdt = this->IsExtrusion(&oft, &alongt), isExtdb = b->IsExtrusion(&ofb, &alongb);
 
   if (degm == 1 && degn == 1 && b->degm == 1 && b->degn == 1) {
     // Line-line intersection; it's a plane or nothing.
@@ -127,17 +127,17 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     Vector dl = na.Cross(nb);
     if (dl.Magnitude() < LENGTH_EPS)
       return; // parallel planes
-    dl       = dl.WithMagnitude(1);
+    dl = dl.WithMagnitude(1);
     Vector p = VectorAtIntersectionOfPlanes(na, da, nb, db);
 
     // Trim it to the region 0 <= {u,v} <= 1 for each plane; not strictly
     // necessary, since line will be split and excess edges culled, but
     // this improves speed and robustness.
-    int    i;
+    int i;
     double tmax = VERY_POSITIVE, tmin = VERY_NEGATIVE;
     for (i = 0; i < 2; i++) {
       SSurface *s = (i == 0) ? this : b;
-      Vector    tu, tv;
+      Vector tu, tv;
       s->TangentsAt(0, 0, &tu, &tv);
 
       double up, vp, ud, vd;
@@ -182,14 +182,14 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     SSurface *splane, *sext;
     if (degm == 1 && degn == 1) {
       splane = this;
-      sext   = b;
+      sext = b;
     } else {
       splane = b;
-      sext   = this;
+      sext = this;
     }
 
-    Vector  n = splane->NormalAt(0, 0).WithMagnitude(1), along;
-    double  d = n.Dot(splane->PointAt(0, 0));
+    Vector n = splane->NormalAt(0, 0).WithMagnitude(1), along;
+    double d = n.Dot(splane->PointAt(0, 0));
     SBezier bezier;
     (void)sext->IsExtrusion(&bezier, &along);
 
@@ -201,9 +201,9 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
       // a line.
       Vector pm, alu, p0, dp;
       // a point halfway along the extrusion
-      pm  = ((sext->ctrl[0][0]).Plus(sext->ctrl[0][1])).ScaledBy(0.5);
+      pm = ((sext->ctrl[0][0]).Plus(sext->ctrl[0][1])).ScaledBy(0.5);
       alu = along.WithMagnitude(1);
-      dp  = (n.Cross(along)).WithMagnitude(1);
+      dp = (n.Cross(along)).WithMagnitude(1);
       // n, alu, and dp form an orthogonal csys; set n component to
       // place it on the plane, alu component to lie halfway along
       // extrusion, and dp component doesn't matter so zero
@@ -215,7 +215,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
 
       SInter *si;
       for (si = inters.First(); si; si = inters.NextAfter(si)) {
-        Vector  al = along.ScaledBy(0.5);
+        Vector al = along.ScaledBy(0.5);
         SBezier bezier;
         bezier = SBezier::From((si->p).Minus(al), (si->p).Plus(al));
         AddExactIntersectionCurve(&bezier, b, agnstA, agnstB, into);
@@ -242,7 +242,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     Vector axis = alongt.WithMagnitude(1);
 
     List<SInter> inters = {};
-    List<Vector> lv     = {};
+    List<Vector> lv = {};
 
     double a_axis0 = (ctrl[0][0]).Dot(axis), a_axis1 = (ctrl[0][1]).Dot(axis),
            b_axis0 = (b->ctrl[0][0]).Dot(axis), b_axis1 = (b->ctrl[0][1]).Dot(axis);
@@ -304,15 +304,15 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
       // on one of the seams for example.
       // This also seems necessary to merge some coincident surfaces.
       SSurface *splane, *sext;
-      SShell   *shext;
+      SShell *shext;
       if (degm == 1 && degn == 1) { // this and other checks assume coplanar ctrl pts.
         splane = this;
-        sext   = b;
-        shext  = agnstB;
+        sext = b;
+        shext = agnstB;
       } else {
         splane = b;
-        sext   = this;
-        shext  = agnstA;
+        sext = this;
+        shext = agnstA;
       }
       bool foundExact = false;
       for (SCurve &sc : shext->curve) {
@@ -341,9 +341,9 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     // First, we find all the intersections between a surface and the
     // boundary of the other surface.
     SPointList spl = {};
-    int        a;
+    int a;
     for (a = 0; a < 2; a++) {
-      SShell   *shA  = (a == 0) ? agnstA : agnstB;
+      SShell *shA = (a == 0) ? agnstA : agnstB;
       SSurface *srfA = (a == 0) ? this : b, *srfB = (a == 0) ? b : this;
 
       SEdgeList el = {};
@@ -359,10 +359,10 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
           continue;
 
         // Find the other surface that this curve trims.
-        hSCurve   hsc    = {(uint32_t)se->auxA};
-        SCurve   *sc     = shA->curve.FindById(hsc);
+        hSCurve hsc = {(uint32_t)se->auxA};
+        SCurve *sc = shA->curve.FindById(hsc);
         hSSurface hother = (sc->surfA == srfA->h) ? sc->surfB : sc->surfA;
-        SSurface *other  = shA->surface.FindById(hother);
+        SSurface *other = shA->surface.FindById(hother);
 
         SInter *si;
         for (si = lsi.First(); si; si = lsi.NextAfter(si)) {
@@ -382,8 +382,8 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
             // which direction to march.
             srfA->ClosestPointTo(p, &u, &v);
             Vector n = srfA->NormalAt(u, v);
-            sp.auxv  = n.Cross((se->b).Minus(se->a));
-            sp.auxv  = (sp.auxv).WithMagnitude(1);
+            sp.auxv = n.Cross((se->b).Minus(se->a));
+            sp.auxv = (sp.auxv).WithMagnitude(1);
 
             spl.l.Add(&sp);
           }
@@ -395,11 +395,11 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
     }
 
     while (spl.l.n >= 2) {
-      SCurve sc  = {};
-      sc.surfA   = h;
-      sc.surfB   = b->h;
+      SCurve sc = {};
+      sc.surfA = h;
+      sc.surfB = b->h;
       sc.isExact = false;
-      sc.source  = SCurve::Source::INTERSECTION;
+      sc.source = SCurve::Source::INTERSECTION;
 
       Vector start = spl.l[0].p, startv = spl.l[0].auxv;
       spl.l.ClearTags();
@@ -407,18 +407,18 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
       spl.l.RemoveTagged();
 
       // Our chord tolerance is whatever the user specified
-      double maxtol   = SS.ChordTolMm();
-      int    maxsteps = std::max(300, SS.GetMaxSegments() * 3);
+      double maxtol = SS.ChordTolMm();
+      int maxsteps = std::max(300, SS.GetMaxSegments() * 3);
 
       // The curve starts at our starting point.
       SCurvePt padd = {};
-      padd.vertex   = true;
-      padd.p        = start;
+      padd.vertex = true;
+      padd.p = start;
       sc.pts.Add(&padd);
 
       Point2d pa, pb;
-      Vector  np, npc = Vector::From(0, 0, 0);
-      bool    fwd = false;
+      Vector np, npc = Vector::From(0, 0, 0);
+      bool fwd = false;
       // Better to start with a too-small step, so that we don't miss
       // features of the curve entirely.
       double tol, step = maxtol;
@@ -445,7 +445,7 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
             dp = dp.ScaledBy(-1);
           dp = dp.WithMagnitude(step);
 
-          np  = start.Plus(dp);
+          np = start.Plus(dp);
           npc = ClosestPointOnThisAndSurface(b, np);
           tol = (npc.Minus(np)).Magnitude();
 
@@ -466,12 +466,12 @@ void SSurface::IntersectAgainst(SSurface *b, SShell *agnstA, SShell *agnstB, SSh
         for (sp = spl.l.First(); sp; sp = spl.l.NextAfter(sp)) {
           if ((sp->p).OnLineSegment(start, npc, 2 * SS.ChordTolMm())) {
             sp->tag = 1;
-            a       = maxsteps;
-            npc     = sp->p;
+            a = maxsteps;
+            npc = sp->p;
           }
         }
 
-        padd.p      = npc;
+        padd.p = npc;
         padd.vertex = (a == maxsteps);
         sc.pts.Add(&padd);
 

@@ -39,12 +39,12 @@ static inline double BernsteinDerivative(int k, int deg, double t) {
 
 Vector SBezier::PointAt(double t) const {
   Vector pt = Vector::From(0, 0, 0);
-  double d  = 0;
+  double d = 0;
 
   int i;
   for (i = 0; i <= deg; i++) {
     double B = Bernstein(i, deg, t);
-    pt       = pt.Plus(ctrl[i].ScaledBy(B * weight[i]));
+    pt = pt.Plus(ctrl[i].ScaledBy(B * weight[i]));
     d += weight[i] * B;
   }
   pt = pt.ScaledBy(1.0 / d);
@@ -74,17 +74,17 @@ Vector SBezier::TangentAt(double t) const {
 }
 
 void SBezier::ClosestPointTo(Vector p, double *t, bool mustConverge) const {
-  int    i;
+  int i;
   double minDist = VERY_POSITIVE;
-  *t             = 0;
-  double res     = (deg <= 2) ? 7.0 : 20.0;
+  *t = 0;
+  double res = (deg <= 2) ? 7.0 : 20.0;
   for (i = 0; i < (int)res; i++) {
     double tryt = (i / res);
 
     Vector tryp = PointAt(tryt);
-    double d    = (tryp.Minus(p)).Magnitude();
+    double d = (tryp.Minus(p)).Magnitude();
     if (d < minDist) {
-      *t      = tryt;
+      *t = tryt;
       minDist = d;
     }
   }
@@ -129,7 +129,7 @@ bool SBezier::PointOnThisAndCurve(const SBezier *sbb, Vector *p) const {
 
 void SBezier::SplitAt(double t, SBezier *bef, SBezier *aft) const {
   Vector4 ct[4];
-  int     i;
+  int i;
   for (i = 0; i <= deg; i++) {
     ct[i] = Vector4::From(weight[i], ctrl[i]);
   }
@@ -137,8 +137,8 @@ void SBezier::SplitAt(double t, SBezier *bef, SBezier *aft) const {
   switch (deg) {
   case 1: {
     Vector4 cts = Vector4::Blend(ct[0], ct[1], t);
-    *bef        = SBezier::From(ct[0], cts);
-    *aft        = SBezier::From(cts, ct[1]);
+    *bef = SBezier::From(ct[0], cts);
+    *aft = SBezier::From(cts, ct[1]);
     break;
   }
   case 2: {
@@ -177,8 +177,8 @@ void SBezier::MakePwlInto(List<SCurvePt> *l, double chordTol, double max_dt) con
   int i;
   for (i = 0; i < lv.n; i++) {
     SCurvePt scpt;
-    scpt.tag    = 0;
-    scpt.p      = lv[i];
+    scpt.tag = 0;
+    scpt.p = lv[i];
     scpt.vertex = (i == 0) || (i == (lv.n - 1));
     l->Add(&scpt);
   }
@@ -225,7 +225,7 @@ void SBezier::MakePwlWorker(List<Vector> *l, double ta, double tb, double chordT
   Vector pb = PointAt(tb);
 
   Vector pm = PointAt((ta + tb) / 2.0);
-  double d  = pm.DistanceToLine(pa, pb.Minus(pa));
+  double d = pm.DistanceToLine(pa, pb.Minus(pa));
 
   double step = 1.0 / SS.GetMaxSegments();
   if (((tb - ta) < step || d < chordTol) && ((tb - ta) <= max_dt)) {
@@ -273,9 +273,9 @@ void SBezier::MakeNonrationalCubicInto(SBezierList *bl, double tolerance, int de
                               Finish().Minus(t1.ScaledBy(1.0 / 3)), Finish());
 
   bool closeEnough = true;
-  int  i;
+  int i;
   for (i = 1; i <= 3; i++) {
-    double t  = i / 4.0;
+    double t = i / 4.0;
     Vector p0 = PointAt(t), pn = bnr.PointAt(t);
     double d = (p0.Minus(pn)).Magnitude();
     if (d > tolerance) {
@@ -393,13 +393,13 @@ void SSurface::ClosestPointTo(Vector p, double *u, double *v, bool mustConverge)
 
     if ((ctrl[1][1]).Equals(orig.Plus(bu).Plus(bv))) {
 
-      Vector n  = bu.Cross(bv);
+      Vector n = bu.Cross(bv);
       Vector ty = n.Cross(bu).ScaledBy(1.0 / bu.MagSquared());
       Vector tx = bv.Cross(n).ScaledBy(1.0 / bv.MagSquared());
 
       Vector dp = p.Minus(orig);
-      *u        = dp.Dot(bu) / tx.MagSquared();
-      *v        = dp.Dot(bv) / ty.MagSquared();
+      *u = dp.Dot(bu) / tx.MagSquared();
+      *v = dp.Dot(bv) / ty.MagSquared();
       return;
     }
   }
@@ -418,18 +418,18 @@ void SSurface::ClosestPointTo(Vector p, double *u, double *v, bool mustConverge)
   }
 
   // Search for a reasonable initial guess
-  int    i, j;
+  int i, j;
   double minDist = VERY_POSITIVE;
-  int    res     = (std::max(degm, degn) == 2) ? 7 : 20;
+  int res = (std::max(degm, degn) == 2) ? 7 : 20;
   for (i = 0; i < res; i++) {
     for (j = 0; j < res; j++) {
       double tryu = (i + 0.5) / res, tryv = (j + 0.5) / res;
 
       Vector tryp = PointAt(tryu, tryv);
-      double d    = (tryp.Minus(p)).Magnitude();
+      double d = (tryp.Minus(p)).Magnitude();
       if (d < minDist) {
-        *u      = tryu;
-        *v      = tryv;
+        *u = tryu;
+        *v = tryv;
         minDist = d;
       }
     }
@@ -517,7 +517,7 @@ bool SSurface::PointIntersectingLine(Vector p0, Vector p1, double *u, double *v)
     if (pi.Equals(p, RATPOLY_EPS))
       return true;
 
-    n         = tu.Cross(tv);
+    n = tu.Cross(tv);
     Vector ty = n.Cross(tu).ScaledBy(1.0 / tu.MagSquared());
     Vector tx = tv.Cross(n).ScaledBy(1.0 / tv.MagSquared());
 
@@ -533,8 +533,8 @@ bool SSurface::PointIntersectingLine(Vector p0, Vector p1, double *u, double *v)
 
 Vector SSurface::ClosestPointOnThisAndSurface(SSurface *srf2, Vector p) {
   // This is untested.
-  int       i, j;
-  Point2d   puv[2];
+  int i, j;
+  Point2d puv[2];
   SSurface *srf[2] = {this, srf2};
 
   for (j = 0; j < 2; j++) {
@@ -563,7 +563,7 @@ Vector SSurface::ClosestPointOnThisAndSurface(SSurface *srf2, Vector p) {
 
     // Adjust our guess and iterate
     for (j = 0; j < 2; j++) {
-      Vector n  = tu[j].Cross(tv[j]);
+      Vector n = tu[j].Cross(tv[j]);
       Vector ty = n.Cross(tu[j]).ScaledBy(1.0 / tu[j].MagSquared());
       Vector tx = tv[j].Cross(n).ScaledBy(1.0 / tv[j].MagSquared());
 
@@ -582,7 +582,7 @@ Vector SSurface::ClosestPointOnThisAndSurface(SSurface *srf2, Vector p) {
 }
 
 void SSurface::PointOnSurfaces(SSurface *s1, SSurface *s2, double *up, double *vp) {
-  double    u[3] = {*up, 0, 0}, v[3] = {*vp, 0, 0};
+  double u[3] = {*up, 0, 0}, v[3] = {*vp, 0, 0};
   SSurface *srf[3] = {this, s1, s2};
 
   // Get initial guesses for (u, v) in the other surfaces
@@ -610,7 +610,7 @@ void SSurface::PointOnSurfaces(SSurface *s1, SSurface *s2, double *up, double *v
       return;
     }
 
-    bool   parallel;
+    bool parallel;
     Vector pi = VectorAtIntersectionOfPlanes(n[0], d[0], n[1], d[1], n[2], d[2], &parallel);
 
     if (parallel) { // lets try something else for parallel planes
@@ -618,7 +618,7 @@ void SSurface::PointOnSurfaces(SSurface *s1, SSurface *s2, double *up, double *v
     }
 
     for (j = 0; j < 3; j++) {
-      Vector n  = tu[j].Cross(tv[j]);
+      Vector n = tu[j].Cross(tv[j]);
       Vector ty = n.Cross(tu[j]).ScaledBy(1.0 / tu[j].MagSquared());
       Vector tx = tv[j].Cross(n).ScaledBy(1.0 / tv[j].MagSquared());
 
@@ -671,7 +671,7 @@ void SSurface::PointOnCurve(const SBezier *curve, double *up, double *vp) {
 
     // project the point onto the tangent plane and line
     {
-      Vector n  = tu.Cross(tv);
+      Vector n = tu.Cross(tv);
       Vector ty = n.Cross(tu).ScaledBy(1.0 / tu.MagSquared());
       Vector tx = tv.Cross(n).ScaledBy(1.0 / tv.MagSquared());
 

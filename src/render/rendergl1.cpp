@@ -120,7 +120,7 @@ namespace SolveSpace {
   }
 
   static void ssglFillPattern(Canvas::FillPattern pattern) {
-    static bool    Init;
+    static bool Init;
     static GLubyte MaskA[(32 * 32) / 8];
     static GLubyte MaskB[(32 * 32) / 8];
     if (!Init) {
@@ -162,16 +162,16 @@ namespace SolveSpace {
 
   class OpenGl1Renderer final : public ViewportCanvas {
 public:
-    Camera   camera;
+    Camera camera;
     Lighting lighting;
     // Cached OpenGL state.
     struct {
-      bool                        drawing;
-      GLenum                      mode;
-      hStroke                     hcs;
-      Stroke                     *stroke;
-      hFill                       hcf;
-      Fill                       *fill;
+      bool drawing;
+      GLenum mode;
+      hStroke hcs;
+      Stroke *stroke;
+      hFill hcf;
+      Fill *fill;
       std::weak_ptr<const Pixmap> texture;
     } current;
 
@@ -197,24 +197,24 @@ public:
                     const Vector &v, const Point2d &ta, const Point2d &tb, hFill hcf) override;
     void InvalidatePixmap(std::shared_ptr<const Pixmap> pm) override;
 
-    void    SelectPrimitive(unsigned mode);
-    void    UnSelectPrimitive();
+    void SelectPrimitive(unsigned mode);
+    void UnSelectPrimitive();
     Stroke *SelectStroke(hStroke hcs);
-    Fill   *SelectFill(hFill hcf);
-    void    SelectTexture(std::shared_ptr<const Pixmap> pm);
-    void    DoFatLineEndcap(const Vector &p, const Vector &u, const Vector &v);
-    void    DoFatLine(const Vector &a, const Vector &b, double width);
-    void    DoLine(const Vector &a, const Vector &b, hStroke hcs);
-    void    DoPoint(Vector p, double radius);
-    void    DoStippledLine(const Vector &a, const Vector &b, hStroke hcs, double phase = 0.0);
+    Fill *SelectFill(hFill hcf);
+    void SelectTexture(std::shared_ptr<const Pixmap> pm);
+    void DoFatLineEndcap(const Vector &p, const Vector &u, const Vector &v);
+    void DoFatLine(const Vector &a, const Vector &b, double width);
+    void DoLine(const Vector &a, const Vector &b, hStroke hcs);
+    void DoPoint(Vector p, double radius);
+    void DoStippledLine(const Vector &a, const Vector &b, hStroke hcs, double phase = 0.0);
 
     void UpdateProjection();
     void SetCamera(const Camera &camera) override;
     void SetLighting(const Lighting &lighting) override;
 
-    void                    StartFrame() override;
-    void                    FlushFrame() override;
-    void                    FinishFrame() override;
+    void StartFrame() override;
+    void FlushFrame() override;
+    void FinishFrame() override;
     std::shared_ptr<Pixmap> ReadFrame() override;
 
     void GetIdent(const char **vendor, const char **renderer, const char **version) override;
@@ -232,7 +232,7 @@ public:
     }
     glBegin(mode);
     current.drawing = true;
-    current.mode    = mode;
+    current.mode = mode;
   }
 
   void OpenGl1Renderer::UnSelectPrimitive() {
@@ -256,10 +256,10 @@ public:
     ssglFillPattern(FillPattern::SOLID);
     glDisable(GL_TEXTURE_2D);
 
-    current.hcs    = hcs;
+    current.hcs = hcs;
     current.stroke = stroke;
-    current.hcf    = {};
-    current.fill   = NULL;
+    current.hcf = {};
+    current.fill = NULL;
     current.texture.reset();
     return stroke;
   }
@@ -275,10 +275,10 @@ public:
     ssglFillPattern(fill->pattern);
     glDisable(GL_TEXTURE_2D);
 
-    current.hcs    = {};
+    current.hcs = {};
     current.stroke = NULL;
-    current.hcf    = hcf;
-    current.fill   = fill;
+    current.hcf = hcf;
+    current.fill = fill;
     current.texture.reset();
     return fill;
   }
@@ -317,7 +317,7 @@ public:
       glTexImage2D(GL_TEXTURE_2D, 0, format, pm->width, pm->height, 0, format, GL_UNSIGNED_BYTE,
                    &pm->data[0]);
     } else {
-      GLsizei width  = RoundUpToPowerOfTwo(pm->width);
+      GLsizei width = RoundUpToPowerOfTwo(pm->width);
       GLsizei height = RoundUpToPowerOfTwo(pm->height);
       glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
       glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pm->width, pm->height, format, GL_UNSIGNED_BYTE,
@@ -352,17 +352,17 @@ public:
 
   void OpenGl1Renderer::DoFatLine(const Vector &a, const Vector &b, double width) {
     // The half-width of the line we're drawing.
-    double hw  = width / 2;
-    Vector ab  = b.Minus(a);
-    Vector gn  = (camera.projRight).Cross(camera.projUp);
+    double hw = width / 2;
+    Vector ab = b.Minus(a);
+    Vector gn = (camera.projRight).Cross(camera.projUp);
     Vector abn = (ab.Cross(gn)).WithMagnitude(1);
-    abn        = abn.Minus(gn.ScaledBy(gn.Dot(abn)));
+    abn = abn.Minus(gn.ScaledBy(gn.Dot(abn)));
     // So now abn is normal to the projection of ab into the screen, so the
     // line will always have constant thickness as the view is rotated.
 
     abn = abn.WithMagnitude(hw);
-    ab  = gn.Cross(abn);
-    ab  = ab.WithMagnitude(hw);
+    ab = gn.Cross(abn);
+    ab = ab.WithMagnitude(hw);
 
     // The body of a line is a quad
     SelectPrimitive(GL_QUADS);
@@ -414,9 +414,9 @@ public:
       return;
     }
 
-    double                     scale  = stroke->StippleScaleMm(camera);
+    double scale = stroke->StippleScaleMm(camera);
     const std::vector<double> &dashes = StipplePatternDashes(stroke->stipplePattern);
-    double                     length = StipplePatternLength(stroke->stipplePattern) * scale;
+    double length = StipplePatternLength(stroke->stipplePattern) * scale;
 
     phase -= floor(phase / length) * length;
 
@@ -430,15 +430,15 @@ public:
 
     Vector dir = b.Minus(a);
     double len = dir.Magnitude();
-    dir        = dir.WithMagnitude(1.0);
+    dir = dir.WithMagnitude(1.0);
 
-    double cur    = 0.0;
+    double cur = 0.0;
     Vector curPos = a;
-    double width  = stroke->WidthMm(camera);
+    double width = stroke->WidthMm(camera);
 
     double curDashLen = (curPhase - phase) / scale;
     while (cur < len) {
-      double next    = std::min(len, cur + curDashLen * scale);
+      double next = std::min(len, cur + curDashLen * scale);
       Vector nextPos = curPos.Plus(dir.ScaledBy(next - cur));
       if (curDash % 2 == 0) {
         if (curDashLen <= LENGTH_EPS) {
@@ -447,7 +447,7 @@ public:
           DoLine(curPos, nextPos, hcs);
         }
       }
-      cur    = next;
+      cur = next;
       curPos = nextPos;
       curDash++;
       curDashLen = dashes[curDash % dashes.size()];
@@ -472,7 +472,7 @@ public:
 
   void OpenGl1Renderer::DrawOutlines(const SOutlineList &ol, hStroke hcs, DrawOutlinesAs drawAs) {
     Vector projDir = camera.projRight.Cross(camera.projUp);
-    double phase   = 0.0;
+    double phase = 0.0;
     switch (drawAs) {
     case DrawOutlinesAs::EMPHASIZED_AND_CONTOUR:
       for (const SOutline &o : ol.l) {
@@ -523,10 +523,10 @@ public:
     Stroke *stroke = SelectStroke(hcs);
 
     Canvas::Fill fill = {};
-    fill.layer        = stroke->layer;
-    fill.zIndex       = stroke->zIndex;
-    fill.color        = stroke->color;
-    hFill hcf         = GetFill(fill);
+    fill.layer = stroke->layer;
+    fill.zIndex = stroke->zIndex;
+    fill.color = stroke->color;
+    hFill hcf = GetFill(fill);
 
     Vector r = camera.projRight.ScaledBy(stroke->width / 2.0 / camera.scale);
     Vector u = camera.projUp.ScaledBy(stroke->width / 2.0 / camera.scale);
@@ -548,9 +548,9 @@ public:
   static void SSGL_CALLBACK Combine(double coords[3], void *vertexData[4], float weight[4],
                                     void **outData) {
     Vector *n = (Vector *)AllocTemporary(sizeof(Vector));
-    n->x      = coords[0];
-    n->y      = coords[1];
-    n->z      = coords[2];
+    n->x = coords[0];
+    n->y = coords[1];
+    n->z = coords[2];
 
     *outData = n;
   }
@@ -589,12 +589,12 @@ public:
     RgbaColor frontColor = {}, backColor = {};
 
     Fill *frontFill = SelectFill(hcfFront);
-    frontColor      = frontFill->color;
+    frontColor = frontFill->color;
 
     ssglMaterialRGBA(GL_FRONT, frontFill->color);
     if (hcfBack.v != 0) {
       Fill *backFill = fills.FindById(hcfBack);
-      backColor      = backFill->color;
+      backColor = backFill->color;
       ssassert(frontFill->layer == backFill->layer && frontFill->zIndex == backFill->zIndex,
                "frontFill and backFill should belong to the same depth range");
       ssassert(frontFill->pattern == backFill->pattern,
@@ -740,24 +740,24 @@ public:
 
     if (EXACT(lighting.lightIntensity[0] != 0.0)) {
       glEnable(GL_LIGHT0);
-      GLfloat f     = (GLfloat)lighting.lightIntensity[0];
+      GLfloat f = (GLfloat)lighting.lightIntensity[0];
       GLfloat li0[] = {f, f, f, 1.0f};
       glLightfv(GL_LIGHT0, GL_DIFFUSE, li0);
       glLightfv(GL_LIGHT0, GL_SPECULAR, li0);
 
-      Vector  ld     = camera.VectorFromProjs(lighting.lightDirection[0]);
+      Vector ld = camera.VectorFromProjs(lighting.lightDirection[0]);
       GLfloat ld0[4] = {(GLfloat)ld.x, (GLfloat)ld.y, (GLfloat)ld.z, 0};
       glLightfv(GL_LIGHT0, GL_POSITION, ld0);
     }
 
     if (EXACT(lighting.lightIntensity[1] != 0.0)) {
       glEnable(GL_LIGHT1);
-      GLfloat f     = (GLfloat)lighting.lightIntensity[1];
+      GLfloat f = (GLfloat)lighting.lightIntensity[1];
       GLfloat li0[] = {f, f, f, 1.0f};
       glLightfv(GL_LIGHT1, GL_DIFFUSE, li0);
       glLightfv(GL_LIGHT1, GL_SPECULAR, li0);
 
-      Vector  ld     = camera.VectorFromProjs(lighting.lightDirection[1]);
+      Vector ld = camera.VectorFromProjs(lighting.lightDirection[1]);
       GLfloat ld0[4] = {(GLfloat)ld.x, (GLfloat)ld.y, (GLfloat)ld.z, 0};
       glLightfv(GL_LIGHT1, GL_POSITION, ld0);
     }
@@ -792,8 +792,8 @@ public:
   }
 
   std::shared_ptr<Pixmap> OpenGl1Renderer::ReadFrame() {
-    int                     width  = (int)(camera.width * camera.pixelRatio);
-    int                     height = (int)(camera.height * camera.pixelRatio);
+    int width = (int)(camera.width * camera.pixelRatio);
+    int height = (int)(camera.height * camera.pixelRatio);
     std::shared_ptr<Pixmap> pixmap =
         Pixmap::Create(Pixmap::Format::RGB, (size_t)width, (size_t)height);
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, &pixmap->data[0]);
@@ -802,9 +802,9 @@ public:
   }
 
   void OpenGl1Renderer::GetIdent(const char **vendor, const char **renderer, const char **version) {
-    *vendor   = (const char *)glGetString(GL_VENDOR);
+    *vendor = (const char *)glGetString(GL_VENDOR);
     *renderer = (const char *)glGetString(GL_RENDERER);
-    *version  = (const char *)glGetString(GL_VERSION);
+    *version = (const char *)glGetString(GL_VERSION);
   }
 
   void OpenGl1Renderer::SetCamera(const Camera &c) {

@@ -12,7 +12,7 @@ namespace SolveSpace {
   //-----------------------------------------------------------------------------
 
   Point2d Camera::ProjectPoint(Vector p) const {
-    Vector  p3 = ProjectPoint3(p);
+    Vector p3 = ProjectPoint3(p);
     Point2d p2 = {p3.x, p3.y};
     return p2;
   }
@@ -47,13 +47,13 @@ namespace SolveSpace {
   }
 
   Vector Camera::UnProjectPoint3(Vector p) const {
-    p.z      = p.z / (scale - p.z * tangent * scale);
+    p.z = p.z / (scale - p.z * tangent * scale);
     double w = 1 + p.z * tangent * scale;
     p.x *= w / scale;
     p.y *= w / scale;
 
     Vector orig = offset.ScaledBy(-1);
-    orig        = orig.Plus(projRight.ScaledBy(p.x))
+    orig = orig.Plus(projRight.ScaledBy(p.x))
                .Plus(projUp.ScaledBy(p.y).Plus(projUp.Cross(projRight).ScaledBy(p.z)));
     return orig;
   }
@@ -62,8 +62,8 @@ namespace SolveSpace {
     Vector n = projRight.Cross(projUp);
 
     Vector r = (projRight.ScaledBy(rightUpForward.x));
-    r        = r.Plus(projUp.ScaledBy(rightUpForward.y));
-    r        = r.Plus(n.ScaledBy(rightUpForward.z));
+    r = r.Plus(projUp.ScaledBy(rightUpForward.y));
+    r = r.Plus(n.ScaledBy(rightUpForward.z));
     return r;
   }
 
@@ -71,7 +71,7 @@ namespace SolveSpace {
     if (!gridFit)
       return v;
 
-    v   = ProjectPoint3(v);
+    v = ProjectPoint3(v);
     v.x = floor(v.x) + 0.5;
     v.y = floor(v.y) + 0.5;
     return UnProjectPoint3(v);
@@ -79,7 +79,7 @@ namespace SolveSpace {
 
   SBezier Camera::ProjectBezier(SBezier b) const {
     Quaternion q = Quaternion::From(projRight, projUp);
-    q            = q.Inverse();
+    q = q.Inverse();
     // we want Q*(p - o) = Q*p - Q*o
     b = b.TransformedBy(q.Rotate(offset).ScaledBy(scale), q, scale);
     for (int i = 0; i <= b.deg; i++) {
@@ -92,18 +92,18 @@ namespace SolveSpace {
       // so we want to let w' = w - z*tangent
       ct.w = ct.w - ct.z * tangent;
 
-      b.ctrl[i]   = ct.PerspectiveProject();
+      b.ctrl[i] = ct.PerspectiveProject();
       b.weight[i] = ct.w;
     }
     return b;
   }
 
   void Camera::LoadIdentity() {
-    offset    = Vector(0.0, 0.0, 0.0);
+    offset = Vector(0.0, 0.0, 0.0);
     projRight = Vector(1.0, 0.0, 0.0);
-    projUp    = Vector(0.0, 1.0, 0.0);
-    scale     = 1.0;
-    tangent   = 0.0;
+    projUp = Vector(0.0, 1.0, 0.0);
+    scale = 1.0;
+    tangent = 0.0;
   }
 
   void Camera::NormalizeProjectionVectors() {
@@ -119,7 +119,7 @@ namespace SolveSpace {
     }
     projUp = norm.Cross(projRight);
 
-    projUp    = projUp.WithMagnitude(1);
+    projUp = projUp.WithMagnitude(1);
     projRight = projRight.WithMagnitude(1);
   }
 
@@ -221,12 +221,12 @@ namespace SolveSpace {
            vb = Vector((double)x2 + 0.5, (double)Flip(y2) + 0.5, 0.0);
 
     Canvas::Stroke stroke = {};
-    stroke.layer          = Canvas::Layer::NORMAL;
-    stroke.zIndex         = zIndex;
-    stroke.width          = (double)width;
-    stroke.color          = color;
-    stroke.unit           = Canvas::Unit::PX;
-    Canvas::hStroke hcs   = canvas->GetStroke(stroke);
+    stroke.layer = Canvas::Layer::NORMAL;
+    stroke.zIndex = zIndex;
+    stroke.width = (double)width;
+    stroke.color = color;
+    stroke.unit = Canvas::Unit::PX;
+    Canvas::hStroke hcs = canvas->GetStroke(stroke);
 
     canvas->DrawLine(va, vb, hcs);
   }
@@ -240,9 +240,9 @@ namespace SolveSpace {
 
     if (!fillColor.IsEmpty()) {
       Canvas::Fill fill = {};
-      fill.layer        = Canvas::Layer::NORMAL;
-      fill.zIndex       = zIndex;
-      fill.color        = fillColor;
+      fill.layer = Canvas::Layer::NORMAL;
+      fill.zIndex = zIndex;
+      fill.color = fillColor;
       Canvas::hFill hcf = canvas->GetFill(fill);
 
       canvas->DrawQuad(va, vb, vc, vd, hcf);
@@ -250,12 +250,12 @@ namespace SolveSpace {
 
     if (!outlineColor.IsEmpty()) {
       Canvas::Stroke stroke = {};
-      stroke.layer          = Canvas::Layer::NORMAL;
-      stroke.zIndex         = zIndex;
-      stroke.width          = 1.0;
-      stroke.color          = outlineColor;
-      stroke.unit           = Canvas::Unit::PX;
-      Canvas::hStroke hcs   = canvas->GetStroke(stroke);
+      stroke.layer = Canvas::Layer::NORMAL;
+      stroke.zIndex = zIndex;
+      stroke.width = 1.0;
+      stroke.color = outlineColor;
+      stroke.unit = Canvas::Unit::PX;
+      Canvas::hStroke hcs = canvas->GetStroke(stroke);
 
       canvas->DrawLine(va, vb, hcs);
       canvas->DrawLine(vb, vc, hcs);
@@ -266,9 +266,9 @@ namespace SolveSpace {
 
   void UiCanvas::DrawPixmap(std::shared_ptr<const Pixmap> pm, int x, int y, int zIndex) {
     Canvas::Fill fill = {};
-    fill.layer        = Canvas::Layer::NORMAL;
-    fill.zIndex       = zIndex;
-    fill.color        = {255, 255, 255, 255};
+    fill.layer = Canvas::Layer::NORMAL;
+    fill.zIndex = zIndex;
+    fill.color = {255, 255, 255, 255};
     Canvas::hFill hcf = canvas->GetFill(fill);
 
     canvas->DrawPixmap(pm, Vector((double)x, (double)(flip ? Flip(y) - pm->height : y), 0.0),
@@ -280,9 +280,9 @@ namespace SolveSpace {
     BitmapFont *font = canvas->GetBitmapFont();
 
     Canvas::Fill fill = {};
-    fill.layer        = Canvas::Layer::NORMAL;
-    fill.zIndex       = zIndex;
-    fill.color        = color;
+    fill.layer = Canvas::Layer::NORMAL;
+    fill.zIndex = zIndex;
+    fill.color = color;
     Canvas::hFill hcf = canvas->GetFill(fill);
 
     if (codepoint >= 0xe000 && codepoint <= 0xefff) {
@@ -321,21 +321,21 @@ namespace SolveSpace {
     if (distance > selRadius)
       return;
     if ((zIndex == maxZIndex && distance < minDistance) || (zIndex > maxZIndex)) {
-      minDepth    = depth;
+      minDepth = depth;
       minDistance = distance;
-      maxZIndex   = zIndex;
-      position    = comparePosition;
+      maxZIndex = zIndex;
+      position = comparePosition;
     }
   }
 
   void ObjectPicker::DoQuad(const Vector &a, const Vector &b, const Vector &c, const Vector &d,
                             int zIndex, int comparePosition) {
-    Point2d corners[4]  = {camera.ProjectPoint(a), camera.ProjectPoint(b), camera.ProjectPoint(c),
-                           camera.ProjectPoint(d)};
-    double  minNegative = VERY_NEGATIVE, maxPositive = VERY_POSITIVE;
+    Point2d corners[4] = {camera.ProjectPoint(a), camera.ProjectPoint(b), camera.ProjectPoint(c),
+                          camera.ProjectPoint(d)};
+    double minNegative = VERY_NEGATIVE, maxPositive = VERY_POSITIVE;
     for (int i = 0; i < 4; i++) {
       Point2d ap = corners[i], bp = corners[(i + 1) % 4];
-      double  distance = point.DistanceToLineSigned(ap, bp.Minus(ap), /*asSegment=*/true);
+      double distance = point.DistanceToLineSigned(ap, bp.Minus(ap), /*asSegment=*/true);
       if (distance < 0)
         minNegative = std::max(minNegative, distance);
       if (distance > 0)
@@ -352,21 +352,21 @@ namespace SolveSpace {
   }
 
   void ObjectPicker::DrawLine(const Vector &a, const Vector &b, hStroke hcs) {
-    Stroke *stroke   = strokes.FindById(hcs);
-    Point2d ap       = camera.ProjectPoint(a);
-    Point2d bp       = camera.ProjectPoint(b);
-    double  distance = point.DistanceToLine(ap, bp.Minus(ap), /*asSegment=*/true);
-    double  depth    = 0.5 * (camera.ProjectPoint3(a).z + camera.ProjectPoint3(b).z);
+    Stroke *stroke = strokes.FindById(hcs);
+    Point2d ap = camera.ProjectPoint(a);
+    Point2d bp = camera.ProjectPoint(b);
+    double distance = point.DistanceToLine(ap, bp.Minus(ap), /*asSegment=*/true);
+    double depth = 0.5 * (camera.ProjectPoint3(a).z + camera.ProjectPoint3(b).z);
     DoCompare(depth, distance - stroke->width / 2.0, stroke->zIndex);
   }
 
   void ObjectPicker::DrawEdges(const SEdgeList &el, hStroke hcs) {
     Stroke *stroke = strokes.FindById(hcs);
     for (const SEdge &e : el.l) {
-      Point2d ap       = camera.ProjectPoint(e.a);
-      Point2d bp       = camera.ProjectPoint(e.b);
-      double  distance = point.DistanceToLine(ap, bp.Minus(ap), /*asSegment=*/true);
-      double  depth    = 0.5 * (camera.ProjectPoint3(e.a).z + camera.ProjectPoint3(e.b).z);
+      Point2d ap = camera.ProjectPoint(e.a);
+      Point2d bp = camera.ProjectPoint(e.b);
+      double distance = point.DistanceToLine(ap, bp.Minus(ap), /*asSegment=*/true);
+      double depth = 0.5 * (camera.ProjectPoint3(e.a).z + camera.ProjectPoint3(e.b).z);
       DoCompare(depth, distance - stroke->width / 2.0, stroke->zIndex, e.auxB);
     }
   }
@@ -378,8 +378,8 @@ namespace SolveSpace {
   void ObjectPicker::DrawVectorText(const std::string &text, double height, const Vector &o,
                                     const Vector &u, const Vector &v, hStroke hcs) {
     Stroke *stroke = strokes.FindById(hcs);
-    double  w      = VectorFont::Builtin()->GetWidth(height, text),
-           h       = VectorFont::Builtin()->GetHeight(height);
+    double w = VectorFont::Builtin()->GetWidth(height, text),
+           h = VectorFont::Builtin()->GetHeight(height);
     DoQuad(o, o.Plus(v.ScaledBy(h)), o.Plus(u.ScaledBy(w)).Plus(v.ScaledBy(h)),
            o.Plus(u.ScaledBy(w)), stroke->zIndex);
   }
@@ -391,9 +391,9 @@ namespace SolveSpace {
   }
 
   void ObjectPicker::DrawPoint(const Vector &o, Canvas::hStroke hcs) {
-    Stroke *stroke   = strokes.FindById(hcs);
-    double  distance = point.DistanceTo(camera.ProjectPoint(o)) - stroke->width / 2;
-    double  depth    = camera.ProjectPoint3(o).z;
+    Stroke *stroke = strokes.FindById(hcs);
+    double distance = point.DistanceTo(camera.ProjectPoint(o)) - stroke->width / 2;
+    double depth = camera.ProjectPoint3(o).z;
     DoCompare(depth, distance, stroke->zIndex);
   }
 
@@ -416,9 +416,9 @@ namespace SolveSpace {
   }
 
   bool ObjectPicker::Pick(const std::function<void()> &drawFn) {
-    minDepth    = VERY_POSITIVE;
+    minDepth = VERY_POSITIVE;
     minDistance = VERY_POSITIVE;
-    maxZIndex   = INT_MIN;
+    maxZIndex = INT_MIN;
 
     drawFn();
     return minDistance < selRadius;

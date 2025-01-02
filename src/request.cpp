@@ -15,11 +15,11 @@ const hRequest Request::HREQUEST_REFERENCE_ZX = {3};
 
 struct EntReqMapping {
   Request::Type reqType;
-  Entity::Type  entType;
-  int           points;
-  bool          useExtraPoints;
-  bool          hasNormal;
-  bool          hasDistance;
+  Entity::Type entType;
+  int points;
+  bool useExtraPoints;
+  bool hasNormal;
+  bool hasDistance;
 };
 static const EntReqMapping EntReqMap[] = {
     // request type                   entity type                 pts   xtra?   norml   dist
@@ -81,11 +81,11 @@ Request::Type EntReqTable::GetRequestForEntity(Entity::Type ent) {
 }
 
 void Request::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *param) {
-  int          points      = 0;
-  Entity::Type et          = (Entity::Type)0;
-  bool         hasNormal   = false;
-  bool         hasDistance = false;
-  int          i;
+  int points = 0;
+  Entity::Type et = (Entity::Type)0;
+  bool hasNormal = false;
+  bool hasDistance = false;
+  int i;
 
   // Request-specific generation.
   switch (type) {
@@ -125,26 +125,26 @@ void Request::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *p
   EntReqTable::GetRequestInfo(type, extraPoints, &et, &points, &hasNormal, &hasDistance);
 
   // Generate the entity that's specific to this request.
-  e.type         = et;
-  e.extraPoints  = extraPoints;
-  e.group        = group;
-  e.style        = style;
-  e.workplane    = workplane;
+  e.type = et;
+  e.extraPoints = extraPoints;
+  e.group = group;
+  e.style = style;
+  e.workplane = workplane;
   e.construction = construction;
-  e.str          = str;
-  e.font         = font;
-  e.file         = file;
-  e.aspectRatio  = aspectRatio;
-  e.h            = h.entity(0);
+  e.str = str;
+  e.font = font;
+  e.file = file;
+  e.aspectRatio = aspectRatio;
+  e.h = h.entity(0);
 
   // And generate entities for the points
   for (i = 0; i < points; i++) {
-    Entity p    = {};
+    Entity p = {};
     p.workplane = workplane;
     // points start from entity 1, except for datum point case
-    p.h            = h.entity(i + ((et != (Entity::Type)0) ? 1 : 0));
-    p.group        = group;
-    p.style        = style;
+    p.h = h.entity(i + ((et != (Entity::Type)0) ? 1 : 0));
+    p.group = group;
+    p.style = style;
     p.construction = e.construction;
     if (workplane == Entity::FREE_IN_3D) {
       p.type = Entity::Type::POINT_IN_3D;
@@ -162,14 +162,14 @@ void Request::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *p
     e.point[i] = p.h;
   }
   if (hasNormal) {
-    Entity n       = {};
-    n.workplane    = workplane;
-    n.h            = h.entity(32);
-    n.group        = group;
-    n.style        = style;
+    Entity n = {};
+    n.workplane = workplane;
+    n.h = h.entity(32);
+    n.group = group;
+    n.style = style;
     n.construction = e.construction;
     if (workplane == Entity::FREE_IN_3D) {
-      n.type     = Entity::Type::NORMAL_IN_3D;
+      n.type = Entity::Type::NORMAL_IN_3D;
       n.param[0] = AddParam(param, h.param(32 + 0));
       n.param[1] = AddParam(param, h.param(32 + 1));
       n.param[2] = AddParam(param, h.param(32 + 2));
@@ -187,13 +187,13 @@ void Request::Generate(IdList<Entity, hEntity> *entity, IdList<Param, hParam> *p
     e.normal = n.h;
   }
   if (hasDistance) {
-    Entity d    = {};
+    Entity d = {};
     d.workplane = workplane;
-    d.h         = h.entity(64);
-    d.group     = group;
-    d.style     = style;
-    d.type      = Entity::Type::DISTANCE;
-    d.param[0]  = AddParam(param, h.param(64));
+    d.h = h.entity(64);
+    d.group = group;
+    d.style = style;
+    d.type = Entity::Type::DISTANCE;
+    d.param[0] = AddParam(param, h.param(64));
     entity->Add(&d);
     e.distance = d.h;
   }
@@ -241,7 +241,7 @@ int Request::IndexOfPoint(hEntity he) const {
 
 hParam Request::AddParam(IdList<Param, hParam> *param, hParam hp) {
   Param pa = {};
-  pa.h     = hp;
+  pa.h = hp;
   param->Add(&pa);
   return hp;
 }

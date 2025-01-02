@@ -45,8 +45,8 @@ void Constraint::DoLine(Canvas *canvas, Canvas::hStroke hcs, Vector a, Vector b)
 void Constraint::DoStippledLine(Canvas *canvas, Canvas::hStroke hcs, Vector a, Vector b) {
   Canvas::Stroke strokeStippled = *canvas->strokes.FindById(hcs);
   strokeStippled.stipplePattern = StipplePattern::SHORT_DASH;
-  strokeStippled.stippleScale   = 4.0;
-  Canvas::hStroke hcsStippled   = canvas->GetStroke(strokeStippled);
+  strokeStippled.stippleScale = 4.0;
+  Canvas::hStroke hcsStippled = canvas->GetStroke(strokeStippled);
   DoLine(canvas, hcsStippled, a, b);
 }
 
@@ -54,10 +54,10 @@ void Constraint::DoLabel(Canvas *canvas, Canvas::hStroke hcs, Vector ref, Vector
                          Vector gr, Vector gu) {
   const Camera &camera = canvas->GetCamera();
 
-  std::string s          = Label();
-  double      textHeight = Style::TextHeight(GetStyle()) / camera.scale;
-  double      swidth     = VectorFont::Builtin()->GetWidth(textHeight, s),
-         sheight         = VectorFont::Builtin()->GetCapHeight(textHeight);
+  std::string s = Label();
+  double textHeight = Style::TextHeight(GetStyle()) / camera.scale;
+  double swidth = VectorFont::Builtin()->GetWidth(textHeight, s),
+         sheight = VectorFont::Builtin()->GetCapHeight(textHeight);
 
   // By default, the reference is from the center; but the style could
   // specify otherwise if one is present, and it could also specify a
@@ -113,10 +113,10 @@ void Constraint::DoProjectedPoint(Canvas *canvas, Canvas::hStroke hcs, Vector *r
 int Constraint::DoLineTrimmedAgainstBox(Canvas *canvas, Canvas::hStroke hcs, Vector ref, Vector a,
                                         Vector b, bool extend) {
   const Camera &camera = canvas->GetCamera();
-  double        th     = Style::TextHeight(GetStyle()) / camera.scale;
-  double        pixels = 1.0 / camera.scale;
-  double        swidth = VectorFont::Builtin()->GetWidth(th, Label()) + 8 * pixels,
-         sheight       = VectorFont::Builtin()->GetCapHeight(th) + 8 * pixels;
+  double th = Style::TextHeight(GetStyle()) / camera.scale;
+  double pixels = 1.0 / camera.scale;
+  double swidth = VectorFont::Builtin()->GetWidth(th, Label()) + 8 * pixels,
+         sheight = VectorFont::Builtin()->GetCapHeight(th) + 8 * pixels;
   Vector gu = camera.projUp.WithMagnitude(1), gr = camera.projRight.WithMagnitude(1);
   return DoLineTrimmedAgainstBox(canvas, hcs, ref, a, b, extend, gr, gu, swidth, sheight);
 }
@@ -144,7 +144,7 @@ int Constraint::DoLineTrimmedAgainstBox(Canvas *canvas, Canvas::hStroke hcs, Vec
   Vector dl = b.Minus(a);
 
   for (int i = 0; i < 4; i++) {
-    bool   parallel;
+    bool parallel;
     Vector p = VectorAtIntersectionOfPlaneAndLine(planes[i].n, planes[i].d, a, b, &parallel);
     if (parallel)
       continue;
@@ -159,8 +159,8 @@ int Constraint::DoLineTrimmedAgainstBox(Canvas *canvas, Canvas::hStroke hcs, Vec
       continue;
 
     double t = (p.Minus(a)).DivProjected(dl);
-    tmin     = std::min(t, tmin);
-    tmax     = std::max(t, tmax);
+    tmin = std::min(t, tmin);
+    tmax = std::max(t, tmax);
   }
 
   // Both in range; so there's pieces of the line on both sides of the label box.
@@ -222,7 +222,7 @@ void Constraint::DoArrow(Canvas *canvas, Canvas::hStroke hcs, Vector p, Vector d
 void Constraint::DoLineWithArrows(Canvas *canvas, Canvas::hStroke hcs, Vector ref, Vector a,
                                   Vector b, bool onlyOneExt) {
   const Camera &camera = canvas->GetCamera();
-  double        pixels = 1.0 / camera.scale;
+  double pixels = 1.0 / camera.scale;
 
   Vector ab = a.Minus(b);
   Vector ar = a.Minus(ref);
@@ -231,7 +231,7 @@ void Constraint::DoLineWithArrows(Canvas *canvas, Canvas::hStroke hcs, Vector re
   // Within that plane, and normal to the line AB; so that's our extension
   // line.
   Vector out = ab.Cross(n).WithMagnitude(1);
-  out        = out.ScaledBy(-out.Dot(ar));
+  out = out.ScaledBy(-out.Dot(ar));
 
   Vector ae = a.Plus(out), be = b.Plus(out);
 
@@ -250,7 +250,7 @@ void Constraint::DoLineWithArrows(Canvas *canvas, Canvas::hStroke hcs, Vector re
   Vector arrow = (be.Minus(ae)).WithMagnitude(13 * pixels);
 
   if (within != 0) {
-    arrow      = arrow.ScaledBy(-1);
+    arrow = arrow.ScaledBy(-1);
     Vector seg = (be.Minus(ae)).WithMagnitude(18 * pixels);
     if (within < 0)
       DoLine(canvas, hcs, ae, ae.Minus(seg));
@@ -270,19 +270,19 @@ void Constraint::DoEqualLenTicks(Canvas *canvas, Canvas::hStroke hcs, Vector a, 
   if (refp)
     *refp = m;
   Vector ab = a.Minus(b);
-  Vector n  = (gn.Cross(ab)).WithMagnitude(10 / camera.scale);
+  Vector n = (gn.Cross(ab)).WithMagnitude(10 / camera.scale);
 
   DoLine(canvas, hcs, m.Minus(n), m.Plus(n));
 }
 
 void Constraint::DoEqualRadiusTicks(Canvas *canvas, Canvas::hStroke hcs, hEntity he, Vector *refp) {
   const Camera &camera = canvas->GetCamera();
-  Entity       *circ   = SK.GetEntity(he);
+  Entity *circ = SK.GetEntity(he);
 
-  Vector     center = SK.GetEntity(circ->point[0])->PointGetDrawNum();
-  double     r      = circ->CircleGetRadiusNum();
-  Quaternion q      = circ->Normal()->NormalGetNum();
-  Vector     u = q.RotationU(), v = q.RotationV();
+  Vector center = SK.GetEntity(circ->point[0])->PointGetDrawNum();
+  double r = circ->CircleGetRadiusNum();
+  Quaternion q = circ->Normal()->NormalGetNum();
+  Vector u = q.RotationU(), v = q.RotationV();
 
   double theta;
   if (circ->type == Entity::Type::CIRCLE) {
@@ -295,7 +295,7 @@ void Constraint::DoEqualRadiusTicks(Canvas *canvas, Canvas::hStroke hcs, hEntity
     ssassert(false, "Unexpected entity type");
 
   Vector d = u.ScaledBy(cos(theta)).Plus(v.ScaledBy(sin(theta)));
-  d        = d.ScaledBy(r);
+  d = d.ScaledBy(r);
   Vector p = center.Plus(d);
   if (refp)
     *refp = p;
@@ -307,9 +307,9 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
                                Vector db, Vector offset, Vector *ref, bool trim,
                                Vector explodeOffset) {
   const Camera &camera = canvas->GetCamera();
-  double        pixels = 1.0 / camera.scale;
-  Vector        gr     = camera.projRight.ScaledBy(1.0);
-  Vector        gu     = camera.projUp.ScaledBy(1.0);
+  double pixels = 1.0 / camera.scale;
+  Vector gr = camera.projRight.ScaledBy(1.0);
+  Vector gu = camera.projUp.ScaledBy(1.0);
 
   if (workplane != Entity::FREE_IN_3D) {
     a0 = a0.ProjectInto(workplane);
@@ -345,14 +345,14 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
     double thetaf = acos(da.Dot(db));
 
     // Calculate median
-    Vector m  = da.ScaledBy(cos(thetaf / 2)).Plus(dna.ScaledBy(sin(thetaf / 2)));
+    Vector m = da.ScaledBy(cos(thetaf / 2)).Plus(dna.ScaledBy(sin(thetaf / 2)));
     Vector rm = (*ref).Minus(pi);
 
     // Test which side we have to place an arc
     if (m.Dot(rm) < 0) {
-      da  = da.ScaledBy(-1);
+      da = da.ScaledBy(-1);
       dna = dna.ScaledBy(-1);
-      db  = db.ScaledBy(-1);
+      db = db.ScaledBy(-1);
       dnb = dnb.ScaledBy(-1);
     }
 
@@ -361,19 +361,19 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
     // Introduce minimal arc radius in pixels
     double r = std::max(sqrt(rda * rda + rdna * rdna), 15.0 * pixels);
 
-    double th      = Style::TextHeight(GetStyle()) / camera.scale;
-    double swidth  = VectorFont::Builtin()->GetWidth(th, Label()) + 8 * pixels,
+    double th = Style::TextHeight(GetStyle()) / camera.scale;
+    double swidth = VectorFont::Builtin()->GetWidth(th, Label()) + 8 * pixels,
            sheight = VectorFont::Builtin()->GetCapHeight(th) + 6 * pixels;
-    double textR   = sqrt(swidth * swidth + sheight * sheight) / 2.0;
-    *ref           = pi.Plus(rm.WithMagnitude(std::max(rm.Magnitude(), 15 * pixels + textR)));
+    double textR = sqrt(swidth * swidth + sheight * sheight) / 2.0;
+    *ref = pi.Plus(rm.WithMagnitude(std::max(rm.Magnitude(), 15 * pixels + textR)));
 
     // Arrow points
     Vector apa = da.ScaledBy(r).Plus(pi);
     Vector apb = da.ScaledBy(r * cos(thetaf)).Plus(dna.ScaledBy(r * sin(thetaf))).Plus(pi);
 
-    double arrowW       = 13 * pixels;
-    double arrowA       = 18.0 * PI / 180.0;
-    bool   arrowVisible = apb.Minus(apa).Magnitude() > 2.5 * arrowW;
+    double arrowW = 13 * pixels;
+    double arrowA = 18.0 * PI / 180.0;
+    bool arrowVisible = apb.Minus(apa).Magnitude() > 2.5 * arrowW;
     // Arrow reversing indicator
     bool arrowRev = false;
 
@@ -407,7 +407,7 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
       Vector rmp = da.ScaledBy(rda).Plus(dna.ScaledBy(rdna)).WithMagnitude(1.0);
       // rmp and da magnitudes are 1.0
       startAngle = -std::max(acos(rmp.Dot(da)), extAngle);
-      addAngle   = -startAngle;
+      addAngle = -startAngle;
 
       if (arrowVisible) {
         addAngle += extAngle;
@@ -416,10 +416,10 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
     }
 
     Vector prev = Vector(0, 0, 0);
-    int    n    = 30;
+    int n = 30;
     for (int i = 0; i <= n; i++) {
       double theta = startAngle + (i * (thetaf + addAngle)) / n;
-      Vector p     = da.ScaledBy(r * cos(theta)).Plus(dna.ScaledBy(r * sin(theta))).Plus(pi);
+      Vector p = da.ScaledBy(r * cos(theta)).Plus(dna.ScaledBy(r * sin(theta))).Plus(pi);
       if (i > 0) {
         if (trim) {
           DoLineTrimmedAgainstBox(canvas, hcs, *ref, prev, p,
@@ -438,7 +438,7 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
     if (arrowVisible) {
       double angleCorr = arrowW / (2.0 * r);
       if (arrowRev) {
-        dna       = dna.ScaledBy(-1.0);
+        dna = dna.ScaledBy(-1.0);
         angleCorr = -angleCorr;
       }
       DoArrow(canvas, hcs, apa, dna, norm, arrowW, arrowA, angleCorr);
@@ -447,9 +447,9 @@ void Constraint::DoArcForAngle(Canvas *canvas, Canvas::hStroke hcs, Vector a0, V
   } else {
     // The lines are skew; no wonderful way to illustrate that.
 
-    *ref              = a0.Plus(b0);
-    *ref              = (*ref).ScaledBy(0.5).Plus(disp.offset);
-    gu                = gu.WithMagnitude(1);
+    *ref = a0.Plus(b0);
+    *ref = (*ref).ScaledBy(0.5).Plus(disp.offset);
+    gu = gu.WithMagnitude(1);
     double textHeight = Style::TextHeight(GetStyle()) / camera.scale;
     Vector trans = (*ref).Plus(gu.ScaledBy(-1.5 * VectorFont::Builtin()->GetCapHeight(textHeight)));
     canvas->DrawVectorText("angle between skew lines", textHeight, trans, gr.WithMagnitude(1),
@@ -480,8 +480,8 @@ bool Constraint::IsVisible() const {
 
 bool Constraint::DoLineExtend(Canvas *canvas, Canvas::hStroke hcs, Vector p0, Vector p1, Vector pt,
                               double salient) {
-  Vector dir      = p1.Minus(p0);
-  double k        = dir.Dot(pt.Minus(p0)) / dir.Dot(dir);
+  Vector dir = p1.Minus(p0);
+  double k = dir.Dot(pt.Minus(p0)) / dir.Dot(dir);
   Vector ptOnLine = p0.Plus(dir.ScaledBy(k));
 
   // Draw projection line.
@@ -491,14 +491,14 @@ bool Constraint::DoLineExtend(Canvas *canvas, Canvas::hStroke hcs, Vector p0, Ve
   Vector sd = dir.WithMagnitude(1.0).ScaledBy(salient);
 
   Vector from = Vector(0, 0, 0);
-  Vector to   = Vector(0, 0, 0);
+  Vector to = Vector(0, 0, 0);
 
   if (k < 0.0) {
     from = p0;
-    to   = ptOnLine.Minus(sd);
+    to = ptOnLine.Minus(sd);
   } else if (k > 1.0) {
     from = p1;
-    to   = ptOnLine.Plus(sd);
+    to = ptOnLine.Plus(sd);
   } else {
     return false;
   }
@@ -515,9 +515,9 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   // Unit vectors that describe our current view of the scene. One pixel
   // long, not one actual unit.
   const Camera &camera = canvas->GetCamera();
-  Vector        gr     = camera.projRight.ScaledBy(1 / camera.scale);
-  Vector        gu     = camera.projUp.ScaledBy(1 / camera.scale);
-  Vector        gn     = (gr.Cross(gu)).WithMagnitude(1 / camera.scale);
+  Vector gr = camera.projRight.ScaledBy(1 / camera.scale);
+  Vector gu = camera.projUp.ScaledBy(1 / camera.scale);
+  Vector gn = (gr.Cross(gu)).WithMagnitude(1 / camera.scale);
 
   double textHeight = Style::TextHeight(GetStyle()) / camera.scale;
 
@@ -528,15 +528,15 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   case DrawAs::SELECTED: color = Style::Color(Style::SELECTED); break;
   }
   Canvas::Stroke stroke = Style::Stroke(GetStyle());
-  stroke.layer          = Canvas::Layer::FRONT;
-  stroke.color          = color;
-  stroke.zIndex         = 4;
-  Canvas::hStroke hcs   = canvas->GetStroke(stroke);
+  stroke.layer = Canvas::Layer::FRONT;
+  stroke.color = color;
+  stroke.zIndex = 4;
+  Canvas::hStroke hcs = canvas->GetStroke(stroke);
 
   Canvas::Fill fill = {};
-  fill.layer        = Canvas::Layer::FRONT;
-  fill.color        = color;
-  fill.zIndex       = stroke.zIndex;
+  fill.layer = Canvas::Layer::FRONT;
+  fill.color = color;
+  fill.zIndex = stroke.zIndex;
   Canvas::hFill hcf = canvas->GetFill(fill);
 
   Vector n = Vector(0, 0, 0);
@@ -556,8 +556,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       // in the plane of one of the exploded points (rather than at an
       // angle)
       Vector offset = SK.GetEntity(ptA)->ExplodeOffset();
-      ap            = ap.Plus(offset);
-      bp            = bp.Plus(offset);
+      ap = ap.Plus(offset);
+      bp = bp.Plus(offset);
     }
 
     Vector ref = ((ap.Plus(bp)).ScaledBy(0.5)).Plus(disp.offset);
@@ -581,8 +581,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       }
       if (pt->group == group) {
         Vector offset = pt->ExplodeOffset();
-        ap            = ap.Plus(offset);
-        bp            = bp.Plus(offset);
+        ap = ap.Plus(offset);
+        bp = bp.Plus(offset);
       }
     }
 
@@ -590,8 +590,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     if (refs)
       refs->push_back(ref);
 
-    pp         = pp.WithMagnitude(1);
-    double d   = dp.Dot(pp);
+    pp = pp.WithMagnitude(1);
+    double d = dp.Dot(pp);
     Vector bpp = ap.Plus(pp.ScaledBy(d));
     DoStippledLine(canvas, hcs, ap, bpp);
     DoStippledLine(canvas, hcs, bp, bpp);
@@ -603,9 +603,9 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::PT_FACE_DISTANCE:
   case Type::PT_PLANE_DISTANCE: {
-    Vector  pt   = SK.GetEntity(ptA)->PointGetDrawNum();
+    Vector pt = SK.GetEntity(ptA)->PointGetDrawNum();
     Entity *enta = SK.GetEntity(entityA);
-    Vector  n = Vector(0, 0, 0), p = Vector(0, 0, 0);
+    Vector n = Vector(0, 0, 0), p = Vector(0, 0, 0);
     if (type == Type::PT_PLANE_DISTANCE) {
       n = enta->Normal()->NormalN();
       p = enta->WorkplaneGetOffset();
@@ -614,7 +614,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       p = enta->FaceGetPointNum();
     }
 
-    double d       = (p.Minus(pt)).Dot(n);
+    double d = (p.Minus(pt)).Dot(n);
     Vector closest = pt.Plus(n.WithMagnitude(d));
 
     Vector ref = ((closest.Plus(pt)).ScaledBy(0.5)).Plus(disp.offset);
@@ -631,11 +631,11 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::PT_LINE_DISTANCE: {
     Entity *ptEntity = SK.GetEntity(ptA);
-    Vector  pt       = ptEntity->PointGetNum();
-    Entity *line     = SK.GetEntity(entityA);
-    Vector  lA       = SK.GetEntity(line->point[0])->PointGetNum();
-    Vector  lB       = SK.GetEntity(line->point[1])->PointGetNum();
-    Vector  dl       = lB.Minus(lA);
+    Vector pt = ptEntity->PointGetNum();
+    Entity *line = SK.GetEntity(entityA);
+    Vector lA = SK.GetEntity(line->point[0])->PointGetNum();
+    Vector lB = SK.GetEntity(line->point[1])->PointGetNum();
+    Vector dl = lB.Minus(lA);
 
     if (workplane != Entity::FREE_IN_3D) {
       lA = lA.ProjectInto(workplane);
@@ -649,9 +649,9 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     bool shouldExplode = ShouldDrawExploded() && ptEntity->group == group && line->group == group;
     if (shouldExplode) {
       Vector explodeOffset = ptEntity->ExplodeOffset();
-      pt                   = pt.Plus(explodeOffset);
-      lA                   = lA.Plus(explodeOffset);
-      lB                   = lB.Plus(explodeOffset);
+      pt = pt.Plus(explodeOffset);
+      lA = lA.Plus(explodeOffset);
+      lB = lB.Plus(explodeOffset);
     }
 
     // Find the closest point on the line
@@ -666,21 +666,21 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       DoLineWithArrows(canvas, hcs, ref, pt, closest, /*onlyOneExt=*/true);
 
       // Draw projected point
-      Vector a   = pt;
-      Vector b   = closest;
-      Vector ab  = a.Minus(b);
-      Vector ar  = a.Minus(ref);
-      Vector n   = ab.Cross(ar);
+      Vector a = pt;
+      Vector b = closest;
+      Vector ab = a.Minus(b);
+      Vector ar = a.Minus(ref);
+      Vector n = ab.Cross(ar);
       Vector out = ab.Cross(n).WithMagnitude(1);
-      out        = out.ScaledBy(-out.Dot(ar));
-      Vector be  = b.Plus(out);
-      Vector np  = lA.Minus(pt).Cross(lB.Minus(pt)).WithMagnitude(1.0);
+      out = out.ScaledBy(-out.Dot(ar));
+      Vector be = b.Plus(out);
+      Vector np = lA.Minus(pt).Cross(lB.Minus(pt)).WithMagnitude(1.0);
       DoProjectedPoint(canvas, hcs, &be, np, pt);
 
       // Extensions to line
-      double pixels     = 1.0 / camera.scale;
+      double pixels = 1.0 / camera.scale;
       Vector refClosest = ref.ClosestPointOnLine(lA, dl);
-      double ddl        = dl.Dot(dl);
+      double ddl = dl.Dot(dl);
       if (std::fabs(ddl) > LENGTH_EPS * LENGTH_EPS) {
         double t = refClosest.Minus(lA).Dot(dl) / ddl;
         if (t < 0.0) {
@@ -695,7 +695,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       // Draw the projection marker from the closest point on the
       // projected line to the projected point on the real line.
       Vector lAB = (lA.Minus(lB));
-      double t   = (lA.Minus(closest)).DivProjected(lAB);
+      double t = (lA.Minus(closest)).DivProjected(lAB);
 
       Vector lA = SK.GetEntity(line->point[0])->PointGetNum();
       Vector lB = SK.GetEntity(line->point[1])->PointGetNum();
@@ -707,11 +707,11 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   }
 
   case Type::DIAMETER: {
-    Entity    *circle = SK.GetEntity(entityA);
-    Vector     center = SK.GetEntity(circle->point[0])->PointGetDrawNum();
-    Quaternion q      = SK.GetEntity(circle->normal)->NormalGetNum();
-    Vector     n      = q.RotationN().WithMagnitude(1);
-    double     r      = circle->CircleGetRadiusNum();
+    Entity *circle = SK.GetEntity(entityA);
+    Vector center = SK.GetEntity(circle->point[0])->PointGetDrawNum();
+    Quaternion q = SK.GetEntity(circle->normal)->NormalGetNum();
+    Vector n = q.RotationN().WithMagnitude(1);
+    double r = circle->CircleGetRadiusNum();
 
     Vector ref = center.Plus(disp.offset);
     // Force the label into the same plane as the circle.
@@ -720,7 +720,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       refs->push_back(ref);
 
     Vector mark = ref.Minus(center);
-    mark        = mark.WithMagnitude(mark.Magnitude() - r);
+    mark = mark.WithMagnitude(mark.Magnitude() - r);
     DoLineTrimmedAgainstBox(canvas, hcs, ref, ref, ref.Minus(mark));
 
     Vector topLeft = Vector(0, 0, 0);
@@ -744,7 +744,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       vc = vc.WithMagnitude(vd.Magnitude() * 0.9);
       // and set the color to that.
       fill.color = RGBf(vc.x, vc.y, vc.z);
-      hcf        = canvas->GetFill(fill);
+      hcf = canvas->GetFill(fill);
     }
 
     for (int a = 0; a < 2; a++) {
@@ -772,12 +772,12 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector r = Vector(0, 0, 0), d = Vector(0, 0, 0);
     if (type == Type::PT_ON_FACE) {
       Vector n = SK.GetEntity(entityA)->FaceGetNormalNum();
-      r        = n.Normal(0);
-      d        = n.Normal(1);
+      r = n.Normal(0);
+      d = n.Normal(1);
     } else if (type == Type::PT_IN_PLANE) {
       Entity *n = SK.GetEntity(entityA)->Normal();
-      r         = n->NormalU();
-      d         = n->NormalV();
+      r = n->NormalU();
+      d = n->NormalV();
     } else {
       r = gr;
       d = gu;
@@ -796,7 +796,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector p = SK.GetEntity(ptA)->PointGetDrawNum();
     if (refs)
       refs->push_back(p);
-    Vector u  = p.Plus(gu.WithMagnitude(8 / camera.scale)).Plus(gr.WithMagnitude(8 / camera.scale)),
+    Vector u = p.Plus(gu.WithMagnitude(8 / camera.scale)).Plus(gr.WithMagnitude(8 / camera.scale)),
            uu = u.Minus(gu.WithMagnitude(5 / camera.scale)),
            ur = u.Minus(gr.WithMagnitude(5 / camera.scale));
     // Draw four little crop marks, uniformly spaced (by ninety
@@ -805,7 +805,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     for (i = 0; i < 4; i++) {
       DoLine(canvas, hcs, u, uu);
       DoLine(canvas, hcs, u, ur);
-      u  = u.RotatedAbout(p, gn, PI / 2);
+      u = u.RotatedAbout(p, gn, PI / 2);
       ur = ur.RotatedAbout(p, gn, PI / 2);
       uu = uu.RotatedAbout(p, gn, PI / 2);
     }
@@ -814,12 +814,12 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::SAME_ORIENTATION: {
     for (int i = 0; i < 2; i++) {
-      Entity    *e = SK.GetEntity(i == 0 ? entityA : entityB);
+      Entity *e = SK.GetEntity(i == 0 ? entityA : entityB);
       Quaternion q = e->NormalGetNum();
-      Vector     n = q.RotationN().WithMagnitude(25 / camera.scale);
-      Vector     u = q.RotationU().WithMagnitude(6 / camera.scale);
-      Vector     p = SK.GetEntity(e->point[0])->PointGetNum();
-      p            = p.Plus(n.WithMagnitude(10 / camera.scale));
+      Vector n = q.RotationN().WithMagnitude(25 / camera.scale);
+      Vector u = q.RotationU().WithMagnitude(6 / camera.scale);
+      Vector p = SK.GetEntity(e->point[0])->PointGetNum();
+      p = p.Plus(n.WithMagnitude(10 / camera.scale));
       if (refs)
         refs->push_back(p);
 
@@ -830,11 +830,11 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   }
 
   case Type::EQUAL_ANGLE: {
-    Vector  ref = Vector(0, 0, 0);
-    Entity *a   = SK.GetEntity(entityA);
-    Entity *b   = SK.GetEntity(entityB);
-    Entity *c   = SK.GetEntity(entityC);
-    Entity *d   = SK.GetEntity(entityD);
+    Vector ref = Vector(0, 0, 0);
+    Entity *a = SK.GetEntity(entityA);
+    Entity *b = SK.GetEntity(entityB);
+    Entity *c = SK.GetEntity(entityC);
+    Entity *d = SK.GetEntity(entityD);
 
     Vector a0 = a->VectorGetStartPoint();
     Vector b0 = b->VectorGetStartPoint();
@@ -892,8 +892,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       ru = gu;
     } else {
       Entity *normal = SK.GetEntity(workplane)->Normal();
-      rn             = normal->NormalN();
-      ru             = normal->NormalV(); // ru meaning r_up, not u/v
+      rn = normal->NormalN();
+      ru = normal->NormalV(); // ru meaning r_up, not u/v
     }
 
     for (int i = 0; i < 2; i++) {
@@ -931,14 +931,14 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector textAt = Vector(0, 0, 0), u = Vector(0, 0, 0), v = Vector(0, 0, 0);
 
     if (type == Type::ARC_LINE_TANGENT) {
-      Entity *arc  = SK.GetEntity(entityA);
+      Entity *arc = SK.GetEntity(entityA);
       Entity *norm = SK.GetEntity(arc->normal);
-      Vector  c    = SK.GetEntity(arc->point[0])->PointGetDrawNum();
-      Vector  p    = SK.GetEntity(arc->point[other ? 2 : 1])->PointGetDrawNum();
-      Vector  r    = p.Minus(c);
-      textAt       = p.Plus(r.WithMagnitude(14 / camera.scale));
-      u            = norm->NormalU();
-      v            = norm->NormalV();
+      Vector c = SK.GetEntity(arc->point[0])->PointGetDrawNum();
+      Vector p = SK.GetEntity(arc->point[other ? 2 : 1])->PointGetDrawNum();
+      Vector r = p.Minus(c);
+      textAt = p.Plus(r.WithMagnitude(14 / camera.scale));
+      u = norm->NormalU();
+      v = norm->NormalV();
     } else if (type == Type::CUBIC_LINE_TANGENT) {
       Vector n = Vector(0, 0, 0);
       if (workplane == Entity::FREE_IN_3D) {
@@ -947,23 +947,23 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
         n = gn;
       } else {
         Entity *wn = SK.GetEntity(workplane)->Normal();
-        u          = wn->NormalU();
-        v          = wn->NormalV();
-        n          = wn->NormalN();
+        u = wn->NormalU();
+        v = wn->NormalV();
+        n = wn->NormalN();
       }
 
       Entity *cubic = SK.GetEntity(entityA);
-      Vector  p     = other ? cubic->CubicGetFinishNum() : cubic->CubicGetStartNum();
-      p             = p.Plus(cubic->ExplodeOffset());
-      Vector dir    = SK.GetEntity(entityB)->VectorGetNum();
-      Vector out    = n.Cross(dir);
-      textAt        = p.Plus(out.WithMagnitude(14 / camera.scale));
+      Vector p = other ? cubic->CubicGetFinishNum() : cubic->CubicGetStartNum();
+      p = p.Plus(cubic->ExplodeOffset());
+      Vector dir = SK.GetEntity(entityB)->VectorGetNum();
+      Vector out = n.Cross(dir);
+      textAt = p.Plus(out.WithMagnitude(14 / camera.scale));
     } else {
-      Vector  n = Vector(0, 0, 0), dir = Vector(0, 0, 0);
+      Vector n = Vector(0, 0, 0), dir = Vector(0, 0, 0);
       Entity *wn = SK.GetEntity(workplane)->Normal();
-      u          = wn->NormalU();
-      v          = wn->NormalV();
-      n          = wn->NormalN();
+      u = wn->NormalU();
+      v = wn->NormalV();
+      n = wn->NormalN();
       Entity *eA = SK.GetEntity(entityA);
       // Big pain; we have to get a vector tangent to the curve
       // at the shared point, which could be from either a cubic
@@ -989,7 +989,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
           dir = n.Cross(dir);
         }
       }
-      dir    = n.Cross(dir);
+      dir = n.Cross(dir);
       textAt = textAt.Plus(dir.WithMagnitude(14 / camera.scale));
     }
 
@@ -1004,10 +1004,10 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   case Type::PARALLEL: {
     for (int i = 0; i < 2; i++) {
       Entity *e = SK.GetEntity(i == 0 ? entityA : entityB);
-      Vector  n = e->VectorGetNum();
-      n         = n.WithMagnitude(25 / camera.scale);
-      Vector u  = (gn.Cross(n)).WithMagnitude(4 / camera.scale);
-      Vector p  = e->VectorGetRefPoint();
+      Vector n = e->VectorGetNum();
+      n = n.WithMagnitude(25 / camera.scale);
+      Vector u = (gn.Cross(n)).WithMagnitude(4 / camera.scale);
+      Vector p = e->VectorGetRefPoint();
 
       if (ShouldDrawExploded()) {
         p = p.Plus(e->ExplodeOffset());
@@ -1033,7 +1033,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::EQUAL_LINE_ARC_LEN: {
     Entity *line = SK.GetEntity(entityA);
-    Vector  ref  = Vector(0, 0, 0);
+    Vector ref = Vector(0, 0, 0);
     DoEqualLenTicks(canvas, hcs, SK.GetEntity(line->point[0])->PointGetDrawNum(),
                     SK.GetEntity(line->point[1])->PointGetDrawNum(), gn, &ref);
     if (refs)
@@ -1050,8 +1050,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector a = Vector(0, 0, 0), b = Vector::From(0, 0, 0);
     for (int i = 0; i < 2; i++) {
       Entity *e = SK.GetEntity(i == 0 ? entityA : entityB);
-      a         = SK.GetEntity(e->point[0])->PointGetNum();
-      b         = SK.GetEntity(e->point[1])->PointGetNum();
+      a = SK.GetEntity(e->point[0])->PointGetNum();
+      b = SK.GetEntity(e->point[1])->PointGetNum();
 
       if (workplane != Entity::FREE_IN_3D) {
         DoProjectedPoint(canvas, hcs, &a);
@@ -1060,8 +1060,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
       if (ShouldDrawExploded()) {
         Vector offset = e->ExplodeOffset();
-        a             = a.Plus(offset);
-        b             = b.Plus(offset);
+        a = a.Plus(offset);
+        b = b.Plus(offset);
       }
 
       Vector ref = Vector(0, 0, 0);
@@ -1077,10 +1077,10 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   }
   case Type::ARC_ARC_LEN_RATIO:
   case Type::ARC_ARC_DIFFERENCE: {
-    Entity    *circle = SK.GetEntity(entityA);
-    Vector     center = SK.GetEntity(circle->point[0])->PointGetNum();
-    Quaternion q      = SK.GetEntity(circle->normal)->NormalGetNum();
-    Vector     n      = q.RotationN().WithMagnitude(1);
+    Entity *circle = SK.GetEntity(entityA);
+    Vector center = SK.GetEntity(circle->point[0])->PointGetNum();
+    Quaternion q = SK.GetEntity(circle->normal)->NormalGetNum();
+    Vector n = q.RotationN().WithMagnitude(1);
 
     Vector ref2 = Vector(0, 0, 0);
     DoEqualRadiusTicks(canvas, hcs, entityA, &ref2);
@@ -1099,11 +1099,11 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
   }
   case Type::ARC_LINE_LEN_RATIO:
   case Type::ARC_LINE_DIFFERENCE: {
-    Vector  a, b = Vector::From(0, 0, 0);
-    Vector  ref = Vector(0, 0, 0);
-    Entity *e   = SK.GetEntity(entityA);
-    a           = SK.GetEntity(e->point[0])->PointGetNum();
-    b           = SK.GetEntity(e->point[1])->PointGetNum();
+    Vector a, b = Vector::From(0, 0, 0);
+    Vector ref = Vector(0, 0, 0);
+    Entity *e = SK.GetEntity(entityA);
+    a = SK.GetEntity(e->point[0])->PointGetNum();
+    b = SK.GetEntity(e->point[1])->PointGetNum();
     DoEqualLenTicks(canvas, hcs, a, b, gn, &ref);
     if (refs)
       refs->push_back(ref);
@@ -1117,16 +1117,16 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::EQ_LEN_PT_LINE_D: {
     Entity *forLen = SK.GetEntity(entityA);
-    Vector  a      = SK.GetEntity(forLen->point[0])->PointGetNum(),
-           b       = SK.GetEntity(forLen->point[1])->PointGetNum();
+    Vector a = SK.GetEntity(forLen->point[0])->PointGetNum(),
+           b = SK.GetEntity(forLen->point[1])->PointGetNum();
     if (workplane != Entity::FREE_IN_3D) {
       DoProjectedPoint(canvas, hcs, &a);
       DoProjectedPoint(canvas, hcs, &b);
     }
     if (ShouldDrawExploded()) {
       Vector offset = forLen->ExplodeOffset();
-      a             = a.Plus(offset);
-      b             = b.Plus(offset);
+      a = a.Plus(offset);
+      b = b.Plus(offset);
     }
     Vector refa = Vector(0, 0, 0);
     DoEqualLenTicks(canvas, hcs, a, b, gn, &refa);
@@ -1134,9 +1134,9 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       refs->push_back(refa);
 
     Entity *ln = SK.GetEntity(entityB);
-    Vector  la = SK.GetEntity(ln->point[0])->PointGetNum(),
-           lb  = SK.GetEntity(ln->point[1])->PointGetNum();
-    Vector pt  = SK.GetEntity(ptA)->PointGetNum();
+    Vector la = SK.GetEntity(ln->point[0])->PointGetNum(),
+           lb = SK.GetEntity(ln->point[1])->PointGetNum();
+    Vector pt = SK.GetEntity(ptA)->PointGetNum();
     if (workplane != Entity::FREE_IN_3D) {
       DoProjectedPoint(canvas, hcs, &pt);
       la = la.ProjectInto(workplane);
@@ -1146,8 +1146,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector closest = pt.ClosestPointOnLine(la, lb.Minus(la));
     if (ShouldDrawExploded()) {
       Vector offset = SK.GetEntity(ptA)->ExplodeOffset();
-      pt            = pt.Plus(offset);
-      closest       = closest.Plus(offset);
+      pt = pt.Plus(offset);
+      closest = closest.Plus(offset);
     }
     DoLine(canvas, hcs, pt, closest);
     Vector refb = Vector(0, 0, 0);
@@ -1159,11 +1159,11 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
   case Type::EQ_PT_LN_DISTANCES: {
     for (int i = 0; i < 2; i++) {
-      Entity *ln  = SK.GetEntity(i == 0 ? entityA : entityB);
-      Vector  la  = SK.GetEntity(ln->point[0])->PointGetNum(),
-             lb   = SK.GetEntity(ln->point[1])->PointGetNum();
+      Entity *ln = SK.GetEntity(i == 0 ? entityA : entityB);
+      Vector la = SK.GetEntity(ln->point[0])->PointGetNum(),
+             lb = SK.GetEntity(ln->point[1])->PointGetNum();
       Entity *pte = SK.GetEntity(i == 0 ? ptA : ptB);
-      Vector  pt  = pte->PointGetNum();
+      Vector pt = pte->PointGetNum();
 
       if (workplane != Entity::FREE_IN_3D) {
         DoProjectedPoint(canvas, hcs, &pt);
@@ -1174,8 +1174,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       Vector closest = pt.ClosestPointOnLine(la, lb.Minus(la));
       if (ShouldDrawExploded()) {
         Vector offset = pte->ExplodeOffset();
-        pt            = pt.Plus(offset);
-        closest       = closest.Plus(offset);
+        pt = pt.Plus(offset);
+        closest = closest.Plus(offset);
       }
       DoLine(canvas, hcs, pt, closest);
 
@@ -1193,13 +1193,13 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     case Type::SYMMETRIC_VERT: n = SK.GetEntity(workplane)->Normal()->NormalV(); goto s;
     case Type::SYMMETRIC_LINE: {
       Entity *ln = SK.GetEntity(entityA);
-      Vector  la = SK.GetEntity(ln->point[0])->PointGetNum(),
-             lb  = SK.GetEntity(ln->point[1])->PointGetNum();
-      la         = la.ProjectInto(workplane);
-      lb         = lb.ProjectInto(workplane);
-      n          = lb.Minus(la);
-      Vector nw  = SK.GetEntity(workplane)->Normal()->NormalN();
-      n          = n.RotatedAbout(nw, PI / 2);
+      Vector la = SK.GetEntity(ln->point[0])->PointGetNum(),
+             lb = SK.GetEntity(ln->point[1])->PointGetNum();
+      la = la.ProjectInto(workplane);
+      lb = lb.ProjectInto(workplane);
+      n = lb.Minus(la);
+      Vector nw = SK.GetEntity(workplane)->Normal()->NormalN();
+      n = n.RotatedAbout(nw, PI / 2);
       goto s;
     }
     s:
@@ -1208,14 +1208,14 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
 
       for (int i = 0; i < 2; i++) {
         Vector tail = (i == 0) ? a : b;
-        Vector d    = (i == 0) ? b : a;
-        d           = d.Minus(tail);
+        Vector d = (i == 0) ? b : a;
+        d = d.Minus(tail);
         // Project the direction in which the arrow is drawn normal
         // to the symmetry plane; for projected symmetry constraints,
         // they might not be in the same direction, even when the
         // constraint is fully solved.
-        d          = n.ScaledBy(d.Dot(n));
-        d          = d.WithMagnitude(20 / camera.scale);
+        d = n.ScaledBy(d.Dot(n));
+        d = d.WithMagnitude(20 / camera.scale);
         Vector tip = tail.Plus(d);
 
         DoLine(canvas, hcs, tail, tip);
@@ -1243,12 +1243,12 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
         n = r.Cross(u);
       }
       // For "at midpoint", this branch is always taken.
-      Entity *e      = SK.GetEntity(entityA);
-      Vector  a      = SK.GetEntity(e->point[0])->PointGetDrawNum();
-      Vector  b      = SK.GetEntity(e->point[1])->PointGetDrawNum();
-      Vector  m      = (a.ScaledBy(0.5)).Plus(b.ScaledBy(0.5));
-      Vector  offset = (a.Minus(b)).Cross(n);
-      offset         = offset.WithMagnitude(textHeight);
+      Entity *e = SK.GetEntity(entityA);
+      Vector a = SK.GetEntity(e->point[0])->PointGetDrawNum();
+      Vector b = SK.GetEntity(e->point[1])->PointGetDrawNum();
+      Vector m = (a.ScaledBy(0.5)).Plus(b.ScaledBy(0.5));
+      Vector offset = (a.Minus(b)).Cross(n);
+      offset = offset.WithMagnitude(textHeight);
       // Draw midpoint constraint on other side of line, so that
       // a line can be midpoint and horizontal at same time.
       if (type == Type::AT_MIDPOINT)
@@ -1261,8 +1261,8 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       case Type::AT_MIDPOINT: s = "M"; break;
       default: ssassert(false, "Unexpected constraint type");
       }
-      Vector o     = m.Plus(offset).Plus(u.WithMagnitude(textHeight / 5)),
-             ex    = VectorFont::Builtin()->GetExtents(textHeight, s);
+      Vector o = m.Plus(offset).Plus(u.WithMagnitude(textHeight / 5)),
+             ex = VectorFont::Builtin()->GetExtents(textHeight, s);
       Vector shift = r.WithMagnitude(ex.x).Plus(u.WithMagnitude(ex.y));
 
       canvas->DrawVectorText(s, textHeight, o.Minus(shift.ScaledBy(0.5)), r.WithMagnitude(1),
@@ -1273,24 +1273,24 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       Vector a = SK.GetEntity(ptA)->PointGetDrawNum();
       Vector b = SK.GetEntity(ptB)->PointGetDrawNum();
 
-      Entity *w  = SK.GetEntity(workplane);
-      Vector  cu = w->Normal()->NormalU();
-      Vector  cv = w->Normal()->NormalV();
-      Vector  cn = w->Normal()->NormalN();
+      Entity *w = SK.GetEntity(workplane);
+      Vector cu = w->Normal()->NormalU();
+      Vector cv = w->Normal()->NormalV();
+      Vector cn = w->Normal()->NormalN();
 
       int i;
       for (i = 0; i < 2; i++) {
-        Vector o  = (i == 0) ? a : b;
+        Vector o = (i == 0) ? a : b;
         Vector oo = (i == 0) ? a.Minus(b) : b.Minus(a);
-        Vector d  = (type == Type::HORIZONTAL) ? cu : cv;
+        Vector d = (type == Type::HORIZONTAL) ? cu : cv;
         if (oo.Dot(d) < 0)
           d = d.ScaledBy(-1);
 
         Vector dp = cn.Cross(d);
-        d         = d.WithMagnitude(14 / camera.scale);
-        Vector c  = o.Minus(d);
+        d = d.WithMagnitude(14 / camera.scale);
+        Vector c = o.Minus(d);
         DoLine(canvas, hcs, o, c);
-        d  = d.WithMagnitude(3 / camera.scale);
+        d = d.WithMagnitude(3 / camera.scale);
         dp = dp.WithMagnitude(2 / camera.scale);
         canvas->DrawQuad((c.Plus(d)).Plus(dp), (c.Minus(d)).Plus(dp), (c.Minus(d)).Minus(dp),
                          (c.Plus(d)).Minus(dp), hcf);
@@ -1307,14 +1307,14 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
       v = gu;
     } else {
       Entity *norm = SK.GetEntity(workplane)->Normal();
-      u            = norm->NormalU();
-      v            = norm->NormalV();
+      u = norm->NormalU();
+      v = norm->NormalV();
     }
 
     if (disp.style.v != 0) {
       RgbaColor color = stroke.color;
-      stroke          = Style::Stroke(disp.style);
-      stroke.layer    = Canvas::Layer::FRONT;
+      stroke = Style::Stroke(disp.style);
+      stroke.layer = Canvas::Layer::FRONT;
       if (how != DrawAs::DEFAULT) {
         stroke.color = color;
       }
@@ -1323,7 +1323,7 @@ void Constraint::DoLayout(DrawAs how, Canvas *canvas, Vector *labelPos, std::vec
     Vector ref = disp.offset;
     if (ptA.v) {
       Vector a = SK.GetEntity(ptA)->PointGetNum();
-      ref      = a.Plus(disp.offset);
+      ref = a.Plus(disp.offset);
     }
     DoLabel(canvas, hcs, ref, labelPos, u, v);
     if (refs)
@@ -1342,7 +1342,7 @@ Vector Constraint::GetLabelPos(const Camera &camera) {
   Vector p;
 
   ObjectPicker canvas = {};
-  canvas.camera       = camera;
+  canvas.camera = camera;
   DoLayout(DrawAs::DEFAULT, &canvas, &p, NULL);
   canvas.Clear();
 
@@ -1351,7 +1351,7 @@ Vector Constraint::GetLabelPos(const Camera &camera) {
 
 void Constraint::GetReferencePoints(const Camera &camera, std::vector<Vector> *refs) {
   ObjectPicker canvas = {};
-  canvas.camera       = camera;
+  canvas.camera = camera;
   DoLayout(DrawAs::DEFAULT, &canvas, NULL, refs);
   canvas.Clear();
 }

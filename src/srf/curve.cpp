@@ -8,38 +8,38 @@
 #include "ssg.h"
 
 SBezier SBezier::From(Vector4 p0, Vector4 p1) {
-  SBezier ret   = {};
-  ret.deg       = 1;
+  SBezier ret = {};
+  ret.deg = 1;
   ret.weight[0] = p0.w;
-  ret.ctrl[0]   = p0.PerspectiveProject();
+  ret.ctrl[0] = p0.PerspectiveProject();
   ret.weight[1] = p1.w;
-  ret.ctrl[1]   = p1.PerspectiveProject();
+  ret.ctrl[1] = p1.PerspectiveProject();
   return ret;
 }
 
 SBezier SBezier::From(Vector4 p0, Vector4 p1, Vector4 p2) {
-  SBezier ret   = {};
-  ret.deg       = 2;
+  SBezier ret = {};
+  ret.deg = 2;
   ret.weight[0] = p0.w;
-  ret.ctrl[0]   = p0.PerspectiveProject();
+  ret.ctrl[0] = p0.PerspectiveProject();
   ret.weight[1] = p1.w;
-  ret.ctrl[1]   = p1.PerspectiveProject();
+  ret.ctrl[1] = p1.PerspectiveProject();
   ret.weight[2] = p2.w;
-  ret.ctrl[2]   = p2.PerspectiveProject();
+  ret.ctrl[2] = p2.PerspectiveProject();
   return ret;
 }
 
 SBezier SBezier::From(Vector4 p0, Vector4 p1, Vector4 p2, Vector4 p3) {
-  SBezier ret   = {};
-  ret.deg       = 3;
+  SBezier ret = {};
+  ret.deg = 3;
   ret.weight[0] = p0.w;
-  ret.ctrl[0]   = p0.PerspectiveProject();
+  ret.ctrl[0] = p0.PerspectiveProject();
   ret.weight[1] = p1.w;
-  ret.ctrl[1]   = p1.PerspectiveProject();
+  ret.ctrl[1] = p1.PerspectiveProject();
   ret.weight[2] = p2.w;
-  ret.ctrl[2]   = p2.PerspectiveProject();
+  ret.ctrl[2] = p2.PerspectiveProject();
   ret.weight[3] = p3.w;
-  ret.ctrl[3]   = p3.PerspectiveProject();
+  ret.ctrl[3] = p3.PerspectiveProject();
   return ret;
 }
 
@@ -91,7 +91,7 @@ void SBezier::GetBoundingProjd(Vector u, Vector orig, double *umin, double *umax
 
 SBezier SBezier::TransformedBy(Vector t, Quaternion q, double scale) const {
   SBezier ret = *this;
-  int     i;
+  int i;
   for (i = 0; i <= deg; i++) {
     ret.ctrl[i] = (ret.ctrl[i]).ScaledBy(scale);
     ret.ctrl[i] = (q.Rotate(ret.ctrl[i])).Plus(t);
@@ -141,7 +141,7 @@ bool SBezier::IsCircle(Vector axis, Vector *center, double *r) const {
   }
   *r = rd0;
 
-  Vector  u = r0.WithMagnitude(1), v = (axis.Cross(u)).WithMagnitude(1);
+  Vector u = r0.WithMagnitude(1), v = (axis.Cross(u)).WithMagnitude(1);
   Point2d c2 = center->Project2d(u, v), pa2 = (ctrl[0]).Project2d(u, v).Minus(c2),
           pb2 = (ctrl[2]).Project2d(u, v).Minus(c2);
 
@@ -176,10 +176,10 @@ bool SBezier::IsRational() const {
 SBezier SBezier::InPerspective(Vector u, Vector v, Vector n, Vector origin,
                                double cameraTan) const {
   Quaternion q = Quaternion::From(u, v);
-  q            = q.Inverse();
+  q = q.Inverse();
   // we want Q*(p - o) = Q*p - Q*o
   SBezier ret = this->TransformedBy(q.Rotate(origin).ScaledBy(-1), q, 1.0);
-  int     i;
+  int i;
   for (i = 0; i <= deg; i++) {
     Vector4 ct = Vector4::From(ret.weight[i], ret.ctrl[i]);
     // so the desired curve, before perspective, is
@@ -190,7 +190,7 @@ SBezier SBezier::InPerspective(Vector u, Vector v, Vector n, Vector origin,
     // so we want to let w' = w - z*cameraTan
     ct.w = ct.w - ct.z * cameraTan;
 
-    ret.ctrl[i]   = ct.PerspectiveProject();
+    ret.ctrl[i] = ct.PerspectiveProject();
     ret.weight[i] = ct.w;
   }
   return ret;
@@ -233,7 +233,7 @@ void SBezierList::CullIdenticalBeziers(bool both) {
   l.ClearTags();
   for (i = 0; i < l.n; i++) {
     SBezier *bi = &(l[i]), bir;
-    bir         = *bi;
+    bir = *bi;
     bir.Reverse();
 
     for (j = i + 1; j < l.n; j++) {
@@ -264,7 +264,7 @@ void SBezierList::AllIntersectionsWith(SBezierList *sblb, SPointList *spl) const
 }
 void SBezier::AllIntersectionsWith(const SBezier *sbb, SPointList *spl) const {
   SPointList splRaw = {};
-  SEdgeList  sea, seb;
+  SEdgeList sea, seb;
   sea = {};
   seb = {};
   this->MakePwlInto(&sea);
@@ -300,7 +300,7 @@ bool SBezierList::GetPlaneContainingBeziers(Vector *p, Vector *u, Vector *v,
                                             Vector *notCoplanarAt) const {
   Vector pt, ptFar, ptOffLine, dp, n;
   double farMax, offLineMax;
-  int    i;
+  int i;
 
   // Get any point on any Bezier; or an arbitrary point if list is empty.
   if (!l.IsEmpty()) {
@@ -316,7 +316,7 @@ bool SBezierList::GetPlaneContainingBeziers(Vector *p, Vector *u, Vector *v,
     for (i = 0; i <= sb->deg; i++) {
       double m = (pt.Minus(sb->ctrl[i])).Magnitude();
       if (m > farMax) {
-        ptFar  = sb->ctrl[i];
+        ptFar = sb->ctrl[i];
         farMax = m;
       }
     }
@@ -330,13 +330,13 @@ bool SBezierList::GetPlaneContainingBeziers(Vector *p, Vector *u, Vector *v,
   }
 
   // Get the point farthest from the line between pt and ptFar
-  dp         = ptFar.Minus(pt);
+  dp = ptFar.Minus(pt);
   offLineMax = VERY_NEGATIVE;
   for (const SBezier *sb = l.First(); sb; sb = l.NextAfter(sb)) {
     for (i = 0; i <= sb->deg; i++) {
       double m = (sb->ctrl[i]).DistanceToLine(pt, dp);
       if (m > offLineMax) {
-        ptOffLine  = sb->ctrl[i];
+        ptOffLine = sb->ctrl[i];
         offLineMax = m;
       }
     }
@@ -350,15 +350,15 @@ bool SBezierList::GetPlaneContainingBeziers(Vector *p, Vector *u, Vector *v,
     *v = (u->Normal(0)).WithMagnitude(1);
   } else {
     // The points actually define a plane.
-    n  = (ptFar.Minus(pt)).Cross(ptOffLine.Minus(pt));
+    n = (ptFar.Minus(pt)).Cross(ptOffLine.Minus(pt));
     *u = (n.Normal(0)).WithMagnitude(1);
     *v = (n.Normal(1)).WithMagnitude(1);
   }
 
   // So we have a plane; but check whether all of the points lie in that
   // plane.
-  n        = u->Cross(*v);
-  n        = n.WithMagnitude(1);
+  n = u->Cross(*v);
+  n = n.WithMagnitude(1);
   double d = p->Dot(n);
   for (const SBezier *sb = l.First(); sb; sb = l.NextAfter(sb)) {
     for (i = 0; i <= sb->deg; i++) {
@@ -386,16 +386,16 @@ SBezierLoop SBezierLoop::FromCurves(SBezierList *sbl, bool *allClosed, SEdge *er
   sbl->l.ClearTags();
 
   SBezier *first = &(sbl->l[0]);
-  first->tag     = 1;
+  first->tag = 1;
   loop.l.Add(first);
-  Vector start   = first->Start();
+  Vector start = first->Start();
   Vector hanging = first->Finish();
-  int    auxA    = first->auxA;
+  int auxA = first->auxA;
 
   sbl->l.RemoveTagged();
 
   while (!sbl->l.IsEmpty() && !hanging.Equals(start)) {
-    int  i;
+    int i;
     bool foundNext = false;
     for (i = 0; i < sbl->l.n; i++) {
       SBezier *test = &(sbl->l[i]);
@@ -484,7 +484,7 @@ SBezierLoopSet SBezierLoopSet::From(SBezierList *sbl, SPolygon *poly, double cho
 
   *allClosed = true;
   while (!sbl->l.IsEmpty()) {
-    bool        thisClosed;
+    bool thisClosed;
     SBezierLoop loop;
     loop = SBezierLoop::FromCurves(sbl, &thisClosed, errorAt);
     if (!thisClosed) {
@@ -503,7 +503,7 @@ SBezierLoopSet SBezierLoopSet::From(SBezierList *sbl, SPolygon *poly, double cho
   }
 
   poly->normal = poly->ComputeNormal();
-  ret.normal   = poly->normal;
+  ret.normal = poly->normal;
   if (poly->l.n > 0) {
     ret.point = poly->AnyPoint();
   } else {
@@ -524,7 +524,7 @@ double SBezierLoopSet::SignedArea() {
     SPolygon sp = {};
     MakePwlInto(&sp);
     sp.normal = sp.ComputeNormal();
-    area      = sp.SignedArea();
+    area = sp.SignedArea();
     sp.Clear();
   }
   return area;
@@ -577,7 +577,7 @@ void SBezierLoopSetSet::FindOuterFacesFrom(SBezierList *sbl, SPolygon *spxyz, SS
     }
     // All the curves lie in a plane through p with basis vectors u and v.
     srfPlane = SSurface::FromPlane(p, u, v);
-    srfuv    = &srfPlane;
+    srfuv = &srfPlane;
   }
 
   int i, j;
@@ -590,7 +590,7 @@ void SBezierLoopSetSet::FindOuterFacesFrom(SBezierList *sbl, SPolygon *spxyz, SS
     return;
 
   // Convert the xyz piecewise linear to uv piecewise linear.
-  SPolygon  spuv = {};
+  SPolygon spuv = {};
   SContour *sc;
   for (sc = spxyz->l.First(); sc; sc = spxyz->l.NextAfter(sc)) {
     spuv.AddEmptyContour();
@@ -605,13 +605,13 @@ void SBezierLoopSetSet::FindOuterFacesFrom(SBezierList *sbl, SPolygon *spxyz, SS
 
   static const int OUTER_LOOP = 10;
   static const int INNER_LOOP = 20;
-  static const int USED_LOOP  = 30;
+  static const int USED_LOOP = 30;
   // Fix the contour directions; we do this properly, in uv space, so it
   // works for curved surfaces too (important for STEP export).
   spuv.FixContourDirections();
   for (i = 0; i < spuv.l.n; i++) {
-    SContour    *contour = &(spuv.l[i]);
-    SBezierLoop *bl      = &(sbls.l[i]);
+    SContour *contour = &(spuv.l[i]);
+    SBezierLoop *bl = &(sbls.l[i]);
     if (contour->tag) {
       // This contour got reversed in the polygon to make the directions
       // consistent, so the same must be necessary for the Bezier loop.
@@ -654,8 +654,8 @@ void SBezierLoopSetSet::FindOuterFacesFrom(SBezierList *sbl, SPolygon *spxyz, SS
       }
 
       SBezierLoopSet outerAndInners = {};
-      loopsRemaining                = true;
-      loop->tag                     = USED_LOOP;
+      loopsRemaining = true;
+      loop->tag = USED_LOOP;
       outerAndInners.l.Add(loop);
       int auxA = 0;
       if (loop->l.n > 0)
@@ -677,7 +677,7 @@ void SBezierLoopSetSet::FindOuterFacesFrom(SBezierList *sbl, SPolygon *spxyz, SS
         }
       }
 
-      outerAndInners.point  = srfuv->PointAt(0, 0);
+      outerAndInners.point = srfuv->PointAt(0, 0);
       outerAndInners.normal = srfuv->NormalAt(0, 0);
       l.Add(&outerAndInners);
     }
@@ -725,16 +725,16 @@ void SBezierLoopSetSet::Clear() {
 }
 
 SCurve SCurve::FromTransformationOf(SCurve *a, Vector t, Quaternion q, double scale) {
-  bool needRotate    = !EXACT(q.vx == 0.0 && q.vy == 0.0 && q.vz == 0.0 && q.w == 1.0);
+  bool needRotate = !EXACT(q.vx == 0.0 && q.vy == 0.0 && q.vz == 0.0 && q.w == 1.0);
   bool needTranslate = !EXACT(t.x == 0.0 && t.y == 0.0 && t.z == 0.0);
-  bool needScale     = !EXACT(scale == 1.0);
+  bool needScale = !EXACT(scale == 1.0);
 
-  SCurve ret  = {};
-  ret.h       = a->h;
+  SCurve ret = {};
+  ret.h = a->h;
   ret.isExact = a->isExact;
-  ret.exact   = (a->exact).TransformedBy(t, q, scale);
-  ret.surfA   = a->surfA;
-  ret.surfB   = a->surfB;
+  ret.exact = (a->exact).TransformedBy(t, q, scale);
+  ret.surfA = a->surfA;
+  ret.surfB = a->surfB;
 
   SCurvePt *p;
   ret.pts.ReserveMore(a->pts.n);
@@ -791,9 +791,9 @@ void SCurve::RemoveShortSegments(SSurface *srfA, SSurface *srfB) {
     return;
   pts.ClearTags();
 
-  Vector prev  = pts[0].p;
+  Vector prev = pts[0].p;
   double tprev = 0;
-  double t     = 0;
+  double t = 0;
   double tnext = 0;
 
   int i, a;
@@ -827,7 +827,7 @@ void SCurve::RemoveShortSegments(SSurface *srfA, SSurface *srfB) {
     // a plane is a circle so it doesn't).
     for (a = 0; a < 2; a++) {
       SSurface *srf = (a == 0) ? srfA : srfB;
-      Vector    puv, nuv;
+      Vector puv, nuv;
       srf->ClosestPointTo(prev, &(puv.x), &(puv.y));
       srf->ClosestPointTo(scn->p, &(nuv.x), &(nuv.y));
 
@@ -850,16 +850,16 @@ void SCurve::RemoveShortSegments(SSurface *srfA, SSurface *srfB) {
 
 STrimBy STrimBy::EntireCurve(SShell *shell, hSCurve hsc, bool backwards) {
   STrimBy stb = {};
-  stb.curve   = hsc;
-  SCurve *sc  = shell->curve.FindById(hsc);
+  stb.curve = hsc;
+  SCurve *sc = shell->curve.FindById(hsc);
 
   if (backwards) {
-    stb.finish    = sc->pts[0].p;
-    stb.start     = sc->pts.Last()->p;
+    stb.finish = sc->pts[0].p;
+    stb.start = sc->pts.Last()->p;
     stb.backwards = true;
   } else {
-    stb.start     = sc->pts[0].p;
-    stb.finish    = sc->pts.Last()->p;
+    stb.start = sc->pts[0].p;
+    stb.finish = sc->pts.Last()->p;
     stb.backwards = false;
   }
 

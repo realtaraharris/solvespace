@@ -15,10 +15,10 @@ SSurface SSurface::FromExtrusionOf(SBezier *sb, Vector t0, Vector t1) {
 
   int i;
   for (i = 0; i <= ret.degm; i++) {
-    ret.ctrl[i][0]   = (sb->ctrl[i]).Plus(t0);
+    ret.ctrl[i][0] = (sb->ctrl[i]).Plus(t0);
     ret.weight[i][0] = sb->weight[i];
 
-    ret.ctrl[i][1]   = (sb->ctrl[i]).Plus(t1);
+    ret.ctrl[i][1] = (sb->ctrl[i]).Plus(t1);
     ret.weight[i][1] = sb->weight[i];
   }
 
@@ -44,7 +44,7 @@ bool SSurface::IsExtrusion(SBezier *of, Vector *alongp) const {
   if (of) {
     for (i = 0; i <= degm; i++) {
       of->weight[i] = weight[i][0];
-      of->ctrl[i]   = ctrl[i][0];
+      of->ctrl[i] = ctrl[i][0];
     }
     of->deg = degm;
     *alongp = along;
@@ -60,7 +60,7 @@ bool SSurface::IsCylinder(Vector *axis, Vector *center, double *r, Vector *start
   if (!sb.IsCircle(*axis, center, r))
     return false;
 
-  *start  = sb.ctrl[0];
+  *start = sb.ctrl[0];
   *finish = sb.ctrl[2];
   return true;
 }
@@ -71,11 +71,11 @@ SSurface SSurface::FromRevolutionOf(SBezier *sb, Vector pt, Vector axis, double 
                                     double thetaf, double dists,
                                     double distf) { // s is start, f is finish
   SSurface ret = {};
-  ret.degm     = sb->deg;
-  ret.degn     = 2;
+  ret.degm = sb->deg;
+  ret.degn = 2;
 
   double dtheta = fabs(WRAP_SYMMETRIC(thetaf - thetas, 2 * PI));
-  double w      = cos(dtheta / 2);
+  double w = cos(dtheta / 2);
 
   // Revolve the curve about the z axis
   int i;
@@ -87,8 +87,8 @@ SSurface SSurface::FromRevolutionOf(SBezier *sb, Vector pt, Vector axis, double 
     // The middle control point should be at the intersection of the tangents at ps and pf.
     // This is equivalent but works for 0 <= angle < 180 degrees.
     Vector mid = ps.Plus(pf).ScaledBy(0.5);
-    Vector c   = ps.ClosestPointOnLine(pt, axis);
-    Vector ct  = mid.Minus(c).ScaledBy(1 / (w * w)).Plus(c);
+    Vector c = ps.ClosestPointOnLine(pt, axis);
+    Vector ct = mid.Minus(c).ScaledBy(1 / (w * w)).Plus(c);
 
     // not sure this is needed
     if (ps.Equals(pf)) {
@@ -129,14 +129,14 @@ SSurface SSurface::FromPlane(Vector pt, Vector u, Vector v) {
 
 SSurface SSurface::FromTransformationOf(SSurface *a, Vector t, Quaternion q, double scale,
                                         bool includingTrims) {
-  bool needRotate    = !EXACT(q.vx == 0.0 && q.vy == 0.0 && q.vz == 0.0 && q.w == 1.0);
+  bool needRotate = !EXACT(q.vx == 0.0 && q.vy == 0.0 && q.vz == 0.0 && q.w == 1.0);
   bool needTranslate = !EXACT(t.x == 0.0 && t.y == 0.0 && t.z == 0.0);
-  bool needScale     = !EXACT(scale == 1.0);
+  bool needScale = !EXACT(scale == 1.0);
 
   SSurface ret = {};
-  ret.h        = a->h;
-  ret.color    = a->color;
-  ret.face     = a->face;
+  ret.h = a->h;
+  ret.color = a->color;
+  ret.face = a->face;
 
   ret.degm = a->degm;
   ret.degn = a->degn;
@@ -153,7 +153,7 @@ SSurface SSurface::FromTransformationOf(SSurface *a, Vector t, Quaternion q, dou
       if (needTranslate) {
         ctrl = ctrl.Plus(t);
       }
-      ret.ctrl[i][j]   = ctrl;
+      ret.ctrl[i][j] = ctrl;
       ret.weight[i][j] = a->weight[i][j];
     }
   }
@@ -164,15 +164,15 @@ SSurface SSurface::FromTransformationOf(SSurface *a, Vector t, Quaternion q, dou
     for (stb = a->trim.First(); stb; stb = a->trim.NextAfter(stb)) {
       STrimBy n = *stb;
       if (needScale) {
-        n.start  = n.start.ScaledBy(scale);
+        n.start = n.start.ScaledBy(scale);
         n.finish = n.finish.ScaledBy(scale);
       }
       if (needRotate) {
-        n.start  = q.Rotate(n.start);
+        n.start = q.Rotate(n.start);
         n.finish = q.Rotate(n.finish);
       }
       if (needTranslate) {
-        n.start  = n.start.Plus(t);
+        n.start = n.start.Plus(t);
         n.finish = n.finish.Plus(t);
       }
       ret.trim.Add(&n);
@@ -218,18 +218,18 @@ bool SSurface::LineEntirelyOutsideBbox(Vector a, Vector b, bool asSegment) const
 // to the curve sc.
 //-----------------------------------------------------------------------------
 void SSurface::MakeTrimEdgesInto(SEdgeList *sel, MakeAs flags, SCurve *sc, STrimBy *stb) {
-  Vector prev    = Vector::From(0, 0, 0);
-  bool   inCurve = false, empty = true;
+  Vector prev = Vector::From(0, 0, 0);
+  bool inCurve = false, empty = true;
   double u = 0, v = 0;
 
   int i, first, last, increment;
   if (stb->backwards) {
-    first     = sc->pts.n - 1;
-    last      = 0;
+    first = sc->pts.n - 1;
+    last = 0;
     increment = -1;
   } else {
-    first     = 0;
-    last      = sc->pts.n - 1;
+    first = 0;
+    last = sc->pts.n - 1;
     increment = 1;
   }
   for (i = first; i != (last + increment); i += increment) {
@@ -293,7 +293,7 @@ Vector SSurface::ExactSurfaceTangentAt(Vector p, SSurface *srfA, SSurface *srfB,
   srfA->ClosestPointTo(p, &puva);
   srfB->ClosestPointTo(p, &puvb);
   Vector ts = (srfA->NormalAt(puva)).Cross((srfB->NormalAt(puvb)));
-  ts        = ts.WithMagnitude(1);
+  ts = ts.WithMagnitude(1);
   if (ts.Dot(dir) < 0) {
     ts = ts.ScaledBy(-1);
   }
@@ -308,7 +308,7 @@ Vector SSurface::ExactSurfaceTangentAt(Vector p, SSurface *srfA, SSurface *srfB,
 void SSurface::MakeSectionEdgesInto(SShell *shell, SEdgeList *sel, SBezierList *sbl) {
   STrimBy *stb;
   for (stb = trim.First(); stb; stb = trim.NextAfter(stb)) {
-    SCurve  *sc = shell->curve.FindById(stb->curve);
+    SCurve *sc = shell->curve.FindById(stb->curve);
     SBezier *sb = &(sc->exact);
 
     if (sbl && sc->isExact && (sb->deg != 1 || !sel)) {
@@ -372,7 +372,7 @@ void SSurface::MakeSectionEdgesInto(SShell *shell, SEdgeList *sel, SBezierList *
 
           // And test how much this curve deviates from the
           // intermediate points (if any).
-          int  i;
+          int i;
           bool tooFar = false;
           for (i = sp + 1; i <= (fpt - 1); i++) {
             Vector p = sc->pts[i].p;
@@ -434,13 +434,13 @@ void SSurface::TriangulateInto(SShell *shell, SMesh *sm) {
     STriMeta meta = {face, color};
     for (i = start; i < sm->l.n; i++) {
       STriangle *st = &(sm->l[i]);
-      st->meta      = meta;
-      st->an        = NormalAt(st->a.x, st->a.y);
-      st->bn        = NormalAt(st->b.x, st->b.y);
-      st->cn        = NormalAt(st->c.x, st->c.y);
-      st->a         = PointAt(st->a.x, st->a.y);
-      st->b         = PointAt(st->b.x, st->b.y);
-      st->c         = PointAt(st->c.x, st->c.y);
+      st->meta = meta;
+      st->an = NormalAt(st->a.x, st->a.y);
+      st->bn = NormalAt(st->b.x, st->b.y);
+      st->cn = NormalAt(st->c.x, st->c.y);
+      st->a = PointAt(st->a.x, st->a.y);
+      st->b = PointAt(st->b.x, st->b.y);
+      st->c = PointAt(st->c.x, st->c.y);
       // Works out that my chosen contour direction is inconsistent with
       // the triangle direction, sigh.
       st->FlipNormal();

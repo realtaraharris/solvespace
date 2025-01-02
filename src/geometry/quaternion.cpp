@@ -4,7 +4,7 @@ const Quaternion Quaternion::IDENTITY = {1, 0, 0, 0};
 
 Quaternion Quaternion::From(double w, double vx, double vy, double vz) {
   Quaternion q;
-  q.w  = w;
+  q.w = w;
   q.vx = vx;
   q.vy = vy;
   q.vz = vz;
@@ -13,7 +13,7 @@ Quaternion Quaternion::From(double w, double vx, double vy, double vz) {
 
 Quaternion Quaternion::From(hParam w, hParam vx, hParam vy, hParam vz) {
   Quaternion q;
-  q.w  = SK.GetParam(w)->val;
+  q.w = SK.GetParam(w)->val;
   q.vx = SK.GetParam(vx)->val;
   q.vy = SK.GetParam(vy)->val;
   q.vz = SK.GetParam(vz)->val;
@@ -22,9 +22,9 @@ Quaternion Quaternion::From(hParam w, hParam vx, hParam vy, hParam vz) {
 
 Quaternion Quaternion::From(Vector axis, double dtheta) {
   Quaternion q;
-  double     c = cos(dtheta / 2), s = sin(dtheta / 2);
+  double c = cos(dtheta / 2), s = sin(dtheta / 2);
   axis = axis.WithMagnitude(s);
-  q.w  = c;
+  q.w = c;
   q.vx = axis.x;
   q.vy = axis.y;
   q.vz = axis.z;
@@ -35,29 +35,29 @@ Quaternion Quaternion::From(Vector u, Vector v) {
   Vector n = u.Cross(v);
 
   Quaternion q;
-  double     s, tr = 1 + u.x + v.y + n.z;
+  double s, tr = 1 + u.x + v.y + n.z;
   if (tr > 1e-4) {
-    s    = 2 * sqrt(tr);
-    q.w  = s / 4;
+    s = 2 * sqrt(tr);
+    q.w = s / 4;
     q.vx = (v.z - n.y) / s;
     q.vy = (n.x - u.z) / s;
     q.vz = (u.y - v.x) / s;
   } else {
     if (u.x > v.y && u.x > n.z) {
-      s    = 2 * sqrt(1 + u.x - v.y - n.z);
-      q.w  = (v.z - n.y) / s;
+      s = 2 * sqrt(1 + u.x - v.y - n.z);
+      q.w = (v.z - n.y) / s;
       q.vx = s / 4;
       q.vy = (u.y + v.x) / s;
       q.vz = (n.x + u.z) / s;
     } else if (v.y > n.z) {
-      s    = 2 * sqrt(1 - u.x + v.y - n.z);
-      q.w  = (n.x - u.z) / s;
+      s = 2 * sqrt(1 - u.x + v.y - n.z);
+      q.w = (n.x - u.z) / s;
       q.vx = (u.y + v.x) / s;
       q.vy = s / 4;
       q.vz = (v.z + n.y) / s;
     } else {
-      s    = 2 * sqrt(1 - u.x - v.y + n.z);
-      q.w  = (u.y - v.x) / s;
+      s = 2 * sqrt(1 - u.x - v.y + n.z);
+      q.w = (u.y - v.x) / s;
       q.vx = (n.x + u.z) / s;
       q.vy = (v.z + n.y) / s;
       q.vz = s / 4;
@@ -69,7 +69,7 @@ Quaternion Quaternion::From(Vector u, Vector v) {
 
 Quaternion Quaternion::Plus(Quaternion b) const {
   Quaternion q;
-  q.w  = w + b.w;
+  q.w = w + b.w;
   q.vx = vx + b.vx;
   q.vy = vy + b.vy;
   q.vz = vz + b.vz;
@@ -78,7 +78,7 @@ Quaternion Quaternion::Plus(Quaternion b) const {
 
 Quaternion Quaternion::Minus(Quaternion b) const {
   Quaternion q;
-  q.w  = w - b.w;
+  q.w = w - b.w;
   q.vx = vx - b.vx;
   q.vy = vy - b.vy;
   q.vz = vz - b.vz;
@@ -87,7 +87,7 @@ Quaternion Quaternion::Minus(Quaternion b) const {
 
 Quaternion Quaternion::ScaledBy(double s) const {
   Quaternion q;
-  q.w  = w * s;
+  q.w = w * s;
   q.vx = vx * s;
   q.vy = vy * s;
   q.vz = vz * s;
@@ -135,7 +135,7 @@ Vector Quaternion::Rotate(Vector p) const {
 
 Quaternion Quaternion::Inverse() const {
   Quaternion r;
-  r.w  = w;
+  r.w = w;
   r.vx = -vx;
   r.vy = -vy;
   r.vz = -vz;
@@ -151,10 +151,10 @@ Quaternion Quaternion::ToThe(double p) const {
   }
 
   Quaternion r;
-  Vector     axis  = Vector::From(vx, vy, vz);
-  double     theta = acos(w); // okay, since magnitude is 1, so -1 <= w <= 1
+  Vector axis = Vector::From(vx, vy, vz);
+  double theta = acos(w); // okay, since magnitude is 1, so -1 <= w <= 1
   theta *= p;
-  r.w  = cos(theta);
+  r.w = cos(theta);
   axis = axis.WithMagnitude(sin(theta));
   r.vx = axis.x;
   r.vy = axis.y;
@@ -168,11 +168,11 @@ Quaternion Quaternion::Times(Quaternion b) const {
   Vector vb = Vector(b.vx, b.vy, b.vz);
 
   Quaternion r;
-  r.w       = sa * sb - va.Dot(vb);
+  r.w = sa * sb - va.Dot(vb);
   Vector vr = vb.ScaledBy(sa).Plus(va.ScaledBy(sb).Plus(va.Cross(vb)));
-  r.vx      = vr.x;
-  r.vy      = vr.y;
-  r.vz      = vr.z;
+  r.vx = vr.x;
+  r.vy = vr.y;
+  r.vz = vr.z;
   return r;
 }
 

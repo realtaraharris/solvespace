@@ -45,30 +45,30 @@ void SolveSpaceUI::PushFromCurrentOnto(UndoStack *uk) {
   }
 
   UndoState *ut = &(uk->d[uk->write]);
-  *ut           = {};
+  *ut = {};
   ut->group.ReserveMore(SK.group.n);
   for (Group &src : SK.group) {
     // Shallow copy
     Group dest(src);
     // And then clean up all the stuff that needs to be a deep copy,
     // and zero out all the dynamic stuff that will get regenerated.
-    dest.clean           = false;
-    dest.solved          = {};
-    dest.polyLoops       = {};
-    dest.bezierLoops     = {};
-    dest.bezierOpens     = {};
-    dest.polyError       = {};
-    dest.thisMesh        = {};
-    dest.runningMesh     = {};
-    dest.thisShell       = {};
-    dest.runningShell    = {};
-    dest.displayMesh     = {};
+    dest.clean = false;
+    dest.solved = {};
+    dest.polyLoops = {};
+    dest.bezierLoops = {};
+    dest.bezierOpens = {};
+    dest.polyError = {};
+    dest.thisMesh = {};
+    dest.runningMesh = {};
+    dest.thisShell = {};
+    dest.runningShell = {};
+    dest.displayMesh = {};
     dest.displayOutlines = {};
 
     dest.remap = src.remap;
 
-    dest.impMesh   = {};
-    dest.impShell  = {};
+    dest.impMesh = {};
+    dest.impShell = {};
     dest.impEntity = {};
     ut->group.Add(&dest);
   }

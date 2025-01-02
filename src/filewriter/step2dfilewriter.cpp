@@ -7,7 +7,7 @@
 #include "step2dfilewriter.h"
 
 void Step2dFileWriter::StartFile() {
-  sfw   = {};
+  sfw = {};
   sfw.f = f;
   sfw.WriteHeader();
 }

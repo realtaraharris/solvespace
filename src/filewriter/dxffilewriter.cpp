@@ -10,7 +10,7 @@
 class DxfWriteInterface : public DRW_Interface {
   public:
   DxfFileWriter *writer;
-  dxfRW         *dxf;
+  dxfRW *dxf;
 
   std::set<std::string> messages;
 
@@ -42,7 +42,7 @@ class DxfWriteInterface : public DRW_Interface {
     }
 
     for (uint32_t v : usedStyles) {
-      Style *s   = Style::Get(hStyle{v});
+      Style *s = Style::Get(hStyle{v});
       layer.name = s->DescriptionString();
       dxf->writeLayer(&layer);
     }
@@ -51,7 +51,7 @@ class DxfWriteInterface : public DRW_Interface {
   void writeLTypes() override {
     for (uint32_t i = 0; i <= (uint32_t)StipplePattern::LAST; i++) {
       StipplePattern st = (StipplePattern)i;
-      DRW_LType      type;
+      DRW_LType type;
       // LibreCAD requires the line type to have one of these exact names,
       // or otherwise it overwrites it with its own (continuous) style.
       type.name = DxfFileWriter::lineTypeName(st);
@@ -120,7 +120,7 @@ class DxfWriteInterface : public DRW_Interface {
     auto startFunc = [&](PolylineBuilder::Vertex *start, PolylineBuilder::Vertex *next,
                          PolylineBuilder::Edge *e) {
       hStyle hs = {e->kind};
-      polyline  = {};
+      polyline = {};
       assignEntityDefaults(&polyline, hs);
 
       if (!(EXACT(start->pos.z == 0.0) && EXACT(next->pos.z == 0.0))) {
@@ -164,8 +164,8 @@ class DxfWriteInterface : public DRW_Interface {
           continue;
         switch (c.type) {
         case Constraint::Type::PT_PT_DISTANCE: {
-          Vector ap  = SK.GetEntity(c.ptA)->PointGetNum();
-          Vector bp  = SK.GetEntity(c.ptB)->PointGetNum();
+          Vector ap = SK.GetEntity(c.ptA)->PointGetNum();
+          Vector bp = SK.GetEntity(c.ptB)->PointGetNum();
           Vector ref = ((ap.Plus(bp)).ScaledBy(0.5)).Plus(c.disp.offset);
           writeAlignedDimension(xfrm(ap), xfrm(bp), xfrm(ref), xfrm(ref), c.Label(), c.GetStyle(),
                                 c.valA);
@@ -173,18 +173,18 @@ class DxfWriteInterface : public DRW_Interface {
         }
 
         case Constraint::Type::PT_LINE_DISTANCE: {
-          Vector  pt   = SK.GetEntity(c.ptA)->PointGetNum();
+          Vector pt = SK.GetEntity(c.ptA)->PointGetNum();
           Entity *line = SK.GetEntity(c.entityA);
-          Vector  lA   = SK.GetEntity(line->point[0])->PointGetNum();
-          Vector  lB   = SK.GetEntity(line->point[1])->PointGetNum();
-          Vector  dl   = lB.Minus(lA);
+          Vector lA = SK.GetEntity(line->point[0])->PointGetNum();
+          Vector lB = SK.GetEntity(line->point[1])->PointGetNum();
+          Vector dl = lB.Minus(lA);
 
           Vector closest = pt.ClosestPointOnLine(lA, dl);
 
           if (pt.Equals(closest))
             break;
 
-          Vector ref        = ((closest.Plus(pt)).ScaledBy(0.5)).Plus(c.disp.offset);
+          Vector ref = ((closest.Plus(pt)).ScaledBy(0.5)).Plus(c.disp.offset);
           Vector refClosest = ref.ClosestPointOnLine(lA, dl);
 
           double ddl = dl.Dot(dl);
@@ -204,11 +204,11 @@ class DxfWriteInterface : public DRW_Interface {
         }
 
         case Constraint::Type::DIAMETER: {
-          Entity    *circle = SK.GetEntity(c.entityA);
-          Vector     center = SK.GetEntity(circle->point[0])->PointGetNum();
-          Quaternion q      = SK.GetEntity(circle->normal)->NormalGetNum();
-          Vector     n      = q.RotationN().WithMagnitude(1);
-          double     r      = circle->CircleGetRadiusNum();
+          Entity *circle = SK.GetEntity(c.entityA);
+          Vector center = SK.GetEntity(circle->point[0])->PointGetNum();
+          Quaternion q = SK.GetEntity(circle->normal)->NormalGetNum();
+          Vector n = q.RotationN().WithMagnitude(1);
+          double r = circle->CircleGetRadiusNum();
 
           Vector ref = center.Plus(c.disp.offset);
           // Force the label into the same plane as the circle.
@@ -238,7 +238,7 @@ class DxfWriteInterface : public DRW_Interface {
             da = da.ScaledBy(-1);
           }
 
-          Vector                          ref = c.disp.offset;
+          Vector ref = c.disp.offset;
           VectorAtIntersectionOfLines_ret eeep =
               VectorAtIntersectionOfLines(a0, a0.Plus(da), b0, b0.Plus(db), false);
           Vector pi = eeep.intersectionPoint;
@@ -246,7 +246,7 @@ class DxfWriteInterface : public DRW_Interface {
             ref = pi.Plus(c.disp.offset);
 
           Vector norm = da.Cross(db);
-          Vector dna  = norm.Cross(da).WithMagnitude(1.0);
+          Vector dna = norm.Cross(da).WithMagnitude(1.0);
 
           double thetaf = acos(da.DirectionCosineWith(db));
 
@@ -257,9 +257,9 @@ class DxfWriteInterface : public DRW_Interface {
 
           // Test which side we have to place an arc
           if (m.Dot(rm) < 0) {
-            da  = da.ScaledBy(-1);
+            da = da.ScaledBy(-1);
             dna = dna.ScaledBy(-1);
-            db  = db.ScaledBy(-1);
+            db = db.ScaledBy(-1);
           }
 
           Vector bisect = da.WithMagnitude(1.0)
@@ -295,15 +295,15 @@ class DxfWriteInterface : public DRW_Interface {
   }
 
   int findDxfColor(const RgbaColor &src) {
-    int    best    = 0;
+    int best = 0;
     double minDist = VERY_POSITIVE;
-    Vector srcv    = Vector::From(src.redF(), src.greenF(), src.blueF());
+    Vector srcv = Vector::From(src.redF(), src.greenF(), src.blueF());
     for (int i = 1; i < 256; i++) {
-      RgbaColor dst  = RGBi(DRW::dxfColors[i][0], DRW::dxfColors[i][1], DRW::dxfColors[i][2]);
-      Vector    dstv = Vector::From(dst.redF(), dst.greenF(), dst.blueF());
-      double    dist = srcv.Minus(dstv).Magnitude();
+      RgbaColor dst = RGBi(DRW::dxfColors[i][0], DRW::dxfColors[i][1], DRW::dxfColors[i][2]);
+      Vector dstv = Vector::From(dst.redF(), dst.greenF(), dst.blueF());
+      double dist = srcv.Minus(dstv).Magnitude();
       if (dist < minDist || best == 0) {
-        best    = i;
+        best = i;
         minDist = dist;
       }
     }
@@ -311,12 +311,12 @@ class DxfWriteInterface : public DRW_Interface {
   }
 
   void assignEntityDefaults(DRW_Entity *entity, hStyle hs) {
-    Style    *s        = Style::Get(hs);
-    RgbaColor color    = Style::Color(hs, /*forExport=*/true);
-    entity->color24    = color.ToPackedIntBGRA();
-    entity->color      = findDxfColor(color);
-    entity->layer      = s->DescriptionString();
-    entity->lineType   = DxfFileWriter::lineTypeName(s->stippleType);
+    Style *s = Style::Get(hs);
+    RgbaColor color = Style::Color(hs, /*forExport=*/true);
+    entity->color24 = color.ToPackedIntBGRA();
+    entity->color = findDxfColor(color);
+    entity->layer = s->DescriptionString();
+    entity->lineType = DxfFileWriter::lineTypeName(s->stippleType);
     entity->ltypeScale = Style::StippleScaleMm(s->h);
     entity->setWidthMm(Style::WidthMm(hs.v));
 
@@ -336,28 +336,28 @@ class DxfWriteInterface : public DRW_Interface {
     DRW_Line line;
     assignEntityDefaults(&line, hs);
     line.basePoint = toCoord(p0);
-    line.secPoint  = toCoord(p1);
+    line.secPoint = toCoord(p1);
     dxf->writeLine(&line);
   }
 
   void writeArc(const Vector &c, double r, double sa, double ea, hStyle hs) {
     DRW_Arc arc;
     assignEntityDefaults(&arc, hs);
-    arc.radious   = r;
+    arc.radious = r;
     arc.basePoint = toCoord(c);
-    arc.staangle  = sa;
-    arc.endangle  = ea;
+    arc.staangle = sa;
+    arc.endangle = ea;
     dxf->writeArc(&arc);
   }
 
   void writeBezierAsPwl(SBezier *sb) {
     List<Vector> lv = {};
     sb->MakePwlInto(&lv, SS.ExportChordTolMm());
-    hStyle       hs = {(uint32_t)sb->auxA};
+    hStyle hs = {(uint32_t)sb->auxA};
     DRW_Polyline polyline;
     assignEntityDefaults(&polyline, hs);
     for (int i = 0; i < lv.n; i++) {
-      Vector     *v      = &lv[i];
+      Vector *v = &lv[i];
       DRW_Vertex *vertex = new DRW_Vertex(v->x, v->y, v->z, 0.0);
       polyline.vertlist.push_back(vertex);
     }
@@ -390,12 +390,12 @@ class DxfWriteInterface : public DRW_Interface {
   }
 
   void writeSpline(SBezier *sb) {
-    bool       isRational = sb->IsRational();
-    hStyle     hs         = {(uint32_t)sb->auxA};
+    bool isRational = sb->IsRational();
+    hStyle hs = {(uint32_t)sb->auxA};
     DRW_Spline spline;
     assignEntityDefaults(&spline, hs);
-    spline.flags    = (isRational) ? 0x04 : 0x08;
-    spline.degree   = sb->deg;
+    spline.flags = (isRational) ? 0x04 : 0x08;
+    spline.degree = sb->deg;
     spline.ncontrol = sb->deg + 1;
     makeKnotsFor(&spline);
     for (int i = 0; i <= sb->deg; i++) {
@@ -509,14 +509,14 @@ class DxfWriteInterface : public DRW_Interface {
                  Style::TextOrigin origin, hStyle hs) {
     DRW_Text txt;
     assignEntityDefaults(&txt, hs);
-    txt.layer     = "text";
-    txt.style     = "unicode";
+    txt.layer = "text";
+    txt.style = "unicode";
     txt.basePoint = toCoord(textp);
-    txt.secPoint  = txt.basePoint;
-    txt.text      = text;
-    txt.height    = height;
-    txt.angle     = angle;
-    txt.alignH    = DRW_Text::HCenter;
+    txt.secPoint = txt.basePoint;
+    txt.text = text;
+    txt.height = height;
+    txt.angle = angle;
+    txt.alignH = DRW_Text::HCenter;
     if ((uint32_t)origin & (uint32_t)Style::TextOrigin::LEFT) {
       txt.alignH = DRW_Text::HLeft;
     } else if ((uint32_t)origin & (uint32_t)Style::TextOrigin::RIGHT) {
@@ -561,8 +561,8 @@ void DxfFileWriter::FinishAndCloseFile() {
   dxfRW dxf;
 
   DxfWriteInterface interface = {};
-  interface.writer            = this;
-  interface.dxf               = &dxf;
+  interface.writer = this;
+  interface.dxf = &dxf;
 
   std::stringstream stream;
   dxf.write(stream, &interface, DRW::AC1021, /*bin=*/false);

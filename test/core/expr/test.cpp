@@ -9,7 +9,7 @@
 #define CHECK_PARSE_ERR(expr, msg) \
   do { \
     std::string err; \
-    Expr       *e = Expr::Parse(expr, &err); \
+    Expr *e = Expr::Parse(expr, &err); \
     CHECK_TRUE(e == NULL); \
     CHECK_TRUE(err.find(msg) != std::string::npos); \
   } while (0)

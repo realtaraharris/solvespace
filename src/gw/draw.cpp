@@ -33,7 +33,7 @@ bool GraphicsWindow::Selection::HasEndpoints() {
 
 void GraphicsWindow::Selection::Clear() {
   entity.v = constraint.v = 0;
-  emphasized              = false;
+  emphasized = false;
 }
 
 void GraphicsWindow::Selection::Draw(bool isHovered, Canvas *canvas) {
@@ -59,16 +59,16 @@ void GraphicsWindow::Selection::Draw(bool isHovered, Canvas *canvas) {
     // line from the top left corner of the screen to the reference point(s)
     // of that entity or constraint.
     Canvas::Stroke strokeEmphasis = {};
-    strokeEmphasis.layer          = Canvas::Layer::FRONT;
-    strokeEmphasis.color          = Style::Color(Style::HOVERED).WithAlpha(50);
-    strokeEmphasis.width          = 40;
-    strokeEmphasis.unit           = Canvas::Unit::PX;
-    Canvas::hStroke hcsEmphasis   = canvas->GetStroke(strokeEmphasis);
+    strokeEmphasis.layer = Canvas::Layer::FRONT;
+    strokeEmphasis.color = Style::Color(Style::HOVERED).WithAlpha(50);
+    strokeEmphasis.width = 40;
+    strokeEmphasis.unit = Canvas::Unit::PX;
+    Canvas::hStroke hcsEmphasis = canvas->GetStroke(strokeEmphasis);
 
     Point2d topLeftScreen;
     topLeftScreen.x = -(double)camera.width / 2;
     topLeftScreen.y = (double)camera.height / 2;
-    Vector topLeft  = camera.UnProjectPoint(topLeftScreen);
+    Vector topLeft = camera.UnProjectPoint(topLeftScreen);
 
     auto it = std::unique(refs.begin(), refs.end(), [](Vector a, Vector b) { return a.Equals(b); });
     refs.erase(it, refs.end());
@@ -85,7 +85,7 @@ void GraphicsWindow::ClearSelection() {
 }
 
 void GraphicsWindow::ClearNonexistentSelectionItems() {
-  bool       change = false;
+  bool change = false;
   Selection *s;
   selection.ClearTags();
   for (s = selection.First(); s; s = selection.NextAfter(s)) {
@@ -108,7 +108,7 @@ void GraphicsWindow::ClearNonexistentSelectionItems() {
 //-----------------------------------------------------------------------------
 bool GraphicsWindow::IsSelected(hEntity he) {
   Selection s = {};
-  s.entity    = he;
+  s.entity = he;
   return IsSelected(&s);
 }
 bool GraphicsWindow::IsSelected(Selection *st) {
@@ -129,7 +129,7 @@ bool GraphicsWindow::IsSelected(Selection *st) {
 //-----------------------------------------------------------------------------
 void GraphicsWindow::MakeUnselected(hEntity he, bool coincidentPointTrick) {
   Selection stog = {};
-  stog.entity    = he;
+  stog.entity = he;
   MakeUnselected(&stog, coincidentPointTrick);
 }
 void GraphicsWindow::MakeUnselected(Selection *stog, bool coincidentPointTrick) {
@@ -174,12 +174,12 @@ void GraphicsWindow::MakeUnselected(Selection *stog, bool coincidentPointTrick) 
 //-----------------------------------------------------------------------------
 void GraphicsWindow::MakeSelected(hEntity he) {
   Selection stog = {};
-  stog.entity    = he;
+  stog.entity = he;
   MakeSelected(&stog);
 }
 
 void GraphicsWindow::MakeSelected(hConstraint hc) {
-  Selection stog  = {};
+  Selection stog = {};
   stog.constraint = hc;
   MakeSelected(&stog);
 }
@@ -193,7 +193,7 @@ void GraphicsWindow::MakeSelected(Selection *stog) {
   if (stog->entity.v != 0 && SK.GetEntity(stog->entity)->IsFace()) {
     // In the interest of speed for the triangle drawing code,
     // only two faces may be selected at a time.
-    int        c = 0;
+    int c = 0;
     Selection *s;
     selection.ClearTags();
     for (s = selection.First(); s; s = selection.NextAfter(s)) {
@@ -215,8 +215,8 @@ void GraphicsWindow::MakeSelected(Selection *stog) {
 //-----------------------------------------------------------------------------
 void GraphicsWindow::SelectByMarquee() {
   Point2d marqueePoint = ProjectPoint(orig.marqueePoint);
-  BBox    marqueeBBox  = BBox::From(Vector::From(marqueePoint.x, marqueePoint.y, VERY_NEGATIVE),
-                                    Vector::From(orig.mouse.x, orig.mouse.y, VERY_POSITIVE));
+  BBox marqueeBBox = BBox::From(Vector::From(marqueePoint.x, marqueePoint.y, VERY_NEGATIVE),
+                                Vector::From(orig.mouse.x, orig.mouse.y, VERY_POSITIVE));
 
   for (Entity &e : SK.entity) {
     if (e.group != SS.GW.activeGroup)
@@ -319,28 +319,28 @@ void GraphicsWindow::GroupSelection() {
 Camera GraphicsWindow::GetCamera() const {
   Camera camera = {};
   if (window) { // TODO: directly test for solvespace-cli?
-    camera.width      = width;
-    camera.height     = height;
+    camera.width = width;
+    camera.height = height;
     camera.pixelRatio = devicePixelRatio;
-    camera.gridFit    = devicePixelRatio == 1;
-  } else {                     // solvespace-cli
-    camera.width      = 297.0; // A4? Whatever...
-    camera.height     = 210.0;
+    camera.gridFit = devicePixelRatio == 1;
+  } else {                // solvespace-cli
+    camera.width = 297.0; // A4? Whatever...
+    camera.height = 210.0;
     camera.pixelRatio = 1.0;
-    camera.gridFit    = camera.pixelRatio == 1.0;
+    camera.gridFit = camera.pixelRatio == 1.0;
   }
-  camera.offset    = offset;
-  camera.projUp    = projUp;
+  camera.offset = offset;
+  camera.projUp = projUp;
   camera.projRight = projRight;
-  camera.scale     = scale;
-  camera.tangent   = SS.CameraTangent();
+  camera.scale = scale;
+  camera.tangent = SS.CameraTangent();
   return camera;
 }
 
 Lighting GraphicsWindow::GetLighting() const {
-  Lighting lighting          = {};
-  lighting.backgroundColor   = SS.backgroundColor;
-  lighting.ambientIntensity  = SS.ambientIntensity;
+  Lighting lighting = {};
+  lighting.backgroundColor = SS.backgroundColor;
+  lighting.ambientIntensity = SS.ambientIntensity;
   lighting.lightIntensity[0] = SS.lightIntensity[0];
   lighting.lightIntensity[1] = SS.lightIntensity[1];
   lighting.lightDirection[0] = SS.lightDir[0];
@@ -354,9 +354,9 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToSelect() {
     return sel;
 
   Group *activeGroup = SK.GetGroup(SS.GW.activeGroup);
-  int    bestOrder   = -1;
-  int    bestZIndex  = 0;
-  double bestDepth   = VERY_POSITIVE;
+  int bestOrder = -1;
+  int bestZIndex = 0;
+  double bestDepth = VERY_POSITIVE;
   for (const Hover &hov : hoverList) {
     hGroup hg = {};
     if (hov.selection.entity.v != 0) {
@@ -373,10 +373,10 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToSelect() {
     // we have hov.zIndex is >= best and hov.group is >= best (but not > active group)
     if (hov.depth > bestDepth && bestOrder == g->order && bestZIndex == hov.zIndex)
       continue;
-    bestOrder  = g->order;
+    bestOrder = g->order;
     bestZIndex = hov.zIndex;
-    bestDepth  = hov.depth;
-    sel        = hov.selection;
+    bestDepth = hov.depth;
+    sel = hov.selection;
   }
   return sel;
 }
@@ -389,9 +389,9 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToDrag() {
     return sel;
 
   Group *activeGroup = SK.GetGroup(SS.GW.activeGroup);
-  int    bestOrder   = -1;
-  int    bestZIndex  = 0;
-  double bestDepth   = VERY_POSITIVE;
+  int bestOrder = -1;
+  int bestZIndex = 0;
+  double bestDepth = VERY_POSITIVE;
 
   for (const Hover &hov : hoverList) {
     hGroup hg = {};
@@ -412,34 +412,34 @@ GraphicsWindow::Selection GraphicsWindow::ChooseFromHoverToDrag() {
     // we have hov.zIndex is >= best and hov.group is >= best (but not > active group)
     if (hov.depth > bestDepth && bestOrder == g->order && bestZIndex == hov.zIndex)
       continue;
-    bestOrder  = g->order;
+    bestOrder = g->order;
     bestZIndex = hov.zIndex;
-    sel        = hov.selection;
+    sel = hov.selection;
   }
   return sel;
 }
 
 void GraphicsWindow::HitTestMakeSelection(Point2d mp) {
-  hoverList     = {};
+  hoverList = {};
   Selection sel = {};
 
   // Did the view projection change? If so, invalidate bounding boxes.
   if (!offset.EqualsExactly(cached.offset) || !projRight.EqualsExactly(cached.projRight) ||
       !projUp.EqualsExactly(cached.projUp) || EXACT(scale != cached.scale)) {
-    cached.offset    = offset;
+    cached.offset = offset;
     cached.projRight = projRight;
-    cached.projUp    = projUp;
-    cached.scale     = scale;
+    cached.projUp = projUp;
+    cached.scale = scale;
     for (Entity &e : SK.entity) {
       e.screenBBoxValid = false;
     }
   }
 
   ObjectPicker canvas = {};
-  canvas.camera       = GetCamera();
-  canvas.selRadius    = 10.0;
-  canvas.point        = mp;
-  canvas.maxZIndex    = -1;
+  canvas.camera = GetCamera();
+  canvas.selRadius = 10.0;
+  canvas.point = mp;
+  canvas.maxZIndex = -1;
 
   // Always do the entities; we might be dragging something that should
   // be auto-constrained, and we need the hover for that.
@@ -470,10 +470,10 @@ void GraphicsWindow::HitTestMakeSelection(Point2d mp) {
     }
 
     if (canvas.Pick([&] { e.Draw(Entity::DrawAs::DEFAULT, &canvas); })) {
-      Hover hov            = {};
-      hov.distance         = canvas.minDistance;
-      hov.zIndex           = canvas.maxZIndex;
-      hov.depth            = canvas.minDepth;
+      Hover hov = {};
+      hov.distance = canvas.minDistance;
+      hov.zIndex = canvas.maxZIndex;
+      hov.depth = canvas.minDepth;
       hov.selection.entity = e.h;
       hoverList.Add(&hov);
     }
@@ -484,9 +484,9 @@ void GraphicsWindow::HitTestMakeSelection(Point2d mp) {
     // Constraints
     for (Constraint &c : SK.constraint) {
       if (canvas.Pick([&] { c.Draw(Constraint::DrawAs::DEFAULT, &canvas); })) {
-        Hover hov                = {};
-        hov.distance             = canvas.minDistance;
-        hov.zIndex               = canvas.maxZIndex;
+        Hover hov = {};
+        hov.distance = canvas.minDistance;
+        hov.zIndex = canvas.maxZIndex;
         hov.selection.constraint = c.h;
         hoverList.Add(&hov);
       }
@@ -526,7 +526,7 @@ void GraphicsWindow::HitTestMakeSelection(Point2d mp) {
 // units are pixels.
 //-----------------------------------------------------------------------------
 Point2d GraphicsWindow::ProjectPoint(Vector p) {
-  Vector  p3 = ProjectPoint3(p);
+  Vector p3 = ProjectPoint3(p);
   Point2d p2 = {p3.x, p3.y};
   return p2;
 }
@@ -548,9 +548,9 @@ Vector GraphicsWindow::ProjectPoint4(Vector p, double *w) {
   p = p.Plus(offset);
 
   Vector r = Vector(0, 0, 0);
-  r.x      = p.Dot(projRight);
-  r.y      = p.Dot(projUp);
-  r.z      = p.Dot(projUp.Cross(projRight));
+  r.x = p.Dot(projRight);
+  r.y = p.Dot(projUp);
+  r.z = p.Dot(projUp.Cross(projRight));
 
   *w = 1 + r.z * SS.CameraTangent() * scale;
   return r;
@@ -572,13 +572,13 @@ Vector GraphicsWindow::UnProjectPoint(Point2d p) {
 }
 
 Vector GraphicsWindow::UnProjectPoint3(Vector p) {
-  p.z      = p.z / (scale - p.z * SS.CameraTangent() * scale);
+  p.z = p.z / (scale - p.z * SS.CameraTangent() * scale);
   double w = 1 + p.z * SS.CameraTangent() * scale;
   p.x *= w / scale;
   p.y *= w / scale;
 
   Vector orig = offset.ScaledBy(-1);
-  orig        = orig.Plus(projRight.ScaledBy(p.x))
+  orig = orig.Plus(projRight.ScaledBy(p.x))
              .Plus(projUp.ScaledBy(p.y).Plus(projRight.Cross(projUp).ScaledBy(p.z)));
   return orig;
 }
@@ -596,7 +596,7 @@ void GraphicsWindow::NormalizeProjectionVectors() {
   }
   projUp = norm.Cross(projRight);
 
-  projUp    = projUp.WithMagnitude(1);
+  projUp = projUp.WithMagnitude(1);
   projRight = projRight.WithMagnitude(1);
 }
 
@@ -605,12 +605,12 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
     return;
 
   const Camera &camera = canvas->GetCamera();
-  double        width = camera.width, height = camera.height;
+  double width = camera.width, height = camera.height;
 
-  hEntity he    = ActiveWorkplane();
+  hEntity he = ActiveWorkplane();
   Entity *wrkpl = SK.GetEntity(he), *norm = wrkpl->Normal();
-  Vector  n  = projUp.Cross(projRight);
-  Vector  wu = Vector(0, 0, 0), wv = Vector(0, 0, 0), wn = Vector(0, 0, 0), wp = Vector(0, 0, 0);
+  Vector n = projUp.Cross(projRight);
+  Vector wu = Vector(0, 0, 0), wv = Vector(0, 0, 0), wn = Vector(0, 0, 0), wp = Vector(0, 0, 0);
   wp = SK.GetEntity(wrkpl->point[0])->PointGetNum();
   wu = norm->NormalU();
   wv = norm->NormalV();
@@ -619,12 +619,12 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
   double g = SS.gridSpacing;
 
   double umin = VERY_POSITIVE, umax = VERY_NEGATIVE, vmin = VERY_POSITIVE, vmax = VERY_NEGATIVE;
-  int    a;
+  int a;
   for (a = 0; a < 4; a++) {
     // Ideally, we would just do +/- half the width and height; but
     // allow some extra slop for rounding.
     Vector horiz = projRight.ScaledBy((0.6 * width) / scale + 2 * g),
-           vert  = projUp.ScaledBy((0.6 * height) / scale + 2 * g);
+           vert = projUp.ScaledBy((0.6 * height) / scale + 2 * g);
     if (a == 2 || a == 3)
       horiz = horiz.ScaledBy(-1);
     if (a == 1 || a == 3)
@@ -634,12 +634,12 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
     // Project the point into our grid plane, normal to the screen
     // (not to the grid plane). If the plane is on edge then this is
     // impossible so don't try to draw the grid.
-    bool   parallel;
+    bool parallel;
     Vector tpp = VectorAtIntersectionOfPlaneAndLine(wn, wn.Dot(wp), tp, tp.Plus(n), &parallel);
     if (parallel)
       return;
 
-    tpp       = tpp.Minus(wp);
+    tpp = tpp.Minus(wp);
     double uu = tpp.Dot(wu), vv = tpp.Dot(wv);
 
     umin = std::min(uu, umin);
@@ -661,11 +661,11 @@ void GraphicsWindow::DrawSnapGrid(Canvas *canvas) {
     return;
 
   Canvas::Stroke stroke = {};
-  stroke.layer          = Canvas::Layer::BACK;
-  stroke.color          = Style::Color(Style::DATUM).WithAlpha(75);
-  stroke.unit           = Canvas::Unit::PX;
-  stroke.width          = 1.0f;
-  Canvas::hStroke hcs   = canvas->GetStroke(stroke);
+  stroke.layer = Canvas::Layer::BACK;
+  stroke.color = Style::Color(Style::DATUM).WithAlpha(75);
+  stroke.unit = Canvas::Unit::PX;
+  stroke.width = 1.0f;
+  Canvas::hStroke hcs = canvas->GetStroke(stroke);
 
   for (i = i0 + 1; i < i1; i++) {
     canvas->DrawLine(wp.Plus(wu.ScaledBy(i * g)).Plus(wv.ScaledBy(j0 * g)),
@@ -768,16 +768,16 @@ void GraphicsWindow::Draw(Canvas *canvas) {
   // placed on a line that is almost horizontal or vertical.
   if (SS.GW.pending.operation == Pending::DRAGGING_NEW_LINE_POINT && SS.GW.pending.hasSuggestion) {
     Constraint c = {};
-    c.group      = SS.GW.activeGroup;
-    c.workplane  = SS.GW.ActiveWorkplane();
-    c.type       = SS.GW.pending.suggestion;
-    c.entityA    = SS.GW.pending.request.entity(0);
+    c.group = SS.GW.activeGroup;
+    c.workplane = SS.GW.ActiveWorkplane();
+    c.type = SS.GW.pending.suggestion;
+    c.entityA = SS.GW.pending.request.entity(0);
     c.Draw(Constraint::DrawAs::DEFAULT, canvas);
   }
 
   Canvas::Stroke strokeAnalyze = Style::Stroke(Style::ANALYZE);
-  strokeAnalyze.layer          = Canvas::Layer::FRONT;
-  Canvas::hStroke hcsAnalyze   = canvas->GetStroke(strokeAnalyze);
+  strokeAnalyze.layer = Canvas::Layer::FRONT;
+  Canvas::hStroke hcsAnalyze = canvas->GetStroke(strokeAnalyze);
 
   // Draw the traced path, if one exists
   SEdgeList tracedEdges = {};
@@ -786,9 +786,9 @@ void GraphicsWindow::Draw(Canvas *canvas) {
   tracedEdges.Clear();
 
   Canvas::Stroke strokeError = Style::Stroke(Style::DRAW_ERROR);
-  strokeError.layer          = Canvas::Layer::FRONT;
-  strokeError.width          = 12;
-  Canvas::hStroke hcsError   = canvas->GetStroke(strokeError);
+  strokeError.layer = Canvas::Layer::FRONT;
+  strokeError.width = 12;
+  Canvas::hStroke hcsError = canvas->GetStroke(strokeError);
 
   // And the naked edges, if the user did Analyze -> Show Naked Edges.
   canvas->DrawEdges(SS.nakedEdges, hcsError);
@@ -804,10 +804,10 @@ void GraphicsWindow::Draw(Canvas *canvas) {
   SK.GetGroup(activeGroup)->DrawMesh(Group::DrawMeshAs::SELECTED, canvas);
 
   Canvas::Stroke strokeDatum = Style::Stroke(Style::DATUM);
-  strokeDatum.unit           = Canvas::Unit::PX;
-  strokeDatum.layer          = Canvas::Layer::FRONT;
-  strokeDatum.width          = 1;
-  Canvas::hStroke hcsDatum   = canvas->GetStroke(strokeDatum);
+  strokeDatum.unit = Canvas::Unit::PX;
+  strokeDatum.layer = Canvas::Layer::FRONT;
+  strokeDatum.width = 1;
+  Canvas::hStroke hcsDatum = canvas->GetStroke(strokeDatum);
 
   // An extra line, used to indicate the origin when rotating within the
   // plane of the monitor.
@@ -820,10 +820,10 @@ void GraphicsWindow::Draw(Canvas *canvas) {
     Vector u = camera.projRight;
     Vector v = camera.projUp;
 
-    const double size   = 10.0;
-    const int    subdiv = 16;
-    double       h      = Style::DefaultTextHeight() / camera.scale;
-    std::string  s =
+    const double size = 10.0;
+    const int subdiv = 16;
+    double h = Style::DefaultTextHeight() / camera.scale;
+    std::string s =
         SS.MmToStringSI(p.x) + ", " + SS.MmToStringSI(p.y) + ", " + SS.MmToStringSI(p.z);
     canvas->DrawVectorText(s.c_str(), h,
                            p.Plus(u.ScaledBy((size + 5.0) / scale)).Minus(v.ScaledBy(h / 2.0)), u,
@@ -835,7 +835,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
     canvas->DrawLine(p.Minus(v), p.Plus(v), hcsDatum);
     Vector prev = Vector(0, 0, 0);
     for (int i = 0; i <= subdiv; i++) {
-      double a     = (double)i / subdiv * 2.0 * PI;
+      double a = (double)i / subdiv * 2.0 * PI;
       Vector point = p.Plus(u.ScaledBy(cos(a))).Plus(v.ScaledBy(sin(a)));
       if (i > 0) {
         canvas->DrawLine(point, prev, hcsDatum);
@@ -879,14 +879,14 @@ void GraphicsWindow::Paint() {
 
   havePainted = true;
 
-  Camera   camera   = GetCamera();
+  Camera camera = GetCamera();
   Lighting lighting = GetLighting();
 
   if (!SS.ActiveGroupsOkay()) {
     // Draw a different background whenever we're having solve problems.
-    RgbaColor bgColor        = Style::Color(Style::DRAW_ERROR);
-    bgColor                  = RgbaColor::FromFloat(0.4f * bgColor.redF(), 0.4f * bgColor.greenF(),
-                                                    0.4f * bgColor.blueF());
+    RgbaColor bgColor = Style::Color(Style::DRAW_ERROR);
+    bgColor = RgbaColor::FromFloat(0.4f * bgColor.redF(), 0.4f * bgColor.greenF(),
+                                   0.4f * bgColor.blueF());
     lighting.backgroundColor = bgColor;
   }
 
@@ -908,7 +908,7 @@ void GraphicsWindow::Paint() {
     canvas->SetCamera(camera);
   }
   UiCanvas uiCanvas = {};
-  uiCanvas.canvas   = canvas;
+  uiCanvas.canvas = canvas;
 
   // If a marquee selection is in progress, then draw the selection
   // rectangle, as an outline and a transparent fill.

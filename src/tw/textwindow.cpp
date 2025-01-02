@@ -11,10 +11,10 @@ namespace SolveSpace {
 
   class Button {
 public:
-    virtual std::string Tooltip()                                              = 0;
-    virtual void        Draw(UiCanvas *uiCanvas, int x, int y, bool asHovered) = 0;
-    virtual int         AdvanceWidth()                                         = 0;
-    virtual void        Click()                                                = 0;
+    virtual std::string Tooltip() = 0;
+    virtual void Draw(UiCanvas *uiCanvas, int x, int y, bool asHovered) = 0;
+    virtual int AdvanceWidth() = 0;
+    virtual void Click() = 0;
   };
 
   class SpacerButton : public Button {
@@ -35,9 +35,9 @@ public:
 
   class ShowHideButton : public Button {
 public:
-    bool                   *variable;
-    std::string             tooltip;
-    std::string             iconName;
+    bool *variable;
+    std::string tooltip;
+    std::string iconName;
     std::shared_ptr<Pixmap> icon;
 
     ShowHideButton(bool *variable, std::string iconName, std::string tooltip)
@@ -57,7 +57,7 @@ public:
                            /*outlineColor=*/{});
       }
       if (!*(variable)) {
-        int       s = 0, f = 24;
+        int s = 0, f = 24;
         RgbaColor color = {255, 0, 0, 150};
         uiCanvas->DrawLine(x + s, y - s, x + f, y - f, color, 2);
         uiCanvas->DrawLine(x + s, y - f, x + f, y - s, color, 2);
@@ -151,18 +151,18 @@ public:
 
   static SpacerButton spacerButton;
 
-  static ShowHideButton workplanesButton   = {&(SS.GW.showWorkplanes), "workplane",
-                                              "workplanes from inactive groups"};
-  static ShowHideButton normalsButton      = {&(SS.GW.showNormals), "normal", "normals"};
-  static ShowHideButton pointsButton       = {&(SS.GW.showPoints), "point", "points"};
+  static ShowHideButton workplanesButton = {&(SS.GW.showWorkplanes), "workplane",
+                                            "workplanes from inactive groups"};
+  static ShowHideButton normalsButton = {&(SS.GW.showNormals), "normal", "normals"};
+  static ShowHideButton pointsButton = {&(SS.GW.showPoints), "point", "points"};
   static ShowHideButton constructionButton = {&(SS.GW.showConstruction), "construction",
                                               "construction entities"};
-  static ShowHideButton constraintsButton  = {&(SS.GW.showConstraints), "constraint",
-                                              "constraints and dimensions"};
-  static FacesButton    facesButton;
-  static ShowHideButton shadedButton   = {&(SS.GW.showShaded), "shaded",
-                                          "shaded view of solid model"};
-  static ShowHideButton edgesButton    = {&(SS.GW.showEdges), "edges", "edges of solid model"};
+  static ShowHideButton constraintsButton = {&(SS.GW.showConstraints), "constraint",
+                                             "constraints and dimensions"};
+  static FacesButton facesButton;
+  static ShowHideButton shadedButton = {&(SS.GW.showShaded), "shaded",
+                                        "shaded view of solid model"};
+  static ShowHideButton edgesButton = {&(SS.GW.showEdges), "edges", "edges of solid model"};
   static ShowHideButton outlinesButton = {&(SS.GW.showOutlines), "outlines",
                                           "outline of solid model"};
   static ShowHideButton meshButton = {&(SS.GW.showMesh), "mesh", "triangle mesh of solid model"};
@@ -222,7 +222,7 @@ public:
 
           if (event.type == MouseEvent::Type::PRESS || event.type == MouseEvent::Type::DBL_PRESS ||
               event.type == MouseEvent::Type::MOTION) {
-            bool isClick  = (event.type != MouseEvent::Type::MOTION);
+            bool isClick = (event.type != MouseEvent::Type::MOTION);
             bool leftDown = (event.button == MouseEvent::Button::LEFT);
             this->MouseEvent(isClick, leftDown, event.x, event.y);
             return true;
@@ -245,9 +245,9 @@ public:
           }
           return false;
         };
-        window->onKeyboardEvent     = SS.GW.window->onKeyboardEvent;
-        window->onRender            = std::bind(&TextWindow::Paint, this);
-        window->onEditingDone       = std::bind(&TextWindow::EditControlDone, this, _1);
+        window->onKeyboardEvent = SS.GW.window->onKeyboardEvent;
+        window->onRender = std::bind(&TextWindow::Paint, this);
+        window->onEditingDone = std::bind(&TextWindow::EditControlDone, this, _1);
         window->onScrollbarAdjusted = std::bind(&TextWindow::ScrollbarEvent, this, _1);
         window->SetMinContentSize(370, 370);
       }
@@ -258,7 +258,7 @@ public:
 
   void TextWindow::ClearSuper() {
     // Ugly hack, but not so ugly as the next line
-    Platform::WindowRef             oldWindow = std::move(window);
+    Platform::WindowRef oldWindow = std::move(window);
     std::shared_ptr<ViewportCanvas> oldCanvas = canvas;
 
     // Cannot use *this = {} here because TextWindow instances
@@ -291,7 +291,7 @@ public:
     if (halfRow < 0)
       halfRow = top[hoveredRow];
     editControl.halfRow = halfRow;
-    editControl.col     = col;
+    editControl.col = col;
 
     int x = LEFT_MARGIN + CHAR_WIDTH_ * col;
     int y = (halfRow - SS.TW.scrollPos) * (LINE_HEIGHT / 2);
@@ -306,10 +306,10 @@ public:
     SS.ScheduleShowTW();
 
     editControl.colorPicker.show = true;
-    editControl.colorPicker.rgb  = rgb;
-    editControl.colorPicker.h    = 0;
-    editControl.colorPicker.s    = 0;
-    editControl.colorPicker.v    = 1;
+    editControl.colorPicker.rgb = rgb;
+    editControl.colorPicker.h = 0;
+    editControl.colorPicker.s = 0;
+    editControl.colorPicker.v = 1;
     ShowEditControl(col, ssprintf("%.2f, %.2f, %.2f", rgb.redF(), rgb.greenF(), rgb.blueF()));
   }
 
@@ -317,9 +317,9 @@ public:
     int i, j;
     for (i = 0; i < MAX_ROWS; i++) {
       for (j = 0; j < MAX_COLS; j++) {
-        text[i][j]      = ' ';
-        meta[i][j].fg   = 'd';
-        meta[i][j].bg   = 'd';
+        text[i][j] = ' ';
+        meta[i][j].fg = 'd';
+        meta[i][j].bg = 'd';
         meta[i][j].link = NOT_A_LINK;
       }
       top[i] = i * 2;
@@ -349,20 +349,20 @@ public:
     va_start(vl, fmt);
 
     int r, c;
-    r      = rows;
+    r = rows;
     top[r] = (r == 0) ? 0 : (top[r - 1] + (halfLine ? 3 : 2));
     rows++;
 
     for (c = 0; c < MAX_COLS; c++) {
-      text[r][c]      = ' ';
+      text[r][c] = ' ';
       meta[r][c].link = NOT_A_LINK;
     }
 
-    char          fg    = 'd';
-    char          bg    = 'd';
-    RgbaColor     bgRgb = RGBi(0, 0, 0);
-    int           link  = NOT_A_LINK;
-    uint32_t      data  = 0;
+    char fg = 'd';
+    char bg = 'd';
+    RgbaColor bgRgb = RGBi(0, 0, 0);
+    int link = NOT_A_LINK;
+    uint32_t data = 0;
     LinkFunction *f = NULL, *h = NULL;
 
     c = 0;
@@ -425,13 +425,13 @@ public:
           // leave the background, though
           link = NOT_A_LINK;
           data = 0;
-          f    = NULL;
-          h    = NULL;
+          f = NULL;
+          h = NULL;
           break;
 
         case 'F':
         case 'B': {
-          char       cc     = fmt[1]; // color code
+          char cc = fmt[1]; // color code
           RgbaColor *rgbPtr = NULL;
           switch (cc) {
           case 0: goto done; // truncated directive
@@ -465,7 +465,7 @@ public:
 
         case 'D': {
           unsigned int v = va_arg(vl, unsigned int);
-          data           = (uint32_t)v;
+          data = (uint32_t)v;
           break;
         }
         case '%': strcpy(buf, "%"); break;
@@ -480,14 +480,14 @@ public:
         for (size_t i = 0; i < canvas->GetBitmapFont()->GetWidth(*it); i++) {
           if (c >= MAX_COLS)
             goto done;
-          text[r][c]       = (i == 0) ? *it : ' ';
-          meta[r][c].fg    = fg;
-          meta[r][c].bg    = bg;
+          text[r][c] = (i == 0) ? *it : ' ';
+          meta[r][c].fg = fg;
+          meta[r][c].bg = bg;
           meta[r][c].bgRgb = bgRgb;
-          meta[r][c].link  = link;
-          meta[r][c].data  = data;
-          meta[r][c].f     = f;
-          meta[r][c].h     = h;
+          meta[r][c].link = link;
+          meta[r][c].data = data;
+          meta[r][c].f = f;
+          meta[r][c].h = h;
           c++;
         }
       }
@@ -497,8 +497,8 @@ public:
       fmt = it.ptr();
     }
     while (c < MAX_COLS) {
-      meta[r][c].fg    = fg;
-      meta[r][c].bg    = bg;
+      meta[r][c].fg = fg;
+      meta[r][c].bg = bg;
       meta[r][c].bgRgb = bgRgb;
       c++;
     }
@@ -555,7 +555,7 @@ public:
     // Make sure there's room for the color picker
     if (editControl.colorPicker.show) {
       int pickerHeight = 25;
-      int halfRow      = editControl.halfRow;
+      int halfRow = editControl.halfRow;
       if (top[rows - 1] - halfRow < pickerHeight && rows < MAX_ROWS) {
         rows++;
         top[rows - 1] = halfRow + pickerHeight;
@@ -573,8 +573,8 @@ public:
     halfRows = (int)height / (LINE_HEIGHT / 2);
 
     int bottom = top[rows - 1] + 2;
-    scrollPos  = std::min(scrollPos, bottom - halfRows);
-    scrollPos  = std::max(scrollPos, 0);
+    scrollPos = std::min(scrollPos, bottom - halfRows);
+    scrollPos = std::max(scrollPos, 0);
 
     window->ConfigureScrollbar(0, top[rows - 1] + 1, halfRows);
     window->SetScrollbarPosition(scrollPos);
@@ -607,8 +607,8 @@ public:
         button->Draw(uiCanvas, x, y, (button == hoveredButton));
       } else if (mx > x - 2 && mx < x + 26 && my < y + 2 && my > y - 26) {
         hoveredButton = button;
-        hoveredX      = x - 2;
-        hoveredY      = y - 26;
+        hoveredX = x - 2;
+        hoveredY = y - 26;
         if (how == CLICK) {
           button->Click();
         }
@@ -655,8 +655,8 @@ public:
     }
     double c = hsv.y * hsv.z;
     double m = 1 - hsv.z;
-    rgb      = rgb.ScaledBy(c);
-    rgb      = rgb.Plus(Vector::From(m, m, m));
+    rgb = rgb.ScaledBy(c);
+    rgb = rgb.Plus(Vector::From(m, m, m));
 
     return rgb;
   }
@@ -668,7 +668,7 @@ public:
       for (size_t i = 0; i < pixmap->width; i++) {
         Vector hsv = Vector::From(6.0 * i / (pixmap->width - 1), 1.0 * j / (pixmap->height - 1), 1);
         Vector rgb = HsvToRgb(hsv);
-        rgb        = rgb.ScaledBy(255);
+        rgb = rgb.ScaledBy(255);
         pixmap->data[p++] = (uint8_t)rgb.x;
         pixmap->data[p++] = (uint8_t)rgb.y;
         pixmap->data[p++] = (uint8_t)rgb.z;
@@ -684,7 +684,7 @@ public:
       for (size_t j = 0; j < pixmap->width; j++) {
         Vector hsv = Vector::From(6 * hue, sat, 1.0 * (pixmap->width - 1 - j) / pixmap->width);
         Vector rgb = HsvToRgb(hsv);
-        rgb        = rgb.ScaledBy(255);
+        rgb = rgb.ScaledBy(255);
         pixmap->data[p++] = (uint8_t)rgb.x;
         pixmap->data[p++] = (uint8_t)rgb.y;
         pixmap->data[p++] = (uint8_t)rgb.z;
@@ -759,28 +759,28 @@ public:
     int i, j;
     for (i = 0; i < WIDTH / 2; i++) {
       for (j = 0; j < HEIGHT; j++) {
-        Vector    rgb;
+        Vector rgb;
         RgbaColor d;
         if (i == 0 && j < 8) {
-          d   = SS.modelColor[j];
+          d = SS.modelColor[j];
           rgb = Vector::From(d.redF(), d.greenF(), d.blueF());
         } else if (i == 0) {
           double a = (j - 8.0) / 3.0;
-          rgb      = Vector::From(a, a, a);
+          rgb = Vector::From(a, a, a);
         } else {
-          d   = BaseColor[j];
+          d = BaseColor[j];
           rgb = Vector::From(d.redF(), d.greenF(), d.blueF());
           if (i >= 2 && i <= 4) {
             double a = (i == 2) ? 0.2 : (i == 3) ? 0.3 : 0.4;
-            rgb      = rgb.Plus(Vector::From(a, a, a));
+            rgb = rgb.Plus(Vector::From(a, a, a));
           }
           if (i >= 5 && i <= 7) {
             double a = (i == 5) ? 0.7 : (i == 6) ? 0.4 : 0.18;
-            rgb      = rgb.ScaledBy(a);
+            rgb = rgb.ScaledBy(a);
           }
         }
 
-        rgb    = rgb.ClampWithin(0, 1);
+        rgb = rgb.ClampWithin(0, 1);
         int sx = px + 5 + PITCH * (i + 8) + 4, sy = py + 5 + PITCH * j;
 
         if (how == PAINT) {
@@ -895,16 +895,16 @@ public:
     if (halfRows != (int)height / (LINE_HEIGHT / 2))
       Resize();
 
-    Camera camera     = {};
-    camera.width      = width;
-    camera.height     = height;
+    Camera camera = {};
+    camera.width = width;
+    camera.height = height;
     camera.pixelRatio = window->GetDevicePixelRatio();
-    camera.gridFit    = (window->GetDevicePixelRatio() == 1);
+    camera.gridFit = (window->GetDevicePixelRatio() == 1);
     camera.LoadIdentity();
     camera.offset.x = -camera.width / 2.0;
     camera.offset.y = -camera.height / 2.0;
 
-    Lighting lighting        = {};
+    Lighting lighting = {};
     lighting.backgroundColor = RGBi(0, 0, 0);
 
     canvas->SetLighting(lighting);
@@ -912,8 +912,8 @@ public:
     canvas->StartFrame();
 
     UiCanvas uiCanvas = {};
-    uiCanvas.canvas   = canvas;
-    uiCanvas.flip     = true;
+    uiCanvas.canvas = canvas;
+    uiCanvas.flip = true;
 
     int r, c, a;
     for (a = 0; a < 2; a++) {
@@ -935,7 +935,7 @@ public:
           // pass, all the foreground (i.e., font) quads.
           if (a == 0) {
             RgbaColor bgRgb = meta[r][c].bgRgb;
-            int       bh = LINE_HEIGHT, adj = 0;
+            int bh = LINE_HEIGHT, adj = 0;
             if (bg == 'z') {
               bh = CHAR_HEIGHT;
               adj += 2;
@@ -980,9 +980,9 @@ public:
 
               // Always use the color of the rightmost character
               // in the link, so that underline is consistent color
-              fg     = meta[r][cf - 1].fg;
-              fgRgb  = RgbaColor::FromFloat(fgColorTable[fg * 3 + 0], fgColorTable[fg * 3 + 1],
-                                            fgColorTable[fg * 3 + 2]);
+              fg = meta[r][cf - 1].fg;
+              fgRgb = RgbaColor::FromFloat(fgColorTable[fg * 3 + 0], fgColorTable[fg * 3 + 1],
+                                           fgColorTable[fg * 3 + 2]);
               int yp = y + CHAR_HEIGHT;
               uiCanvas.DrawLine(LEFT_MARGIN + cs * CHAR_WIDTH_, yp, LEFT_MARGIN + cf * CHAR_WIDTH_,
                                 yp, fgRgb);
@@ -1045,7 +1045,7 @@ public:
     hoveredCol = 0;
 
     // Find the corresponding character in the text buffer
-    int c  = (int)((x - LEFT_MARGIN) / CHAR_WIDTH_);
+    int c = (int)((x - LEFT_MARGIN) / CHAR_WIDTH_);
     int hh = (LINE_HEIGHT) / 2;
     y += scrollPos * hh;
     int r;
@@ -1088,8 +1088,8 @@ public:
 
   void TextWindow::MouseLeave() {
     hoveredButton = NULL;
-    hoveredRow    = 0;
-    hoveredCol    = 0;
+    hoveredRow = 0;
+    hoveredCol = 0;
     window->Invalidate();
   }
 
@@ -1100,8 +1100,8 @@ public:
     }
 
     int bottom = top[rows - 1] + 2;
-    newPos     = std::min((int)newPos, bottom - halfRows);
-    newPos     = std::max((int)newPos, 0);
+    newPos = std::min((int)newPos, bottom - halfRows);
+    newPos = std::max((int)newPos, 0);
     if (newPos != scrollPos) {
       scrollPos = (int)newPos;
       window->SetScrollbarPosition(scrollPos);
@@ -1124,7 +1124,7 @@ public:
 
   void TextWindow::ScreenEditTtfText(int link, uint32_t v) {
     hRequest hr = {v};
-    Request *r  = SK.GetRequest(hr);
+    Request *r = SK.GetRequest(hr);
 
     SS.TW.ShowEditControl(10, r->str);
     SS.TW.edit.meaning = Edit::TTF_TEXT;
@@ -1159,7 +1159,7 @@ public:
 
   void TextWindow::ScreenConstraintToggleReference(int link, uint32_t v) {
     hConstraint hc = {v};
-    Constraint *c  = SK.GetConstraint(hc);
+    Constraint *c = SK.GetConstraint(hc);
 
     SS.UndoRemember();
     c->reference = !c->reference;
@@ -1170,7 +1170,7 @@ public:
 
   void TextWindow::ScreenConstraintShowAsRadius(int link, uint32_t v) {
     hConstraint hc = {v};
-    Constraint *c  = SK.GetConstraint(hc);
+    Constraint *c = SK.GetConstraint(hc);
 
     SS.UndoRemember();
     c->other = !c->other;
@@ -1184,7 +1184,7 @@ public:
     auto const &gs = SS.GW.gs;
     if (gs.n == 1 && (gs.points == 1 || gs.entities == 1)) {
       Entity *e = SK.GetEntity(gs.points == 1 ? gs.point[0] : gs.entity[0]);
-      Vector  p = Vector(0, 0, 0);
+      Vector p = Vector(0, 0, 0);
 
 #define COSTR_NO_LINK(p) \
   SS.MmToString((p).x).c_str(), SS.MmToString((p).y).c_str(), SS.MmToString((p).z).c_str()
@@ -1215,7 +1215,7 @@ public:
       case Entity::Type::NORMAL_N_ROT:
       case Entity::Type::NORMAL_N_ROT_AA: {
         Quaternion q = e->NormalGetNum();
-        p            = q.RotationN();
+        p = q.RotationN();
         Printf(false, "%FtNORMAL / COORDINATE SYSTEM%E");
         Printf(true, "  basis n = " PT_AS_NUM, CO(p));
         p = q.RotationU();
@@ -1229,17 +1229,17 @@ public:
         Printf(false, "%FtWORKPLANE%E");
         Printf(true, "   origin = " PT_AS_STR, COSTR(SK.GetEntity(e->point[0]), p));
         Quaternion q = e->Normal()->NormalGetNum();
-        p            = q.RotationN();
+        p = q.RotationN();
         Printf(true, "   normal = " PT_AS_NUM_LINK, CO_LINK(e->Normal(), p));
         break;
       }
       case Entity::Type::LINE_SEGMENT: {
         Vector p0 = SK.GetEntity(e->point[0])->PointGetNum();
-        p         = p0;
+        p = p0;
         Printf(false, "%FtLINE SEGMENT%E");
         Printf(true, "   thru " PT_AS_STR, COSTR(SK.GetEntity(e->point[0]), p));
         Vector p1 = SK.GetEntity(e->point[1])->PointGetNum();
-        p         = p1;
+        p = p1;
         Printf(false, "        " PT_AS_STR, COSTR(SK.GetEntity(e->point[1]), p));
         Printf(true, "   len = %Fi%s%E", SS.MmToString((p1.Minus(p0).Magnitude())).c_str());
         break;
@@ -1381,8 +1381,8 @@ public:
         Printf(false, "%FtCONSTRUCTION");
       }
 
-      std::vector<hConstraint> lhc             = {};
-      auto                     FindConstraints = [&](hEntity he) {
+      std::vector<hConstraint> lhc = {};
+      auto FindConstraints = [&](hEntity he) {
         for (const Constraint &c : SK.constraint) {
           if (!(c.ptA == he || c.ptB == he || c.entityA == he || c.entityB == he ||
                 c.entityC == he || c.entityD == he))
@@ -1404,7 +1404,7 @@ public:
 
       auto ListConstraints = [&](bool reference) {
         bool first = true;
-        int  a     = 0;
+        int a = 0;
         for (hConstraint hc : lhc) {
           Constraint *c = SK.GetConstraint(hc);
           if (c->reference != reference)
@@ -1468,25 +1468,25 @@ public:
       Vector p1 = SK.GetEntity(gs.point[1])->PointGetNum();
       Printf(false, "  pointB = " PT_AS_STR, COSTR(SK.GetEntity(gs.point[1]), p1));
       Vector v = SK.GetEntity(gs.vector[0])->VectorGetNum();
-      v        = v.WithMagnitude(1);
+      v = v.WithMagnitude(1);
       Printf(true, "  vector = " PT_AS_NUM_LINK, CO_LINK(SK.GetEntity(gs.vector[0]), v));
       double d = (p1.Minus(p0)).Dot(v);
       Printf(true, "  proj_d = %Fi%s", SS.MmToString(d).c_str());
     } else if (gs.n == 2 && gs.lineSegments == 1 && gs.points == 1) {
-      Entity *ln  = SK.GetEntity(gs.entity[0]);
-      Vector  lp0 = SK.GetEntity(ln->point[0])->PointGetNum(),
-             lp1  = SK.GetEntity(ln->point[1])->PointGetNum();
+      Entity *ln = SK.GetEntity(gs.entity[0]);
+      Vector lp0 = SK.GetEntity(ln->point[0])->PointGetNum(),
+             lp1 = SK.GetEntity(ln->point[1])->PointGetNum();
       Printf(false, "%FtLINE SEGMENT AND POINT%E");
       Printf(true, "   ln thru " PT_AS_STR, COSTR(SK.GetEntity(ln->point[0]), lp0));
       Printf(false, "           " PT_AS_STR, COSTR(SK.GetEntity(ln->point[1]), lp1));
-      Entity *p  = SK.GetEntity(gs.point[0]);
-      Vector  pp = p->PointGetNum();
+      Entity *p = SK.GetEntity(gs.point[0]);
+      Vector pp = p->PointGetNum();
       Printf(true, "     point " PT_AS_STR, COSTR(p, pp));
       Printf(true, " pt-ln distance = %Fi%s%E",
              SS.MmToString(pp.DistanceToLine(lp0, lp1.Minus(lp0))).c_str());
       hEntity wrkpl = SS.GW.ActiveWorkplane();
       if (wrkpl != Entity::FREE_IN_3D && !(p->workplane == wrkpl && ln->workplane == wrkpl)) {
-        Vector ppw  = pp.ProjectInto(wrkpl);
+        Vector ppw = pp.ProjectInto(wrkpl);
         Vector lp0w = lp0.ProjectInto(wrkpl);
         Vector lp1w = lp1.ProjectInto(wrkpl);
         Printf(false, "    or distance = %Fi%s%E (in workplane)",
@@ -1497,8 +1497,8 @@ public:
 
       Vector v0 = SK.GetEntity(gs.entity[0])->VectorGetNum(),
              v1 = SK.GetEntity(gs.entity[1])->VectorGetNum();
-      v0        = v0.WithMagnitude(1);
-      v1        = v1.WithMagnitude(1);
+      v0 = v0.WithMagnitude(1);
+      v1 = v1.WithMagnitude(1);
 
       Printf(true, "  vectorA = " PT_AS_NUM_LINK, CO_LINK(SK.GetEntity(gs.entity[0]), v0));
       Printf(false, "  vectorB = " PT_AS_NUM_LINK, CO_LINK(SK.GetEntity(gs.entity[1]), v1));
@@ -1536,7 +1536,7 @@ public:
         Printf(true, "      distance = %Fi%s", SS.MmToString(d).c_str());
       }
     } else if (gs.n == 0 && gs.constraints == 1) {
-      Constraint        *c    = SK.GetConstraint(gs.constraint[0]);
+      Constraint *c = SK.GetConstraint(gs.constraint[0]);
       const std::string &desc = c->DescriptionString().c_str();
 
       if (c->type == Constraint::Type::COMMENT) {

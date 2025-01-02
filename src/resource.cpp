@@ -15,7 +15,7 @@ namespace SolveSpace {
   //-----------------------------------------------------------------------------
 
   std::string LoadString(const std::string &name) {
-    size_t      size;
+    size_t size;
     const void *data = Platform::LoadResource(name, &size);
     std::string result(static_cast<const char *>(data), size);
 
@@ -28,13 +28,13 @@ namespace SolveSpace {
   }
 
   std::string LoadStringFromGzip(const std::string &name) {
-    size_t      deflatedSize;
+    size_t deflatedSize;
     const void *data = Platform::LoadResource(name, &deflatedSize);
 
     z_stream stream;
-    stream.zalloc        = Z_NULL;
-    stream.zfree         = Z_NULL;
-    stream.opaque        = Z_NULL;
+    stream.zalloc = Z_NULL;
+    stream.zfree = Z_NULL;
+    stream.opaque = Z_NULL;
     const int windowBits = /*maximum window*/ 15 + /*decode gzip header*/ 16;
     ssassert(inflateInit2(&stream, windowBits) == Z_OK, "Cannot start inflation");
 
@@ -47,9 +47,9 @@ namespace SolveSpace {
     memcpy(&inflatedSize, (uint8_t *)((uintptr_t)data + deflatedSize - 4), sizeof(uint32_t));
     result.resize(inflatedSize);
 
-    stream.next_in   = (Bytef *)data;
-    stream.avail_in  = (uInt)deflatedSize;
-    stream.next_out  = (Bytef *)&result[0];
+    stream.next_in = (Bytef *)data;
+    stream.avail_in = (uInt)deflatedSize;
+    stream.next_out = (Bytef *)&result[0];
     stream.avail_out = (uInt)result.length();
     ssassert(inflate(&stream, Z_NO_FLUSH) == Z_STREAM_END, "Cannot inflate resource");
     ssassert(stream.avail_out == 0, "Inflated resource larger than what trailer indicates");
@@ -60,7 +60,7 @@ namespace SolveSpace {
   }
 
   std::shared_ptr<Pixmap> LoadPng(const std::string &name) {
-    size_t      size;
+    size_t size;
     const void *data = Platform::LoadResource(name, &size);
 
     std::shared_ptr<Pixmap> pixmap = Pixmap::FromPng(static_cast<const uint8_t *>(data), size);
@@ -166,8 +166,8 @@ namespace SolveSpace {
                  PNG_TRANSFORM_EXPAND | PNG_TRANSFORM_GRAY_TO_RGB | PNG_TRANSFORM_SCALE_16, NULL);
 
     std::shared_ptr<Pixmap> pixmap = std::make_shared<Pixmap>();
-    pixmap->width                  = png_get_image_width(png_ptr, info_ptr);
-    pixmap->height                 = png_get_image_height(png_ptr, info_ptr);
+    pixmap->width = png_get_image_width(png_ptr, info_ptr);
+    pixmap->height = png_get_image_height(png_ptr, info_ptr);
     if ((png_get_color_type(png_ptr, info_ptr) & PNG_COLOR_MASK_ALPHA) != 0) {
       pixmap->format = Pixmap::Format::RGBA;
     } else {
@@ -179,7 +179,7 @@ namespace SolveSpace {
       stride += 4 - stride % 4;
     pixmap->stride = stride;
 
-    pixmap->data   = std::vector<uint8_t>(pixmap->stride * pixmap->height);
+    pixmap->data = std::vector<uint8_t>(pixmap->stride * pixmap->height);
     uint8_t **rows = png_get_rows(png_ptr, info_ptr);
     for (size_t y = 0; y < pixmap->height; y++) {
       uint8_t *srcRow = flip ? rows[pixmap->height - y - 1] : rows[y];
@@ -193,11 +193,11 @@ namespace SolveSpace {
   std::shared_ptr<Pixmap> Pixmap::FromPng(const uint8_t *data, size_t size, bool flip) {
     struct Slice {
       const uint8_t *data;
-      size_t         size;
+      size_t size;
     };
-    Slice       dataSlice = {data, size};
-    png_struct *png_ptr   = NULL;
-    png_info   *info_ptr  = NULL;
+    Slice dataSlice = {data, size};
+    png_struct *png_ptr = NULL;
+    png_info *info_ptr = NULL;
 
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png_ptr)
@@ -228,8 +228,8 @@ namespace SolveSpace {
   }
 
   std::shared_ptr<Pixmap> Pixmap::ReadPng(FILE *f, bool flip) {
-    png_struct *png_ptr  = NULL;
-    png_info   *info_ptr = NULL;
+    png_struct *png_ptr = NULL;
+    png_info *info_ptr = NULL;
 
     uint8_t header[8];
     if (fread(header, 1, sizeof(header), f) != sizeof(header))
@@ -267,28 +267,28 @@ namespace SolveSpace {
   }
 
   bool Pixmap::WritePng(FILE *f, bool flip) {
-    int  colorType = 0;
-    bool bgr       = false;
+    int colorType = 0;
+    bool bgr = false;
     switch (format) {
     case Format::RGBA:
       colorType = PNG_COLOR_TYPE_RGBA;
-      bgr       = false;
+      bgr = false;
       break;
     case Format::BGRA:
       colorType = PNG_COLOR_TYPE_RGBA;
-      bgr       = true;
+      bgr = true;
       break;
     case Format::RGB:
       colorType = PNG_COLOR_TYPE_RGB;
-      bgr       = false;
+      bgr = false;
       break;
     case Format::BGR:
       colorType = PNG_COLOR_TYPE_RGB;
-      bgr       = true;
+      bgr = true;
       break;
     case Format::A:
       colorType = PNG_COLOR_TYPE_GRAY;
-      bgr       = false;
+      bgr = false;
       break;
     }
 
@@ -301,8 +301,8 @@ namespace SolveSpace {
       }
     }
 
-    png_struct *png_ptr  = NULL;
-    png_info   *info_ptr = NULL;
+    png_struct *png_ptr = NULL;
+    png_info *info_ptr = NULL;
 
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png_ptr)
@@ -357,25 +357,25 @@ namespace SolveSpace {
 
   std::shared_ptr<Pixmap> Pixmap::Create(Format format, size_t width, size_t height) {
     std::shared_ptr<Pixmap> pixmap = std::make_shared<Pixmap>();
-    pixmap->format                 = format;
-    pixmap->width                  = width;
-    pixmap->height                 = height;
+    pixmap->format = format;
+    pixmap->width = width;
+    pixmap->height = height;
     // Align to fulfill OpenGL texture requirements.
     size_t stride = pixmap->width * pixmap->GetBytesPerPixel();
     if (stride % 4 != 0)
       stride += 4 - stride % 4;
     pixmap->stride = stride;
-    pixmap->data   = std::vector<uint8_t>(pixmap->stride * pixmap->height);
+    pixmap->data = std::vector<uint8_t>(pixmap->stride * pixmap->height);
     return pixmap;
   }
 
   std::shared_ptr<Pixmap> Pixmap::Copy() {
     std::shared_ptr<Pixmap> pixmap = std::make_shared<Pixmap>();
-    pixmap->format                 = format;
-    pixmap->width                  = width;
-    pixmap->height                 = height;
-    pixmap->stride                 = stride;
-    pixmap->data                   = data;
+    pixmap->format = format;
+    pixmap->width = width;
+    pixmap->height = height;
+    pixmap->stride = stride;
+    pixmap->data = data;
     return pixmap;
   }
 
@@ -454,7 +454,7 @@ public:
     void SkipUntilEol() { pos = std::find(pos, end, '\n'); }
 
     std::string ReadUntilEol() {
-      auto        eol = std::find(pos, end, '\n');
+      auto eol = std::find(pos, end, '\n');
       std::string result(pos, eol);
       if (eol != end) {
         pos = eol + 1;
@@ -488,14 +488,14 @@ public:
 
     long ReadIntegerDecimal(int base = 10) {
       char *endptr;
-      long  l = strtol(&*pos, &endptr, base);
+      long l = strtol(&*pos, &endptr, base);
       ssassert(&*pos != endptr, "Cannot read an integer number");
       pos += endptr - &*pos;
       return l;
     }
 
     double ReadFloatDecimal() {
-      char  *endptr;
+      char *endptr;
       double d = strtod(&*pos, &endptr);
       ssassert(&*pos != endptr, "Cannot read a floating-point number");
       pos += endptr - &*pos;
@@ -528,9 +528,9 @@ public:
   }
 
   BitmapFont BitmapFont::From(std::string &&unifontData) {
-    BitmapFont font  = {};
+    BitmapFont font = {};
     font.unifontData = std::move(unifontData);
-    font.texture     = Pixmap::Create(Pixmap::Format::A, 1024, 1024);
+    font.texture = Pixmap::Create(Pixmap::Format::A, 1024, 1024);
 
     return font;
   }
@@ -543,8 +543,8 @@ public:
     ssassert(nextPosition != 0xffff, "Too many glyphs for current texture size");
 
     BitmapFont::Glyph glyph = {};
-    glyph.advanceCells      = (uint8_t)(pixmap->width / 8);
-    glyph.position          = nextPosition++;
+    glyph.advanceCells = (uint8_t)(pixmap->width / 8);
+    glyph.position = nextPosition++;
     glyphs.emplace(codepoint, glyph);
 
     for (size_t y = 0; y < pixmap->height; y++) {
@@ -602,12 +602,12 @@ public:
       }
 
       // Found the codepoint.
-      Glyph glyph    = {};
+      Glyph glyph = {};
       glyph.position = nextPosition++;
 
       // Read glyph bits.
       unsigned short glyphBits[16];
-      size_t         glyphLength = reader.CountUntilEol();
+      size_t glyphLength = reader.CountUntilEol();
       if (glyphLength == 4 * 16) {
         glyph.advanceCells = 2;
         for (size_t i = 0; i < 16; i++) {
@@ -645,12 +645,12 @@ public:
   void BitmapFont::LocateGlyph(char32_t codepoint, double *s0, double *t0, double *s1, double *t1,
                                size_t *w, size_t *h) {
     const Glyph &glyph = GetGlyph(codepoint);
-    *w                 = glyph.advanceCells * 8;
-    *h                 = 16;
-    *s0                = (16.0 * (glyph.position % (texture->width / 16))) / texture->width;
-    *s1                = *s0 + (double)(*w) / texture->width;
-    *t0                = (16.0 * (glyph.position / (texture->width / 16))) / texture->height;
-    *t1                = *t0 + (double)(*h) / texture->height;
+    *w = glyph.advanceCells * 8;
+    *h = 16;
+    *s0 = (16.0 * (glyph.position % (texture->width / 16))) / texture->width;
+    *s1 = *s0 + (double)(*w) / texture->width;
+    *t0 = (16.0 * (glyph.position / (texture->width / 16))) / texture->height;
+    *t1 = *t0 + (double)(*h) / texture->height;
   }
 
   size_t BitmapFont::GetWidth(char32_t codepoint) {
@@ -691,8 +691,8 @@ public:
   //-----------------------------------------------------------------------------
 
   const static int ARC_POINTS = 8;
-  static void      MakePwlArc(VectorFont::Contour *contour, bool isReversed, const Point2d &cp,
-                              double radius, double a1, double a2) {
+  static void MakePwlArc(VectorFont::Contour *contour, bool isReversed, const Point2d &cp,
+                         double radius, double a1, double a2) {
     if (radius < LENGTH_EPS)
       return;
 
@@ -713,18 +713,18 @@ public:
   }
 
   static void MakePwlBulge(VectorFont::Contour *contour, const Point2d &v, double bulge) {
-    bool           reversed = bulge < 0.0;
-    double         alpha    = atan(bulge) * 4.0;
-    const Point2d &point    = contour->points.back();
+    bool reversed = bulge < 0.0;
+    double alpha = atan(bulge) * 4.0;
+    const Point2d &point = contour->points.back();
 
     Point2d middle = point.Plus(v).ScaledBy(0.5);
-    double  dist   = point.DistanceTo(v) / 2.0;
-    double  angle  = point.AngleTo(v);
+    double dist = point.DistanceTo(v) / 2.0;
+    double angle = point.AngleTo(v);
 
     // alpha can't be 0.0 at this point
     double radius = fabs(dist / sin(alpha / 2.0));
-    double wu     = fabs(radius * radius - dist * dist);
-    double h      = sqrt(wu);
+    double wu = fabs(radius * radius - dist * dist);
+    double h = sqrt(wu);
 
     if (bulge > 0.0) {
       angle += M_PI_2;
@@ -737,8 +737,8 @@ public:
     }
 
     Point2d center = Point2d::FromPolar(h, angle).Plus(middle);
-    double  a1     = center.AngleTo(point);
-    double  a2     = center.AngleTo(v);
+    double a1 = center.AngleTo(point);
+    double a2 = center.AngleTo(v);
     MakePwlArc(contour, reversed, center, radius, a1, a2);
   }
 
@@ -771,7 +771,7 @@ public:
 
   VectorFont VectorFont::From(std::string &&lffData) {
     VectorFont font = {};
-    font.lffData    = std::move(lffData);
+    font.lffData = std::move(lffData);
 
     ASCIIReader reader = ASCIIReader::From(font.lffData);
     std::smatch m;
@@ -781,7 +781,7 @@ public:
       if (name == "letterspacing") {
         font.rightSideBearing = std::stod(value);
       } else if (name == "wordspacing") {
-        Glyph space        = {};
+        Glyph space = {};
         space.advanceWidth = std::stod(value);
         font.glyphs.emplace(' ', std::move(space));
       }
@@ -854,8 +854,8 @@ public:
           break;
         } else if (reader.TryChar('C')) {
           // Another character is referenced in this one.
-          char32_t                 baseCodepoint = reader.Read16HexBits();
-          const VectorFont::Glyph &baseGlyph     = GetGlyph(baseCodepoint);
+          char32_t baseCodepoint = reader.Read16HexBits();
+          const VectorFont::Glyph &baseGlyph = GetGlyph(baseCodepoint);
           std::copy(baseGlyph.contours.begin(), baseGlyph.contours.end(),
                     std::back_inserter(glyph.contours));
         } else {
@@ -934,15 +934,15 @@ public:
     ssassert(!IsEmpty(), "Expected a loaded font");
 
     double scale = (forCapHeight / capHeight);
-    u            = u.ScaledBy(scale);
-    v            = v.ScaledBy(scale);
+    u = u.ScaledBy(scale);
+    v = v.ScaledBy(scale);
 
     for (char32_t codepoint : ReadUTF8(str)) {
       const Glyph &glyph = GetGlyph(codepoint);
 
       for (const VectorFont::Contour &contour : glyph.contours) {
         Vector prevp;
-        bool   penUp = true;
+        bool penUp = true;
         for (const Point2d &pt : contour.points) {
           Vector p = o.Plus(u.ScaledBy(pt.x)).Plus(v.ScaledBy(pt.y));
           if (!penUp)
@@ -958,7 +958,7 @@ public:
 
   void VectorFont::Trace(double forCapHeight, Vector o, Vector u, Vector v, const std::string &str,
                          const std::function<void(Vector, Vector)> &traceEdge,
-                         const Camera                              &camera) {
+                         const Camera &camera) {
     ssassert(!IsEmpty(), "Expected a loaded font");
 
     // Perform grid-fitting only when the text is parallel to the view plane.
@@ -968,12 +968,12 @@ public:
     }
 
     double scale = forCapHeight / capHeight;
-    u            = u.ScaledBy(scale);
-    v            = v.ScaledBy(scale);
+    u = u.ScaledBy(scale);
+    v = v.ScaledBy(scale);
 
     for (char32_t codepoint : ReadUTF8(str)) {
-      const Glyph &glyph       = GetGlyph(codepoint);
-      double       actualWidth = std::max(1.0, glyph.boundingWidth);
+      const Glyph &glyph = GetGlyph(codepoint);
+      double actualWidth = std::max(1.0, glyph.boundingWidth);
 
       // Align (o+lsb), (o+lsb+u) and (o+lsb+v) to pixel grid.
       Vector ao = o.Plus(u.ScaledBy(glyph.leftSideBearing));
@@ -989,7 +989,7 @@ public:
 
       for (const VectorFont::Contour &contour : glyph.contours) {
         Vector prevp;
-        bool   penUp = true;
+        bool penUp = true;
         for (const Point2d &pt : contour.points) {
           Vector p = ao.Plus(au.ScaledBy(pt.x - glyph.leftSideBearing)).Plus(av.ScaledBy(pt.y));
           if (!penUp)
@@ -1038,22 +1038,22 @@ public:
         MOD, // %
       };
 
-      Type     type;
-      Op       op;
+      Type type;
+      Op op;
       unsigned value;
 
       int Precedence();
     };
 
-    ASCIIReader        reader;
+    ASCIIReader reader;
     std::vector<Token> stack;
-    unsigned           value;
+    unsigned value;
 
     Token Lex();
 
     Token PopToken();
-    void  Reduce();
-    void  Eval();
+    void Reduce();
+    void Eval();
 
     static unsigned Eval(const std::string &s, unsigned n);
   };
@@ -1096,14 +1096,14 @@ public:
 
     char c = reader.PeekChar();
     if (c >= '0' && c <= '9') {
-      t.type  = Token::Type::VALUE;
+      t.type = Token::Type::VALUE;
       t.value = reader.ReadIntegerDecimal();
     } else if (reader.TryChar('n')) {
-      t.type  = Token::Type::VALUE;
+      t.type = Token::Type::VALUE;
       t.value = value;
     } else if (reader.TryChar('%')) {
       t.type = Token::Type::BINARY_OP;
-      t.op   = Token::Op::MOD;
+      t.op = Token::Op::MOD;
     } else if (reader.TryChar('<')) {
       t.type = Token::Type::BINARY_OP;
       if (reader.TryChar('=')) {
@@ -1121,19 +1121,19 @@ public:
     } else if (reader.TryChar('!')) {
       reader.ExpectChar('=');
       t.type = Token::Type::BINARY_OP;
-      t.op   = Token::Op::NEQ;
+      t.op = Token::Op::NEQ;
     } else if (reader.TryChar('=')) {
       reader.ExpectChar('=');
       t.type = Token::Type::BINARY_OP;
-      t.op   = Token::Op::EQ;
+      t.op = Token::Op::EQ;
     } else if (reader.TryChar('&')) {
       reader.ExpectChar('&');
       t.type = Token::Type::BINARY_OP;
-      t.op   = Token::Op::AND;
+      t.op = Token::Op::AND;
     } else if (reader.TryChar('|')) {
       reader.ExpectChar('|');
       t.type = Token::Type::BINARY_OP;
-      t.op   = Token::Op::OR;
+      t.op = Token::Op::OR;
     } else if (reader.TryChar('?')) {
       t.type = Token::Type::QUERY;
     } else if (reader.TryChar(':')) {
@@ -1242,8 +1242,8 @@ public:
 
   unsigned PluralExpr::Eval(const std::string &s, unsigned n) {
     PluralExpr expr = {};
-    expr.reader     = ASCIIReader::From(s);
-    expr.value      = n;
+    expr.reader = ASCIIReader::From(s);
+    expr.value = n;
     expr.Eval();
 
     Token t = expr.PopToken();
@@ -1257,7 +1257,7 @@ public:
 
   class TranslationKey {
 public:
-    bool        hasContext;
+    bool hasContext;
     std::string context;
     std::string ident;
   };
@@ -1278,15 +1278,15 @@ public:
 public:
     ASCIIReader reader;
 
-    unsigned    pluralCount;
+    unsigned pluralCount;
     std::string pluralExpr;
 
     std::map<TranslationKey, std::vector<std::string>, TranslationKeyLess> messages;
 
-    void        SkipSpace();
+    void SkipSpace();
     std::string ReadString();
-    void        ParseHeader(const std::string &header);
-    void        Parse();
+    void ParseHeader(const std::string &header);
+    void Parse();
   };
 
   void GettextParser::SkipSpace() {
@@ -1354,7 +1354,7 @@ public:
   void GettextParser::Parse() {
     // Default to a single form, in case a header is missing.
     pluralCount = 1;
-    pluralExpr  = "0";
+    pluralExpr = "0";
 
     SkipSpace();
     while (!reader.AtEnd()) {
@@ -1362,7 +1362,7 @@ public:
 
       if (reader.TryString("msgctxt")) {
         key.hasContext = true;
-        key.context    = ReadString();
+        key.context = ReadString();
       }
 
       reader.ExpectString("msgid");
@@ -1404,7 +1404,7 @@ public:
 
   class Translation {
 public:
-    unsigned    pluralCount;
+    unsigned pluralCount;
     std::string pluralExpr;
 
     std::map<TranslationKey, std::vector<std::string>, TranslationKeyLess> messages;
@@ -1417,13 +1417,13 @@ public:
 
   Translation Translation::From(const std::string &poData) {
     GettextParser parser = {};
-    parser.reader        = ASCIIReader::From(poData);
+    parser.reader = ASCIIReader::From(poData);
     parser.Parse();
 
     Translation trans = {};
     trans.pluralCount = parser.pluralCount;
-    trans.pluralExpr  = parser.pluralExpr;
-    trans.messages    = parser.messages;
+    trans.pluralExpr = parser.pluralExpr;
+    trans.messages = parser.messages;
     return trans;
   }
 
@@ -1468,17 +1468,17 @@ public:
   // Locale management
   //-----------------------------------------------------------------------------
 
-  static std::set<Locale, LocaleLess>              locales;
+  static std::set<Locale, LocaleLess> locales;
   static std::map<Locale, Translation, LocaleLess> translations;
-  static Translation                               dummyTranslation;
-  static Translation                              *currentTranslation = &dummyTranslation;
+  static Translation dummyTranslation;
+  static Translation *currentTranslation = &dummyTranslation;
 
   const std::set<Locale, LocaleLess> &Locales() {
     if (!locales.empty())
       return locales;
 
     std::string localeList = LoadString("locales.txt");
-    ASCIIReader reader     = ASCIIReader::From(localeList);
+    ASCIIReader reader = ASCIIReader::From(localeList);
     while (!reader.AtEnd()) {
       reader.SkipSpace();
       if (reader.TryChar('#')) {
@@ -1488,10 +1488,10 @@ public:
 
       std::smatch m;
       reader.ExpectRegex(std::regex("([a-z]{2})-([A-Z]{2}),([0-9A-F]{4}),(.+?)\n"), &m);
-      Locale locale      = {};
-      locale.language    = m.str(1);
-      locale.region      = m.str(2);
-      locale.lcid        = std::stoi(m.str(3), NULL, 16);
+      Locale locale = {};
+      locale.language = m.str(1);
+      locale.region = m.str(2);
+      locale.lcid = std::stoi(m.str(3), NULL, 16);
       locale.displayName = m.str(4);
       locales.emplace(locale);
     }
@@ -1503,8 +1503,8 @@ public:
     auto it = std::find_if(Locales().begin(), Locales().end(), pred);
     if (it != locales.end()) {
       std::string filename = "locales/" + it->language + "_" + it->region + ".po";
-      translations[*it]    = Translation::From(LoadString(filename));
-      currentTranslation   = &translations[*it];
+      translations[*it] = Translation::From(LoadString(filename));
+      currentTranslation = &translations[*it];
       return true;
     } else {
       return false;
@@ -1531,29 +1531,29 @@ public:
 
   const std::string &Translate(const char *msgid) {
     TranslationKey key = {};
-    key.ident          = msgid;
+    key.ident = msgid;
     return currentTranslation->Translate(key);
   }
 
   const std::string &Translate(const char *msgctxt, const char *msgid) {
     TranslationKey key = {};
-    key.hasContext     = true;
-    key.context        = msgctxt;
-    key.ident          = msgid;
+    key.hasContext = true;
+    key.context = msgctxt;
+    key.ident = msgid;
     return currentTranslation->Translate(key);
   }
 
   const std::string &TranslatePlural(const char *msgid, unsigned n) {
     TranslationKey key = {};
-    key.ident          = msgid;
+    key.ident = msgid;
     return currentTranslation->TranslatePlural(key, n);
   }
 
   const std::string &TranslatePlural(const char *msgctxt, const char *msgid, unsigned n) {
     TranslationKey key = {};
-    key.hasContext     = true;
-    key.context        = msgctxt;
-    key.ident          = msgid;
+    key.hasContext = true;
+    key.context = msgctxt;
+    key.ident = msgid;
     return currentTranslation->TranslatePlural(key, n);
   }
 

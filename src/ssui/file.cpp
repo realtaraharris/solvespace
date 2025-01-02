@@ -47,13 +47,13 @@ hGroup SolveSpaceUI::CreateDefaultDrawingGroup() {
   Group g = {};
 
   // And an empty group, for the first stuff the user draws.
-  g.visible       = true;
-  g.name          = C_("group-name", "sketch-in-plane");
-  g.type          = Group::Type::DRAWING_WORKPLANE;
-  g.subtype       = Group::Subtype::WORKPLANE_BY_POINT_ORTHO;
-  g.order         = 1;
-  g.predef.q      = Quaternion::From(1, 0, 0, 0);
-  hRequest hr     = Request::HREQUEST_REFERENCE_XY;
+  g.visible = true;
+  g.name = C_("group-name", "sketch-in-plane");
+  g.type = Group::Type::DRAWING_WORKPLANE;
+  g.subtype = Group::Subtype::WORKPLANE_BY_POINT_ORTHO;
+  g.order = 1;
+  g.predef.q = Quaternion::From(1, 0, 0, 0);
+  hRequest hr = Request::HREQUEST_REFERENCE_XY;
   g.predef.origin = hr.entity(1);
   SK.group.AddAndAssignId(&g);
   SK.GetGroup(g.h)->activeWorkplane = g.h.entity(0);
@@ -64,19 +64,19 @@ void SolveSpaceUI::NewFile() {
   ClearExisting();
 
   // Our initial group, that contains the references.
-  Group g   = {};
+  Group g = {};
   g.visible = true;
-  g.name    = C_("group-name", "#references");
-  g.type    = Group::Type::DRAWING_3D;
-  g.order   = 0;
-  g.h       = Group::HGROUP_REFERENCES;
+  g.name = C_("group-name", "#references");
+  g.type = Group::Type::DRAWING_3D;
+  g.order = 0;
+  g.h = Group::HGROUP_REFERENCES;
   SK.group.Add(&g);
 
   // Let's create three two-d coordinate systems, for the coordinate
   // planes; these are our references, present in every sketch.
-  Request r   = {};
-  r.type      = Request::Type::WORKPLANE;
-  r.group     = Group::HGROUP_REFERENCES;
+  Request r = {};
+  r.type = Request::Type::WORKPLANE;
+  r.group = Group::HGROUP_REFERENCES;
   r.workplane = Entity::FREE_IN_3D;
 
   r.h = Request::HREQUEST_REFERENCE_XY;
@@ -220,14 +220,14 @@ const SolveSpaceUI::SaveTable SolveSpaceUI::SAVED[] = {
     {0, NULL, 0, NULL}};
 
 struct SAVEDptr {
-  EntityMap      &M() { return *((EntityMap *)this); }
-  std::string    &S() { return *((std::string *)this); }
+  EntityMap &M() { return *((EntityMap *)this); }
+  std::string &S() { return *((std::string *)this); }
   Platform::Path &P() { return *((Platform::Path *)this); }
-  bool           &b() { return *((bool *)this); }
-  RgbaColor      &c() { return *((RgbaColor *)this); }
-  int            &d() { return *((int *)this); }
-  double         &f() { return *((double *)this); }
-  uint32_t       &x() { return *((uint32_t *)this); }
+  bool &b() { return *((bool *)this); }
+  RgbaColor &c() { return *((RgbaColor *)this); }
+  int &d() { return *((int *)this); }
+  double &f() { return *((double *)this); }
+  uint32_t &x() { return *((uint32_t *)this); }
 };
 
 void SolveSpaceUI::SaveUsingTable(const Platform::Path &filename, int type) {
@@ -236,8 +236,8 @@ void SolveSpaceUI::SaveUsingTable(const Platform::Path &filename, int type) {
     if (SAVED[i].type != type)
       continue;
 
-    int       fmt = SAVED[i].fmt;
-    SAVEDptr *p   = (SAVEDptr *)SAVED[i].ptr;
+    int fmt = SAVED[i].fmt;
+    SAVEDptr *p = (SAVEDptr *)SAVED[i].ptr;
     // Any items that aren't specified are assumed to be zero
     if (fmt == 'S' && p->S().empty())
       continue;
@@ -417,7 +417,7 @@ void SolveSpaceUI::LoadUsingTable(const Platform::Path &filename, char *key, cha
   int i;
   for (i = 0; SAVED[i].type != 0; i++) {
     if (strcmp(SAVED[i].desc, key) == 0) {
-      SAVEDptr    *p = (SAVEDptr *)SAVED[i].ptr;
+      SAVEDptr *p = (SAVEDptr *)SAVED[i].ptr;
       unsigned int u = 0;
       switch (SAVED[i].fmt) {
       case 'S': p->S() = val; break;
@@ -446,8 +446,8 @@ void SolveSpaceUI::LoadUsingTable(const Platform::Path &filename, char *key, cha
         p->M().clear();
         for (;;) {
           EntityKey ek;
-          EntityId  ei;
-          char      line2[1024];
+          EntityId ei;
+          char line2[1024];
           if (fgets(line2, (int)sizeof(line2), fh) == NULL)
             break;
           if (sscanf(line2, "%d %x %d", &(ei.v), &(ek.input.v), &(ek.copyNumber)) == 3) {
@@ -483,8 +483,8 @@ void SolveSpaceUI::LoadUsingTable(const Platform::Path &filename, char *key, cha
 
 bool SolveSpaceUI::LoadFromFile(const Platform::Path &filename, bool canCancel) {
   bool fileIsEmpty = true;
-  allConsistent    = false;
-  fileLoadError    = false;
+  allConsistent = false;
+  fileLoadError = false;
 
   fh = OpenFile(filename, "rb");
   if (!fh) {
@@ -494,7 +494,7 @@ bool SolveSpaceUI::LoadFromFile(const Platform::Path &filename, bool canCancel) 
 
   ClearExisting();
 
-  sv         = {};
+  sv = {};
   sv.g.scale = 1; // default is 1, not 0; so legacy files need this
   Style::FillDefaultStyle(&sv.s);
 
@@ -516,7 +516,7 @@ bool SolveSpaceUI::LoadFromFile(const Platform::Path &filename, bool canCancel) 
 
     char *e = strchr(line, '=');
     if (e) {
-      *e        = '\0';
+      *e = '\0';
       char *key = line, *val = e + 1;
       LoadUsingTable(filename, key, val);
     } else if (strcmp(line, "AddGroup") == 0) {
@@ -526,7 +526,7 @@ bool SolveSpaceUI::LoadFromFile(const Platform::Path &filename, bool canCancel) 
         sv.g.opA.v = 0;
 
       SK.group.Add(&(sv.g));
-      sv.g       = {};
+      sv.g = {};
       sv.g.scale = 1; // default is 1, not 0; so legacy files need this
     } else if (strcmp(line, "AddParam") == 0) {
       // params are regenerated, but we want to preload the values
@@ -589,7 +589,7 @@ void SolveSpaceUI::UpgradeLegacyData() {
     // it is not fully constrained.
     case Request::Type::TTF_TEXT: {
       IdList<Entity, hEntity> entity = {};
-      IdList<Param, hParam>   param  = {};
+      IdList<Param, hParam> param = {};
       r.Generate(&entity, &param);
 
       // If we didn't load all of the entities and params that this
@@ -609,9 +609,9 @@ void SolveSpaceUI::UpgradeLegacyData() {
       }
 
       if (!allPointsExist) {
-        Entity    *text = entity.FindById(r.h.entity(0));
-        Entity    *b    = entity.FindById(text->point[2]);
-        Entity    *c    = entity.FindById(text->point[3]);
+        Entity *text = entity.FindById(r.h.entity(0));
+        Entity *b = entity.FindById(text->point[2]);
+        Entity *c = entity.FindById(text->point[3]);
         ExprVector bex, cex;
         text->RectGetPointsExprs(&bex, &cex);
         b->PointForceParamTo(bex.Eval());
@@ -654,16 +654,16 @@ void SolveSpaceUI::UpgradeLegacyData() {
         continue;
 
       Entity *eln = SK.GetEntity(c.entityA);
-      Entity *ea  = SK.GetEntity(eln->point[0]);
-      Entity *eb  = SK.GetEntity(eln->point[1]);
-      Entity *ep  = SK.GetEntity(c.ptA);
+      Entity *ea = SK.GetEntity(eln->point[0]);
+      Entity *eb = SK.GetEntity(eln->point[1]);
+      Entity *ep = SK.GetEntity(c.ptA);
 
-      ExprVector exp  = ep->PointGetExprsInWorkplane(c.workplane);
-      ExprVector exa  = ea->PointGetExprsInWorkplane(c.workplane);
-      ExprVector exb  = eb->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exp = ep->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exa = ea->PointGetExprsInWorkplane(c.workplane);
+      ExprVector exb = eb->PointGetExprsInWorkplane(c.workplane);
       ExprVector exba = exb.Minus(exa);
-      Param     *p    = SK.GetParam(c.h.param(0));
-      p->val          = exba.Dot(exp.Minus(exa))->Eval() / exba.Dot(exba)->Eval();
+      Param *p = SK.GetParam(c.h.param(0));
+      p->val = exba.Dot(exp.Minus(exa))->Eval() / exba.Dot(exba)->Eval();
       break;
     }
 
@@ -672,7 +672,7 @@ void SolveSpaceUI::UpgradeLegacyData() {
         continue;
 
       Entity *cubic = SK.GetEntity(c.entityA);
-      Entity *line  = SK.GetEntity(c.entityB);
+      Entity *line = SK.GetEntity(c.entityB);
 
       ExprVector a;
       if (c.other) {
@@ -684,7 +684,7 @@ void SolveSpaceUI::UpgradeLegacyData() {
       ExprVector b = line->VectorGetExprs();
 
       Param *param = SK.GetParam(c.h.param(0));
-      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
+      param->val = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
@@ -699,7 +699,7 @@ void SolveSpaceUI::UpgradeLegacyData() {
       ExprVector b = bn->NormalExprsN();
 
       Param *param = SK.GetParam(c.h.param(0));
-      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
+      param->val = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
@@ -707,12 +707,12 @@ void SolveSpaceUI::UpgradeLegacyData() {
       if (AllParamsExistFor(c))
         continue;
 
-      Entity    *ea = SK.GetEntity(c.entityA), *eb = SK.GetEntity(c.entityB);
+      Entity *ea = SK.GetEntity(c.entityA), *eb = SK.GetEntity(c.entityB);
       ExprVector a = ea->VectorGetExprsInWorkplane(c.workplane);
       ExprVector b = eb->VectorGetExprsInWorkplane(c.workplane);
 
       Param *param = SK.GetParam(c.h.param(0));
-      param->val   = a.Dot(b)->Eval() / b.Dot(b)->Eval();
+      param->val = a.Dot(b)->Eval() / b.Dot(b)->Eval();
       break;
     }
 
@@ -736,7 +736,7 @@ bool SolveSpaceUI::LoadEntitiesFromFile(const Platform::Path &filename, EntityLi
 bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityList *le, SMesh *m,
                                         SShell *sh) {
   SSurface srf = {};
-  SCurve   crv = {};
+  SCurve crv = {};
 
   fh = OpenFile(filename, "rb");
   if (!fh)
@@ -761,7 +761,7 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
 
     char *e = strchr(line, '=');
     if (e) {
-      *e        = '\0';
+      *e = '\0';
       char *key = line, *val = e + 1;
       LoadUsingTable(filename, key, val);
     } else if (strcmp(line, "AddGroup") == 0) {
@@ -787,7 +787,7 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
     } else if (strcmp(line, VERSION_STRING) == 0) {
 
     } else if (StrStartsWith(line, "Triangle ")) {
-      STriangle    tr   = STriangle();
+      STriangle tr = STriangle();
       unsigned int rgba = 0;
       if (sscanf(line,
                  "Triangle %x %x  "
@@ -806,18 +806,18 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
       }
       srf.color = RgbaColor::FromPackedInt((uint32_t)rgba);
     } else if (StrStartsWith(line, "SCtrl ")) {
-      int    i, j;
+      int i, j;
       Vector c;
       double w;
       if (sscanf(line, "SCtrl %d %d %lf %lf %lf Weight %lf", &i, &j, &(c.x), &(c.y), &(c.z), &w) !=
           6) {
         ssassert(false, "Unexpected SCtrl format");
       }
-      srf.ctrl[i][j]   = c;
+      srf.ctrl[i][j] = c;
       srf.weight[i][j] = w;
     } else if (StrStartsWith(line, "TrimBy ")) {
       STrimBy stb = {};
-      int     backwards;
+      int backwards;
       if (sscanf(line, "TrimBy %x %d  %lf %lf %lf  %lf %lf %lf", &(stb.curve.v), &backwards,
                  &(stb.start.x), &(stb.start.y), &(stb.start.z), &(stb.finish.x), &(stb.finish.y),
                  &(stb.finish.z)) != 8) {
@@ -836,17 +836,17 @@ bool SolveSpaceUI::LoadEntitiesFromSlvs(const Platform::Path &filename, EntityLi
       }
       crv.isExact = (isExact != 0);
     } else if (StrStartsWith(line, "CCtrl ")) {
-      int    i;
+      int i;
       Vector c;
       double w;
       if (sscanf(line, "CCtrl %d %lf %lf %lf Weight %lf", &i, &(c.x), &(c.y), &(c.z), &w) != 5) {
         ssassert(false, "Unexpected CCtrl format");
       }
-      crv.exact.ctrl[i]   = c;
+      crv.exact.ctrl[i] = c;
       crv.exact.weight[i] = w;
     } else if (StrStartsWith(line, "CurvePt ")) {
       SCurvePt scpt;
-      int      vertex;
+      int vertex;
       if (sscanf(line, "CurvePt %d %lf %lf %lf", &vertex, &(scpt.p.x), &(scpt.p.y), &(scpt.p.z)) !=
           4) {
         ssassert(false, "Unexpected CurvePt format");

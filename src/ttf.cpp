@@ -18,7 +18,7 @@
 #define FT_ERROR_END_LIST {0, NULL}
 
 struct ft_error {
-  int         err;
+  int err;
   const char *str;
 };
 
@@ -59,7 +59,7 @@ void TtfFontList::LoadAll() {
     return;
 
   for (const Platform::Path &font : Platform::GetFontFiles()) {
-    TtfFont tf  = {};
+    TtfFont tf = {};
     tf.fontFile = font;
     if (tf.LoadFromFile(fontLibrary))
       l.Add(&tf);
@@ -157,8 +157,8 @@ bool TtfFont::LoadFromFile(FT_Library fontLibrary, bool keepOpen) {
   ssassert(!IsResource(), "Cannot load a font provided by a resource as a file.");
 
   FT_Open_Args args = {};
-  args.flags        = FT_OPEN_PATHNAME;
-  args.pathname     = &fontFile.raw[0]; // FT_String is char* for historical reasons
+  args.flags = FT_OPEN_PATHNAME;
+  args.pathname = &fontFile.raw[0]; // FT_String is char* for historical reasons
 
   // We don't use OpenFile() here to let freetype do its own memory management.
   // This is OK because on Linux/OS X we just delegate to fopen and on Windows
@@ -184,7 +184,7 @@ bool TtfFont::LoadFromResource(FT_Library fontLibrary, bool keepOpen) {
   // substr to cut off 'res://' (length: 6)
   const void *_buffer = Platform::LoadResource(fontFile.raw.substr(6, fontFile.raw.size()), &_size);
 
-  FT_Long        size   = static_cast<FT_Long>(_size);
+  FT_Long size = static_cast<FT_Long>(_size);
   const FT_Byte *buffer = reinterpret_cast<const FT_Byte *>(_buffer);
 
   if (int fterr = FT_New_Memory_Face(fontLibrary, buffer, size, 0, &fontFace)) {
@@ -215,9 +215,9 @@ bool TtfFont::ExtractTTFData(bool keepOpen) {
   // range of its 26.6 fixed point type, and adjust the factors so that the unit
   // matches cap height.
   FT_Size_RequestRec sizeRequest;
-  sizeRequest.type           = FT_SIZE_REQUEST_TYPE_REAL_DIM;
-  sizeRequest.width          = 1 << 16;
-  sizeRequest.height         = 1 << 16;
+  sizeRequest.type = FT_SIZE_REQUEST_TYPE_REAL_DIM;
+  sizeRequest.width = 1 << 16;
+  sizeRequest.height = 1 << 16;
   sizeRequest.horiResolution = 128;
   sizeRequest.vertResolution = 128;
   if (int fterr = FT_Request_Size(fontFace, &sizeRequest)) {
@@ -228,7 +228,7 @@ bool TtfFont::ExtractTTFData(bool keepOpen) {
     return false;
   }
 
-  char     chr = 'A';
+  char chr = 'A';
   uint32_t gid = FT_Get_Char_Index(fontFace, 'A');
   if (gid == 0) {
     dbp("freetype: CID-to-GID mapping for CID 0x%04x in file '%s' failed: %s; "
@@ -267,28 +267,28 @@ bool TtfFont::ExtractTTFData(bool keepOpen) {
 typedef struct OutlineData {
   Vector origin = Vector(0, 0, 0), u = Vector(0, 0, 0), v = Vector(0, 0, 0); // input parameters
   SBezierList *beziers;                                                      // output bezier list
-  float        factor; // ratio between freetype and solvespace coordinates
-  FT_Pos       bx;     // x offset of the current glyph
-  FT_Pos       px, py; // current point
+  float factor;  // ratio between freetype and solvespace coordinates
+  FT_Pos bx;     // x offset of the current glyph
+  FT_Pos px, py; // current point
 } OutlineData;
 
 static Vector Transform(OutlineData *data, FT_Pos x, FT_Pos y) {
   Vector r = data->origin;
-  r        = r.Plus(data->u.ScaledBy((float)(data->bx + x) * data->factor));
-  r        = r.Plus(data->v.ScaledBy((float)y * data->factor));
+  r = r.Plus(data->u.ScaledBy((float)(data->bx + x) * data->factor));
+  r = r.Plus(data->v.ScaledBy((float)y * data->factor));
   return r;
 }
 
 static int MoveTo(const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  data->px          = p->x;
-  data->py          = p->y;
+  data->px = p->x;
+  data->py = p->y;
   return 0;
 }
 
 static int LineTo(const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  SBezier      sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, p->x, p->y));
+  SBezier sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, p->x, p->y));
   data->beziers->l.Add(&sb);
   data->px = p->x;
   data->py = p->y;
@@ -297,8 +297,8 @@ static int LineTo(const FT_Vector *p, void *cc) {
 
 static int ConicTo(const FT_Vector *c, const FT_Vector *p, void *cc) {
   OutlineData *data = (OutlineData *)cc;
-  SBezier      sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, c->x, c->y),
-                                  Transform(data, p->x, p->y));
+  SBezier sb = SBezier::From(Transform(data, data->px, data->py), Transform(data, c->x, c->y),
+                             Transform(data, p->x, p->y));
   data->beziers->l.Add(&sb);
   data->px = p->x;
   data->py = p->y;
@@ -320,12 +320,12 @@ void TtfFont::PlotString(const std::string &str, SBezierList *sbl, Vector origin
   ssassert(fontFace != NULL, "Expected font face to be loaded");
 
   FT_Outline_Funcs outlineFuncs;
-  outlineFuncs.move_to  = MoveTo;
-  outlineFuncs.line_to  = LineTo;
+  outlineFuncs.move_to = MoveTo;
+  outlineFuncs.line_to = LineTo;
   outlineFuncs.conic_to = ConicTo;
   outlineFuncs.cubic_to = CubicTo;
-  outlineFuncs.shift    = 0;
-  outlineFuncs.delta    = 0;
+  outlineFuncs.shift = 0;
+  outlineFuncs.delta = 0;
 
   FT_Pos dx = 0;
   for (char32_t cid : ReadUTF8(str)) {
@@ -372,12 +372,12 @@ void TtfFont::PlotString(const std::string &str, SBezierList *sbl, Vector origin
     bx += fontFace->glyph->metrics.horiBearingX;
 
     OutlineData data = {};
-    data.origin      = origin;
-    data.u           = u;
-    data.v           = v;
-    data.beziers     = sbl;
-    data.factor      = (float)(1.0 / capHeight);
-    data.bx          = bx;
+    data.origin = origin;
+    data.u = u;
+    data.v = v;
+    data.beziers = sbl;
+    data.factor = (float)(1.0 / capHeight);
+    data.bx = bx;
     if (int fterr = FT_Outline_Decompose(&fontFace->glyph->outline, &outlineFuncs, &data)) {
       dbp("freetype: bezier decomposition failed for GID 0x%4x in file '%s': %s", gid,
           fontFile.raw.c_str(), ft_error_string(fterr));

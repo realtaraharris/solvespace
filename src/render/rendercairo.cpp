@@ -17,9 +17,9 @@ namespace SolveSpace {
   }
 
   void CairoRenderer::GetIdent(const char **vendor, const char **renderer, const char **version) {
-    *vendor   = "Cairo";
+    *vendor = "Cairo";
     *renderer = "Cairo";
-    *version  = cairo_version_string();
+    *version = cairo_version_string();
   }
 
   void CairoRenderer::FlushFrame() {
@@ -64,9 +64,9 @@ namespace SolveSpace {
     FinishPath();
 
     Stroke *stroke = strokes.FindById(hcs);
-    current.hcs    = hcs;
+    current.hcs = hcs;
 
-    RgbaColor           color  = stroke->color;
+    RgbaColor color = stroke->color;
     std::vector<double> dashes = StipplePatternDashes(stroke->stipplePattern);
     for (double &dash : dashes) {
       dash *= stroke->StippleScalePx(camera);
@@ -141,15 +141,15 @@ namespace SolveSpace {
   void CairoPixmapRenderer::Init() {
     Clear();
 
-    pixmap         = std::make_shared<Pixmap>();
+    pixmap = std::make_shared<Pixmap>();
     pixmap->format = Pixmap::Format::BGRA;
-    pixmap->width  = (size_t)camera.width;
+    pixmap->width = (size_t)camera.width;
     pixmap->height = (size_t)camera.height;
     pixmap->stride = cairo_format_stride_for_width(CAIRO_FORMAT_RGB24, (int)camera.width);
-    pixmap->data   = std::vector<uint8_t>(pixmap->stride * pixmap->height);
-    surface        = cairo_image_surface_create_for_data(&pixmap->data[0], CAIRO_FORMAT_RGB24,
-                                                         pixmap->width, pixmap->height, pixmap->stride);
-    context        = cairo_create(surface);
+    pixmap->data = std::vector<uint8_t>(pixmap->stride * pixmap->height);
+    surface = cairo_image_surface_create_for_data(&pixmap->data[0], CAIRO_FORMAT_RGB24,
+                                                  pixmap->width, pixmap->height, pixmap->stride);
+    context = cairo_create(surface);
   }
 
   void CairoPixmapRenderer::Clear() {
