@@ -94,10 +94,10 @@ SolveSpace::Platform::MouseEvent::Button EditorView::GetMouseButton() {
     return SolveSpace::Platform::MouseEvent::Button::LEFT;
   }
   if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-    return SolveSpace::Platform::MouseEvent::Button::MIDDLE;
+    return SolveSpace::Platform::MouseEvent::Button::RIGHT;
   }
   if (buttons & B_TERTIARY_MOUSE_BUTTON) {
-    return SolveSpace::Platform::MouseEvent::Button::RIGHT;
+    return SolveSpace::Platform::MouseEvent::Button::MIDDLE;
   }
 
   return SolveSpace::Platform::MouseEvent::Button::LEFT;
