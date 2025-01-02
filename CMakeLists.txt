@@ -321,3 +321,12 @@ if(ENABLE_COVERAGE)
 		COMMENT "Generating coverage report"
 		VERBATIM)
 endif()
+
+# print cmake targets (useful for debugging this file)
+# if there's a straightforward command for this, *please* let me know about it
+################################################################################
+#get_property(targets DIRECTORY PROPERTY BUILDSYSTEM_TARGETS)
+#message("available targets:")
+#foreach(item IN LISTS targets)
+#	message("- ${item}")
+#endforeach()
