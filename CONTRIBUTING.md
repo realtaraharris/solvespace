@@ -1,3 +1,35 @@
+# Building
+
+```
+cd build
+cmake ..
+cmake --build . -j --target solvespace
+```
+
+# Testing
+
+```
+cd build
+make test-solvespace
+```
+
+# clean build
+
+```
+cd build
+cmake --build . --clean-first
+```
+
+# cmake targets:
+
+- clang-format
+- clang-tidy
+- solvespace-debugtool
+- solvespace-testsuite
+- solvespace-core
+- solvespace
+- test-solvespace
+
 Contributing to SolveSpace for Haiku
 ====================================
 

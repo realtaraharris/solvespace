@@ -19,9 +19,9 @@ git submodule update --init extlib/libdxfrw
 pkgman install freetype_devel cairo_devel eigen json_c_devel agg_devel freetype_debuginfo fontconfig_debuginfo graphite2_debuginfo libiconv_debuginfo lcms_debuginfo
 mkdir build
 cd build
-cmake .. -D ENABLE_GUI=YES -D ENABLE_TESTS=NO -D FORCE_VENDORED_Eigen3=YES
-cmake --build .
-./bin/SolveSpace
+cmake ..
+cmake --build . -j --target solvespace
+./SolveSpace
 ```
 
 Try opening a test file using the file menu. i.e., solvespace/test/analysis/contour_area/normal.slvs
