@@ -4,6 +4,7 @@
 // Copyright 2016 whitequark
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
+#include "ssg.h"
 
 // Hack... we should rename the ones in ui.h instead.
 #undef CHECK_TRUE
