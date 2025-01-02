@@ -8,20 +8,38 @@
 
 #include <FilePanel.h>
 
-class SolveSpaceFileFilter : public BRefFilter {
-  public:
-  bool Filter(const entry_ref *entryRef, BNode *node, struct stat_beos *stat,
-              const char *fileType);
+#define GENERATE_REF_FILTER_PROTO(filterName) \
+class filterName : public BRefFilter { \
+  public: bool Filter(const entry_ref *entryRef, BNode *node, \
+	struct stat_beos *stat, const char *fileType); \
 };
+
+GENERATE_REF_FILTER_PROTO(SolveSpaceModelFileFilter)
+GENERATE_REF_FILTER_PROTO(SolveSpaceLinkFileFilter)
+GENERATE_REF_FILTER_PROTO(RasterFileFilter)
+GENERATE_REF_FILTER_PROTO(MeshFileFilter)
+GENERATE_REF_FILTER_PROTO(SurfaceFileFilter)
+GENERATE_REF_FILTER_PROTO(VectorFileFilter)
+GENERATE_REF_FILTER_PROTO(Vector3dFileFilter)
+GENERATE_REF_FILTER_PROTO(ImportFileFilter)
+GENERATE_REF_FILTER_PROTO(CsvFileFilter)
 
 class HaikuSpaceUI : public SolveSpaceUI {
   private:
-  BRefFilter *solvespaceFF;
+  BRefFilter *solveSpaceModelFileFilter;
+  BRefFilter *solveSpaceLinkFileFilter;
+  BRefFilter *rasterFileFilter;
+  BRefFilter *meshFileFilter;
+  BRefFilter *surfaceFileFilter;
+  BRefFilter *vectorFileFilter;
+  BRefFilter *vector3dFileFilter;
+  BRefFilter *importFileFilter;
+  BRefFilter *csvFileFilter;
 
   public:
   HaikuSpaceUI();
   void SavePanel(uint32 messageName);
-  void OpenPanel(uint32 messageName);
+  void OpenPanel(uint32 messageName, BRefFilter *fileFilter);
   void OpenSolveSpaceFile();
   void UndoEnableMenus();
   bool OkayToStartNewFile();

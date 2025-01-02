@@ -16,22 +16,68 @@
 #include "filewriter/stepfilewriter.h"
 #include "filewriter/vectorfilewriter.h"
 
-bool SolveSpaceFileFilter::Filter(const entry_ref *entryRef, BNode *node, struct stat_beos *stat,
-                                  const char *fileType) {
-  bool          admitIt = false;
-  char          type[256];
-  const BString mask("application/solvespace");
-  BNodeInfo     nodeInfo(node);
-
-  if (node->IsDirectory()) {
-    admitIt = true;
-  } else {
-    nodeInfo.GetType(type);
-    admitIt = (mask.Compare(type, mask.CountChars()) == 0);
-  }
-
-  return admitIt;
+// https://www.iana.org/assignments/media-types/media-types.xhtml
+#define GENERATE_REF_FILTER_IMPL(filterName, permittedMimeTypes) \
+bool filterName::Filter( \
+  const entry_ref *entryRef, \
+	BNode *node, \
+	struct stat_beos *stat, \
+	const char *fileType \
+) { \
+  char type[B_MIME_TYPE_LENGTH]; \
+  BNodeInfo nodeInfo(node); \
+  if (node->IsDirectory()) { return true; } \
+  nodeInfo.GetType(type); \
+  for (const std::string &pmt : permittedMimeTypes) { \
+    const BString mask(pmt.c_str()); \
+    if (mask.Compare(type, mask.CountChars()) == 0) { \
+      return true; \
+    } \
+  } \
+  return false; \
 }
+
+// - "SolveSpace models", "slvs"
+GENERATE_REF_FILTER_IMPL(SolveSpaceModelFileFilter, std::vector({"application/solvespace"}))
+
+// - "SolveSpace models", "slvs"
+// ? "IDF circuit board", "emn"
+// - "STL triangle mesh", "stl"
+GENERATE_REF_FILTER_IMPL(SolveSpaceLinkFileFilter, std::vector({"application/solvespace", "model/emn", "model/stl"}))
+
+// - "PNG image", "png"
+GENERATE_REF_FILTER_IMPL(RasterFileFilter, std::vector({"image/png"}))
+
+// - "STL mesh", "stl"
+// - "Wavefront OBJ mesh", "obj"
+// - "Three.js-compatible mesh, with viewer", "html"
+// - "Three.js-compatible mesh, mesh only", "js"
+// - "VRML text file", "wrl"
+GENERATE_REF_FILTER_IMPL(MeshFileFilter, std::vector({"model/stl", "model/obj", "text/html", "text/javascript", "model/vrml"}))
+
+// - "STEP file", "step", "stp"
+GENERATE_REF_FILTER_IMPL(SurfaceFileFilter, std::vector({"model/step"}))
+
+// - "PDF file", "pdf"
+// ? "Encapsulated PostScript", "eps"
+// - "PostScript", "ps"
+// - "Scalable Vector Graphics", "svg"
+// - "STEP file", "step", "stp"
+// - "DXF file (AutoCAD 2007)", "dxf" (text)
+// - "HPGL file", "plt", "hpgl"
+// ? "G Code", "ngc", "txt"
+GENERATE_REF_FILTER_IMPL(VectorFileFilter, std::vector({"application/pdf", "image/x-eps", "application/postscript", "image/svg+xml", "model/step", "image/vnd.dxf", "application/vnd.hp-hpgl", "gcode"}))
+
+// - "STEP file", "step", "stp"
+// - "DXF file (AutoCAD 2007)" "dxf" (text)
+GENERATE_REF_FILTER_IMPL(Vector3dFileFilter, std::vector({"model/step", "image/vnd.dxf"}))
+
+// - "DXF file (AutoCAD 2007)", "dxf" (text)
+// - "DWG file (AutoCAD 2007)", "dwg" (binary)
+GENERATE_REF_FILTER_IMPL(ImportFileFilter, std::vector({"image/vnd.dxf", "image/vnd.dwg"}))
+
+// - "Comma-separated values", "csv"
+GENERATE_REF_FILTER_IMPL(CsvFileFilter, std::vector({"text/csv"}))
 
 void HaikuSpaceUI::SavePanel(uint32 messageName) {
   BFilePanel *fp =
@@ -39,18 +85,26 @@ void HaikuSpaceUI::SavePanel(uint32 messageName) {
   fp->Show();
 }
 
-void HaikuSpaceUI::OpenPanel(uint32 messageName) {
+void HaikuSpaceUI::OpenPanel(uint32 messageName, BRefFilter *fileFilter) {
   BFilePanel *fp = new BFilePanel(B_OPEN_PANEL, NULL, NULL, B_FILE_NODE, false,
-                                  new BMessage(messageName), solvespaceFF);
+                                  new BMessage(messageName), fileFilter);
   fp->Show();
 }
 
 HaikuSpaceUI::HaikuSpaceUI() {
-  solvespaceFF = new SolveSpaceFileFilter();
+  solveSpaceModelFileFilter = new SolveSpaceModelFileFilter();
+  solveSpaceLinkFileFilter = new SolveSpaceLinkFileFilter();
+  rasterFileFilter = new RasterFileFilter();
+  meshFileFilter = new MeshFileFilter();
+  surfaceFileFilter = new SurfaceFileFilter();
+  vectorFileFilter = new VectorFileFilter();
+  vector3dFileFilter = new Vector3dFileFilter();
+  importFileFilter = new ImportFileFilter();
+  csvFileFilter = new CsvFileFilter();
 }
 
 void HaikuSpaceUI::OpenSolveSpaceFile() {
-  OpenPanel(READ_FILE);
+  OpenPanel(READ_FILE, solveSpaceModelFileFilter);
 }
 
 void HaikuSpaceUI::UndoEnableMenus() {
@@ -179,7 +233,7 @@ void HaikuSpaceUI::PngExportImage(Platform::Path fp) {
 }
 
 void HaikuSpaceUI::PromptForLinkedFile() {
-  OpenPanel(LINKED_FILE_IMAGE);
+  OpenPanel(LINKED_FILE_IMAGE, rasterFileFilter);
 }
 
 void HaikuSpaceUI::LinkedFileImage(const Platform::Path &filename) {
@@ -193,7 +247,7 @@ void HaikuSpaceUI::LinkedFileImage(const Platform::Path &filename) {
 }
 
 void HaikuSpaceUI::PromptForImportFile() {
-  OpenPanel(IMPORT_FILE);
+  OpenPanel(IMPORT_FILE, importFileFilter);
 }
 
 namespace SolveSpace {
@@ -219,7 +273,7 @@ void HaikuSpaceUI::PromptForGroupLink(Group &g) {
   g.type        = Group::Type::LINKED;
   g.meshCombine = Group::CombineAs::ASSEMBLE;
   if (g.linkFile.IsEmpty()) {
-    OpenPanel(GROUP_LINK_FILE);
+    OpenPanel(GROUP_LINK_FILE, solveSpaceLinkFileFilter);
   }
 }
 
@@ -308,47 +362,3 @@ void HaikuSpaceUI::StopTracing(const Platform::Path &exportFile) {
   SS.traced.path.l.Clear();
   SS.GW.Invalidate();
 }
-
-/*
-  std::vector<FileFilter> SolveSpaceModelFileFilters = {
-    {CN_ ("file-type", "SolveSpace models"), {"slvs"}},
-  };
-  std::vector<FileFilter> SolveSpaceLinkFileFilters = {
-    {CN_ ("file-type", "ALL"), {"slvs", "emn", "stl"}},
-    {CN_ ("file-type", "SolveSpace models"), {"slvs"}},
-    {CN_ ("file-type", "IDF circuit board"), {"emn"}},
-    {CN_ ("file-type", "STL triangle mesh"), {"stl"}},
-  };
-  std::vector<FileFilter> RasterFileFilters = {
-    {CN_ ("file-type", "PNG image"), {"png"}},
-  };
-  std::vector<FileFilter> MeshFileFilters = {
-    {CN_ ("file-type", "STL mesh"), {"stl"}},
-    {CN_ ("file-type", "Wavefront OBJ mesh"), {"obj"}},
-    {CN_ ("file-type", "Three.js-compatible mesh, with viewer"), {"html"}},
-    {CN_ ("file-type", "Three.js-compatible mesh, mesh only"), {"js"}},
-    {CN_ ("file-type", "VRML text file"), {"wrl"}},
-  };
-  std::vector<FileFilter> SurfaceFileFilters = {
-    {CN_ ("file-type", "STEP file"), {"step", "stp"}},
-  };
-  std::vector<FileFilter> VectorFileFilters = {
-    {CN_ ("file-type", "PDF file"), {"pdf"}},
-    {CN_ ("file-type", "Encapsulated PostScript"), {"eps", "ps"}},
-    {CN_ ("file-type", "Scalable Vector Graphics"), {"svg"}},
-    {CN_ ("file-type", "STEP file"), {"step", "stp"}},
-    {CN_ ("file-type", "DXF file (AutoCAD 2007)"), {"dxf"}},
-    {CN_ ("file-type", "HPGL file"), {"plt", "hpgl"}},
-    {CN_ ("file-type", "G Code"), {"ngc", "txt"}},
-  };
-  std::vector<FileFilter> Vector3dFileFilters = {
-    {CN_ ("file-type", "STEP file"), {"step", "stp"}},
-    {CN_ ("file-type", "DXF file (AutoCAD 2007)"), {"dxf"}},
-  };
-  std::vector<FileFilter> ImportFileFilters = {
-    {CN_ ("file-type", "AutoCAD DXF and DWG files"), {"dxf", "dwg"}},
-  };
-  std::vector<FileFilter> CsvFileFilters = {
-    {CN_ ("file-type", "Comma-separated values"), {"csv"}},
-  };
-*/
