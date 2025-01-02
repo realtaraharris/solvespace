@@ -15,7 +15,7 @@ BBitmap *LoadIconFromResource(const char *name, float iconSize) {
   size_t size = 0;
   const uint8 *iconData = (const uint8 *)resources.LoadResource('VICN', name, &size);
 
-  if (buffer == NULL) {
+  if (iconData == NULL) {
     return NULL;
   }
 
