@@ -5,7 +5,7 @@ cmake --build .
 
 # testing
 cd build
-make test_solvespace
+make test-solvespace
 
 # clean build
 cmake --build . --clean-first

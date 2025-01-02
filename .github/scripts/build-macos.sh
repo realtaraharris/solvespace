@@ -47,6 +47,6 @@ if [ "$3" = "xcode" ]; then
 else
     cmake --build . --config "${BUILD_TYPE}" -j$(sysctl -n hw.logicalcpu)
     if [ $(uname -m) = "$2" ]; then
-        make -j$(sysctl -n hw.logicalcpu) test_solvespace
+        make -j$(sysctl -n hw.logicalcpu) test-solvespace
     fi
 fi

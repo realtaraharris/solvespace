@@ -178,8 +178,7 @@ add_custom_command(TARGET SolveSpace POST_BUILD
 		-a VICN:24:constrain-parallel-normals-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/constrain-parallel-normals-tool.hvif
 		-a VICN:25:other-supplementary-angle-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/other-supplementary-angle-tool.hvif
 		-a VICN:26:ref-tool ${CMAKE_SOURCE_DIR}/src/platform/haiku/resources/icons/ref-tool.hvif
-		COMMAND mimeset -f ${CMAKE_BINARY_DIR}/SolveSpace
-	DEPENDS solvespace/Resources.rdef
+	COMMAND mimeset -f ${CMAKE_BINARY_DIR}/SolveSpace
 )
 
 # test suite
@@ -262,7 +261,7 @@ target_include_directories(solvespace-testsuite
 
 add_dependencies(solvespace-testsuite resources)
 
-add_custom_target(test_solvespace
+add_custom_target(test-solvespace
 	COMMAND $<TARGET_FILE:solvespace-testsuite>
 	COMMENT "Testing SolveSpace"
 	VERBATIM)
@@ -318,7 +317,7 @@ if(ENABLE_COVERAGE)
 			-o ${CMAKE_BINARY_DIR}/coverage/
 			-t "SolveSpace testbench"
 		DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/coverage_base.info
-		DEPENDS test_solvespace
+		DEPENDS test-solvespace
 		COMMENT "Generating coverage report"
 		VERBATIM)
 endif()

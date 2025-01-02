@@ -8,4 +8,4 @@ cmake \
   -DENABLE_SANITIZERS="ON" \
   ..
 make -j$(nproc) VERBOSE=1
-make test_solvespace
+make test-solvespace
