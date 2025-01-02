@@ -120,7 +120,7 @@ target_include_directories(solvespace-core PRIVATE
 )
 target_compile_definitions(solvespace-core PRIVATE HAIKU_GUI=1)
 
-add_executable(SolveSpace
+add_executable(solvespace
 	src/platform/haiku/App.cpp
 	src/platform/haiku/MainWindow.cpp
 	src/platform/haiku/Toolbar.cpp
@@ -138,17 +138,17 @@ add_executable(SolveSpace
 	$<TARGET_OBJECTS:solvespace-core>
 )
 
-target_include_directories(SolveSpace PRIVATE
+target_include_directories(solvespace PRIVATE
 	/boot/home/cppfront/include/
 	/boot/system/develop/headers/agg2/
 	src/
 	${CMAKE_CURRENT_BINARY_DIR} # adds config.h/config.in.h
 )
 
-target_link_libraries(SolveSpace be agg translation tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
-target_compile_definitions(SolveSpace PRIVATE HAIKU_GUI=1)
+target_link_libraries(solvespace be agg translation tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
+target_compile_definitions(solvespace PRIVATE HAIKU_GUI=1)
 
-add_custom_command(TARGET SolveSpace POST_BUILD
+add_custom_command(TARGET solvespace POST_BUILD
 	COMMENT "rebuilding icon resources"
 	COMMAND rc -o ${CMAKE_BINARY_DIR}/Resources.rsrc ${CMAKE_SOURCE_DIR}/src/platform/haiku/Resources.rdef
 	COMMAND xres -o ${CMAKE_BINARY_DIR}/SolveSpace ${CMAKE_BINARY_DIR}/Resources.rsrc
