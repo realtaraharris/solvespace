@@ -45,57 +45,6 @@ namespace SolveSpace {
       };
     };
 
-    // A 3-DOF input event.
-    struct SixDofEvent {
-      enum class Type {
-        MOTION,
-        PRESS,
-        RELEASE,
-      };
-
-      enum class Button {
-        FIT,
-      };
-
-      Type   type;
-      bool   shiftDown;
-      bool   controlDown;
-      double translationX, translationY, translationZ; // for Type::MOTION
-      double rotationX, rotationY, rotationZ;          // for Type::MOTION
-      Button button;                                   // for Type::{PRESS,RELEASE}
-    };
-
-    // A keyboard input event.
-    struct KeyboardEvent {
-      enum class Type {
-        PRESS,
-        RELEASE,
-      };
-
-      enum class Key {
-        CHARACTER,
-        FUNCTION,
-      };
-
-      Type type;
-      Key  key;
-      union {
-        char32_t chr; // for Key::CHARACTER
-        int      num; // for Key::FUNCTION
-      };
-      bool shiftDown;
-      bool controlDown;
-
-      bool Equals (const KeyboardEvent &other) {
-        return type == other.type && key == other.key && shiftDown == other.shiftDown &&
-               controlDown == other.controlDown &&
-               ((key == Key::CHARACTER && chr == other.chr) ||
-                (key == Key::FUNCTION && num == other.num));
-      }
-    };
-
-    std::string AcceleratorDescription (const KeyboardEvent &accel);
-
     //-----------------------------------------------------------------------------
     // Interfaces
     //-----------------------------------------------------------------------------
@@ -146,61 +95,6 @@ namespace SolveSpace {
 
     TimerRef CreateTimer ();
 
-    // A native menu item.
-    class MenuItem {
-  public:
-      enum class Indicator {
-        NONE,
-        CHECK_MARK,
-        RADIO_MARK,
-      };
-
-      std::function<void ()> onTrigger;
-
-      virtual ~MenuItem () = default;
-
-      virtual void SetAccelerator (KeyboardEvent accel) = 0;
-      virtual void SetIndicator (Indicator type)        = 0;
-      virtual void SetEnabled (bool enabled)            = 0;
-      virtual void SetActive (bool active)              = 0;
-    };
-
-    typedef std::shared_ptr<MenuItem> MenuItemRef;
-
-    // A native menu.
-    class Menu {
-  public:
-      virtual ~Menu () = default;
-
-      virtual std::shared_ptr<MenuItem>
-                                    AddItem (const std::string     &label,
-                                             std::function<void ()> onTrigger = std::function<void ()> (),
-                                             bool                   mnemonics = true)       = 0;
-      virtual std::shared_ptr<Menu> AddSubMenu (const std::string &label) = 0;
-      virtual void                  AddSeparator ()                       = 0;
-
-      virtual void PopUp () = 0;
-
-      virtual void Clear () = 0;
-    };
-
-    typedef std::shared_ptr<Menu> MenuRef;
-
-    // A native menu bar.
-    class MenuBar {
-  public:
-      virtual ~MenuBar () = default;
-
-      virtual std::shared_ptr<Menu> AddSubMenu (const std::string &label) = 0;
-
-      virtual void Clear () = 0;
-    };
-
-    typedef std::shared_ptr<MenuBar> MenuBarRef;
-
-    MenuRef    CreateMenu ();
-    MenuBarRef GetOrCreateMainMenu (bool *unique);
-
     // A native top-level window, with an OpenGL context, and an editor overlay.
     class Window {
   public:
@@ -214,8 +108,6 @@ namespace SolveSpace {
       std::function<void ()>              onClose;
       std::function<void (bool)>          onFullScreen;
       std::function<bool (MouseEvent)>    onMouseEvent;
-      std::function<void (SixDofEvent)>   onSixDofEvent;
-      std::function<bool (KeyboardEvent)> onKeyboardEvent;
       std::function<void (std::string)>   onEditingDone;
       std::function<void (double)>        onScrollbarAdjusted;
       std::function<void ()>              onContextLost;
@@ -242,8 +134,6 @@ namespace SolveSpace {
 
       virtual void SetTitle (const std::string &title) = 0;
       virtual bool SetTitleForFilename (const Path &filename) { return false; }
-
-      virtual void SetMenuBar (MenuBarRef menuBar) = 0;
 
       virtual void GetContentSize (double *width, double *height)  = 0;
       virtual void SetMinContentSize (double width, double height) = 0;
@@ -273,22 +163,10 @@ namespace SolveSpace {
     WindowRef CreateWindow (Window::Kind kind         = Window::Kind::TOPLEVEL,
                             WindowRef    parentWindow = NULL);
 
-    // 3DConnexion support.
-    void Open3DConnexion ();
-    void Close3DConnexion ();
-    void Request3DConnexionEventsForWindow (WindowRef window);
-
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
 
     std::vector<Platform::Path> GetFontFiles ();
-    void                        OpenInBrowser (const std::string &url);
-
-    std::vector<std::string> InitGui (int argc, char **argv);
-    void                     RunGui ();
-    void                     ExitGui ();
-    void                     ClearGui ();
-
   } // namespace Platform
 } // namespace SolveSpace

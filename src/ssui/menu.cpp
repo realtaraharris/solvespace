@@ -1740,8 +1740,6 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
 
 void SolveSpaceUI::MenuHelp(Command id) {
   switch (id) {
-  case Command::WEBSITE: Platform::OpenInBrowser("http://solvespace.com/helpmenu"); break;
-
   case Command::ABOUT:
     Message(_("This is SolveSpace version %s.\n"
               "\n"
@@ -1757,9 +1755,6 @@ void SolveSpaceUI::MenuHelp(Command id) {
               "© 2008-%d Jonathan Westhues and other authors.\n"),
             PACKAGE_VERSION, 2022);
     break;
-
-  case Command::GITHUB: Platform::OpenInBrowser(GIT_HASH_URL); break;
-
   default: ssassert(false, "Unexpected menu ID");
   }
 }

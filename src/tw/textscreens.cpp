@@ -88,9 +88,7 @@ void TextWindow::ScreenShowConfiguration(int link, uint32_t v) {
 void TextWindow::ScreenShowEditView(int link, uint32_t v) {
   SS.TW.GoToScreen(Screen::EDIT_VIEW);
 }
-void TextWindow::ScreenGoToWebsite(int link, uint32_t v) {
-  Platform::OpenInBrowser("http://solvespace.com/txtlink");
-}
+void TextWindow::ScreenGoToWebsite(int link, uint32_t v) {}
 void TextWindow::ShowListOfGroups() {
   const char *radioTrue = " " RADIO_TRUE " ", *radioFalse = " " RADIO_FALSE " ",
              *checkTrue = " " CHECK_TRUE " ", *checkFalse = " " CHECK_FALSE " ";

@@ -553,6 +553,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
   v = v.Plus(projRight.ScaledBy(x / scale));
   v = v.Plus(projUp.ScaledBy(y / scale));
 
+/*
   Platform::MenuRef menu = Platform::CreateMenu();
   context.active = true;
 
@@ -776,7 +777,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
   if (!hover.IsEmpty() && selection.n > 1) {
     menu->AddItem(_("Unselect Hovered"), [this] {
       if (!hover.IsEmpty()) {
-        MakeUnselected(&hover, /*coincidentPointTrick=*/true);
+        MakeUnselected(&hover, true); // coincidentPointTrick=true
       }
     });
   }
@@ -787,6 +788,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
   }
 
   menu->PopUp();
+*/
 
   context.active = false;
   SS.ScheduleShowTW();
@@ -1472,74 +1474,4 @@ void GraphicsWindow::MouseLeave() {
     Invalidate();
   }
   SS.extraLine.draw = false;
-}
-
-void GraphicsWindow::SixDofEvent(Platform::SixDofEvent event) {
-  if (event.type == Platform::SixDofEvent::Type::RELEASE) {
-    ZoomToFit(/*includingInvisibles=*/false, /*useSelection=*/true);
-    Invalidate();
-    return;
-  }
-
-  //    if(!havePainted) return;
-  Vector out = projRight.Cross(projUp);
-
-  // rotation vector is axis of rotation, and its magnitude is angle
-  Vector aa = Vector::From(event.rotationX, event.rotationY, event.rotationZ);
-  // but it's given with respect to screen projection frame
-  aa = aa.ScaleOutOfCsys(projRight, projUp, out);
-  double aam = aa.Magnitude();
-  if (aam > 0.0)
-    aa = aa.WithMagnitude(1);
-
-  // This can either transform our view, or transform a linked part.
-  GroupSelection();
-  Entity *e = NULL;
-  Group *g = NULL;
-  if (gs.points == 1 && gs.n == 1)
-    e = SK.GetEntity(gs.point[0]);
-  if (gs.entities == 1 && gs.n == 1)
-    e = SK.GetEntity(gs.entity[0]);
-  if (e)
-    g = SK.GetGroup(e->group);
-  if (g && g->type == Group::Type::LINKED && !event.shiftDown) {
-    // Apply the transformation to a linked part. Gain down the Z
-    // axis, since it's hard to see what you're doing on that one since
-    // it's normal to the screen.
-    Vector t = projRight.ScaledBy(event.translationX / scale)
-                   .Plus(projUp.ScaledBy(event.translationY / scale)
-                             .Plus(out.ScaledBy(0.1 * event.translationZ / scale)));
-    Quaternion q = Quaternion::From(aa, aam);
-
-    // If we go five seconds without SpaceNavigator input, or if we've
-    // switched groups, then consider that a new action and save an undo
-    // point.
-    int64_t now = GetMilliseconds();
-    if (now - last6DofTime > 5000 || last6DofGroup != g->h) {
-      SS.UndoRemember();
-    }
-
-    g->TransformImportedBy(t, q);
-
-    last6DofTime = now;
-    last6DofGroup = g->h;
-    SS.MarkGroupDirty(g->h);
-  } else {
-    // Apply the transformation to the view of the everything. The
-    // x and y components are translation; but z component is scale,
-    // not translation, or else it would do nothing in a parallel
-    // projection
-    offset = offset.Plus(projRight.ScaledBy(event.translationX / scale));
-    offset = offset.Plus(projUp.ScaledBy(event.translationY / scale));
-    scale *= exp(0.001 * event.translationZ);
-
-    if (aam > 0.0) {
-      projRight = projRight.RotatedAbout(aa, -aam);
-      projUp = projUp.RotatedAbout(aa, -aam);
-      NormalizeProjectionVectors();
-    }
-  }
-
-  //    havePainted = false;
-  Invalidate();
 }

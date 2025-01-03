@@ -71,27 +71,12 @@ namespace SolveSpace {
     }
 
     //-----------------------------------------------------------------------------
-    // Menus
-    //-----------------------------------------------------------------------------
-
-    MenuRef CreateMenu() {
-      return std::shared_ptr<Menu>();
-    }
-
-    MenuBarRef GetOrCreateMainMenu(bool *unique) {
-      *unique = false;
-      return std::shared_ptr<MenuBar>();
-    }
-
-    //-----------------------------------------------------------------------------
     // Windows
     //-----------------------------------------------------------------------------
 
     WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
       return std::shared_ptr<Window>();
     }
-
-    void Request3DConnexionEventsForWindow(WindowRef window) {}
 
     //-----------------------------------------------------------------------------
     // Application-wide APIs
@@ -101,21 +86,5 @@ namespace SolveSpace {
     std::vector<Platform::Path> GetFontFiles() {
       return fontFiles;
     }
-
-    void OpenInBrowser(const std::string &url) {}
-
-    std::vector<std::string> InitGui(int argc, char **argv) {
-      return {};
-    }
-
-    void RunGui() {}
-
-    void ExitGui() {
-      exit(0);
-    }
-
-    void ClearGui() {}
-
   } // namespace Platform
-
 } // namespace SolveSpace

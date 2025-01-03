@@ -245,7 +245,6 @@ public:
           }
           return false;
         };
-        window->onKeyboardEvent = SS.GW.window->onKeyboardEvent;
         window->onRender = std::bind(&TextWindow::Paint, this);
         window->onEditingDone = std::bind(&TextWindow::EditControlDone, this, _1);
         window->onScrollbarAdjusted = std::bind(&TextWindow::ScrollbarEvent, this, _1);

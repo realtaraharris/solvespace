@@ -78,19 +78,6 @@ namespace SolveSpace {
       return std::make_shared<TimerImplDummy>();
     }
 
-    //-----------------------------------------------------------------------------
-    // Menus
-    //-----------------------------------------------------------------------------
-
-    MenuRef CreateMenu() {
-      return std::shared_ptr<Menu>();
-    }
-
-    MenuBarRef GetOrCreateMainMenu(bool *unique) {
-      *unique = false;
-      return std::shared_ptr<MenuBar>();
-    }
-
     // Don't do put much functionality in here; just stub this out to aid future
     // removal
     class WindowImplHaiku final : public Window {
@@ -124,7 +111,6 @@ namespace SolveSpace {
       virtual void SetTitle(const std::string &title) override {}
       virtual bool SetTitleForFilename(const Path &filename) { return false; }
 
-      virtual void SetMenuBar(MenuBarRef menuBar) override {}
       virtual void SetMinContentSize(double width, double height) override {}
 
       virtual void FreezePosition(SettingsRef settings, const std::string &key) override {}
@@ -165,8 +151,6 @@ namespace SolveSpace {
       return window;
     }
 
-    void Request3DConnexionEventsForWindow(WindowRef window) {}
-
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
@@ -175,21 +159,5 @@ namespace SolveSpace {
     std::vector<Platform::Path> GetFontFiles() {
       return fontFiles;
     }
-
-    void OpenInBrowser(const std::string &url) {}
-
-    std::vector<std::string> InitGui(int argc, char **argv) {
-      return {};
-    }
-
-    void RunGui() {}
-
-    void ExitGui() {
-      exit(0);
-    }
-
-    void ClearGui() {}
-
   } // namespace Platform
-
 } // namespace SolveSpace

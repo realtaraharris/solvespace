@@ -62,7 +62,6 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
       };
       window->onRender = std::bind(&GraphicsWindow::Paint, this);
       window->onMouseEvent = std::bind(&GraphicsWindow::MouseEvent, this, _1);
-      window->onSixDofEvent = std::bind(&GraphicsWindow::SixDofEvent, this, _1);
       window->onEditingDone = std::bind(&GraphicsWindow::EditControlDone, this, _1);
       //          PopulateMainMenu();
     }
@@ -486,7 +485,6 @@ bool GraphicsWindow::LockedInWorkplane() {
 void GraphicsWindow::ForceTextWindowShown() {
   if (!showTextWindow) {
     showTextWindow = true;
-    showTextWndMenuItem->SetActive(true);
     SS.TW.window->SetVisible(true);
   }
 }

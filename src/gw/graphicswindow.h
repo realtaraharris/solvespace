@@ -8,28 +8,6 @@ class GraphicsWindow {
   void CopySelection ();
   void PasteClipboard (Vector trans, double theta, double scale);
 
-  Platform::MenuRef openRecentMenu;
-  Platform::MenuRef linkRecentMenu;
-
-  Platform::MenuItemRef showGridMenuItem;
-  Platform::MenuItemRef dimSolidModelMenuItem;
-  Platform::MenuItemRef perspectiveProjMenuItem;
-  Platform::MenuItemRef explodeMenuItem;
-  Platform::MenuItemRef showToolbarMenuItem;
-  Platform::MenuItemRef showTextWndMenuItem;
-  Platform::MenuItemRef fullScreenMenuItem;
-
-  Platform::MenuItemRef unitsMmMenuItem;
-  Platform::MenuItemRef unitsMetersMenuItem;
-  Platform::MenuItemRef unitsInchesMenuItem;
-  Platform::MenuItemRef unitsFeetInchesMenuItem;
-
-  Platform::MenuItemRef inWorkplaneMenuItem;
-  Platform::MenuItemRef in3dMenuItem;
-
-  Platform::MenuItemRef undoMenuItem;
-  Platform::MenuItemRef redoMenuItem;
-
   std::shared_ptr<ViewportCanvas> canvas;
   std::shared_ptr<BatchCanvas>    persistentCanvas;
   bool                            persistentDirty;
@@ -307,10 +285,8 @@ public:
   void MouseRightUp (double x, double y);
   void MouseScroll (double delta);
   void MouseLeave ();
-  bool KeyboardEvent (Platform::KeyboardEvent event);
   void EditControlDone (const std::string &s);
 
   int64_t last6DofTime;
   hGroup  last6DofGroup;
-  void    SixDofEvent (Platform::SixDofEvent event);
 };

@@ -273,8 +273,6 @@ void SolveSpaceUI::Exit() {
   Style::FreezeDefaultStyles(settings);
 
   FreeAllTemporary();
-
-  Platform::ExitGui();
 }
 
 void SolveSpaceUI::Refresh() {
@@ -610,23 +608,6 @@ void SolveSpaceUI::Clear() {
     if (i < redo.cnt)
       redo.d[i].Clear();
   }
-  GW.openRecentMenu = NULL;
-  GW.linkRecentMenu = NULL;
-  GW.showGridMenuItem = NULL;
-  GW.dimSolidModelMenuItem = NULL;
-  GW.perspectiveProjMenuItem = NULL;
-  GW.explodeMenuItem = NULL;
-  GW.showToolbarMenuItem = NULL;
-  GW.showTextWndMenuItem = NULL;
-  GW.fullScreenMenuItem = NULL;
-  GW.unitsMmMenuItem = NULL;
-  GW.unitsMetersMenuItem = NULL;
-  GW.unitsInchesMenuItem = NULL;
-  GW.unitsFeetInchesMenuItem = NULL;
-  GW.inWorkplaneMenuItem = NULL;
-  GW.in3dMenuItem = NULL;
-  GW.undoMenuItem = NULL;
-  GW.redoMenuItem = NULL;
 }
 
 #include "geometry/vector.hpp"
