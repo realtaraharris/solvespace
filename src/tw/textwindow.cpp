@@ -257,17 +257,17 @@ public:
 
   void TextWindow::ClearSuper() {
     // Ugly hack, but not so ugly as the next line
-    Platform::WindowRef oldWindow = std::move(window);
-    std::shared_ptr<ViewportCanvas> oldCanvas = canvas;
+//  Platform::WindowRef oldWindow = std::move(window);
+//  std::shared_ptr<ViewportCanvas> oldCanvas = canvas;
 
     // Cannot use *this = {} here because TextWindow instances
     // are 2.4MB long; this causes stack overflows in prologue
     // when built with MSVC, even with optimizations.
-    memset(this, 0, sizeof(*this));
+//  memset(this, 0, sizeof(*this));
 
     // Return old canvas
-    window = std::move(oldWindow);
-    canvas = oldCanvas;
+//  window = std::move(oldWindow);
+//  canvas = oldCanvas;
 
     HideEditControl();
 

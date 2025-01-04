@@ -305,7 +305,7 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
 
   // Make sure the point that we're tracing exists.
   if (traced.point.v && !SK.entity.FindByIdNoOops(traced.point)) {
-    traced.point = Entity::NO_ENTITY;
+    traced.point = Entity::NO_ENTITY;
   }
   // And if we're tracing a point, add its new value to the path
   if (traced.point.v) {
@@ -324,10 +324,12 @@ void SolveSpaceUI::GenerateAll(Generate type, bool andFindFree, bool genForBBox)
     // All sorts of interesting things could have happened; for example,
     // the active group or active workplane could have been deleted. So
     // clear all that out.
+/*
     if (deleted.groups > 0) {
       SS.TW.ClearSuper();
     }
     ScheduleShowTW();
+*/
     GW.ClearSuper(20);
 
     // People get annoyed if I complain whenever they delete any request,
@@ -513,7 +515,7 @@ void SolveSpaceUI::SolveGroupAndReport(hGroup hg, bool andFindFree) {
   bool isOkay = g->solved.how == SolveResult::OKAY ||
                 (g->allowRedundant && g->solved.how == SolveResult::REDUNDANT_OKAY);
   if (!isOkay || (isOkay && !g->IsSolvedOkay())) {
-    TextWindow::ReportHowGroupSolved(g->h);
+//  TextWindow::ReportHowGroupSolved(g->h);
   }
 }
 

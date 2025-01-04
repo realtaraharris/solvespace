@@ -157,11 +157,6 @@ namespace SolveSpace {
       virtual void Invalidate () = 0;
     };
 
-    typedef std::shared_ptr<Window> WindowRef;
-
-    WindowRef CreateWindow (Window::Kind kind         = Window::Kind::TOPLEVEL,
-                            WindowRef    parentWindow = NULL);
-
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------

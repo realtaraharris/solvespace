@@ -130,21 +130,6 @@ namespace SolveSpace {
     };
 
     //-----------------------------------------------------------------------------
-    // Windows
-    //-----------------------------------------------------------------------------
-
-    WindowRef CreateWindow(Window::Kind kind, WindowRef parentWindow) {
-      //    return std::shared_ptr<Window>();
-
-      auto window = std::make_shared<WindowImplHaiku>(kind);
-      /*  if(parentWindow) {
-              window->haikuWindow.set_transient_for(
-                  std::static_pointer_cast<WindowImplHaiku>(parentWindow)->haikuWindow);
-          } */
-      return window;
-    }
-
-    //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
 

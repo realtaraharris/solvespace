@@ -61,11 +61,11 @@ add_library(solvespace-core OBJECT
 	src/import/importidf.cpp
 	src/import/importmesh.cpp
 
-	src/tw/view.cpp
-	src/tw/textscreens.cpp
-	src/tw/textwindow.cpp
-	src/tw/confscreen.cpp
-	src/tw/style.cpp
+#	src/tw/view.cpp
+#	src/tw/textscreens.cpp
+#	src/tw/textwindow.cpp
+#	src/tw/confscreen.cpp
+#	src/tw/style.cpp
 
 	src/gw/draw.cpp
 	src/gw/graphicswindow.cpp

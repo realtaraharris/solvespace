@@ -192,7 +192,7 @@ void Style::AssignSelectionToStyle(uint32_t v) {
   SS.GW.Invalidate();
 
   // And show that style's info screen in the text window.
-  SS.TW.GoToScreen(TextWindow::Screen::STYLE_INFO);
+//  SS.TW.GoToScreen(TextWindow::Screen::STYLE_INFO);
   SS.TW.shown.style.v = v;
   SS.ScheduleShowTW();
 }

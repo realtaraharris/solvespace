@@ -281,10 +281,12 @@ void SolveSpaceUI::Refresh() {
     GenerateAll(Generate::DIRTY, /*andFindFree=*/false, /*genForBBox=*/false);
     scheduledGenerateAll = false;
   }
+/*
   if (scheduledShowTW) {
     TW.Show();
     scheduledShowTW = false;
   }
+*/
 }
 
 void SolveSpaceUI::ScheduleGenerateAll() {

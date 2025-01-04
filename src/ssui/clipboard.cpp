@@ -293,11 +293,12 @@ void GraphicsWindow::PasteClipboard(Vector trans, double theta, double scale) {
   }
 }
 
+/*
 bool TextWindow::EditControlDoneForPaste(const std::string &s) {
   Expr *e;
   switch (edit.meaning) {
   case Edit::PASTE_TIMES_REPEATED: {
-    e = Expr::From(s, /*popUpError=*/true);
+    e = Expr::From(s, true); // popUpError = true
     if (!e)
       break;
     int v = (int)e->Eval();
@@ -309,14 +310,14 @@ bool TextWindow::EditControlDoneForPaste(const std::string &s) {
     break;
   }
   case Edit::PASTE_ANGLE:
-    e = Expr::From(s, /*popUpError=*/true);
+    e = Expr::From(s, true); // popUpError = true
     if (!e)
       break;
     shown.paste.theta = WRAP_SYMMETRIC((e->Eval()) * PI / 180, 2 * PI);
     break;
 
   case Edit::PASTE_SCALE: {
-    e = Expr::From(s, /*popUpError=*/true);
+    e = Expr::From(s, true); // popUpError = true
     double v = e->Eval();
     if (fabs(v) > 1e-6) {
       shown.paste.scale = shown.paste.scale < 0 ? -v : v;
@@ -433,3 +434,4 @@ void TextWindow::ShowPasteTransformed() {
 
   Printf(true, "(or %Fl%Ll%fcancel operation%E)", &ScreenHome);
 }
+*/

@@ -434,7 +434,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
 */
     }
     SS.GW.ClearSuper(7);
-    SS.TW.HideEditControl();
+//  SS.TW.HideEditControl();
     SS.nakedEdges.Clear();
     SS.justExportedInfo.draw = false;
     SS.centerOfMass.draw = false;
@@ -602,17 +602,17 @@ void SolveSpaceUI::MenuEdit(Command id) {
     break;
 
   case Command::EDIT_LINE_STYLES:
-    SS.TW.GoToScreen(TextWindow::Screen::LIST_OF_STYLES);
+//  SS.TW.GoToScreen(TextWindow::Screen::LIST_OF_STYLES);
     SS.GW.ForceTextWindowShown();
     SS.ScheduleShowTW();
     break;
   case Command::VIEW_PROJECTION:
-    SS.TW.GoToScreen(TextWindow::Screen::EDIT_VIEW);
+//  SS.TW.GoToScreen(TextWindow::Screen::EDIT_VIEW);
     SS.GW.ForceTextWindowShown();
     SS.ScheduleShowTW();
     break;
   case Command::CONFIGURATION:
-    SS.TW.GoToScreen(TextWindow::Screen::CONFIGURATION);
+//  SS.TW.GoToScreen(TextWindow::Screen::CONFIGURATION);
     SS.GW.ForceTextWindowShown();
     SS.ScheduleShowTW();
     break;
@@ -646,12 +646,12 @@ void SolveSpaceUI::MenuClipboard(Command id) {
 
     Entity *wrkpl = SK.GetEntity(SS.GW.ActiveWorkplane());
     Vector p = SK.GetEntity(wrkpl->point[0])->PointGetNum();
-    SS.TW.shown.paste.times = 1;
-    SS.TW.shown.paste.trans = Vector::From(0, 0, 0);
-    SS.TW.shown.paste.theta = 0;
-    SS.TW.shown.paste.origin = p;
-    SS.TW.shown.paste.scale = 1;
-    SS.TW.GoToScreen(TextWindow::Screen::PASTE_TRANSFORMED);
+//  SS.TW.shown.paste.times = 1;
+//  SS.TW.shown.paste.trans = Vector::From(0, 0, 0);
+//  SS.TW.shown.paste.theta = 0;
+//  SS.TW.shown.paste.origin = p;
+//  SS.TW.shown.paste.scale = 1;
+//  SS.TW.GoToScreen(TextWindow::Screen::PASTE_TRANSFORMED);
     SS.GW.ForceTextWindowShown();
     SS.ScheduleShowTW();
     break;
@@ -1736,7 +1736,7 @@ void SolveSpaceUI::MenuGroup(Command id, Platform::Path linkFile) {
     gg->activeWorkplane = gg->h.entity(0);
   }
   gg->Activate();
-  TextWindow::ScreenSelectGroup(0, gg->h.v);
+//TextWindow::ScreenSelectGroup(0, gg->h.v);
   SS.GW.AnimateOntoWorkplane();
 }
 
