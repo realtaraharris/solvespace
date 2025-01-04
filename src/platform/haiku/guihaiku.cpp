@@ -78,57 +78,6 @@ namespace SolveSpace {
       return std::make_shared<TimerImplDummy>();
     }
 
-    // Don't do put much functionality in here; just stub this out to aid future
-    // removal
-    class WindowImplHaiku final : public Window {
-      //    HaikuWindow       haikuWindow;
-  public:
-      WindowImplHaiku(Window::Kind kind) {}
-
-      virtual double GetPixelDensity() override { return 1.0; }
-
-      virtual int GetDevicePixelRatio() override { return 1; }
-      // Returns (fractional) font scale, to be applied on top of (integral)
-      // device pixel ratio.
-      virtual double GetDeviceFontScale() {
-        return GetPixelDensity() / GetDevicePixelRatio() / 96.0;
-      }
-
-      virtual bool IsVisible() override { return true; }
-      virtual void SetVisible(bool visible) override {}
-      virtual void Focus() override {}
-
-      virtual bool IsFullScreen() override { return false; }
-      virtual void SetFullScreen(bool fullScreen) override {}
-
-      virtual void SetTitle(const std::string &title) override {}
-      virtual bool SetTitleForFilename(const Path &filename) { return false; }
-
-      virtual void SetMinContentSize(double width, double height) override {}
-
-      virtual void FreezePosition(SettingsRef settings, const std::string &key) override {}
-      virtual void ThawPosition(SettingsRef settings, const std::string &key) override {}
-
-      virtual void SetCursor(Cursor cursor) override {}
-      virtual void SetTooltip(const std::string &text, double x, double y, double width,
-                              double height) override {}
-
-      virtual bool IsEditorVisible() override { return true; }
-      virtual void ShowEditor(double x, double y, double fontHeight, double minWidth,
-                              bool isMonospace, const std::string &text) override {
-        dbp("in ShowEditor!");
-        be_app->WindowAt(MAIN_WINDOW)->PostMessage(new BMessage(M_SHOW_EDITOR));
-      }
-      virtual void HideEditor() override {}
-
-      virtual void SetScrollbarVisible(bool visible) override {}
-      virtual void ConfigureScrollbar(double min, double max, double pageSize) override {}
-      virtual double GetScrollbarPosition() override { return 0; }
-      virtual void SetScrollbarPosition(double pos) override {}
-
-      virtual void Invalidate() override {}
-    };
-
     //-----------------------------------------------------------------------------
     // Application-wide APIs
     //-----------------------------------------------------------------------------
