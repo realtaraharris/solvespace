@@ -135,7 +135,6 @@ namespace SolveSpace {
       virtual void SetTitle (const std::string &title) = 0;
       virtual bool SetTitleForFilename (const Path &filename) { return false; }
 
-      virtual void GetContentSize (double *width, double *height)  = 0;
       virtual void SetMinContentSize (double width, double height) = 0;
 
       virtual void FreezePosition (SettingsRef settings, const std::string &key) = 0;

@@ -425,7 +425,7 @@ class AggPixmapRenderer final : public AggRenderer {
 public:
     std::shared_ptr<Pixmap>  pixmap;
 
-    void Init(bool standalone);
+    void Init(bool headless);
     void Clear() override;
 
     std::shared_ptr<Pixmap> ReadFrame() override;

@@ -879,12 +879,7 @@ bool GraphicsWindow::ConstrainPointByHovered(hEntity pt, const Point2d *projecte
 }
 
 bool GraphicsWindow::MouseEvent(Platform::MouseEvent event) {
-  if (window == NULL) {
-    return true;
-  }
   using Platform::MouseEvent;
-  double width, height;
-  window->GetContentSize(&width, &height);
 
   event.x = event.x - width / 2;
   event.y = height / 2 - event.y;
@@ -1376,16 +1371,14 @@ void GraphicsWindow::EditConstraint(hConstraint constraint) {
   }
   }
 
-  double width, height;
-  window->GetContentSize(&width, &height);
   hStyle hs = c->disp.style;
   if (hs.v == 0)
     hs.v = Style::CONSTRAINT;
   double capHeight = Style::TextHeight(hs);
   double fontHeight = VectorFont::Builtin()->GetHeight(capHeight);
   double editMinWidth = VectorFont::Builtin()->GetWidth(capHeight, editPlaceholder);
-  window->ShowEditor(p2.x + width / 2, height / 2 - p2.y, fontHeight, editMinWidth,
-                     /*isMonospace=*/false, editValue);
+//  window->ShowEditor(p2.x + width / 2, height / 2 - p2.y, fontHeight, editMinWidth,
+//                     /*isMonospace=*/false, editValue);
 }
 
 void GraphicsWindow::MouseLeftDoubleClick(double mx, double my) {

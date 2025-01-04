@@ -207,7 +207,7 @@ public:
 
   void TextWindow::Init() {
     if (!window) {
-      window = Platform::CreateWindow(Platform::Window::Kind::TOOL, SS.GW.window);
+//      window = Platform::CreateWindow(Platform::Window::Kind::TOOL, SS.GW.window);
       if (window) {
         canvas = CreateRenderer();
 
@@ -296,9 +296,8 @@ public:
     int y = (halfRow - SS.TW.scrollPos) * (LINE_HEIGHT / 2);
 
     double width, height;
-    window->GetContentSize(&width, &height);
-    window->ShowEditor(x, y + LINE_HEIGHT - 2, LINE_HEIGHT - 4, width - x, /*isMonospace=*/true,
-                       str);
+//    window->GetContentSize(&width, &height);
+//    window->ShowEditor(x, y + LINE_HEIGHT - 2, LINE_HEIGHT - 4, width - x, /*isMonospace=*/true, str);
   }
 
   void TextWindow::ShowEditControlWithColorPicker(int col, RgbaColor rgb) {
@@ -567,7 +566,7 @@ public:
 
   void TextWindow::Resize() {
     double width, height;
-    window->GetContentSize(&width, &height);
+//    window->GetContentSize(&width, &height);
 
     halfRows = (int)height / (LINE_HEIGHT / 2);
 
@@ -584,7 +583,7 @@ public:
   void TextWindow::DrawOrHitTestIcons(UiCanvas *uiCanvas, TextWindow::DrawOrHitHow how, double mx,
                                       double my) {
     double width, height;
-    window->GetContentSize(&width, &height);
+//    window->GetContentSize(&width, &height);
 
     int x = 20, y = 33 + LINE_HEIGHT;
     y -= scrollPos * (LINE_HEIGHT / 2);
@@ -723,7 +722,7 @@ public:
     };
 
     double width, height;
-    window->GetContentSize(&width, &height);
+//    window->GetContentSize(&width, &height);
 
     int px = LEFT_MARGIN + CHAR_WIDTH_ * editControl.col;
     int py = (editControl.halfRow - SS.TW.scrollPos) * (LINE_HEIGHT / 2);
@@ -890,7 +889,7 @@ public:
       return;
 
     double width, height;
-    window->GetContentSize(&width, &height);
+//    window->GetContentSize(&width, &height);
     if (halfRows != (int)height / (LINE_HEIGHT / 2))
       Resize();
 
@@ -1020,19 +1019,19 @@ public:
   void TextWindow::MouseEvent(bool leftClick, bool leftDown, double x, double y) {
     using Platform::Window;
 
-    if (SS.TW.window->IsEditorVisible() || SS.GW.window->IsEditorVisible()) {
+//    if (SS.TW.window->IsEditorVisible() || SS.GW.window->IsEditorVisible()) {
       if (DrawOrHitTestColorPicker(NULL, leftClick ? CLICK : HOVER, leftDown, x, y)) {
         return;
       }
 
       if (leftClick) {
         HideEditControl();
-        SS.GW.window->HideEditor();
+//        SS.GW.window->HideEditor();
       } else {
         window->SetCursor(Window::Cursor::POINTER);
       }
       return;
-    }
+//    }
 
     DrawOrHitTestIcons(NULL, leftClick ? CLICK : HOVER, x, y);
 

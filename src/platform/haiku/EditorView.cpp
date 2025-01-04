@@ -22,7 +22,6 @@ EditorView::EditorView()
     : BView(Bounds(), "SolveSpace Editor View", B_FOLLOW_ALL_SIDES,
             B_FRAME_EVENTS | B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE) {
   SS.GW.canvas = std::make_shared<AggPixmapRenderer>();
-  SS.GW.overrideCamera = false;
 
   InitBitmapAndBuffer();
   Invalidate();
@@ -73,8 +72,7 @@ void EditorView::Load(std::string path) {
 }
 
 void EditorView::New() {
-  SS.GW.Init(Bounds().Width(), Bounds().Height(),
-             1.0); // width, height, pixelDeviceRatio
+  SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0, false);
   SS.GW.offset = Vector(0, 0, 0);
   SS.GW.scale = 5.0;
   SS.GW.projRight = Vector::From(1, 0, 0);

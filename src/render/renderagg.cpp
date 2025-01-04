@@ -232,7 +232,7 @@ namespace SolveSpace {
     agg::render_scanlines_aa_solid(ras, sl, rb, tcolor);
   }
 
-  void AggPixmapRenderer::Init(bool standalone) {
+  void AggPixmapRenderer::Init(bool headless) {
     Clear();
 
     pixmap = std::make_shared<Pixmap>();
@@ -242,7 +242,7 @@ namespace SolveSpace {
     pixmap->stride = 32 * camera.width; // TODO: remove hardcoded value
     pixmap->data = std::vector<uint8_t>(pixmap->stride * pixmap->height);
 
-    if (standalone) {
+    if (headless) {
       buffer.attach(pixmap->data.data(), pixmap->width, pixmap->height, pixmap->stride);
     }
   }

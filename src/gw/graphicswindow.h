@@ -1,8 +1,8 @@
 class GraphicsWindow {
+  private:
+  bool headless; // tests are headless
   public:
-  void Init (double width, double height, int pixelDeviceRatio);
-
-  Platform::WindowRef window;
+  void Init(double width, double height, int devicePixelRatio, bool headless);
 
   void DeleteSelection ();
   void CopySelection ();
@@ -12,7 +12,6 @@ class GraphicsWindow {
   std::shared_ptr<BatchCanvas>    persistentCanvas;
   bool                            persistentDirty;
 
-  bool overrideCamera; // hack to make the Paint method work for both tests and the graphical UI
   // These parameters define the map from 2d screen coordinates to the
   // coordinates of the 3d sketch points. We will use an axonometric
   // projection.

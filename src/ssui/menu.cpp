@@ -405,7 +405,7 @@ void SolveSpaceUI::MenuView(Command id) {
     break;
 
   case Command::FULL_SCREEN:
-    SS.GW.window->SetFullScreen(!SS.GW.window->IsFullScreen());
+//    SS.GW.window->SetFullScreen(!SS.GW.window->IsFullScreen());
     SS.GW.EnsureValidActives();
     break;
 
@@ -423,6 +423,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
     // screen in the text window.
     if (SS.GW.gs.n == 0 && SS.GW.gs.constraints == 0 &&
         SS.GW.pending.operation == GraphicsWindow::Pending::NONE) {
+/*
       if (!(SS.TW.window->IsEditorVisible() || SS.GW.window->IsEditorVisible())) {
         if (SS.TW.shown.screen == TextWindow::Screen::STYLE_INFO) {
           SS.TW.GoToScreen(TextWindow::Screen::LIST_OF_STYLES);
@@ -430,6 +431,7 @@ void SolveSpaceUI::MenuEdit(Command id) {
           SS.TW.ClearSuper();
         }
       }
+*/
     }
     SS.GW.ClearSuper(7);
     SS.TW.HideEditControl();

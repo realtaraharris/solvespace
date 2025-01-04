@@ -87,13 +87,6 @@ namespace SolveSpace {
 
       virtual double GetPixelDensity() override { return 1.0; }
 
-      // TODO: rip this method out and just make the internals read
-      // SS.GW.width/height instead
-      virtual void GetContentSize(double *width, double *height) override {
-        *width = SS.GW.width;
-        *height = SS.GW.height;
-      }
-
       virtual int GetDevicePixelRatio() override { return 1; }
       // Returns (fractional) font scale, to be applied on top of (integral)
       // device pixel ratio.

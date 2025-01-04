@@ -8,10 +8,11 @@
 #include "ssg.h"
 #include "platform/EventHooks.h"
 
-void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
-  width = 500;
-  height = 500;
-  devicePixelRatio = 1;
+void GraphicsWindow::Init(double width, double height, int devicePixelRatio, bool headless) {
+  this->width = width;
+  this->height = height;
+  this->devicePixelRatio = devicePixelRatio;
+  this->headless = headless;
   scale = 5;
   offset = Vector::From(0, 0, 0);
   projRight = Vector::From(1, 0, 0);
@@ -46,37 +47,12 @@ void GraphicsWindow::Init(double width, double height, int pixelDeviceRatio) {
   showSnapGrid = false;
   dimSolidModel = true;
   context.active = false;
-
-  if (!window) {
-    window = Platform::CreateWindow();
-    if (window) {
-      using namespace std::placeholders;
-      // Do this first, so that if it causes an onRender event we don't try to paint without
-      // a canvas.
-      window->SetMinContentSize(720, /*ToolbarDrawOrHitTest 636*/ 32 * 18 + 3 * 16 + 8 + 4);
-      window->onClose = std::bind(&SolveSpaceUI::MenuFile, Command::EXIT);
-      window->onContextLost = [&] {
-        canvas = NULL;
-        persistentCanvas = NULL;
-        persistentDirty = true;
-      };
-      window->onRender = std::bind(&GraphicsWindow::Paint, this);
-      window->onMouseEvent = std::bind(&GraphicsWindow::MouseEvent, this, _1);
-      window->onEditingDone = std::bind(&GraphicsWindow::EditControlDone, this, _1);
-      //          PopulateMainMenu();
-    }
+	
+  canvas = CreateRenderer();
+  if (canvas) {
+    persistentCanvas = canvas->CreateBatch();
+    persistentDirty = true;
   }
-
-  if (window) {
-    canvas = CreateRenderer();
-    if (canvas) {
-      persistentCanvas = canvas->CreateBatch();
-      persistentDirty = true;
-    }
-  }
-
-  // Do this last, so that all the menus get updated correctly.
-  //    ClearSuper();
 }
 
 void GraphicsWindow::AnimateOntoWorkplane() {
@@ -158,7 +134,7 @@ void GraphicsWindow::AnimateOnto(Quaternion quatf, Vector offsetf) {
       projUp = quatf.RotationV();
       offset = offsetf;
     }
-    window->Invalidate();
+//    window->Invalidate();
   };
   animateTimer->RunAfterNextFrame();
 }
@@ -254,12 +230,11 @@ void GraphicsWindow::LoopOverPoints(const std::vector<Entity *> &entities,
     }
   }
 }
-void GraphicsWindow::ZoomToFit(bool includingInvisibles, bool useSelection) {
-  if (!window)
-    return;
 
+void GraphicsWindow::ZoomToFit(bool includingInvisibles, bool useSelection) {
   scale = ZoomToFit(GetCamera(), includingInvisibles, useSelection);
 }
+
 double GraphicsWindow::ZoomToFit(const Camera &camera, bool includingInvisibles,
                                  bool useSelection) {
   std::vector<Entity *> entities;
@@ -356,9 +331,6 @@ void GraphicsWindow::ZoomToMouse(double zoomMultiplyer) {
   double offsetRight = offset.Dot(projRight);
   double offsetUp = offset.Dot(projUp);
 
-  double width, height;
-  window->GetContentSize(&width, &height);
-
   double righti = currentMousePosition.x / scale - offsetRight;
   double upi = currentMousePosition.y / scale - offsetUp;
 
@@ -430,11 +402,8 @@ void GraphicsWindow::EnsureValidActives() {
     }
   }
 
-  if (!window)
-    return;
-
   // And update the checked state for various menus
-  bool locked = LockedInWorkplane();
+  // bool locked = LockedInWorkplane();
   //    in3dMenuItem->SetActive(!locked);
   //    inWorkplaneMenuItem->SetActive(locked);
 
@@ -447,22 +416,7 @@ void GraphicsWindow::EnsureValidActives() {
   case Unit::FEET_INCHES: break;
   default: SS.viewUnits = Unit::MM; break;
   }
-  /*
-  unitsMmMenuItem->SetActive(SS.viewUnits == Unit::MM);
-  unitsMetersMenuItem->SetActive(SS.viewUnits == Unit::METERS);
-  unitsInchesMenuItem->SetActive(SS.viewUnits == Unit::INCHES);
-  unitsFeetInchesMenuItem->SetActive(SS.viewUnits == Unit::FEET_INCHES);
 
-  if(SS.TW.window) SS.TW.window->SetVisible(SS.GW.showTextWindow);
-  showTextWndMenuItem->SetActive(SS.GW.showTextWindow);
-
-  showGridMenuItem->SetActive(SS.GW.showSnapGrid);
-  dimSolidModelMenuItem->SetActive(SS.GW.dimSolidModel);
-  perspectiveProjMenuItem->SetActive(SS.usePerspectiveProj);
-  explodeMenuItem->SetActive(SS.explode);
-  showToolbarMenuItem->SetActive(SS.showToolbar);
-  fullScreenMenuItem->SetActive(SS.GW.window->IsFullScreen());
-*/
   if (change)
     SS.ScheduleShowTW();
 }
@@ -482,12 +436,7 @@ bool GraphicsWindow::LockedInWorkplane() {
   return (SS.GW.ActiveWorkplane() != Entity::FREE_IN_3D);
 }
 
-void GraphicsWindow::ForceTextWindowShown() {
-  if (!showTextWindow) {
-    showTextWindow = true;
-    SS.TW.window->SetVisible(true);
-  }
-}
+void GraphicsWindow::ForceTextWindowShown() {}
 
 void GraphicsWindow::DeleteTaggedRequests() {
   // Delete any requests that were affected by this deletion.
@@ -540,9 +489,6 @@ Vector GraphicsWindow::SnapToGrid(Vector p) {
 }
 
 void GraphicsWindow::ClearSuper(int which) {
-  std::cout << "in ClearSuper, which: " << which << std::endl;
-  if (window)
-    window->HideEditor();
   ClearPending(0);
   ClearSelection();
   hover.Clear();

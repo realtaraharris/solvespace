@@ -58,7 +58,7 @@ void TextWindow::ScreenChangeViewScale(int link, uint32_t v) {
 }
 
 void TextWindow::ScreenChangeViewToFullScale(int link, uint32_t v) {
-  SS.GW.scale = SS.GW.window->GetPixelDensity() / 25.4;
+//  SS.GW.scale = SS.GW.window->GetPixelDensity() / 25.4;
 }
 
 void TextWindow::ScreenChangeViewOrigin(int link, uint32_t v) {

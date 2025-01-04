@@ -318,22 +318,20 @@ void GraphicsWindow::GroupSelection() {
 
 Camera GraphicsWindow::GetCamera() const {
   Camera camera = {};
-  if (window) { // TODO: directly test for solvespace-cli?
-    camera.width = width;
-    camera.height = height;
-    camera.pixelRatio = devicePixelRatio;
-    camera.gridFit = devicePixelRatio == 1;
-  } else {                // solvespace-cli
-    camera.width = 297.0; // A4? Whatever...
-    camera.height = 210.0;
+
+  if (headless) {
+    camera.width = 600.0;
+    camera.height = 600.0;
     camera.pixelRatio = 1.0;
     camera.gridFit = camera.pixelRatio == 1.0;
   }
+
   camera.offset = offset;
   camera.projUp = projUp;
   camera.projRight = projRight;
   camera.scale = scale;
   camera.tangent = SS.CameraTangent();
+
   return camera;
 }
 
@@ -873,9 +871,7 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 }
 
 void GraphicsWindow::Paint() {
-  if ((window == NULL && !overrideCamera) || canvas == NULL) {
-    return;
-  }
+  if (canvas == NULL) { return; }
 
   havePainted = true;
 
@@ -890,7 +886,7 @@ void GraphicsWindow::Paint() {
     lighting.backgroundColor = bgColor;
   }
 
-  if (!overrideCamera) {
+  if (!headless) {
     canvas->SetLighting(lighting);
     canvas->SetCamera(camera);
   }
@@ -901,7 +897,7 @@ void GraphicsWindow::Paint() {
   canvas->FlushFrame();
 
   // Draw the 2d UI overlay.
-  if (!overrideCamera) {
+  if (!headless) {
     camera.LoadIdentity();
     camera.offset.x = -(double)camera.width / 2.0;
     camera.offset.y = -(double)camera.height / 2.0;
@@ -938,10 +934,7 @@ void GraphicsWindow::Paint() {
 }
 
 void GraphicsWindow::Invalidate(bool clearPersistent) {
-  if (window) {
-    if (clearPersistent) {
-      persistentDirty = true;
-    }
-    window->Invalidate();
+  if (clearPersistent) {
+    persistentDirty = true;
   }
 }

@@ -519,13 +519,8 @@ void SolveSpaceUI::AfterNewFile() {
   SS.GW.projUp = Vector::From(0, 1, 0);
 
   GenerateAll(Generate::ALL);
-
-  // TODO: resetting the graphics window should not require passing a size or pixel device ratio
-  //    GW.Init();
-  //    TW.Init();
-
   unsaved = false;
-
+  SS.GW.EnsureValidActives();
   GW.ZoomToFit();
 
   // Create all the default styles; they'll get created on the fly anyways,

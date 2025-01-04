@@ -358,8 +358,7 @@ int main(int argc, char **argv) {
     }
 
     SS.Init();
-    SS.GW.Init(600, 600, 1.0);
-    SS.GW.overrideCamera = true;
+    SS.GW.Init(600, 600, 1.0, true);
 
     SS.showToolbar = false;
     SS.checkClosedContour = false;
