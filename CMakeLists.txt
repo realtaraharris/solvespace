@@ -148,6 +148,7 @@ target_include_directories(solvespace PRIVATE
 target_link_libraries(solvespace be agg translation tracker dxfrw ${ZLIB_LIBRARY} ${PNG_LIBRARY} ${FREETYPE_LIBRARY})
 target_compile_definitions(solvespace PRIVATE HAIKU_GUI=1)
 
+set_target_properties(solvespace PROPERTIES OUTPUT_NAME "SolveSpace")
 add_custom_command(TARGET solvespace POST_BUILD
 	COMMENT "rebuilding icon resources"
 	COMMAND rc -o ${CMAKE_BINARY_DIR}/Resources.rsrc ${CMAKE_SOURCE_DIR}/src/platform/haiku/Resources.rdef

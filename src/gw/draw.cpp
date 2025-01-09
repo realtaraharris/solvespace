@@ -323,7 +323,12 @@ Camera GraphicsWindow::GetCamera() const {
     camera.width = 600.0;
     camera.height = 600.0;
     camera.pixelRatio = 1.0;
-    camera.gridFit = camera.pixelRatio == 1.0;
+    camera.gridFit = camera.pixelRatio == 1;
+  } else {
+    camera.width = width;
+    camera.height = height;
+    camera.pixelRatio = devicePixelRatio;
+    camera.gridFit = devicePixelRatio == 1;
   }
 
   camera.offset = offset;
@@ -871,7 +876,9 @@ void GraphicsWindow::Draw(Canvas *canvas) {
 }
 
 void GraphicsWindow::Paint() {
-  if (canvas == NULL) { return; }
+  if (canvas == NULL) {
+    return;
+  }
 
   havePainted = true;
 

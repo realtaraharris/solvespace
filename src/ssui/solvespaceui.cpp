@@ -519,6 +519,8 @@ void SolveSpaceUI::AfterNewFile() {
   SS.GW.offset = Vector::From(0, 0, 0);
   SS.GW.projRight = Vector::From(1, 0, 0);
   SS.GW.projUp = Vector::From(0, 1, 0);
+  SS.GW.scale = 5.0;
+  SS.GW.offset = Vector(0, 0, 0);
 
   GenerateAll(Generate::ALL);
   unsaved = false;
