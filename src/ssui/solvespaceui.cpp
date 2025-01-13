@@ -520,12 +520,12 @@ void SolveSpaceUI::AfterNewFile() {
   SS.GW.projRight = Vector::From(1, 0, 0);
   SS.GW.projUp = Vector::From(0, 1, 0);
   SS.GW.scale = 5.0;
-  SS.GW.offset = Vector(0, 0, 0);
 
   GenerateAll(Generate::ALL);
   unsaved = false;
   SS.GW.EnsureValidActives();
-  GW.ZoomToFit();
+
+  SS.GW.ZoomToFit(false, false);
 
   // Create all the default styles; they'll get created on the fly anyways,
   // but can't hurt to do it now.

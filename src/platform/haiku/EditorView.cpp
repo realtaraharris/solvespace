@@ -74,9 +74,9 @@ void EditorView::Load(std::string path) {
 void EditorView::New() {
   SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0, false);
   SS.GW.offset = Vector(0, 0, 0);
-  SS.GW.scale = 5.0;
-  SS.GW.projRight = Vector::From(1, 0, 0);
   SS.GW.projUp = Vector::From(0, 1, 0);
+  SS.GW.projRight = Vector::From(1, 0, 0);
+  SS.GW.scale = 5.0;
   SS.gridSpacing = 5.0; // TODO: get these from settings file?
 
   std::static_pointer_cast<AggPixmapRenderer>(SS.GW.canvas)->Init(false);

@@ -55,10 +55,10 @@ void App::MessageReceived(BMessage *msg) {
 
 void App::ArgvReceived(int32 argc, char **argv) {
   if (argc > 0) {
-    BMessage *msg = new BMessage(READ_FILE);
     entry_ref ref;
     get_ref_for_path(argv[1], &ref);
 
+    BMessage *msg = new BMessage(READ_FILE);
     if (msg->AddRef("refs", &ref) != B_OK) {
       std::cerr << "error parsing args in App::ArgvReceived" << std::endl;
       return;

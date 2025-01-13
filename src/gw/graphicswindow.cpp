@@ -47,7 +47,7 @@ void GraphicsWindow::Init(double width, double height, int devicePixelRatio, boo
   showSnapGrid = false;
   dimSolidModel = true;
   context.active = false;
-	
+
   canvas = CreateRenderer();
   if (canvas) {
     persistentCanvas = canvas->CreateBatch();

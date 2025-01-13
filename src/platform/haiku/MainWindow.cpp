@@ -328,8 +328,10 @@ void MainWindow::MessageReceived(BMessage *msg) {
   }
   case READ_FILE: {
     Platform::Path fp = Platform::Path(getOpenPanelFilename(msg));
-    be_app->WindowAt(MAIN_WINDOW)->SetTitle(("SolveSpace: " + fp.FileName()).c_str());
     SS.Load(fp);
+    be_app->WindowAt(MAIN_WINDOW)->SetTitle(("SolveSpace: " + fp.FileName()).c_str());
+    be_app->WindowAt(PROPERTY_BROWSER)->PostMessage(new BMessage(SHOW_LIST_OF_GROUPS));
+    be_app->WindowAt(VIEW_PARAMETERS)->PostMessage(new BMessage(UPDATE_VIEW_PARAMETERS));
     break;
   }
   case ZOOM_IN: {
