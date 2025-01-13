@@ -19,9 +19,6 @@ class MainWindow : public BWindow {
   MainWindow (void);
 
   void MessageReceived (BMessage *msg);
-  bool QuitRequested (void);
-  void LoadSettings ();
-  void SaveSettings ();
   void SetupMenubar(BRect rect);
 
   private:
@@ -30,10 +27,5 @@ class MainWindow : public BWindow {
   BMenuItem *undoMenuItem;
   BMenuItem *redoMenuItem;
 
-  BWindow         *toolWindow;
-  PropertyBrowser *propertyBrowser;
-  ViewParameters  *viewParameters;
-  EditorView      *editorView;
-
-  BMessage *settings;
+  EditorView *editorView;
 };

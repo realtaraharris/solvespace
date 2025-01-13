@@ -71,8 +71,8 @@ void EditorView::Load(std::string path) {
   }
 }
 
-void EditorView::New() {
-  SS.GW.Init(Bounds().Width(), Bounds().Height(), 1.0, false);
+void EditorView::New(float initialWidth, float initialHeight) {
+  SS.GW.Init(initialWidth, initialHeight, 1.0, false);
   SS.GW.offset = Vector(0, 0, 0);
   SS.GW.projUp = Vector::From(0, 1, 0);
   SS.GW.projRight = Vector::From(1, 0, 0);

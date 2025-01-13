@@ -7,6 +7,8 @@
 #pragma once
 
 #include <Application.h>
+#include <StorageKit.h>
+#include "MainWindow.h"
 
 #define MIN_WIDTH 600.0f
 #define MIN_HEIGHT 600.0f
@@ -14,11 +16,21 @@
 #define	MAX_REFS_RECEIVED 32
 
 class App : public BApplication {
+  private:
+  MainWindow *mainwin;
+  BWindow         *toolWindow;
+  PropertyBrowser *propertyBrowser;
+  ViewParameters  *viewParameters;
+  BMessage *settings;
+
   public:
   App (void);
 	void RefsReceived(BMessage *message);
 	void ArgvReceived(int32 argc, char **argv);
 	void MessageReceived(BMessage *msg);
+  void LoadSettings();
+  void SaveSettings();
+  bool QuitRequested (void);
 };
 
 enum { MAIN_WINDOW = 0, TOOLBAR = 1, PROPERTY_BROWSER = 2, VIEW_PARAMETERS = 3 };
@@ -187,5 +199,9 @@ enum {
 
   M_ABOUT = 'mabu', // Command::ABOUT
 
-  M_NOT_IMPL = 'mnti'
+  M_NOT_IMPL = 'mnti',
+  SETTINGS = 'sett'
 };
+
+status_t load_settings(BMessage *message, const char *filename);
+status_t save_settings(BMessage *message, const char *filename);

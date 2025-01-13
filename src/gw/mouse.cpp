@@ -553,6 +553,7 @@ void GraphicsWindow::MouseRightUp(double x, double y) {
   v = v.Plus(projRight.ScaledBy(x / scale));
   v = v.Plus(projUp.ScaledBy(y / scale));
 
+  // TODO: replace this!
 /*
   Platform::MenuRef menu = Platform::CreateMenu();
   context.active = true;
